@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daymori Prompt Compiler</title>
+    <style>
+      :root {
+        --bg: #0d0d0d;
+        --panel: #161616;
+        --line: #2b2b2b;
+        --text: #f3f3f3;
+        --muted: #ababab;
+        --brand: #c08a53;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--text);
+        background: radial-gradient(circle at 25% 10%, #2a1c13 0%, #121212 44%, #0b0b0b 100%);
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        display: grid;
+        place-items: center;
+        padding: 14px;
+      }
+
+      .app {
+        width: min(980px, 100%);
+        height: min(90vh, 860px);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+      }
+
+      .header {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .config {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .field,
+      textarea,
+      button {
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #0f0f0f;
+        color: var(--text);
+        font: inherit;
+        outline: none;
+      }
+
+      .field {
+        width: 100%;
+        padding: 9px 10px;
+      }
+
+      .field:focus,
+      textarea:focus {
+        border-color: var(--brand);
+      }
+
+      .messages {
+        overflow: auto;
+        padding: 14px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .msg {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--panel);
+        padding: 10px 12px;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .msg.user {
+        border-color: #5f462f;
+        background: #1f1711;
+      }
+
+      .composer {
+        border-top: 1px solid var(--line);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        padding: 10px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 86px;
+        max-height: 220px;
+        resize: vertical;
+        padding: 10px 12px;
+      }
+
+      button {
+        cursor: pointer;
+        background: linear-gradient(180deg, #d59c62, #b27e4a);
+        border: 0;
+        color: #111;
+        font-weight: 700;
+        padding: 0 16px;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .helper {
+        margin-top: 7px;
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .file-line {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .file-name {
+        color: var(--muted);
+      }
+
+      @media (max-width: 900px) {
+        .config {
+          grid-template-columns: 1fr;
+        }
+
+        .app {
+          height: 95vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <div class="header">Daymori · 固定链接版（GitHub Pages）</div>
+      <section class="config">
+        <select id="provider" class="field" aria-label="provider">
+          <option value="deepseek" selected>DeepSeek</option>
+          <option value="qwen">Qwen</option>
+          <option value="zhipu">Zhipu</option>
+          <option value="openai">OpenAI</option>
+        </select>
+        <input id="model" class="field" value="deepseek-chat" placeholder="模型名" />
+        <input id="apiKey" type="password" class="field" placeholder="输入 API Key（仅保存在浏览器）" />
+        <button id="saveKeyBtn" type="button">保存 Key</button>
+      </section>
+      <section id="messages" class="messages">
+        <article class="msg">已进入固定链接模式。输入内容后发送即可。</article>
+      </section>
+      <form id="composer" class="composer">
+        <div>
+          <textarea id="input" placeholder="输入你的需求，支持上传 1 个文本文件辅助上下文"></textarea>
+          <div class="helper">
+            <span>Shift+Enter 换行，Enter 发送</span>
+            <div class="file-line">
+              <input id="file" type="file" accept=".txt,.md,.json,.js,.ts,.html,.css,.csv" />
+              <span id="fileName" class="file-name">未选择文件</span>
+            </div>
+          </div>
+        </div>
+        <button id="send" type="submit">发送</button>
+      </form>
+    </main>
+
+    <script>
+      const providerEl = document.getElementById("provider");
+      const modelEl = document.getElementById("model");
+      const apiKeyEl = document.getElementById("apiKey");
+      const saveKeyBtnEl = document.getElementById("saveKeyBtn");
+      const fileEl = document.getElementById("file");
+      const fileNameEl = document.getElementById("fileName");
+      const messagesEl = document.getElementById("messages");
+      const formEl = document.getElementById("composer");
+      const inputEl = document.getElementById("input");
+      const sendEl = document.getElementById("send");
+
+      const STORAGE_KEY = "daymori_pages_config_v1";
+      let contextText = "";
+
+      const providerMap = {
+        deepseek: {
+          endpoint: "https://api.deepseek.com/v1/chat/completions",
+          defaultModel: "deepseek-chat",
+          responseType: "chat"
+        },
+        qwen: {
+          endpoint: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+          defaultModel: "qwen-plus",
+          responseType: "chat"
+        },
+        zhipu: {
+          endpoint: "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+          defaultModel: "glm-4-plus",
+          responseType: "chat"
+        },
+        openai: {
+          endpoint: "https://api.openai.com/v1/responses",
+          defaultModel: "gpt-5.3-codex",
+          responseType: "responses"
+        }
+      };
+
+      function pushMessage(text, role) {
+        const node = document.createElement("article");
+        node.className = role === "user" ? "msg user" : "msg";
+        node.textContent = text;
+        messagesEl.appendChild(node);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function loadConfig() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const cfg = JSON.parse(raw);
+          if (cfg.provider && providerMap[cfg.provider]) providerEl.value = cfg.provider;
+          if (cfg.model) modelEl.value = cfg.model;
+          if (cfg.apiKey) apiKeyEl.value = cfg.apiKey;
+        } catch (error) {
+          console.warn("load config failed", error);
+        }
+      }
+
+      function saveConfig() {
+        const cfg = {
+          provider: providerEl.value,
+          model: modelEl.value.trim(),
+          apiKey: apiKeyEl.value.trim()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+      }
+
+      function updateDefaultModel() {
+        const key = providerEl.value;
+        const preset = providerMap[key];
+        if (!preset) return;
+        if (!modelEl.value.trim()) {
+          modelEl.value = preset.defaultModel;
+        }
+      }
+
+      providerEl.addEventListener("change", () => {
+        const preset = providerMap[providerEl.value];
+        if (preset) modelEl.value = preset.defaultModel;
+      });
+
+      saveKeyBtnEl.addEventListener("click", () => {
+        saveConfig();
+        pushMessage("API Key 已保存在当前浏览器。", "assistant");
+      });
+
+      fileEl.addEventListener("change", async () => {
+        const file = fileEl.files && fileEl.files[0];
+        if (!file) {
+          fileNameEl.textContent = "未选择文件";
+          contextText = "";
+          return;
+        }
+
+        fileNameEl.textContent = file.name;
+        try {
+          contextText = await file.text();
+          if (contextText.length > 12000) {
+            contextText = contextText.slice(0, 12000) + "\n...[已截断]";
+          }
+          pushMessage("文件上下文已加载。", "assistant");
+        } catch (error) {
+          contextText = "";
+          pushMessage("读取文件失败: " + error.message, "assistant");
+        }
+      });
+
+      function extractTextFromChatResponse(payload) {
+        const message = payload && payload.choices && payload.choices[0] && payload.choices[0].message ? payload.choices[0].message.content : "";
+        if (typeof message === "string") return message;
+        if (Array.isArray(message)) {
+          return message
+            .map((item) => (typeof item === "string" ? item : item && item.text ? item.text : ""))
+            .join("")
+            .trim();
+        }
+        return "";
+      }
+
+      async function requestModel({ provider, model, apiKey, prompt }) {
+        const preset = providerMap[provider];
+        if (!preset) throw new Error("不支持的 provider");
+
+        if (preset.responseType === "responses") {
+          const resp = await fetch(preset.endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + apiKey
+            },
+            body: JSON.stringify({
+              model,
+              input: prompt,
+              max_output_tokens: 1000
+            })
+          });
+
+          const raw = await resp.text();
+          let data = {};
+          try {
+            data = raw ? JSON.parse(raw) : {};
+          } catch (error) {
+            throw new Error("返回非 JSON: " + raw.slice(0, 200));
+          }
+
+          if (!resp.ok) {
+            const detail = (data && (data.error && data.error.message)) || raw.slice(0, 220);
+            throw new Error("请求失败(" + resp.status + "): " + detail);
+          }
+          return data.output_text || "(无输出)";
+        }
+
+        const resp = await fetch(preset.endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + apiKey
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: "system", content: "你是高信息密度助手，回答清晰、可执行、低废话。" },
+              { role: "user", content: prompt }
+            ],
+            temperature: 0.2,
+            max_tokens: 1000
+          })
+        });
+
+        const raw = await resp.text();
+        let data = {};
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch (error) {
+          throw new Error("返回非 JSON: " + raw.slice(0, 200));
+        }
+
+        if (!resp.ok) {
+          const detail = (data && (data.error && data.error.message)) || raw.slice(0, 220);
+          throw new Error("请求失败(" + resp.status + "): " + detail);
+        }
+
+        const text = extractTextFromChatResponse(data);
+        return text || "(无输出)";
+      }
+
+      function composePrompt(userText) {
+        if (!contextText) return userText;
+        return [
+          "[用户需求]",
+          userText,
+          "",
+          "[文件上下文]",
+          contextText
+        ].join("\n");
+      }
+
+      inputEl.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          formEl.requestSubmit();
+        }
+      });
+
+      formEl.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const text = inputEl.value.trim();
+        if (!text) return;
+
+        const provider = providerEl.value;
+        const model = modelEl.value.trim();
+        const apiKey = apiKeyEl.value.trim();
+        if (!model) {
+          pushMessage("请填写模型名。", "assistant");
+          return;
+        }
+        if (!apiKey) {
+          pushMessage("请先输入 API Key。", "assistant");
+          return;
+        }
+
+        saveConfig();
+        pushMessage(text, "user");
+        inputEl.value = "";
+        sendEl.disabled = true;
+
+        try {
+          const answer = await requestModel({
+            provider,
+            model,
+            apiKey,
+            prompt: composePrompt(text)
+          });
+          pushMessage(answer, "assistant");
+        } catch (error) {
+          pushMessage("错误: " + error.message, "assistant");
+        } finally {
+          sendEl.disabled = false;
+          inputEl.focus();
+        }
+      });
+
+      loadConfig();
+      updateDefaultModel();
+    </script>
+  </body>
+</html>

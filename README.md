@@ -1,5 +1,28 @@
 # Minimal GPT Chat Platform
 
+## Fast Permanent URL (GitHub Pages)
+
+If Render/Vercel onboarding blocks you, use GitHub Pages for a fixed URL first.
+
+1. Push this repository to `main` branch (already configured with workflow).
+2. In GitHub repository settings, open **Pages**.
+3. Under **Build and deployment**, select **GitHub Actions**.
+4. Wait for workflow `Deploy GitHub Pages` to finish.
+5. Your fixed URL will be:
+   - `https://xcq20100224.github.io/daymori-prompt-compiler/`
+
+Update workflow:
+
+- Push to `main`.
+- GitHub Actions auto-deploys.
+- Refresh the same URL.
+
+Notes:
+
+- Pages version is a static frontend in `docs/index.html`.
+- It supports provider switch and browser-local API key save.
+- API key is only stored in your own browser localStorage.
+
 ## Permanent URL (Render)
 
 This project includes `Dockerfile` and `render.yaml` for a stable public URL.
