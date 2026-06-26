@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minimal GPT Chat</title>
+    <style>
+      :root {
+        --bg: #0f0f0f;
+        --panel: #1a1a1a;
+        --text: #f3f3f3;
+        --muted: #b7b7b7;
+        --line: #2f2f2f;
+        --brand: #c08a53;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: radial-gradient(circle at 20% 10%, #20160e 0%, #0f0f0f 45%, #090909 100%);
+        color: var(--text);
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 16px;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 920px;
+        height: min(88vh, 760px);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: linear-gradient(180deg, #191919 0%, #131313 100%);
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        overflow: hidden;
+      }
+
+      .header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .messages {
+        padding: 16px;
+        overflow: auto;
+        display: grid;
+        gap: 12px;
+      }
+
+      .msg {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 12px;
+        padding: 12px;
+        line-height: 1.55;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .msg.user {
+        border-color: #5f462f;
+        background: #1f1711;
+      }
+
+      .msg.compiled {
+        border-color: #4f3b29;
+        background: #171513;
+      }
+
+      .compiled-title {
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .compiled-meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .compiled-section {
+        margin-top: 10px;
+      }
+
+      .compiled-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .compiled-value {
+        white-space: pre-wrap;
+      }
+
+      .compiled-list {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .compiled-list li {
+        margin: 2px 0;
+      }
+
+      .composer {
+        border-top: 1px solid var(--line);
+        padding: 12px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+      }
+
+      textarea {
+        width: 100%;
+        resize: none;
+        min-height: 70px;
+        max-height: 220px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #111;
+        color: var(--text);
+        padding: 10px 12px;
+        outline: none;
+        font: inherit;
+      }
+
+      textarea:focus {
+        border-color: var(--brand);
+      }
+
+      button {
+        border: 0;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #d69b61, #b17c48);
+        color: #111;
+        font-weight: 700;
+        padding: 0 16px;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .toolbar {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .field {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #111;
+        color: var(--text);
+        padding: 10px 12px;
+        outline: none;
+        font: inherit;
+      }
+
+      .dropzone {
+        border: 1px dashed #5f462f;
+        border-radius: 10px;
+        padding: 10px 12px;
+        color: var(--muted);
+        font-size: 13px;
+        background: #13110f;
+        cursor: pointer;
+      }
+
+      .dropzone.active {
+        border-color: var(--brand);
+        color: var(--text);
+      }
+
+      .file-list {
+        margin-top: 8px;
+        font-size: 12px;
+        color: var(--muted);
+        max-height: 74px;
+        overflow: auto;
+        white-space: pre-wrap;
+      }
+
+      @media (max-width: 760px) {
+        .toolbar {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <div class="header">最小聊天平台 · 国产优先多模型网关</div>
+      <section id="messages" class="messages">
+        <article class="msg">你好，输入内容后点击发送。</article>
+      </section>
+      <form id="composer" class="composer">
+        <div>
+          <div class="toolbar">
+            <label id="dropzone" class="dropzone">
+              拖拽文件到这里，或点击选择文件（最多2个）
+              <input id="fileInput" type="file" multiple hidden />
+            </label>
+          </div>
+          <div id="fileList" class="file-list">未选择文件</div>
+          <textarea id="input" placeholder="输入你的需求..."></textarea>
+          <div class="hint">Shift+Enter 换行，Enter 发送</div>
+        </div>
+        <button id="send" type="submit">发送</button>
+      </form>
+    </main>
+
+    <script>
+      const appEl = document.querySelector(".app");
+      const messagesEl = document.getElementById("messages");
+      const formEl = document.getElementById("composer");
+      const inputEl = document.getElementById("input");
+      const sendEl = document.getElementById("send");
+      const dropzoneEl = document.getElementById("dropzone");
+      const fileInputEl = document.getElementById("fileInput");
+      const fileListEl = document.getElementById("fileList");
+
+      const selectedFiles = [];
+
+      function refreshFileList() {
+        if (selectedFiles.length === 0) {
+          fileListEl.textContent = "未选择文件";
+          return;
+        }
+
+        fileListEl.textContent = selectedFiles
+          .map((f, idx) => `${idx + 1}. ${f.name} (${Math.ceil(f.size / 1024)} KB)`)
+          .join("\n");
+      }
+
+      function setFiles(files) {
+        selectedFiles.length = 0;
+        for (const f of Array.from(files).slice(0, 2)) {
+          selectedFiles.push(f);
+        }
+        refreshFileList();
+      }
+
+      dropzoneEl.addEventListener("click", () => fileInputEl.click());
+      fileInputEl.addEventListener("change", () => setFiles(fileInputEl.files));
+
+      ["dragenter", "dragover"].forEach((evt) => {
+        dropzoneEl.addEventListener(evt, (event) => {
+          event.preventDefault();
+          dropzoneEl.classList.add("active");
+        });
+      });
+
+      ["dragleave", "drop"].forEach((evt) => {
+        dropzoneEl.addEventListener(evt, (event) => {
+          event.preventDefault();
+          dropzoneEl.classList.remove("active");
+        });
+      });
+
+      dropzoneEl.addEventListener("drop", (event) => {
+        const files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : [];
+        setFiles(files);
+      });
+
+      ["dragover", "drop"].forEach((evt) => {
+        window.addEventListener(evt, (event) => {
+          event.preventDefault();
+        });
+      });
+
+      appEl.addEventListener("drop", (event) => {
+        const files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : [];
+        if (files.length > 0) {
+          setFiles(files);
+          dropzoneEl.classList.remove("active");
+        }
+      });
+
+      function pushMessage(text, role) {
+        const node = document.createElement("article");
+        node.className = `msg${role === "user" ? " user" : ""}`;
+        node.textContent = text;
+        messagesEl.appendChild(node);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function createSection(label, contentNode) {
+        const wrap = document.createElement("section");
+        wrap.className = "compiled-section";
+
+        const title = document.createElement("div");
+        title.className = "compiled-label";
+        title.textContent = label;
+
+        wrap.appendChild(title);
+        wrap.appendChild(contentNode);
+        return wrap;
+      }
+
+      function makeList(items) {
+        const ul = document.createElement("ul");
+        ul.className = "compiled-list";
+        for (const item of items) {
+          const li = document.createElement("li");
+          li.textContent = item;
+          ul.appendChild(li);
+        }
+        return ul;
+      }
+
+      function pushCompiledResult(payload) {
+        const compiled = payload && payload.compiled ? payload.compiled : null;
+        if (!compiled) {
+          pushMessage((payload && payload.text) || "(无返回内容)", "assistant");
+          return;
+        }
+
+        const node = document.createElement("article");
+        node.className = "msg compiled";
+
+        const title = document.createElement("div");
+        title.className = "compiled-title";
+        title.textContent = "编译结果";
+        node.appendChild(title);
+
+        const meta = document.createElement("div");
+        meta.className = "compiled-meta";
+        meta.textContent = `provider=${payload.provider || "-"} · model=${payload.model || "-"} · retry=${payload.compileRetries || 0}`;
+        node.appendChild(meta);
+
+        const goalValue = document.createElement("div");
+        goalValue.className = "compiled-value";
+        goalValue.textContent = compiled.goal;
+        node.appendChild(createSection("目标", goalValue));
+
+        const audienceValue = document.createElement("div");
+        audienceValue.className = "compiled-value";
+        audienceValue.textContent = `${compiled.audience} · ${compiled.style}`;
+        node.appendChild(createSection("受众与风格", audienceValue));
+
+        node.appendChild(createSection("约束", makeList(compiled.constraints || [])));
+        node.appendChild(createSection("成功标准", makeList(compiled.successCriteria || [])));
+
+        const summaryValue = document.createElement("div");
+        summaryValue.className = "compiled-value";
+        summaryValue.textContent = compiled.contextSummary;
+        node.appendChild(createSection("上下文摘要", summaryValue));
+
+        const promptValue = document.createElement("div");
+        promptValue.className = "compiled-value";
+        promptValue.textContent = compiled.finalPrompt;
+        node.appendChild(createSection("最终提示词", promptValue));
+
+        node.appendChild(createSection("使用清单", makeList(compiled.checklist || [])));
+
+        messagesEl.appendChild(node);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function transientStatus(status) {
+        return [408, 429, 502, 503, 504].includes(status);
+      }
+
+      async function postWithRetry(makeFormData, maxRetries = 1) {
+        let lastResponse = null;
+        for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            body: makeFormData()
+          });
+
+          lastResponse = response;
+          if (response.ok || !transientStatus(response.status) || attempt === maxRetries) {
+            return response;
+          }
+        }
+        return lastResponse;
+      }
+
+      inputEl.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          formEl.requestSubmit();
+        }
+      });
+
+      formEl.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const message = inputEl.value.trim();
+        if (!message && selectedFiles.length === 0) return;
+
+        pushMessage(message || "[仅上传文件]", "user");
+        inputEl.value = "";
+        sendEl.disabled = true;
+        let success = false;
+
+        try {
+          const response = await postWithRetry(() => {
+            const formData = new FormData();
+            formData.append("message", message);
+            for (const file of selectedFiles) {
+              formData.append("files", file, file.name);
+            }
+            return formData;
+          });
+
+          const rawText = await response.text();
+          let data = null;
+          try {
+            data = rawText ? JSON.parse(rawText) : null;
+          } catch (parseError) {
+            if (!response.ok) {
+              const snippet = rawText ? rawText.slice(0, 220) : "(空响应)";
+              pushMessage(`请求失败(${response.status})：返回非 JSON 内容，可能是隧道失效或网关错误。\n${snippet}`, "assistant");
+            } else {
+              pushMessage(`请求失败：响应解析异常（${parseError.message}）`, "assistant");
+            }
+            return;
+          }
+
+          if (!response.ok) {
+            const fallback = response.status === 408
+              ? "隧道请求超时，请重试；若连续失败，请刷新页面或更换共享链接"
+              : "Unknown error";
+            const detail = (data && (data.detail || data.error)) || (rawText ? rawText.slice(0, 220) : fallback);
+            pushMessage(`请求失败(${response.status}): ${detail}`, "assistant");
+          } else {
+            pushCompiledResult(data);
+            success = true;
+          }
+        } catch (error) {
+          pushMessage(`网络错误: ${error.message}`, "assistant");
+        } finally {
+          if (success) {
+            selectedFiles.length = 0;
+            refreshFileList();
+            fileInputEl.value = "";
+          }
+          sendEl.disabled = false;
+          inputEl.focus();
+        }
+      });
+    </script>
+  </body>
+</html>

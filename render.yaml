@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: daymori-prompt-compiler
+    env: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: LLM_PROVIDER
+        value: deepseek
+      - key: DEEPSEEK_API_KEY
+        sync: false
