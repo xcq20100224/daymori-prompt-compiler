@@ -141,18 +141,12 @@
         min-width: 0;
         padding: 10px 26px 18px;
         display: grid;
-        grid-template-rows: auto auto auto auto 1fr;
+        grid-template-rows: auto auto 1fr auto;
       }
 
       .header {
         padding-top: 2px;
-      }
-
-      .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 2px;
+        min-height: 24px;
       }
 
       .model-name {
@@ -168,7 +162,7 @@
 
       .hero {
         text-align: center;
-        margin-top: 52px;
+        margin-top: 36px;
       }
 
       .hero-title {
@@ -179,6 +173,7 @@
       }
 
       .hero-sub {
+        display: none;
         margin: 18px 0 0;
         color: var(--muted);
         font-size: 30px;
@@ -317,7 +312,10 @@
       }
 
       .messages {
-        margin-top: 14px;
+        margin: 18px auto 0;
+        width: min(980px, 92%);
+        min-height: 120px;
+        max-height: 42vh;
         overflow: auto;
         padding: 0;
         display: grid;
@@ -450,7 +448,7 @@
       }
 
       .composer {
-        margin: 28px auto 0;
+        margin: 14px auto 0;
         width: min(980px, 92%);
         border: 1px solid #d1d3db;
         border-radius: 16px;
@@ -535,47 +533,6 @@
         gap: 8px;
       }
 
-      .tags {
-        width: min(980px, 92%);
-        margin: 18px auto 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-
-      .tag {
-        border: 1px solid #d7d8df;
-        border-radius: 12px;
-        background: #f7f8fa;
-        padding: 8px 14px;
-        color: #5d626e;
-        font-size: 14px;
-      }
-
-      .showcase {
-        width: min(980px, 92%);
-        margin: 14px auto 0;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .case {
-        min-height: 130px;
-        border-radius: 12px;
-        border: 1px solid #d6d7dd;
-        background: linear-gradient(180deg, #1f2128 0%, #15171d 100%);
-        color: #f4f5f8;
-        padding: 14px;
-        font-size: 17px;
-        line-height: 1.3;
-      }
-
-      .case.light {
-        background: linear-gradient(180deg, #d9dce2 0%, #c8ccd4 100%);
-        color: #15161b;
-      }
-
       @keyframes rise-in {
         from {
           transform: translateY(6px);
@@ -598,19 +555,11 @@
 
         .main {
           padding: 10px 10px 18px;
-          grid-template-rows: auto auto auto auto 1fr;
-        }
-
-        .model-name {
-          font-size: 20px;
-        }
-
-        .api-link {
-          font-size: 14px;
+          grid-template-rows: auto auto 1fr auto;
         }
 
         .hero {
-          margin-top: 26px;
+          margin-top: 18px;
         }
 
         .hero-title {
@@ -626,14 +575,11 @@
           margin-top: 16px;
         }
 
-        .tags,
-        .showcase {
+        .messages {
           width: 100%;
+          max-height: 40vh;
         }
 
-        .showcase {
-          grid-template-columns: 1fr;
-        }
       }
     </style>
   </head>
@@ -662,15 +608,15 @@
 
       <section class="main">
         <div class="header">
-          <div class="topbar">
-            <div class="model-name">GLM-5.2</div>
-            <a href="#" class="api-link">API ↗</a>
-          </div>
           <div class="hero">
-            <h1 class="hero-title">我能为你创造什么？</h1>
-            <p class="hero-sub">与 z.ai 互动，探索无限创意</p>
+            <h1 class="hero-title">输入需求，获得提示词！</h1>
+            <p class="hero-sub"></p>
           </div>
         </div>
+
+        <section id="messages" class="messages">
+          <article class="msg">请输入你的教学需求，例如：请为初二数学《一次函数》生成8页课堂PPT提示词。</article>
+        </section>
 
         <form id="composer" class="composer">
           <div>
@@ -690,20 +636,6 @@
           </div>
           <button id="send" type="submit">发送</button>
         </form>
-
-        <section class="tags">
-          <div class="tag">落地页</div>
-          <div class="tag">科普 / 教案</div>
-          <div class="tag">3D建模</div>
-          <div class="tag">小游戏</div>
-          <div class="tag">个人博客</div>
-        </section>
-
-        <section class="showcase">
-          <article class="case">BUILT BY<br />DISCIPLINE<br />FORGED IN IRON.</article>
-          <article class="case light">Stillwater<br />A calm visual rhythm<br />for premium products.</article>
-          <article class="case">SEVERIN<br />HALBE<br />BRAND EDITORIAL WEB</article>
-        </section>
 
         <section class="config">
           <div class="field">服务人群: 教师 | 场景: 课堂PPT | 默认模型: DeepSeek（无需用户输入 Key）</div>
@@ -740,9 +672,6 @@
           </article>
         </section>
 
-        <section id="messages" class="messages">
-          <article class="msg">请输入你的教学需求，例如：请为初二数学《一次函数》生成8页课堂PPT提示词。</article>
-        </section>
       </section>
     </main>
 
