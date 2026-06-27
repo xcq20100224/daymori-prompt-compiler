@@ -1110,7 +1110,14 @@
         try {
           data = raw ? JSON.parse(raw) : {};
         } catch (error) {
-          throw new Error("DeepSeek 返回非 JSON: " + raw.slice(0, 200));
+          const head = raw.slice(0, 120).toLowerCase();
+          const htmlLike = head.includes("<html") || head.includes("<!doctype") || head.includes("cannot post");
+          if (htmlLike) {
+            throw new Error(
+              "后端代理返回了 HTML（不是 JSON）。请确认服务端已更新并包含 POST /api/llm-proxy 接口，然后重启服务再试。"
+            );
+          }
+          throw new Error("后端代理返回非 JSON: " + raw.slice(0, 200));
         }
 
         if (!resp.ok) {
@@ -1118,7 +1125,11 @@
           throw new Error("服务请求失败(" + resp.status + "): " + detail);
         }
 
-        const text = data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : "";
+        const text =
+          (data && typeof data.text === "string" && data.text) ||
+          (data && typeof data.output_text === "string" && data.output_text) ||
+          (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ||
+          "";
         if (typeof text === "string" && text.trim()) return text;
         return "(无输出)";
       }
