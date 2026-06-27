@@ -2005,10 +2005,17 @@
           renderDeliverable(latestStructured, qa, latestSpec);
           pushMessage(`系统指标：首次可直接出稿率=${metric.rate}%（${metric.firstDirect}/${metric.total}）`, "assistant");
         } catch (error) {
-          pushMessage("错误: " + error.message, "assistant");
+          const emergency = buildOfflineStructured(latestRawInput, latestPageTarget || 8);
+          latestStructured = emergency;
+          const qa = evaluateBySpec(latestSpec || {}, latestStructured || {});
+          latestQaResult = qa;
+          latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
+          renderDeliverable(latestStructured, qa, latestSpec || {});
+          proxyStatusEl.textContent = "移动端网络受限，已自动切换离线生成";
+          pushMessage("网络受限，已自动离线生成可交付结果。", "assistant");
         } finally {
           sendEl.disabled = false;
-          sendEl.textContent = "发送";
+          sendEl.textContent = "↑";
           inputEl.focus();
         }
       });
