@@ -143,6 +143,21 @@
         gap: 10px;
       }
 
+      .dropzone {
+        border: 1px dashed #5f462f;
+        border-radius: 10px;
+        padding: 10px 12px;
+        color: var(--muted);
+        font-size: 13px;
+        background: #13110f;
+        cursor: pointer;
+      }
+
+      .dropzone.active {
+        border-color: var(--brand);
+        color: var(--text);
+      }
+
       .file-name {
         color: var(--muted);
       }
@@ -162,18 +177,19 @@
     <main class="app">
       <div class="header">Daymori · 固定链接版（GitHub Pages）</div>
       <section class="config">
-        <div class="field">默认模型: DeepSeek（服务端已配置，无需用户输入 Key）</div>
+        <div class="field">默认模型: DeepSeek（固定官方域名，无需用户输入 Key）</div>
       </section>
       <section id="messages" class="messages">
         <article class="msg">已进入固定链接模式。输入内容后发送即可。</article>
       </section>
       <form id="composer" class="composer">
         <div>
+          <div id="dropzone" class="dropzone">拖拽文件到这里，或点击选择文件（1个）</div>
           <textarea id="input" placeholder="输入你的需求，支持上传 1 个文本文件辅助上下文"></textarea>
           <div class="helper">
             <span>Shift+Enter 换行，Enter 发送</span>
             <div class="file-line">
-              <input id="file" type="file" accept=".txt,.md,.json,.js,.ts,.html,.css,.csv" />
+              <input id="file" type="file" accept=".txt,.md,.json,.js,.ts,.html,.css,.csv" hidden />
               <span id="fileName" class="file-name">未选择文件</span>
             </div>
           </div>
@@ -184,6 +200,7 @@
 
     <script>
       const fileEl = document.getElementById("file");
+      const dropzoneEl = document.getElementById("dropzone");
       const fileNameEl = document.getElementById("fileName");
       const messagesEl = document.getElementById("messages");
       const formEl = document.getElementById("composer");
@@ -192,13 +209,8 @@
 
       let contextText = "";
 
-      const BACKEND_ENDPOINTS = [
-        "/api/chat",
-        "https://daymori-prompt-compiler.onrender.com/api/chat",
-        "https://daymori-prompt-compiler.vercel.app/api/chat"
-      ];
-
       const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
+      const OFFICIAL_DEEPSEEK_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
       const DEFAULT_DEEPSEEK_KEY = [
         "sk-5ba1c769ac7d4708",
         "88963788d1a7eaab"
@@ -212,8 +224,7 @@
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
 
-      fileEl.addEventListener("change", async () => {
-        const file = fileEl.files && fileEl.files[0];
+      async function loadFileContext(file) {
         if (!file) {
           fileNameEl.textContent = "未选择文件";
           contextText = "";
@@ -231,49 +242,15 @@
           contextText = "";
           pushMessage("读取文件失败: " + error.message, "assistant");
         }
-      });
-
-      async function requestBackend(userText) {
-        const formData = new FormData();
-        formData.append("message", userText);
-
-        const file = fileEl.files && fileEl.files[0];
-        if (file) {
-          formData.append("files", file, file.name);
-        }
-
-        let lastError = "";
-        for (const endpoint of BACKEND_ENDPOINTS) {
-          try {
-            const resp = await fetch(endpoint, {
-              method: "POST",
-              body: formData
-            });
-
-            const raw = await resp.text();
-            let data = {};
-            try {
-              data = raw ? JSON.parse(raw) : {};
-            } catch (error) {
-              throw new Error("后端返回非 JSON: " + raw.slice(0, 200));
-            }
-
-            if (!resp.ok) {
-              const detail = data.detail || data.error || raw.slice(0, 220);
-              throw new Error("后端失败(" + resp.status + "): " + detail);
-            }
-
-            return data.text || (data.compiled && data.compiled.finalPrompt) || "(无输出)";
-          } catch (error) {
-            lastError = error.message;
-          }
-        }
-
-        throw new Error(lastError || "后台服务暂不可用，请稍后重试");
       }
 
+      fileEl.addEventListener("change", async () => {
+        const file = fileEl.files && fileEl.files[0];
+        await loadFileContext(file);
+      });
+
       async function requestDeepSeekDirect(userText) {
-        const resp = await fetch("https://api.deepseek.com/v1/chat/completions", {
+        const resp = await fetch(OFFICIAL_DEEPSEEK_ENDPOINT, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -308,6 +285,31 @@
         return "(无输出)";
       }
 
+      dropzoneEl.addEventListener("click", () => fileEl.click());
+
+      ["dragenter", "dragover"].forEach((evt) => {
+        dropzoneEl.addEventListener(evt, (event) => {
+          event.preventDefault();
+          dropzoneEl.classList.add("active");
+        });
+      });
+
+      ["dragleave", "drop"].forEach((evt) => {
+        dropzoneEl.addEventListener(evt, (event) => {
+          event.preventDefault();
+          dropzoneEl.classList.remove("active");
+        });
+      });
+
+      dropzoneEl.addEventListener("drop", async (event) => {
+        const files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : [];
+        const file = files[0];
+        await loadFileContext(file);
+      });
+
+      window.addEventListener("dragover", (event) => event.preventDefault());
+      window.addEventListener("drop", (event) => event.preventDefault());
+
       inputEl.addEventListener("keydown", (event) => {
         if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
@@ -329,12 +331,7 @@
         sendEl.disabled = true;
 
         try {
-          let answer = "";
-          try {
-            answer = await requestBackend(payload);
-          } catch (backendError) {
-            answer = await requestDeepSeekDirect(payload);
-          }
+          const answer = await requestDeepSeekDirect(payload);
           pushMessage(answer, "assistant");
         } catch (error) {
           pushMessage("错误: " + error.message, "assistant");
