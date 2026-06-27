@@ -439,7 +439,7 @@
       <form id="composer" class="composer">
         <div>
           <div id="dropzone" class="dropzone">拖拽文件到这里，或点击选择文件（1个）</div>
-          <textarea id="input" placeholder="请按模板输入：学段+学科+课题+页数+时长+是否分层作业（例：初二数学 一次函数 8页 40分钟 要分层作业）"></textarea>
+          <textarea id="input" placeholder="直接写你的需求即可（例如：帮我做一节一次函数的课堂PPT）"></textarea>
           <div class="helper">
             <span>Shift+Enter 换行，Enter 发送</span>
             <div class="file-line">
@@ -867,7 +867,7 @@
           grade: (fields && fields.grade) || "",
           subject: (fields && fields.subject) || "",
           topic: (fields && fields.topic) || "",
-          pageCount: pageCount || null,
+          pageCount: pageCount || 8,
           stages: detectDesiredStages(input),
           requireHomeworkLevels
         };
@@ -1509,7 +1509,7 @@
           : text;
 
         const semanticPack = buildSemanticPack(text, contextText);
-        latestPageTarget = semanticPack.fields.pageCount || null;
+        latestPageTarget = semanticPack.fields.pageCount || 8;
         latestSpec = buildSpecObject(text, semanticPack.fields);
         const pageCountHint = latestPageTarget
           ? `\n\n[硬约束-页数]\n用户明确要求${latestPageTarget}页，必须严格输出${latestPageTarget}页。`
