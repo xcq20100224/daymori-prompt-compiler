@@ -1064,13 +1064,57 @@
       }
 
       function renderDeliverable(structured, qaResult = null, spec = null) {
-        const lines = [];
+        const wrap = document.createElement("article");
+        wrap.className = "msg";
+
+        const box = document.createElement("section");
+        box.className = "deliverable";
+
+        const title = document.createElement("div");
+        title.className = "deliverable-title";
+        title.textContent = "可交付产物（课堂PPT提示词）";
+        box.appendChild(title);
+
         if (qaResult) {
-          lines.push(`质检：${qaResult.pass ? "PASS" : "FAIL"}`);
+          const qaNode = document.createElement("div");
+          qaNode.className = "qa-inline " + (qaResult.pass ? "pass" : "fail");
+          const qaLines = [
+            `质检：${qaResult.pass ? "PASS" : "FAIL"}`,
+            `约束=${qaResult.scores.constraint} 覆盖=${qaResult.scores.coverage} 连贯=${qaResult.scores.coherence} 总分=${qaResult.scores.overall}`
+          ];
+          if (spec && spec.pageCount) {
+            qaLines.push(`页数要求=${spec.pageCount}，检测=${qaResult.generatedPageCount || "未知"}`);
+          }
+          qaNode.textContent = qaLines.join(" | ");
+          box.appendChild(qaNode);
         }
-        lines.push("终版提示词：");
-        lines.push(structured && structured.finalPrompt ? structured.finalPrompt : "(无输出)");
-        pushMessage(lines.join("\n\n"), "assistant");
+
+        for (const def of BLOCK_DEFS) {
+          const block = document.createElement("section");
+          block.className = "block";
+
+          const head = document.createElement("div");
+          head.className = "block-head";
+
+          const label = document.createElement("div");
+          label.className = "block-label";
+          label.textContent = def.label;
+
+          head.appendChild(label);
+
+          const content = document.createElement("div");
+          content.className = "block-content";
+          content.textContent = structured[def.key] || "(空)";
+
+          block.appendChild(head);
+          block.appendChild(content);
+          box.appendChild(block);
+        }
+
+        wrap.appendChild(box);
+        messagesEl.appendChild(wrap);
+        trimMessageList();
+        messagesEl.scrollTop = messagesEl.scrollHeight;
       }
 
       async function regenerateBlock(blockKey) {
