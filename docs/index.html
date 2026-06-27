@@ -243,6 +243,37 @@
         border-color: #6a2a2a;
       }
 
+      .quick-check {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+
+      .quick-item {
+        border: 1px solid #2f2f33;
+        border-radius: 10px;
+        background: #101014;
+        padding: 8px;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .quick-item.pass {
+        border-color: #285a3e;
+      }
+
+      .quick-item.fail {
+        border-color: #6a2a2a;
+      }
+
+      .quick-fix-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
       .block {
         border: 1px solid #2a2a2e;
         border-radius: 12px;
@@ -408,7 +439,7 @@
       <form id="composer" class="composer">
         <div>
           <div id="dropzone" class="dropzone">拖拽文件到这里，或点击选择文件（1个）</div>
-          <textarea id="input" placeholder="输入你的需求，按 Enter 发送"></textarea>
+          <textarea id="input" placeholder="请按模板输入：学段+学科+课题+页数+时长+是否分层作业（例：初二数学 一次函数 8页 40分钟 要分层作业）"></textarea>
           <div class="helper">
             <span>Shift+Enter 换行，Enter 发送</span>
             <div class="file-line">
@@ -1059,6 +1090,65 @@
         return Array.from(keys);
       }
 
+      function quickAcceptance(spec, structured, qaResult) {
+        const targetPage = spec && spec.pageCount ? spec.pageCount : null;
+        const pageOk = targetPage ? qaResult && qaResult.generatedPageCount === targetPage : true;
+        const pd = String((structured && structured.pageDetails) || "");
+        const actionableOk = /(教师|讲解)/.test(pd) && /(学生|任务)/.test(pd);
+        const fp = String((structured && structured.finalPrompt) || "");
+        const directUseOk = fp.length >= 80;
+        return {
+          pageOk,
+          actionableOk,
+          directUseOk
+        };
+      }
+
+      function applyQuickFixLocal(kind) {
+        if (!latestStructured || !latestRawInput) {
+          pushMessage("请先生成一次结果后再使用一键修正。", "assistant");
+          return;
+        }
+
+        const targetPage = (latestSpec && latestSpec.pageCount) || extractRequestedPageCount(latestRawInput) || 8;
+        const fields = extractTeachingFields(latestRawInput, "");
+        const topic = safeTopic(latestRawInput);
+        const hints = subjectHints(fields.subject || "", topic);
+
+        if (kind === "page") {
+          const seeded = buildOfflineStructured(latestRawInput, targetPage);
+          latestStructured.pagePlan = seeded.pagePlan;
+          latestStructured.pageDetails = seeded.pageDetails;
+          latestStructured.finalPrompt = seeded.finalPrompt;
+          pushMessage(`已完成一键修正：页数统一为${targetPage}页。`, "assistant");
+        }
+
+        if (kind === "interaction") {
+          latestStructured.interaction = [
+            "课堂互动设计（至少2轮）：",
+            `- 轮次1（3分钟）：${hints.interact}`,
+            "- 轮次2（4分钟）：小组讨论后随机抽答，按“准确-完整-表达”三维评分。",
+            "- 轮次3（可选2分钟）：错题回炉，要求学生说出改正依据。"
+          ].join("\n");
+          pushMessage("已完成一键修正：互动环节已增强。", "assistant");
+        }
+
+        if (kind === "homework") {
+          latestStructured.homework = [
+            "分层作业：",
+            `- ${hints.homework}`,
+            "- 提交要求：写出思路，不只给答案。",
+            "- 评价标准：正确率、过程完整性、表达清晰度。"
+          ].join("\n");
+          pushMessage("已完成一键修正：作业分层已补齐。", "assistant");
+        }
+
+        const qa = evaluateBySpec(latestSpec || {}, latestStructured);
+        latestQaResult = qa;
+        latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
+        renderDeliverable(latestStructured, qa, latestSpec || {});
+      }
+
       function renderQaResult(qaResult, spec) {
         latestQaResult = qaResult;
         if (qaResult.pass) return;
@@ -1166,6 +1256,39 @@
           qaNode.textContent = qaLines.join(" | ");
           box.appendChild(qaNode);
         }
+
+        const acceptance = quickAcceptance(spec || {}, structured || {}, qaResult || {});
+        const checkRow = document.createElement("div");
+        checkRow.className = "quick-check";
+        const checkItems = [
+          { ok: acceptance.pageOk, text: "页数一致" },
+          { ok: acceptance.actionableOk, text: "每页可执行" },
+          { ok: acceptance.directUseOk, text: "终版可出稿" }
+        ];
+        for (const item of checkItems) {
+          const node = document.createElement("div");
+          node.className = "quick-item " + (item.ok ? "pass" : "fail");
+          node.textContent = `${item.ok ? "✅" : "❌"} ${item.text}`;
+          checkRow.appendChild(node);
+        }
+        box.appendChild(checkRow);
+
+        const fixRow = document.createElement("div");
+        fixRow.className = "quick-fix-row";
+        const fixDefs = [
+          { key: "page", label: "一键修正页数" },
+          { key: "interaction", label: "一键增强互动" },
+          { key: "homework", label: "一键补齐作业" }
+        ];
+        for (const def of fixDefs) {
+          const btn = document.createElement("button");
+          btn.className = "mini-btn";
+          btn.type = "button";
+          btn.textContent = def.label;
+          btn.addEventListener("click", () => applyQuickFixLocal(def.key));
+          fixRow.appendChild(btn);
+        }
+        box.appendChild(fixRow);
 
         for (const def of BLOCK_DEFS) {
           const block = document.createElement("section");
