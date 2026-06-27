@@ -1617,6 +1617,21 @@
         throw lastError;
       }
 
+      function withHardTimeout(promise, timeoutMs, label = "操作超时") {
+        return new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(new Error(label)), timeoutMs);
+          Promise.resolve(promise)
+            .then((value) => {
+              clearTimeout(timer);
+              resolve(value);
+            })
+            .catch((error) => {
+              clearTimeout(timer);
+              reject(error);
+            });
+        });
+      }
+
       async function rewriteBlockBySpec(blockKey, reason) {
         const keep = BLOCK_DEFS
           .filter((b) => b.key !== blockKey)
@@ -1957,6 +1972,15 @@
         const text = inputEl.value.trim();
         if (!text) return;
 
+        const isMobileRuntime = (() => {
+          try {
+            const ua = String(navigator.userAgent || "").toLowerCase();
+            return /iphone|ipad|android|mobile|harmonyos/.test(ua) || (window.matchMedia && window.matchMedia("(max-width: 900px)").matches);
+          } catch {
+            return false;
+          }
+        })();
+
         const silent = buildSilentCompletion(text, contextText);
         const internalText = silent.mergedInput;
 
@@ -1998,7 +2022,11 @@
         sendEl.textContent = "生成中...";
 
         try {
-          const answer = await requestDeepSeekDirect(payload, { pageCount: latestPageTarget });
+          const answer = await withHardTimeout(
+            requestDeepSeekDirect(payload, { pageCount: latestPageTarget }),
+            isMobileRuntime ? 9000 : 24000,
+            "移动端请求超时"
+          );
           let structured = parseStructuredResponse(answer);
           if (!isStructuredComplete(structured)) {
             structured = await normalizeStructuredOutput(answer, { pageCount: latestPageTarget });
@@ -2017,7 +2045,11 @@
           latestStructured = structured;
           const firstQa = evaluateBySpec(latestSpec || {}, latestStructured || {});
           const metric = recordFurMetric(!!firstQa.pass);
-          const qa = await autoPilotRepair(latestSpec, firstQa);
+          const qa = await withHardTimeout(
+            autoPilotRepair(latestSpec, firstQa),
+            isMobileRuntime ? 6000 : 15000,
+            "自动修正超时"
+          );
           latestQaResult = qa;
           latestAssistantText = structured.finalPrompt || answer;
 
