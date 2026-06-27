@@ -873,6 +873,47 @@
         };
       }
 
+      function buildSilentCompletion(rawInput, context) {
+        const original = String(rawInput || "").trim();
+        const ctx = String(context || "").trim();
+        const fields = extractTeachingFields(original, ctx);
+        const pageCount = fields.pageCount || 8;
+        const duration = inferLessonDuration(original);
+        const topic = fields.topic || safeTopic(original);
+        const subject = fields.subject || "通用学科";
+        const grade = fields.grade || "通用学段";
+        const requireHomeworkLevels = /分层作业|分层|基础层|提高层|挑战层|拓展层/.test(original);
+        const stages = detectDesiredStages(original);
+        const kws = extractKeywords(`${original}\n${ctx}`).slice(0, 8);
+
+        const internalHints = [
+          "[系统内部补全-用户不可见]",
+          `学段=${grade}`,
+          `学科=${subject}`,
+          `课题=${topic}`,
+          `页数=${pageCount}`,
+          `时长=${duration}`,
+          `作业策略=${requireHomeworkLevels ? "分层作业" : "常规作业并尽量分层"}`,
+          `教学环节=${stages.join("->")}`,
+          `关键词=${kws.length ? kws.join("/") : "课堂/PPT/讲解"}`
+        ].join("\n");
+
+        return {
+          mergedInput: `${original}\n\n${internalHints}`,
+          fields: {
+            grade,
+            subject,
+            topic,
+            keywords: fields.keywords && fields.keywords.length ? fields.keywords : kws,
+            hardPoints: fields.hardPoints || [],
+            pageCount
+          },
+          pageCount,
+          duration,
+          requireHomeworkLevels
+        };
+      }
+
       function safeTopic(text) {
         const all = String(text || "");
         const quote = all.match(/[《【](.+?)[》】]/);
@@ -1504,19 +1545,27 @@
         const text = inputEl.value.trim();
         if (!text) return;
 
-        latestRawInput = contextText
-          ? ["[用户需求]", text, "", "[文件上下文]", contextText].join("\n")
-          : text;
+        const silent = buildSilentCompletion(text, contextText);
+        const internalText = silent.mergedInput;
 
-        const semanticPack = buildSemanticPack(text, contextText);
-        latestPageTarget = semanticPack.fields.pageCount || 8;
-        latestSpec = buildSpecObject(text, semanticPack.fields);
+        latestRawInput = contextText
+          ? ["[用户需求]", internalText, "", "[文件上下文]", contextText].join("\n")
+          : internalText;
+
+        const semanticPack = buildSemanticPack(internalText, contextText);
+        semanticPack.fields = {
+          ...semanticPack.fields,
+          ...silent.fields,
+          pageCount: silent.pageCount
+        };
+        latestPageTarget = silent.pageCount || 8;
+        latestSpec = buildSpecObject(internalText, semanticPack.fields);
         const pageCountHint = latestPageTarget
           ? `\n\n[硬约束-页数]\n用户明确要求${latestPageTarget}页，必须严格输出${latestPageTarget}页。`
           : "";
         const payload = [
           "[用户需求]",
-          text,
+          internalText,
           "",
           "[语义调度层-关键字段提取]",
           JSON.stringify(semanticPack.fields, null, 2),
