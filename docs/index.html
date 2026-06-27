@@ -162,21 +162,23 @@
 
       .hero {
         text-align: center;
-        margin-top: 36px;
+        margin-top: 62px;
       }
 
       .hero-title {
         margin: 0;
-        font-size: clamp(42px, 4.3vw, 66px);
+        font-size: clamp(60px, 6.2vw, 112px);
         font-weight: 500;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.2px;
+        color: #12141a;
       }
 
       .hero-sub {
-        display: none;
+        display: block;
         margin: 18px 0 0;
-        color: var(--muted);
-        font-size: 30px;
+        color: #7c828d;
+        font-size: clamp(24px, 2.4vw, 52px);
+        font-weight: 500;
       }
 
       .config,
@@ -312,10 +314,10 @@
       }
 
       .messages {
-        margin: 18px auto 0;
+        margin: 24px auto 0;
         width: min(980px, 92%);
-        min-height: 120px;
-        max-height: 42vh;
+        min-height: 52px;
+        max-height: 36vh;
         overflow: auto;
         padding: 0;
         display: grid;
@@ -448,26 +450,74 @@
       }
 
       .composer {
-        margin: 14px auto 0;
+        position: relative;
+        margin: 16px auto 0;
         width: min(980px, 92%);
-        border: 1px solid #d1d3db;
-        border-radius: 16px;
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 10px;
-        padding: 16px;
-        background: #ffffff;
-        box-shadow: 0 14px 30px rgba(34, 38, 47, 0.07);
+        border: 1px solid #d9dbe1;
+        border-radius: 18px;
+        display: block;
+        padding: 16px 18px 12px;
+        background: #f7f7f9;
+        box-shadow: 0 8px 20px rgba(30, 34, 44, 0.06);
       }
 
       textarea {
         width: 100%;
-        min-height: 70px;
+        min-height: 86px;
         max-height: 180px;
         resize: none;
-        padding: 12px 14px;
-        border-color: #d9dbe2;
-        background: #fafbfc;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: #1c1f26;
+        font-size: 32px;
+        line-height: 1.4;
+      }
+
+      textarea::placeholder {
+        color: #b8bcc6;
+      }
+
+      .composer-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 8px;
+        min-height: 40px;
+      }
+
+      .composer-tools {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #4a4e58;
+        font-size: 35px;
+      }
+
+      .tool-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        border: 1px solid transparent;
+      }
+
+      .tool-btn:hover {
+        background: #eceef3;
+        border-color: #d6d9e1;
+      }
+
+      .composer-mode {
+        margin-right: 64px;
+        color: #6c727e;
+        font-size: 30px;
+      }
+
+      .composer-mode .caret {
+        font-size: 22px;
+        margin-left: 4px;
       }
 
       button {
@@ -489,6 +539,28 @@
       button:disabled {
         opacity: 0.6;
         cursor: not-allowed;
+      }
+
+      #send {
+        position: absolute;
+        right: 18px;
+        bottom: 12px;
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        border-radius: 999px;
+        padding: 0;
+        border: 1px solid #d0d3da;
+        background: #eceef3;
+        color: #8e949f;
+        font-size: 22px;
+        font-weight: 700;
+        display: grid;
+        place-items: center;
+      }
+
+      #send:hover:not(:disabled) {
+        color: #5f6672;
       }
 
       .helper {
@@ -559,15 +631,15 @@
         }
 
         .hero {
-          margin-top: 18px;
+          margin-top: 28px;
         }
 
         .hero-title {
-          font-size: 34px;
+          font-size: 48px;
         }
 
         .hero-sub {
-          font-size: 18px;
+          font-size: 24px;
         }
 
         .composer {
@@ -578,6 +650,20 @@
         .messages {
           width: 100%;
           max-height: 40vh;
+        }
+
+        textarea {
+          font-size: 22px;
+          min-height: 68px;
+        }
+
+        .composer-mode {
+          font-size: 18px;
+          margin-right: 52px;
+        }
+
+        .composer-tools {
+          font-size: 24px;
         }
 
       }
@@ -609,19 +695,24 @@
       <section class="main">
         <div class="header">
           <div class="hero">
-            <h1 class="hero-title">输入需求，获得提示词！</h1>
-            <p class="hero-sub"></p>
+            <h1 class="hero-title">我能帮助您做什么？</h1>
+            <p class="hero-sub">输入需求，获得提示词</p>
           </div>
         </div>
 
-        <section id="messages" class="messages">
-          <article class="msg">请输入你的教学需求，例如：请为初二数学《一次函数》生成8页课堂PPT提示词。</article>
-        </section>
+        <section id="messages" class="messages"></section>
 
         <form id="composer" class="composer">
           <div>
             <div id="dropzone" class="dropzone">拖拽文件到这里，或点击选择文件（1个）</div>
             <textarea id="input" placeholder="有什么我能帮您的？"></textarea>
+            <div class="composer-bottom">
+              <div class="composer-tools">
+                <span class="tool-btn">+</span>
+                <span class="tool-btn">◎</span>
+              </div>
+              <div class="composer-mode">深度思考 最高 <span class="caret">▾</span></div>
+            </div>
             <div class="helper">
               <span>Shift+Enter 换行，Enter 发送</span>
               <div class="file-line">
@@ -634,7 +725,7 @@
               <button id="openAiBtn" class="mini-btn" type="button">立即出稿（打开 DeepSeek）</button>
             </div>
           </div>
-          <button id="send" type="submit">发送</button>
+          <button id="send" type="submit">↑</button>
         </form>
 
         <section class="config">
