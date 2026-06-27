@@ -484,6 +484,7 @@
       const REQUEST_TIMEOUT_MS = 28000;
       const REQUEST_RETRY = 1;
       const PROXY_STORAGE_KEY = "daymori_proxy_endpoint";
+      const FUR_METRIC_KEY = "daymori_first_direct_usable_metric";
       const LOCAL_DEFAULT_PROXY_ENDPOINT = "http://localhost:3000/api/llm-proxy";
       const PUBLIC_DEFAULT_PROXY_ENDPOINT = "https://daymori-prompt-compiler.onrender.com/api/llm-proxy";
       const PRESET_PROXY_ENDPOINTS = [
@@ -1145,6 +1146,28 @@
         };
       }
 
+      function getFurMetric() {
+        try {
+          const raw = localStorage.getItem(FUR_METRIC_KEY);
+          const parsed = raw ? JSON.parse(raw) : null;
+          if (parsed && Number.isFinite(parsed.total) && Number.isFinite(parsed.firstDirect)) {
+            return parsed;
+          }
+        } catch {
+          // Ignore malformed local storage data.
+        }
+        return { total: 0, firstDirect: 0 };
+      }
+
+      function recordFurMetric(firstDirectPass) {
+        const metric = getFurMetric();
+        metric.total += 1;
+        if (firstDirectPass) metric.firstDirect += 1;
+        localStorage.setItem(FUR_METRIC_KEY, JSON.stringify(metric));
+        const rate = metric.total ? ((metric.firstDirect / metric.total) * 100).toFixed(1) : "0.0";
+        return { ...metric, rate };
+      }
+
       function hasHomeworkLevels(text) {
         const hw = String(text || "");
         return /(基础|基础层)/.test(hw) && /(提高|进阶|提高层)/.test(hw) && /(挑战|拓展|挑战层|拓展层)/.test(hw);
@@ -1218,8 +1241,8 @@
         if (rerender) renderDeliverable(latestStructured, qa, latestSpec || {});
       }
 
-      async function autoPilotRepair(spec) {
-        let qa = evaluateBySpec(spec || {}, latestStructured || {});
+      async function autoPilotRepair(spec, initialQa = null) {
+        let qa = initialQa || evaluateBySpec(spec || {}, latestStructured || {});
         const order = recommendFixOrder(spec || {}, latestStructured || {}, qa || {});
         for (const kind of order) {
           applyQuickFixLocal(kind, { silent: true, rerender: false });
@@ -1227,7 +1250,14 @@
           if (qa.pass) return qa;
         }
         if (!qa.pass) {
-          qa = await autoRepairByQa(spec || {}, 1);
+          const patched = await oneShotRepairBySpec(spec || {}, qa || {});
+          if (patched && typeof patched === "object") {
+            latestStructured = {
+              ...latestStructured,
+              ...patched
+            };
+          }
+          qa = evaluateBySpec(spec || {}, latestStructured || {});
         }
         return qa;
       }
@@ -1314,6 +1344,28 @@
         return evaluateBySpec(spec, latestStructured);
       }
 
+      async function oneShotRepairBySpec(spec, qa) {
+        const prompt = [
+          "请一次性修复以下结构化课堂PPT结果。",
+          "只输出 JSON，不要解释。字段必须为 goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
+          "六个字段都必须是字符串。",
+          "[当前问题]",
+          (qa && qa.issues && qa.issues.length ? qa.issues.join("；") : "无"),
+          "[规格对象]",
+          JSON.stringify(spec || {}, null, 2),
+          "[用户原始需求]",
+          latestRawInput,
+          "[当前结构化结果]",
+          JSON.stringify(latestStructured || {}, null, 2)
+        ].join("\n\n");
+
+        const repaired = await requestDeepSeekDirect(prompt, {
+          system: "你是课堂PPT一次性修复器，必须一次修完并只输出有效JSON。",
+          pageCount: spec && spec.pageCount
+        });
+        return parseStructuredResponse(repaired);
+      }
+
       function renderDeliverable(structured, qaResult = null, spec = null) {
         const wrap = document.createElement("article");
         wrap.className = "msg";
@@ -1357,23 +1409,6 @@
           checkRow.appendChild(node);
         }
         box.appendChild(checkRow);
-
-        const fixRow = document.createElement("div");
-        fixRow.className = "quick-fix-row";
-        const fixDefs = [
-          { key: "page", label: "一键修正页数" },
-          { key: "interaction", label: "一键增强互动" },
-          { key: "homework", label: "一键补齐作业" }
-        ];
-        for (const def of fixDefs) {
-          const btn = document.createElement("button");
-          btn.className = "mini-btn";
-          btn.type = "button";
-          btn.textContent = def.label;
-          btn.addEventListener("click", () => applyQuickFixLocal(def.key));
-          fixRow.appendChild(btn);
-        }
-        box.appendChild(fixRow);
 
         for (const def of BLOCK_DEFS) {
           const block = document.createElement("section");
@@ -1647,14 +1682,15 @@
             }
           }
           latestStructured = structured;
-          const qa = await autoPilotRepair(latestSpec);
+          const firstQa = evaluateBySpec(latestSpec || {}, latestStructured || {});
+          const metric = recordFurMetric(!!firstQa.pass);
+          const qa = await autoPilotRepair(latestSpec, firstQa);
           latestQaResult = qa;
           latestAssistantText = structured.finalPrompt || answer;
 
           latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
           renderDeliverable(latestStructured, qa, latestSpec);
-          renderQaResult(qa, latestSpec);
-          pushMessage("已生成可交付结构化产物。可复制终版提示词直接出稿，或重写任一单块。", "assistant");
+          pushMessage(`系统指标：首次可直接出稿率=${metric.rate}%（${metric.firstDirect}/${metric.total}）`, "assistant");
         } catch (error) {
           pushMessage("错误: " + error.message, "assistant");
         } finally {
