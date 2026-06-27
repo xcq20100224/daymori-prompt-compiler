@@ -58,7 +58,7 @@
       .proxy-row {
         margin-top: 8px;
         display: grid;
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 1fr;
         gap: 8px;
       }
 
@@ -365,10 +365,9 @@
       <section class="config">
         <div class="field">服务人群: 教师 | 场景: 课堂PPT | 默认模型: DeepSeek（无需用户输入 Key）</div>
         <div class="proxy-row">
-          <input id="proxyEndpointInput" class="field" placeholder="后端代理地址（可选），例如 https://your-backend.com/api/llm-proxy" />
-          <button id="applyProxyBtn" class="mini-btn" type="button">应用</button>
+          <input id="proxyEndpointInput" class="field" placeholder="后端代理地址（自动选择，无需手动操作）" />
         </div>
-        <div id="proxyStatus" class="proxy-status">代理检测中...</div>
+        <div id="proxyStatus" class="proxy-status">后端自动连接中...</div>
       </section>
       <section class="intro">
         <article class="intro-card">
@@ -432,7 +431,6 @@
       const benchMetaEl = document.getElementById("benchMeta");
       const benchListEl = document.getElementById("benchList");
       const proxyEndpointInputEl = document.getElementById("proxyEndpointInput");
-      const applyProxyBtnEl = document.getElementById("applyProxyBtn");
       const proxyStatusEl = document.getElementById("proxyStatus");
 
       let contextText = "";
@@ -447,9 +445,10 @@
       const REQUEST_TIMEOUT_MS = 28000;
       const REQUEST_RETRY = 1;
       const PROXY_STORAGE_KEY = "daymori_proxy_endpoint";
-      const HARD_DEFAULT_PROXY_ENDPOINT = "http://localhost:3000/api/llm-proxy";
+      const LOCAL_DEFAULT_PROXY_ENDPOINT = "http://localhost:3000/api/llm-proxy";
+      const PUBLIC_DEFAULT_PROXY_ENDPOINT = "https://daymori-prompt-compiler.onrender.com/api/llm-proxy";
       const PRESET_PROXY_ENDPOINTS = [
-        HARD_DEFAULT_PROXY_ENDPOINT,
+        PUBLIC_DEFAULT_PROXY_ENDPOINT,
         "https://daymori-prompt-compiler.onrender.com/api/llm-proxy",
         "https://daymori-prompt-compiler.vercel.app/api/llm-proxy",
         "/api/llm-proxy"
@@ -481,8 +480,10 @@
 
       function buildProxyCandidates() {
         const saved = normalizeProxyEndpoint(localStorage.getItem(PROXY_STORAGE_KEY) || "");
-        const byProtocol = [HARD_DEFAULT_PROXY_ENDPOINT];
-        const byHost = location.hostname.includes("github.io") ? PRESET_PROXY_ENDPOINTS : ["/api/llm-proxy", ...PRESET_PROXY_ENDPOINTS];
+        const onSecurePage = location.protocol === "https:";
+        const onGithubPages = location.hostname.includes("github.io");
+        const byProtocol = onSecurePage ? [PUBLIC_DEFAULT_PROXY_ENDPOINT] : [LOCAL_DEFAULT_PROXY_ENDPOINT, "/api/llm-proxy"];
+        const byHost = onGithubPages ? PRESET_PROXY_ENDPOINTS : ["/api/llm-proxy", LOCAL_DEFAULT_PROXY_ENDPOINT, ...PRESET_PROXY_ENDPOINTS];
         const combined = [saved, ...byProtocol, ...byHost].filter(Boolean).map(normalizeProxyEndpoint);
         return [...new Set(combined)];
       }
@@ -511,12 +512,13 @@
         if (activeProxyEndpoint) return activeProxyEndpoint;
         const candidates = buildProxyCandidates();
         if (!proxyEndpointInputEl.value || !proxyEndpointInputEl.value.trim()) {
-          proxyEndpointInputEl.value = HARD_DEFAULT_PROXY_ENDPOINT;
+          proxyEndpointInputEl.value = candidates[0] || PUBLIC_DEFAULT_PROXY_ENDPOINT;
         }
         for (const endpoint of candidates) {
           const ok = await probeProxyEndpoint(endpoint);
           if (ok) {
             activeProxyEndpoint = endpoint;
+            localStorage.setItem(PROXY_STORAGE_KEY, endpoint);
             proxyEndpointInputEl.value = endpoint;
             proxyStatusEl.textContent = `已连接后端: ${endpoint}`;
             return activeProxyEndpoint;
@@ -524,20 +526,9 @@
         }
         activeProxyEndpoint = candidates[0] || "/api/llm-proxy";
         proxyEndpointInputEl.value = activeProxyEndpoint;
-        proxyStatusEl.textContent = `未探测到可用后端，当前尝试: ${activeProxyEndpoint}`;
+        proxyStatusEl.textContent = `未预探测到可用后端，请直接发送，系统会自动切换尝试: ${activeProxyEndpoint}`;
         return activeProxyEndpoint;
       }
-
-      applyProxyBtnEl.addEventListener("click", async () => {
-        const endpoint = normalizeProxyEndpoint(proxyEndpointInputEl.value);
-        if (!endpoint) {
-          proxyStatusEl.textContent = "请输入有效后端地址";
-          return;
-        }
-        localStorage.setItem(PROXY_STORAGE_KEY, endpoint);
-        activeProxyEndpoint = "";
-        await ensureProxyEndpoint();
-      });
 
       function pct(n) {
         if (typeof n !== "number" || Number.isNaN(n)) return "--";
@@ -1161,7 +1152,9 @@
       });
 
       async function requestDeepSeekDirect(userText, opts = {}) {
-        const endpoint = await ensureProxyEndpoint();
+        const primaryEndpoint = await ensureProxyEndpoint();
+        const endpointCandidates = [primaryEndpoint, ...buildProxyCandidates()].filter(Boolean);
+        const uniqueEndpoints = [...new Set(endpointCandidates.map(normalizeProxyEndpoint))];
         const pageHint = opts.pageCount
           ? `硬约束：输出必须是${opts.pageCount}页。pagePlan与pageDetails覆盖第1页到第${opts.pageCount}页，finalPrompt也必须明确${opts.pageCount}页。`
           : "";
@@ -1175,73 +1168,73 @@
           "finalPrompt 必须是最终可直接复制给AI出稿的完整提示词。"
         ].join(" ");
 
-        let resp;
-        try {
-          resp = await fetchWithTimeoutAndRetry(
-            endpoint,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
+        let lastErrorMessage = "";
+        for (const endpoint of uniqueEndpoints) {
+          let resp;
+          try {
+            resp = await fetchWithTimeoutAndRetry(
+              endpoint,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  system: systemText,
+                  userText,
+                  maxTokens: 850,
+                  model: DEFAULT_DEEPSEEK_MODEL
+                })
               },
-              body: JSON.stringify({
-                system: systemText,
-                userText,
-                maxTokens: 850,
-                model: DEFAULT_DEEPSEEK_MODEL
-              })
-            },
-            REQUEST_RETRY,
-            REQUEST_TIMEOUT_MS
+              REQUEST_RETRY,
+              REQUEST_TIMEOUT_MS
+            );
+          } catch (error) {
+            lastErrorMessage = `无法连接后端代理: ${endpoint}`;
+            continue;
+          }
+
+          const raw = await resp.text();
+          let data = {};
+          try {
+            data = raw ? JSON.parse(raw) : {};
+          } catch (error) {
+            const head = raw.slice(0, 120).toLowerCase();
+            const htmlLike = head.includes("<html") || head.includes("<!doctype") || head.includes("cannot post");
+            if (htmlLike) {
+              lastErrorMessage = `后端返回HTML而非JSON: ${endpoint}`;
+              continue;
+            }
+            lastErrorMessage = "后端代理返回非 JSON: " + raw.slice(0, 120);
+            continue;
+          }
+
+          if (!resp.ok) {
+            const detail = data.detail || data.error || (data.error && data.error.message) || raw.slice(0, 220);
+            lastErrorMessage = `服务请求失败(${resp.status}) @ ${endpoint}: ${detail}`;
+            continue;
+          }
+
+          const text =
+            (data && typeof data.text === "string" && data.text) ||
+            (data && typeof data.output_text === "string" && data.output_text) ||
+            (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ||
+            "";
+          activeProxyEndpoint = endpoint;
+          localStorage.setItem(PROXY_STORAGE_KEY, endpoint);
+          proxyEndpointInputEl.value = endpoint;
+          proxyStatusEl.textContent = `已连接后端: ${endpoint}`;
+          if (typeof text === "string" && text.trim()) return text;
+          return "(无输出)";
+        }
+
+        activeProxyEndpoint = "";
+        if (location.hostname.includes("github.io")) {
+          throw new Error(
+            `暂未找到可用后端，系统已自动尝试多个地址。${lastErrorMessage || "请稍后重试"}`
           );
-        } catch (error) {
-          if (error && error.name === "AbortError") {
-            throw new Error("请求超时，请重试（网络或模型响应过慢）");
-          }
-          if (location.hostname.includes("github.io")) {
-            throw new Error(
-              `无法连接后端代理（当前: ${endpoint}）。请在上方输入可用后端地址并点击“应用”，同时确保后端允许来源 ${location.origin}`
-            );
-          }
-          throw new Error("请求失败，请检查网络后重试");
         }
-
-        const raw = await resp.text();
-        let data = {};
-        try {
-          data = raw ? JSON.parse(raw) : {};
-        } catch (error) {
-          const head = raw.slice(0, 120).toLowerCase();
-          const htmlLike = head.includes("<html") || head.includes("<!doctype") || head.includes("cannot post");
-          if (htmlLike) {
-            activeProxyEndpoint = "";
-            throw new Error(
-              `当前后端地址返回 HTML（不是 JSON）：${endpoint}。请点击“应用”设置可用后端地址，并确认后端存在 POST /api/llm-proxy。`
-            );
-          }
-          throw new Error("后端代理返回非 JSON: " + raw.slice(0, 200));
-        }
-
-        if (!resp.ok) {
-          const detail = data.detail || data.error || (data.error && data.error.message) || raw.slice(0, 220);
-          if (resp.status === 404) {
-            activeProxyEndpoint = "";
-          }
-          if (resp.status === 502 && location.hostname.includes("github.io")) {
-            throw new Error(
-              `后端已连接但上游模型不可达：${detail}。可先切换后端网络，或在后端切换 LLM_PROVIDER。`
-            );
-          }
-          throw new Error("服务请求失败(" + resp.status + "): " + detail);
-        }
-
-        const text =
-          (data && typeof data.text === "string" && data.text) ||
-          (data && typeof data.output_text === "string" && data.output_text) ||
-          (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ||
-          "";
-        if (typeof text === "string" && text.trim()) return text;
-        return "(无输出)";
+        throw new Error(lastErrorMessage || "请求失败，请检查网络后重试");
       }
 
       dropzoneEl.addEventListener("click", () => fileEl.click());
