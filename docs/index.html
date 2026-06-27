@@ -1800,6 +1800,21 @@
       });
 
       async function requestDeepSeekDirect(userText, opts = {}) {
+        const isMobileClient = (() => {
+          try {
+            const ua = String(navigator.userAgent || "").toLowerCase();
+            const byUA = /iphone|ipad|android|mobile|harmonyos/.test(ua);
+            const byViewport = window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
+            return byUA || byViewport;
+          } catch {
+            return false;
+          }
+        })();
+
+        const requestTimeout = isMobileClient ? 6000 : REQUEST_TIMEOUT_MS;
+        const requestRetry = isMobileClient ? 0 : REQUEST_RETRY;
+        const hardDeadline = Date.now() + (isMobileClient ? 12000 : 32000);
+
         const primaryEndpoint = await ensureProxyEndpoint();
         const endpointCandidates = [primaryEndpoint, ...buildProxyCandidates()].filter(Boolean);
         const uniqueEndpoints = [...new Set(endpointCandidates.map(normalizeProxyEndpoint))];
@@ -1818,6 +1833,11 @@
 
         let lastErrorMessage = "";
         for (const endpoint of uniqueEndpoints) {
+          if (Date.now() > hardDeadline) {
+            lastErrorMessage = "移动端网络超时，触发快速离线兜底";
+            break;
+          }
+
           let resp;
           try {
             resp = await fetchWithTimeoutAndRetry(
@@ -1834,8 +1854,8 @@
                   model: DEFAULT_DEEPSEEK_MODEL
                 })
               },
-              REQUEST_RETRY,
-              REQUEST_TIMEOUT_MS
+              requestRetry,
+              requestTimeout
             );
           } catch (error) {
             lastErrorMessage = `无法连接后端代理: ${endpoint}`;
@@ -1878,7 +1898,7 @@
 
         activeProxyEndpoint = "";
         const offline = buildOfflineStructured(userText, opts.pageCount);
-        proxyStatusEl.textContent = "未找到可用后端，已自动切换离线生成模式";
+        proxyStatusEl.textContent = `未找到可用后端，已自动切换离线生成模式${lastErrorMessage ? `（${lastErrorMessage}）` : ""}`;
         return JSON.stringify(offline);
       }
 
