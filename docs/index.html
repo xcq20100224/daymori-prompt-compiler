@@ -2021,6 +2021,22 @@
         sendEl.disabled = true;
         sendEl.textContent = "生成中...";
 
+        if (isMobileRuntime) {
+          const local = buildOfflineStructured(latestRawInput, latestPageTarget || 8);
+          latestStructured = local;
+          const firstQa = evaluateBySpec(latestSpec || {}, latestStructured || {});
+          const metric = recordFurMetric(!!firstQa.pass);
+          latestQaResult = firstQa;
+          latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
+          renderDeliverable(latestStructured, firstQa, latestSpec || {});
+          proxyStatusEl.textContent = "移动端极速模式：已本地生成（不依赖网络）";
+          pushMessage(`系统指标：首次可直接出稿率=${metric.rate}%（${metric.firstDirect}/${metric.total}）`, "assistant");
+          sendEl.disabled = false;
+          sendEl.textContent = "↑";
+          inputEl.focus();
+          return;
+        }
+
         try {
           const answer = await withHardTimeout(
             requestDeepSeekDirect(payload, { pageCount: latestPageTarget }),
