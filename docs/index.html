@@ -1193,6 +1193,11 @@
           if (error && error.name === "AbortError") {
             throw new Error("请求超时，请重试（网络或模型响应过慢）");
           }
+          if (location.hostname.includes("github.io")) {
+            throw new Error(
+              `无法连接后端代理（当前: ${endpoint}）。请在上方输入可用后端地址并点击“应用”，同时确保后端允许来源 ${location.origin}`
+            );
+          }
           throw new Error("请求失败，请检查网络后重试");
         }
 
@@ -1206,7 +1211,7 @@
           if (htmlLike) {
             activeProxyEndpoint = "";
             throw new Error(
-              "当前后端地址返回 HTML（不是 JSON）。请点击“应用”设置可用后端地址（如 Render/Vercel 部署地址）。"
+              `当前后端地址返回 HTML（不是 JSON）：${endpoint}。请点击“应用”设置可用后端地址，并确认后端存在 POST /api/llm-proxy。`
             );
           }
           throw new Error("后端代理返回非 JSON: " + raw.slice(0, 200));
@@ -1216,6 +1221,11 @@
           const detail = data.detail || data.error || (data.error && data.error.message) || raw.slice(0, 220);
           if (resp.status === 404) {
             activeProxyEndpoint = "";
+          }
+          if (resp.status === 502 && location.hostname.includes("github.io")) {
+            throw new Error(
+              `后端已连接但上游模型不可达：${detail}。可先切换后端网络，或在后端切换 LLM_PROVIDER。`
+            );
           }
           throw new Error("服务请求失败(" + resp.status + "): " + detail);
         }
