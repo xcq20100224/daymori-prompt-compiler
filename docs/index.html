@@ -125,6 +125,26 @@
         background: #151515;
       }
 
+      .msg-actions {
+        margin-top: 10px;
+        display: flex;
+        gap: 8px;
+      }
+
+      .mini-btn {
+        border: 1px solid #3a3a3a;
+        background: #0f0f10;
+        color: #f5f5f7;
+        border-radius: 10px;
+        font-size: 12px;
+        padding: 6px 10px;
+        cursor: pointer;
+      }
+
+      .mini-btn:hover {
+        border-color: #8b8b8b;
+      }
+
       .composer {
         border-top: 1px solid var(--line);
         display: grid;
@@ -191,6 +211,12 @@
         color: var(--muted);
       }
 
+      .draft-actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+      }
+
       @media (max-width: 900px) {
         .intro {
           grid-template-columns: 1fr;
@@ -205,9 +231,9 @@
   </head>
   <body>
     <main class="app">
-      <div class="header">Daymori Teacher Prompt Studio · 教师教务资料提示词</div>
+      <div class="header">Daymori Teacher Prompt Studio · 课堂PPT提示词专用</div>
       <section class="config">
-        <div class="field">服务人群: 教师 | 默认模型: DeepSeek（无需用户输入 Key）</div>
+        <div class="field">服务人群: 教师 | 场景: 课堂PPT | 默认模型: DeepSeek（无需用户输入 Key）</div>
       </section>
       <section class="intro">
         <article class="intro-card">
@@ -216,7 +242,7 @@
         </article>
         <article class="intro-card">
           <div class="intro-label">你会得到什么</div>
-          <div class="intro-value">可直接给 AI 使用的高质量提示词，用于生成 PPT、教案、作业、试题与课堂活动材料。</div>
+          <div class="intro-value">可直接给 AI 使用的课堂PPT终版提示词，可一键复制并立即出稿。</div>
         </article>
       </section>
       <section id="messages" class="messages">
@@ -233,6 +259,10 @@
               <span id="fileName" class="file-name">未选择文件</span>
             </div>
           </div>
+          <div class="draft-actions">
+            <button id="copyLatestBtn" class="mini-btn" type="button">复制最新提示词</button>
+            <button id="openAiBtn" class="mini-btn" type="button">立即出稿（打开 DeepSeek）</button>
+          </div>
         </div>
         <button id="send" type="submit">发送</button>
       </form>
@@ -241,6 +271,8 @@
     <script>
       const fileEl = document.getElementById("file");
       const dropzoneEl = document.getElementById("dropzone");
+      const copyLatestBtnEl = document.getElementById("copyLatestBtn");
+      const openAiBtnEl = document.getElementById("openAiBtn");
       const fileNameEl = document.getElementById("fileName");
       const messagesEl = document.getElementById("messages");
       const formEl = document.getElementById("composer");
@@ -248,6 +280,7 @@
       const sendEl = document.getElementById("send");
 
       let contextText = "";
+      let latestAssistantText = "";
 
       const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
       const OFFICIAL_DEEPSEEK_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
@@ -256,10 +289,41 @@
         "88963788d1a7eaab"
       ].join("");
 
+      async function copyText(text) {
+        if (!text || !text.trim()) {
+          pushMessage("当前还没有可复制的提示词。", "assistant");
+          return;
+        }
+        await navigator.clipboard.writeText(text);
+        pushMessage("已复制提示词。打开 DeepSeek 后直接粘贴即可出稿。", "assistant");
+      }
+
       function pushMessage(text, role) {
         const node = document.createElement("article");
         node.className = role === "user" ? "msg user" : "msg";
-        node.textContent = text;
+
+        const content = document.createElement("div");
+        content.textContent = text;
+        node.appendChild(content);
+
+        if (role !== "user") {
+          const actions = document.createElement("div");
+          actions.className = "msg-actions";
+          const copyBtn = document.createElement("button");
+          copyBtn.className = "mini-btn";
+          copyBtn.type = "button";
+          copyBtn.textContent = "复制这一条";
+          copyBtn.addEventListener("click", async () => {
+            try {
+              await copyText(text);
+            } catch (error) {
+              pushMessage("复制失败: " + error.message, "assistant");
+            }
+          });
+          actions.appendChild(copyBtn);
+          node.appendChild(actions);
+        }
+
         messagesEl.appendChild(node);
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
@@ -301,7 +365,12 @@
             messages: [
               {
                 role: "system",
-                content: "你是教师教务提示词专家。你的任务是把教师需求转成可直接用于 AI 生成教学资料的高质量提示词，输出应结构清晰、可执行、教学目标导向明确。"
+                content: [
+                  "你是课堂PPT提示词专家。",
+                  "任务：把教师需求编译成一段可直接粘贴给任意AI生成PPT的终版提示词。",
+                  "输出要求：只输出最终提示词正文，不要解释，不要前后缀。",
+                  "提示词中必须包含：教学目标、页数规划、每页内容结构、互动提问、板书建议、分层作业、课堂小结。"
+                ].join(" ")
               },
               { role: "user", content: userText }
             ],
@@ -353,6 +422,24 @@
       window.addEventListener("dragover", (event) => event.preventDefault());
       window.addEventListener("drop", (event) => event.preventDefault());
 
+      copyLatestBtnEl.addEventListener("click", async () => {
+        try {
+          await copyText(latestAssistantText);
+        } catch (error) {
+          pushMessage("复制失败: " + error.message, "assistant");
+        }
+      });
+
+      openAiBtnEl.addEventListener("click", async () => {
+        try {
+          await copyText(latestAssistantText);
+        } catch (error) {
+          pushMessage("复制失败: " + error.message, "assistant");
+          return;
+        }
+        window.open("https://chat.deepseek.com/", "_blank", "noopener,noreferrer");
+      });
+
       inputEl.addEventListener("keydown", (event) => {
         if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
@@ -375,6 +462,7 @@
 
         try {
           const answer = await requestDeepSeekDirect(payload);
+          latestAssistantText = answer;
           pushMessage(answer, "assistant");
         } catch (error) {
           pushMessage("错误: " + error.message, "assistant");
