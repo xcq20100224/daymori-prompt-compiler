@@ -131,6 +131,45 @@
         gap: 8px;
       }
 
+      .deliverable {
+        border: 1px solid #2f2f33;
+        border-radius: 14px;
+        background: #0d0d0f;
+        padding: 12px;
+      }
+
+      .deliverable-title {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .block {
+        border: 1px solid #2a2a2e;
+        border-radius: 12px;
+        padding: 10px;
+        margin-top: 8px;
+        background: #0a0a0c;
+      }
+
+      .block-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .block-label {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .block-content {
+        white-space: pre-wrap;
+        line-height: 1.5;
+      }
+
       .mini-btn {
         border: 1px solid #3a3a3a;
         background: #0f0f10;
@@ -281,6 +320,8 @@
 
       let contextText = "";
       let latestAssistantText = "";
+      let latestStructured = null;
+      let latestRawInput = "";
 
       const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
       const OFFICIAL_DEEPSEEK_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
@@ -289,6 +330,15 @@
         "88963788d1a7eaab"
       ].join("");
 
+      const BLOCK_DEFS = [
+        { key: "goals", label: "教学目标" },
+        { key: "pagePlan", label: "页数规划" },
+        { key: "pageDetails", label: "每页内容" },
+        { key: "interaction", label: "互动题" },
+        { key: "homework", label: "作业" },
+        { key: "finalPrompt", label: "终版提示词" }
+      ];
+
       async function copyText(text) {
         if (!text || !text.trim()) {
           pushMessage("当前还没有可复制的提示词。", "assistant");
@@ -296,6 +346,203 @@
         }
         await navigator.clipboard.writeText(text);
         pushMessage("已复制提示词。打开 DeepSeek 后直接粘贴即可出稿。", "assistant");
+      }
+
+      function safeJsonParse(text) {
+        try {
+          return JSON.parse(text);
+        } catch {
+          return null;
+        }
+      }
+
+      function firstJsonObject(text) {
+        if (!text) return null;
+        const fenced = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+        const source = fenced ? fenced[1] : text;
+        const start = source.indexOf("{");
+        const end = source.lastIndexOf("}");
+        if (start === -1 || end === -1 || end <= start) return null;
+        return source.slice(start, end + 1);
+      }
+
+      function extractFieldByRegex(text, label) {
+        const r = new RegExp(label + "[：:]\\s*([\\s\\S]*?)(?=\\n(?:教学目标|页数规划|每页内容|互动题|作业|终版提示词)[：:]|$)", "i");
+        const m = text.match(r);
+        return m ? m[1].trim() : "";
+      }
+
+      function parseStructuredResponse(rawText) {
+        const candidate = firstJsonObject(rawText);
+        if (candidate) {
+          const parsed = safeJsonParse(candidate);
+          if (parsed && typeof parsed === "object") {
+            return {
+              goals: String(parsed.goals || "").trim(),
+              pagePlan: String(parsed.pagePlan || "").trim(),
+              pageDetails: String(parsed.pageDetails || "").trim(),
+              interaction: String(parsed.interaction || "").trim(),
+              homework: String(parsed.homework || "").trim(),
+              finalPrompt: String(parsed.finalPrompt || "").trim()
+            };
+          }
+        }
+
+        return {
+          goals: extractFieldByRegex(rawText, "教学目标"),
+          pagePlan: extractFieldByRegex(rawText, "页数规划"),
+          pageDetails: extractFieldByRegex(rawText, "每页内容"),
+          interaction: extractFieldByRegex(rawText, "互动题"),
+          homework: extractFieldByRegex(rawText, "作业"),
+          finalPrompt: extractFieldByRegex(rawText, "终版提示词") || rawText.trim()
+        };
+      }
+
+      function splitByHeadings(text) {
+        const lines = String(text || "").replace(/\r\n/g, "\n").split("\n");
+        const chunks = [];
+        let buf = [];
+        for (const line of lines) {
+          const t = line.trim();
+          if (/^#{1,6}\s+/.test(t) || /^[一二三四五六七八九十0-9]+[、.)）]\s*/.test(t)) {
+            if (buf.length) chunks.push(buf.join("\n").trim());
+            buf = [line];
+          } else {
+            buf.push(line);
+          }
+        }
+        if (buf.length) chunks.push(buf.join("\n").trim());
+        return chunks.filter(Boolean);
+      }
+
+      function extractKeywords(text) {
+        const words = String(text || "")
+          .toLowerCase()
+          .replace(/[^\u4e00-\u9fa5a-z0-9_\-\s]/g, " ")
+          .split(/\s+/)
+          .filter((w) => w && w.length >= 2);
+        const stop = new Set(["课堂", "教学", "学生", "老师", "以及", "进行", "可以", "一个", "the", "and", "for", "with"]);
+        const count = new Map();
+        for (const w of words) {
+          if (stop.has(w)) continue;
+          count.set(w, (count.get(w) || 0) + 1);
+        }
+        return Array.from(count.entries())
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 12)
+          .map(([w]) => w);
+      }
+
+      function extractTeachingFields(input, context) {
+        const all = [input, context].join("\n");
+        const grade = (all.match(/(小学[一二三四五六]|初中[一二三]|高中[一二三]|[一二三四五六七八九]年级|高一|高二|高三|初一|初二|初三)/) || [""])[0];
+        const subject = (all.match(/(语文|数学|英语|物理|化学|生物|历史|地理|政治|道德与法治|科学|信息技术|音乐|美术|体育)/) || [""])[0];
+        let topic = "";
+        const quote = all.match(/[《【](.+?)[》】]/);
+        if (quote) topic = quote[1];
+        if (!topic) {
+          const m = all.match(/(?:课题|主题|内容)[：:]\s*([^\n，。]+)/);
+          topic = m ? m[1].trim() : "";
+        }
+
+        const keyMatches = all.match(/(?:知识点|关键词|核心概念)[：:]\s*([^\n]+)/);
+        const keywords = keyMatches ? keyMatches[1].split(/[，,、]/).map((s) => s.trim()).filter(Boolean) : extractKeywords(context || input);
+
+        const hardMatches = all.match(/(?:重难点|重点难点|难点)[：:]\s*([^\n]+)/);
+        const hardPoints = hardMatches ? hardMatches[1].split(/[；;，,、]/).map((s) => s.trim()).filter(Boolean) : [];
+
+        return { grade, subject, topic, keywords, hardPoints };
+      }
+
+      function buildSemanticPack(rawInput, context) {
+        const chunks = splitByHeadings(context || "");
+        const snippets = (chunks.length ? chunks : (context || "").split(/\n{2,}/)).map((s) => s.trim()).filter(Boolean).slice(0, 8);
+        const fields = extractTeachingFields(rawInput, context);
+        return {
+          fields,
+          snippets,
+          stageFlow: ["导入", "讲解", "互动", "练习", "小结"]
+        };
+      }
+
+      function renderDeliverable(structured) {
+        const wrap = document.createElement("article");
+        wrap.className = "msg";
+
+        const box = document.createElement("section");
+        box.className = "deliverable";
+
+        const title = document.createElement("div");
+        title.className = "deliverable-title";
+        title.textContent = "可交付产物（课堂PPT提示词）";
+        box.appendChild(title);
+
+        for (const def of BLOCK_DEFS) {
+          const block = document.createElement("section");
+          block.className = "block";
+
+          const head = document.createElement("div");
+          head.className = "block-head";
+
+          const label = document.createElement("div");
+          label.className = "block-label";
+          label.textContent = def.label;
+
+          const btn = document.createElement("button");
+          btn.className = "mini-btn";
+          btn.type = "button";
+          btn.textContent = "重写此块";
+          btn.addEventListener("click", async () => {
+            try {
+              await regenerateBlock(def.key);
+            } catch (error) {
+              pushMessage("重写失败: " + error.message, "assistant");
+            }
+          });
+
+          head.appendChild(label);
+          head.appendChild(btn);
+
+          const content = document.createElement("div");
+          content.className = "block-content";
+          content.textContent = structured[def.key] || "(空)";
+
+          block.appendChild(head);
+          block.appendChild(content);
+          box.appendChild(block);
+        }
+
+        wrap.appendChild(box);
+        messagesEl.appendChild(wrap);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      async function regenerateBlock(blockKey) {
+        if (!latestStructured || !latestRawInput) {
+          throw new Error("请先生成一次结果");
+        }
+
+        const keep = BLOCK_DEFS.filter((b) => b.key !== blockKey).map((b) => `${b.label}:\n${latestStructured[b.key] || ""}`).join("\n\n");
+
+        const blockLabel = (BLOCK_DEFS.find((b) => b.key === blockKey) || { label: blockKey }).label;
+        const prompt = [
+          "你只需要重写一个结构块，返回纯文本，不要解释。",
+          `目标块: ${blockLabel}`,
+          "其余块保持不变（供参考）：",
+          keep,
+          "用户原始需求：",
+          latestRawInput,
+          "请直接输出目标块内容。"
+        ].join("\n\n");
+
+        const rewritten = await requestDeepSeekDirect(prompt, {
+          system: "你是课堂PPT提示词改写器，只输出被要求的单块正文。"
+        });
+
+        latestStructured[blockKey] = rewritten.trim();
+        latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
+        pushMessage(`${blockLabel} 已重写完成。`, "assistant");
+        renderDeliverable(latestStructured);
       }
 
       function pushMessage(text, role) {
@@ -353,7 +600,14 @@
         await loadFileContext(file);
       });
 
-      async function requestDeepSeekDirect(userText) {
+      async function requestDeepSeekDirect(userText, opts = {}) {
+        const systemText = opts.system || [
+          "你是课堂PPT提示词专家。",
+          "任务：把教师需求编译成可直接粘贴给AI生成PPT的可交付结构化结果。",
+          "请严格输出 JSON，对象字段必须包含：goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
+          "finalPrompt 必须是最终可直接复制给AI出稿的完整提示词。"
+        ].join(" ");
+
         const resp = await fetch(OFFICIAL_DEEPSEEK_ENDPOINT, {
           method: "POST",
           headers: {
@@ -363,15 +617,7 @@
           body: JSON.stringify({
             model: DEFAULT_DEEPSEEK_MODEL,
             messages: [
-              {
-                role: "system",
-                content: [
-                  "你是课堂PPT提示词专家。",
-                  "任务：把教师需求编译成一段可直接粘贴给任意AI生成PPT的终版提示词。",
-                  "输出要求：只输出最终提示词正文，不要解释，不要前后缀。",
-                  "提示词中必须包含：教学目标、页数规划、每页内容结构、互动提问、板书建议、分层作业、课堂小结。"
-                ].join(" ")
-              },
+              { role: "system", content: systemText },
               { role: "user", content: userText }
             ],
             temperature: 0.2,
@@ -452,9 +698,27 @@
         const text = inputEl.value.trim();
         if (!text) return;
 
-        const payload = contextText
+        latestRawInput = contextText
           ? ["[用户需求]", text, "", "[文件上下文]", contextText].join("\n")
           : text;
+
+        const semanticPack = buildSemanticPack(text, contextText);
+        const payload = [
+          "[用户需求]",
+          text,
+          "",
+          "[语义调度层-关键字段提取]",
+          JSON.stringify(semanticPack.fields, null, 2),
+          "",
+          "[语义调度层-文档分段摘要]",
+          semanticPack.snippets.join("\n\n") || "(无)",
+          "",
+          "[课堂PPT结构重排]",
+          semanticPack.stageFlow.join(" -> "),
+          "",
+          "[输出要求]",
+          "请只输出 JSON，字段: goals,pagePlan,pageDetails,interaction,homework,finalPrompt"
+        ].join("\n");
 
         pushMessage(text, "user");
         inputEl.value = "";
@@ -462,8 +726,12 @@
 
         try {
           const answer = await requestDeepSeekDirect(payload);
-          latestAssistantText = answer;
-          pushMessage(answer, "assistant");
+          const structured = parseStructuredResponse(answer);
+          latestStructured = structured;
+          latestAssistantText = structured.finalPrompt || answer;
+
+          renderDeliverable(structured);
+          pushMessage("已生成可交付结构化产物。可复制终版提示词直接出稿，或重写任一单块。", "assistant");
         } catch (error) {
           pushMessage("错误: " + error.message, "assistant");
         } finally {
