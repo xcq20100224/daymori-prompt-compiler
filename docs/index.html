@@ -55,6 +55,19 @@
         border-bottom: 1px solid var(--line);
       }
 
+      .proxy-row {
+        margin-top: 8px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+      }
+
+      .proxy-status {
+        margin-top: 6px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
       .intro {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -351,6 +364,11 @@
       <div class="header">Daymori Teacher Prompt Studio · 课堂PPT提示词专用</div>
       <section class="config">
         <div class="field">服务人群: 教师 | 场景: 课堂PPT | 默认模型: DeepSeek（无需用户输入 Key）</div>
+        <div class="proxy-row">
+          <input id="proxyEndpointInput" class="field" placeholder="后端代理地址（可选），例如 https://your-backend.com/api/llm-proxy" />
+          <button id="applyProxyBtn" class="mini-btn" type="button">应用</button>
+        </div>
+        <div id="proxyStatus" class="proxy-status">代理检测中...</div>
       </section>
       <section class="intro">
         <article class="intro-card">
@@ -413,6 +431,9 @@
       const benchKpiEl = document.getElementById("benchKpi");
       const benchMetaEl = document.getElementById("benchMeta");
       const benchListEl = document.getElementById("benchList");
+      const proxyEndpointInputEl = document.getElementById("proxyEndpointInput");
+      const applyProxyBtnEl = document.getElementById("applyProxyBtn");
+      const proxyStatusEl = document.getElementById("proxyStatus");
 
       let contextText = "";
       let latestAssistantText = "";
@@ -425,7 +446,12 @@
       const MAX_MESSAGES = 36;
       const REQUEST_TIMEOUT_MS = 28000;
       const REQUEST_RETRY = 1;
-      const BACKEND_PROXY_ENDPOINT = location.protocol === "file:" ? "http://localhost:3000/api/llm-proxy" : "/api/llm-proxy";
+      const PROXY_STORAGE_KEY = "daymori_proxy_endpoint";
+      const PRESET_PROXY_ENDPOINTS = [
+        "https://daymori-prompt-compiler.onrender.com/api/llm-proxy",
+        "https://daymori-prompt-compiler.vercel.app/api/llm-proxy",
+        "/api/llm-proxy"
+      ];
 
       const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
       const BENCH_SUMMARY_ENDPOINT = "./benchmarks/results/latest-summary.json";
@@ -443,6 +469,70 @@
         const hit = BLOCK_DEFS.find((b) => b.key === key);
         return hit ? hit.label : key;
       }
+
+      function normalizeProxyEndpoint(value) {
+        const t = String(value || "").trim();
+        if (!t) return "";
+        if (t.endsWith("/")) return t.slice(0, -1);
+        return t;
+      }
+
+      function buildProxyCandidates() {
+        const saved = normalizeProxyEndpoint(localStorage.getItem(PROXY_STORAGE_KEY) || "");
+        const byProtocol = location.protocol === "file:" ? ["http://localhost:3000/api/llm-proxy"] : [];
+        const byHost = location.hostname.includes("github.io") ? PRESET_PROXY_ENDPOINTS : ["/api/llm-proxy", ...PRESET_PROXY_ENDPOINTS];
+        const combined = [saved, ...byProtocol, ...byHost].filter(Boolean).map(normalizeProxyEndpoint);
+        return [...new Set(combined)];
+      }
+
+      function auditStatusOf(proxyEndpoint) {
+        if (proxyEndpoint.startsWith("http://") || proxyEndpoint.startsWith("https://")) {
+          return proxyEndpoint.replace(/\/api\/llm-proxy$/, "/api/audit/status");
+        }
+        return "/api/audit/status";
+      }
+
+      async function probeProxyEndpoint(proxyEndpoint) {
+        try {
+          const res = await fetch(auditStatusOf(proxyEndpoint), { method: "GET", cache: "no-store" });
+          if (!res.ok) return false;
+          const data = await res.json();
+          return !!(data && data.ok);
+        } catch {
+          return false;
+        }
+      }
+
+      let activeProxyEndpoint = "";
+
+      async function ensureProxyEndpoint() {
+        if (activeProxyEndpoint) return activeProxyEndpoint;
+        const candidates = buildProxyCandidates();
+        for (const endpoint of candidates) {
+          const ok = await probeProxyEndpoint(endpoint);
+          if (ok) {
+            activeProxyEndpoint = endpoint;
+            proxyEndpointInputEl.value = endpoint;
+            proxyStatusEl.textContent = `已连接后端: ${endpoint}`;
+            return activeProxyEndpoint;
+          }
+        }
+        activeProxyEndpoint = candidates[0] || "/api/llm-proxy";
+        proxyEndpointInputEl.value = activeProxyEndpoint;
+        proxyStatusEl.textContent = `未探测到可用后端，当前尝试: ${activeProxyEndpoint}`;
+        return activeProxyEndpoint;
+      }
+
+      applyProxyBtnEl.addEventListener("click", async () => {
+        const endpoint = normalizeProxyEndpoint(proxyEndpointInputEl.value);
+        if (!endpoint) {
+          proxyStatusEl.textContent = "请输入有效后端地址";
+          return;
+        }
+        localStorage.setItem(PROXY_STORAGE_KEY, endpoint);
+        activeProxyEndpoint = "";
+        await ensureProxyEndpoint();
+      });
 
       function pct(n) {
         if (typeof n !== "number" || Number.isNaN(n)) return "--";
@@ -1066,6 +1156,7 @@
       });
 
       async function requestDeepSeekDirect(userText, opts = {}) {
+        const endpoint = await ensureProxyEndpoint();
         const pageHint = opts.pageCount
           ? `硬约束：输出必须是${opts.pageCount}页。pagePlan与pageDetails覆盖第1页到第${opts.pageCount}页，finalPrompt也必须明确${opts.pageCount}页。`
           : "";
@@ -1082,7 +1173,7 @@
         let resp;
         try {
           resp = await fetchWithTimeoutAndRetry(
-            BACKEND_PROXY_ENDPOINT,
+            endpoint,
             {
               method: "POST",
               headers: {
@@ -1113,8 +1204,9 @@
           const head = raw.slice(0, 120).toLowerCase();
           const htmlLike = head.includes("<html") || head.includes("<!doctype") || head.includes("cannot post");
           if (htmlLike) {
+            activeProxyEndpoint = "";
             throw new Error(
-              "后端代理返回了 HTML（不是 JSON）。请确认服务端已更新并包含 POST /api/llm-proxy 接口，然后重启服务再试。"
+              "当前后端地址返回 HTML（不是 JSON）。请点击“应用”设置可用后端地址（如 Render/Vercel 部署地址）。"
             );
           }
           throw new Error("后端代理返回非 JSON: " + raw.slice(0, 200));
@@ -1122,6 +1214,9 @@
 
         if (!resp.ok) {
           const detail = data.detail || data.error || (data.error && data.error.message) || raw.slice(0, 220);
+          if (resp.status === 404) {
+            activeProxyEndpoint = "";
+          }
           throw new Error("服务请求失败(" + resp.status + "): " + detail);
         }
 
@@ -1257,6 +1352,7 @@
       });
 
       loadBenchmarkBoard();
+      ensureProxyEndpoint();
 
     </script>
   </body>
