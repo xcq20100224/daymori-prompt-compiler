@@ -372,18 +372,37 @@
         return m ? m[1].trim() : "";
       }
 
+      function toReadable(value) {
+        if (value == null) return "";
+        if (typeof value === "string") return value.trim();
+        if (Array.isArray(value)) {
+          return value
+            .map((item) => {
+              if (typeof item === "string") return item;
+              if (item && typeof item === "object") return JSON.stringify(item, null, 2);
+              return String(item);
+            })
+            .join("\n")
+            .trim();
+        }
+        if (typeof value === "object") {
+          return JSON.stringify(value, null, 2).trim();
+        }
+        return String(value).trim();
+      }
+
       function parseStructuredResponse(rawText) {
         const candidate = firstJsonObject(rawText);
         if (candidate) {
           const parsed = safeJsonParse(candidate);
           if (parsed && typeof parsed === "object") {
             return {
-              goals: String(parsed.goals || "").trim(),
-              pagePlan: String(parsed.pagePlan || "").trim(),
-              pageDetails: String(parsed.pageDetails || "").trim(),
-              interaction: String(parsed.interaction || "").trim(),
-              homework: String(parsed.homework || "").trim(),
-              finalPrompt: String(parsed.finalPrompt || "").trim()
+              goals: toReadable(parsed.goals),
+              pagePlan: toReadable(parsed.pagePlan),
+              pageDetails: toReadable(parsed.pageDetails),
+              interaction: toReadable(parsed.interaction),
+              homework: toReadable(parsed.homework),
+              finalPrompt: toReadable(parsed.finalPrompt)
             };
           }
         }
