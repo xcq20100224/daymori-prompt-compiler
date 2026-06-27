@@ -162,15 +162,7 @@
     <main class="app">
       <div class="header">Daymori · 固定链接版（GitHub Pages）</div>
       <section class="config">
-        <select id="provider" class="field" aria-label="provider">
-          <option value="deepseek" selected>DeepSeek</option>
-          <option value="qwen">Qwen</option>
-          <option value="zhipu">Zhipu</option>
-          <option value="openai">OpenAI</option>
-        </select>
-        <input id="model" class="field" value="deepseek-chat" placeholder="模型名" />
-        <input id="apiKey" type="password" class="field" placeholder="输入 API Key（仅保存在浏览器）" />
-        <button id="saveKeyBtn" type="button">保存 Key</button>
+        <div class="field">默认模型: DeepSeek（服务端已配置，无需用户输入 Key）</div>
       </section>
       <section id="messages" class="messages">
         <article class="msg">已进入固定链接模式。输入内容后发送即可。</article>
@@ -191,10 +183,6 @@
     </main>
 
     <script>
-      const providerEl = document.getElementById("provider");
-      const modelEl = document.getElementById("model");
-      const apiKeyEl = document.getElementById("apiKey");
-      const saveKeyBtnEl = document.getElementById("saveKeyBtn");
       const fileEl = document.getElementById("file");
       const fileNameEl = document.getElementById("fileName");
       const messagesEl = document.getElementById("messages");
@@ -202,31 +190,13 @@
       const inputEl = document.getElementById("input");
       const sendEl = document.getElementById("send");
 
-      const STORAGE_KEY = "daymori_pages_config_v1";
       let contextText = "";
 
-      const providerMap = {
-        deepseek: {
-          endpoint: "https://api.deepseek.com/v1/chat/completions",
-          defaultModel: "deepseek-chat",
-          responseType: "chat"
-        },
-        qwen: {
-          endpoint: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
-          defaultModel: "qwen-plus",
-          responseType: "chat"
-        },
-        zhipu: {
-          endpoint: "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-          defaultModel: "glm-4-plus",
-          responseType: "chat"
-        },
-        openai: {
-          endpoint: "https://api.openai.com/v1/responses",
-          defaultModel: "gpt-5.3-codex",
-          responseType: "responses"
-        }
-      };
+      const BACKEND_ENDPOINTS = [
+        "/api/chat",
+        "https://daymori-prompt-compiler.onrender.com/api/chat",
+        "https://daymori-prompt-compiler.vercel.app/api/chat"
+      ];
 
       function pushMessage(text, role) {
         const node = document.createElement("article");
@@ -235,47 +205,6 @@
         messagesEl.appendChild(node);
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
-
-      function loadConfig() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return;
-          const cfg = JSON.parse(raw);
-          if (cfg.provider && providerMap[cfg.provider]) providerEl.value = cfg.provider;
-          if (cfg.model) modelEl.value = cfg.model;
-          if (cfg.apiKey) apiKeyEl.value = cfg.apiKey;
-        } catch (error) {
-          console.warn("load config failed", error);
-        }
-      }
-
-      function saveConfig() {
-        const cfg = {
-          provider: providerEl.value,
-          model: modelEl.value.trim(),
-          apiKey: apiKeyEl.value.trim()
-        };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
-      }
-
-      function updateDefaultModel() {
-        const key = providerEl.value;
-        const preset = providerMap[key];
-        if (!preset) return;
-        if (!modelEl.value.trim()) {
-          modelEl.value = preset.defaultModel;
-        }
-      }
-
-      providerEl.addEventListener("change", () => {
-        const preset = providerMap[providerEl.value];
-        if (preset) modelEl.value = preset.defaultModel;
-      });
-
-      saveKeyBtnEl.addEventListener("click", () => {
-        saveConfig();
-        pushMessage("API Key 已保存在当前浏览器。", "assistant");
-      });
 
       fileEl.addEventListener("change", async () => {
         const file = fileEl.files && fileEl.files[0];
@@ -298,94 +227,43 @@
         }
       });
 
-      function extractTextFromChatResponse(payload) {
-        const message = payload && payload.choices && payload.choices[0] && payload.choices[0].message ? payload.choices[0].message.content : "";
-        if (typeof message === "string") return message;
-        if (Array.isArray(message)) {
-          return message
-            .map((item) => (typeof item === "string" ? item : item && item.text ? item.text : ""))
-            .join("")
-            .trim();
+      async function requestBackend(userText) {
+        const formData = new FormData();
+        formData.append("message", userText);
+
+        const file = fileEl.files && fileEl.files[0];
+        if (file) {
+          formData.append("files", file, file.name);
         }
-        return "";
-      }
 
-      async function requestModel({ provider, model, apiKey, prompt }) {
-        const preset = providerMap[provider];
-        if (!preset) throw new Error("不支持的 provider");
-
-        if (preset.responseType === "responses") {
-          const resp = await fetch(preset.endpoint, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + apiKey
-            },
-            body: JSON.stringify({
-              model,
-              input: prompt,
-              max_output_tokens: 1000
-            })
-          });
-
-          const raw = await resp.text();
-          let data = {};
+        let lastError = "";
+        for (const endpoint of BACKEND_ENDPOINTS) {
           try {
-            data = raw ? JSON.parse(raw) : {};
+            const resp = await fetch(endpoint, {
+              method: "POST",
+              body: formData
+            });
+
+            const raw = await resp.text();
+            let data = {};
+            try {
+              data = raw ? JSON.parse(raw) : {};
+            } catch (error) {
+              throw new Error("后端返回非 JSON: " + raw.slice(0, 200));
+            }
+
+            if (!resp.ok) {
+              const detail = data.detail || data.error || raw.slice(0, 220);
+              throw new Error("后端失败(" + resp.status + "): " + detail);
+            }
+
+            return data.text || (data.compiled && data.compiled.finalPrompt) || "(无输出)";
           } catch (error) {
-            throw new Error("返回非 JSON: " + raw.slice(0, 200));
+            lastError = error.message;
           }
-
-          if (!resp.ok) {
-            const detail = (data && (data.error && data.error.message)) || raw.slice(0, 220);
-            throw new Error("请求失败(" + resp.status + "): " + detail);
-          }
-          return data.output_text || "(无输出)";
         }
 
-        const resp = await fetch(preset.endpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + apiKey
-          },
-          body: JSON.stringify({
-            model,
-            messages: [
-              { role: "system", content: "你是高信息密度助手，回答清晰、可执行、低废话。" },
-              { role: "user", content: prompt }
-            ],
-            temperature: 0.2,
-            max_tokens: 1000
-          })
-        });
-
-        const raw = await resp.text();
-        let data = {};
-        try {
-          data = raw ? JSON.parse(raw) : {};
-        } catch (error) {
-          throw new Error("返回非 JSON: " + raw.slice(0, 200));
-        }
-
-        if (!resp.ok) {
-          const detail = (data && (data.error && data.error.message)) || raw.slice(0, 220);
-          throw new Error("请求失败(" + resp.status + "): " + detail);
-        }
-
-        const text = extractTextFromChatResponse(data);
-        return text || "(无输出)";
-      }
-
-      function composePrompt(userText) {
-        if (!contextText) return userText;
-        return [
-          "[用户需求]",
-          userText,
-          "",
-          "[文件上下文]",
-          contextText
-        ].join("\n");
+        throw new Error(lastError || "后台服务暂不可用，请稍后重试");
       }
 
       inputEl.addEventListener("keydown", (event) => {
@@ -400,30 +278,16 @@
         const text = inputEl.value.trim();
         if (!text) return;
 
-        const provider = providerEl.value;
-        const model = modelEl.value.trim();
-        const apiKey = apiKeyEl.value.trim();
-        if (!model) {
-          pushMessage("请填写模型名。", "assistant");
-          return;
-        }
-        if (!apiKey) {
-          pushMessage("请先输入 API Key。", "assistant");
-          return;
-        }
+        const payload = contextText
+          ? ["[用户需求]", text, "", "[文件上下文]", contextText].join("\n")
+          : text;
 
-        saveConfig();
         pushMessage(text, "user");
         inputEl.value = "";
         sendEl.disabled = true;
 
         try {
-          const answer = await requestModel({
-            provider,
-            model,
-            apiKey,
-            prompt: composePrompt(text)
-          });
+          const answer = await requestBackend(payload);
           pushMessage(answer, "assistant");
         } catch (error) {
           pushMessage("错误: " + error.message, "assistant");
@@ -433,8 +297,6 @@
         }
       });
 
-      loadConfig();
-      updateDefaultModel();
     </script>
   </body>
 </html>
