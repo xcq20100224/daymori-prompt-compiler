@@ -417,6 +417,28 @@
         };
       }
 
+      function isStructuredComplete(structured) {
+        if (!structured) return false;
+        const keys = ["goals", "pagePlan", "pageDetails", "interaction", "homework", "finalPrompt"];
+        const filled = keys.filter((k) => structured[k] && String(structured[k]).trim()).length;
+        return filled >= 4;
+      }
+
+      async function normalizeStructuredOutput(rawText) {
+        const repairPrompt = [
+          "请把下面内容整理为严格 JSON。",
+          "只输出 JSON，不要解释。",
+          "字段必须包含：goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
+          "原始内容：",
+          rawText
+        ].join("\n\n");
+
+        const repaired = await requestDeepSeekDirect(repairPrompt, {
+          system: "你是结构化清洗器，只输出有效JSON。"
+        });
+        return parseStructuredResponse(repaired);
+      }
+
       function splitByHeadings(text) {
         const lines = String(text || "").replace(/\r\n/g, "\n").split("\n");
         const chunks = [];
@@ -745,7 +767,10 @@
 
         try {
           const answer = await requestDeepSeekDirect(payload);
-          const structured = parseStructuredResponse(answer);
+          let structured = parseStructuredResponse(answer);
+          if (!isStructuredComplete(structured)) {
+            structured = await normalizeStructuredOutput(answer);
+          }
           latestStructured = structured;
           latestAssistantText = structured.finalPrompt || answer;
 
