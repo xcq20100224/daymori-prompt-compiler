@@ -447,7 +447,9 @@
       const REQUEST_TIMEOUT_MS = 28000;
       const REQUEST_RETRY = 1;
       const PROXY_STORAGE_KEY = "daymori_proxy_endpoint";
+      const HARD_DEFAULT_PROXY_ENDPOINT = "http://localhost:3000/api/llm-proxy";
       const PRESET_PROXY_ENDPOINTS = [
+        HARD_DEFAULT_PROXY_ENDPOINT,
         "https://daymori-prompt-compiler.onrender.com/api/llm-proxy",
         "https://daymori-prompt-compiler.vercel.app/api/llm-proxy",
         "/api/llm-proxy"
@@ -479,7 +481,7 @@
 
       function buildProxyCandidates() {
         const saved = normalizeProxyEndpoint(localStorage.getItem(PROXY_STORAGE_KEY) || "");
-        const byProtocol = location.protocol === "file:" ? ["http://localhost:3000/api/llm-proxy"] : [];
+        const byProtocol = [HARD_DEFAULT_PROXY_ENDPOINT];
         const byHost = location.hostname.includes("github.io") ? PRESET_PROXY_ENDPOINTS : ["/api/llm-proxy", ...PRESET_PROXY_ENDPOINTS];
         const combined = [saved, ...byProtocol, ...byHost].filter(Boolean).map(normalizeProxyEndpoint);
         return [...new Set(combined)];
@@ -508,6 +510,9 @@
       async function ensureProxyEndpoint() {
         if (activeProxyEndpoint) return activeProxyEndpoint;
         const candidates = buildProxyCandidates();
+        if (!proxyEndpointInputEl.value || !proxyEndpointInputEl.value.trim()) {
+          proxyEndpointInputEl.value = HARD_DEFAULT_PROXY_ENDPOINT;
+        }
         for (const endpoint of candidates) {
           const ok = await probeProxyEndpoint(endpoint);
           if (ok) {
