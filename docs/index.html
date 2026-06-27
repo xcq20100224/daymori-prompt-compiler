@@ -36,17 +36,29 @@
         border-radius: 28px;
         overflow: hidden;
         display: grid;
-        grid-template-rows: auto auto auto 1fr auto;
+        grid-template-rows: auto 1fr auto;
         background: linear-gradient(180deg, #111111 0%, #050505 100%);
         box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
       }
 
       .header {
-        padding: 14px 16px;
+        padding: 18px 16px;
         border-bottom: 1px solid var(--line);
-        font-size: 13px;
-        letter-spacing: 0.3px;
-        color: var(--muted);
+        font-size: 20px;
+        letter-spacing: 0.2px;
+        color: var(--text);
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .config,
+      .intro,
+      .bench,
+      .dropzone,
+      .helper,
+      .draft-actions,
+      .msg-actions {
+        display: none !important;
       }
 
       .config {
@@ -273,17 +285,17 @@
 
       .composer {
         border-top: 1px solid var(--line);
-        display: grid;
-        grid-template-columns: 1fr auto;
+        display: flex;
+        align-items: flex-end;
         gap: 10px;
         padding: 10px;
       }
 
       textarea {
         width: 100%;
-        min-height: 96px;
-        max-height: 220px;
-        resize: vertical;
+        min-height: 58px;
+        max-height: 180px;
+        resize: none;
         padding: 12px 14px;
       }
 
@@ -344,24 +356,20 @@
       }
 
       @media (max-width: 900px) {
-        .intro {
-          grid-template-columns: 1fr;
-        }
-
-        .bench {
-          grid-template-columns: 1fr;
-        }
-
         .app {
           height: 95vh;
           border-radius: 20px;
+        }
+
+        .header {
+          font-size: 18px;
         }
       }
     </style>
   </head>
   <body>
     <main class="app">
-      <div class="header">Daymori Teacher Prompt Studio · 课堂PPT提示词专用</div>
+      <div class="header">输入需求，输出提示词！</div>
       <section class="config">
         <div class="field">服务人群: 教师 | 场景: 课堂PPT | 默认模型: DeepSeek（无需用户输入 Key）</div>
         <div class="proxy-row">
@@ -395,12 +403,12 @@
         </article>
       </section>
       <section id="messages" class="messages">
-        <article class="msg">示例输入：请为高一物理《牛顿第二定律》生成 12 页课堂 PPT 提示词，含导入、推导、例题、互动练习与课后作业。</article>
+        <article class="msg">请输入你的教学需求，例如：请为初二数学《一次函数》生成8页课堂PPT提示词。</article>
       </section>
       <form id="composer" class="composer">
         <div>
           <div id="dropzone" class="dropzone">拖拽文件到这里，或点击选择文件（1个）</div>
-          <textarea id="input" placeholder="输入教学需求（如：年级、学科、课题、课时、资料类型）"></textarea>
+          <textarea id="input" placeholder="输入你的需求，按 Enter 发送"></textarea>
           <div class="helper">
             <span>Shift+Enter 换行，Enter 发送</span>
             <div class="file-line">
@@ -1056,70 +1064,13 @@
       }
 
       function renderDeliverable(structured, qaResult = null, spec = null) {
-        const wrap = document.createElement("article");
-        wrap.className = "msg";
-
-        const box = document.createElement("section");
-        box.className = "deliverable";
-
-        const title = document.createElement("div");
-        title.className = "deliverable-title";
-        title.textContent = "可交付产物（课堂PPT提示词）";
-        box.appendChild(title);
-
+        const lines = [];
         if (qaResult) {
-          const qaNode = document.createElement("div");
-          qaNode.className = "qa-inline " + (qaResult.pass ? "pass" : "fail");
-          const qaLines = [
-            `质检：${qaResult.pass ? "PASS" : "FAIL"}`,
-            `约束=${qaResult.scores.constraint} 覆盖=${qaResult.scores.coverage} 连贯=${qaResult.scores.coherence} 总分=${qaResult.scores.overall}`
-          ];
-          if (spec && spec.pageCount) {
-            qaLines.push(`页数要求=${spec.pageCount}，检测=${qaResult.generatedPageCount || "未知"}`);
-          }
-          qaNode.textContent = qaLines.join(" | ");
-          box.appendChild(qaNode);
+          lines.push(`质检：${qaResult.pass ? "PASS" : "FAIL"}`);
         }
-
-        for (const def of BLOCK_DEFS) {
-          const block = document.createElement("section");
-          block.className = "block";
-
-          const head = document.createElement("div");
-          head.className = "block-head";
-
-          const label = document.createElement("div");
-          label.className = "block-label";
-          label.textContent = def.label;
-
-          const btn = document.createElement("button");
-          btn.className = "mini-btn";
-          btn.type = "button";
-          btn.textContent = "重写此块";
-          btn.addEventListener("click", async () => {
-            try {
-              await regenerateBlock(def.key);
-            } catch (error) {
-              pushMessage("重写失败: " + error.message, "assistant");
-            }
-          });
-
-          head.appendChild(label);
-          head.appendChild(btn);
-
-          const content = document.createElement("div");
-          content.className = "block-content";
-          content.textContent = structured[def.key] || "(空)";
-
-          block.appendChild(head);
-          block.appendChild(content);
-          box.appendChild(block);
-        }
-
-        wrap.appendChild(box);
-        messagesEl.appendChild(wrap);
-        trimMessageList();
-        messagesEl.scrollTop = messagesEl.scrollHeight;
+        lines.push("终版提示词：");
+        lines.push(structured && structured.finalPrompt ? structured.finalPrompt : "(无输出)");
+        pushMessage(lines.join("\n\n"), "assistant");
       }
 
       async function regenerateBlock(blockKey) {
@@ -1139,24 +1090,6 @@
         const content = document.createElement("div");
         content.textContent = text;
         node.appendChild(content);
-
-        if (role !== "user") {
-          const actions = document.createElement("div");
-          actions.className = "msg-actions";
-          const copyBtn = document.createElement("button");
-          copyBtn.className = "mini-btn";
-          copyBtn.type = "button";
-          copyBtn.textContent = "复制这一条";
-          copyBtn.addEventListener("click", async () => {
-            try {
-              await copyText(text);
-            } catch (error) {
-              pushMessage("复制失败: " + error.message, "assistant");
-            }
-          });
-          actions.appendChild(copyBtn);
-          node.appendChild(actions);
-        }
 
         messagesEl.appendChild(node);
         trimMessageList();
