@@ -162,22 +162,24 @@
 
       .hero {
         text-align: center;
-        margin-top: 62px;
+        margin-top: 48px;
       }
 
       .hero-title {
         margin: 0;
-        font-size: clamp(60px, 6.2vw, 112px);
+        font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+        font-size: clamp(42px, 5.1vw, 82px);
         font-weight: 500;
-        letter-spacing: 0.2px;
-        color: #12141a;
+        letter-spacing: 0;
+        line-height: 1.12;
+        color: #111319;
       }
 
       .hero-sub {
         display: block;
-        margin: 18px 0 0;
+        margin: 16px 0 0;
         color: #7c828d;
-        font-size: clamp(24px, 2.4vw, 52px);
+        font-size: clamp(20px, 2.15vw, 36px);
         font-weight: 500;
       }
 
@@ -315,9 +317,9 @@
 
       .messages {
         margin: 24px auto 0;
-        width: min(980px, 92%);
-        min-height: 52px;
-        max-height: 36vh;
+        width: min(760px, 90%);
+        min-height: 36px;
+        max-height: 28vh;
         overflow: auto;
         padding: 0;
         display: grid;
@@ -326,13 +328,14 @@
 
       .msg {
         border: 1px solid #d7d9de;
-        border-radius: 14px;
+        border-radius: 12px;
         background: #ffffff;
-        padding: 13px 14px;
+        padding: 10px 12px;
         line-height: 1.5;
         white-space: pre-wrap;
         word-break: break-word;
         box-shadow: 0 10px 24px rgba(37, 40, 47, 0.06);
+        font-size: 14px;
       }
 
       .msg.user {
@@ -452,39 +455,39 @@
       .composer {
         position: relative;
         margin: 16px auto 0;
-        width: min(980px, 92%);
+        width: min(760px, 90%);
         border: 1px solid #d9dbe1;
-        border-radius: 18px;
+        border-radius: 14px;
         display: block;
-        padding: 16px 18px 12px;
+        padding: 14px 16px 10px;
         background: #f7f7f9;
-        box-shadow: 0 8px 20px rgba(30, 34, 44, 0.06);
+        box-shadow: 0 4px 12px rgba(30, 34, 44, 0.05);
       }
 
       textarea {
         width: 100%;
-        min-height: 86px;
-        max-height: 180px;
+        min-height: 48px;
+        max-height: 120px;
         resize: none;
         padding: 0;
         border: 0;
         border-radius: 0;
         background: transparent;
         color: #1c1f26;
-        font-size: 32px;
-        line-height: 1.4;
+        font-size: 15px;
+        line-height: 1.5;
       }
 
       textarea::placeholder {
-        color: #b8bcc6;
+        color: #b2b7c1;
       }
 
       .composer-bottom {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-top: 8px;
-        min-height: 40px;
+        margin-top: 6px;
+        min-height: 34px;
       }
 
       .composer-tools {
@@ -492,12 +495,12 @@
         align-items: center;
         gap: 8px;
         color: #4a4e58;
-        font-size: 35px;
+        font-size: 18px;
       }
 
       .tool-btn {
-        width: 34px;
-        height: 34px;
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
         display: grid;
         place-items: center;
@@ -510,13 +513,13 @@
       }
 
       .composer-mode {
-        margin-right: 64px;
+        margin-right: 52px;
         color: #6c727e;
-        font-size: 30px;
+        font-size: 14px;
       }
 
       .composer-mode .caret {
-        font-size: 22px;
+        font-size: 12px;
         margin-left: 4px;
       }
 
@@ -543,17 +546,17 @@
 
       #send {
         position: absolute;
-        right: 18px;
-        bottom: 12px;
-        width: 42px;
-        height: 42px;
-        min-width: 42px;
+        right: 14px;
+        bottom: 9px;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
         border-radius: 999px;
         padding: 0;
         border: 1px solid #d0d3da;
         background: #eceef3;
         color: #8e949f;
-        font-size: 22px;
+        font-size: 14px;
         font-weight: 700;
         display: grid;
         place-items: center;
@@ -635,35 +638,35 @@
         }
 
         .hero-title {
-          font-size: 48px;
+          font-size: 52px;
         }
 
         .hero-sub {
-          font-size: 24px;
+          font-size: 26px;
         }
 
         .composer {
           width: 100%;
-          margin-top: 16px;
+          margin-top: 14px;
         }
 
         .messages {
           width: 100%;
-          max-height: 40vh;
+          max-height: 34vh;
         }
 
         textarea {
-          font-size: 22px;
-          min-height: 68px;
+          font-size: 16px;
+          min-height: 44px;
         }
 
         .composer-mode {
-          font-size: 18px;
-          margin-right: 52px;
+          font-size: 14px;
+          margin-right: 44px;
         }
 
         .composer-tools {
-          font-size: 24px;
+          font-size: 18px;
         }
 
       }
