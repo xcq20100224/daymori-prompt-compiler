@@ -429,6 +429,8 @@
           "请把下面内容整理为严格 JSON。",
           "只输出 JSON，不要解释。",
           "字段必须包含：goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
+          "六个字段必须都是字符串，不允许数组/对象。",
+          "每个字段尽量精炼：goals<=120字，pagePlan<=120字，pageDetails<=280字，interaction<=120字，homework<=120字，finalPrompt<=420字。",
           "原始内容：",
           rawText
         ].join("\n\n");
@@ -645,7 +647,9 @@
         const systemText = opts.system || [
           "你是课堂PPT提示词专家。",
           "任务：把教师需求编译成可直接粘贴给AI生成PPT的可交付结构化结果。",
-          "请严格输出 JSON，对象字段必须包含：goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
+          "请严格输出 JSON，字段必须包含：goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
+          "六个字段必须全部为字符串，禁止数组和对象。",
+          "长度控制：goals<=120字，pagePlan<=120字，pageDetails<=280字，interaction<=120字，homework<=120字，finalPrompt<=420字。",
           "finalPrompt 必须是最终可直接复制给AI出稿的完整提示词。"
         ].join(" ");
 
@@ -662,7 +666,7 @@
               { role: "user", content: userText }
             ],
             temperature: 0.2,
-            max_tokens: 1000
+            max_tokens: 850
           })
         });
 
@@ -758,7 +762,7 @@
           semanticPack.stageFlow.join(" -> "),
           "",
           "[输出要求]",
-          "请只输出 JSON，字段: goals,pagePlan,pageDetails,interaction,homework,finalPrompt"
+          "请只输出 JSON，字段: goals,pagePlan,pageDetails,interaction,homework,finalPrompt。六个字段全部是字符串，不允许数组/对象。"
         ].join("\n");
 
         pushMessage(text, "user");
