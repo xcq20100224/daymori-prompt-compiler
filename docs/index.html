@@ -850,32 +850,110 @@
         return m ? m[1].trim() : "本节课主题";
       }
 
+      function inferLessonDuration(input) {
+        const all = String(input || "");
+        const m = all.match(/(\d{1,3})\s*分钟/);
+        if (m) return `${m[1]}分钟`;
+        return "40分钟";
+      }
+
+      function stageLabel(index, total) {
+        if (index === 1) return "导入激活";
+        if (index === total) return "总结与作业";
+        const middle = ["概念建构", "方法讲解", "例题示范", "互动讨论", "分层练习", "当堂诊断"];
+        return middle[(index - 2) % middle.length];
+      }
+
+      function subjectHints(subject, topic) {
+        const s = String(subject || "");
+        if (s.includes("数学")) {
+          return {
+            explain: `突出概念定义、典型题型与易错点，围绕${topic}给出步骤化解题路径。`,
+            interact: "设计1道口算/判断题+1道板演题，要求学生说明每一步依据。",
+            homework: "基础层2题（概念识别）；提高层2题（综合应用）；挑战层1题（情境迁移）。"
+          };
+        }
+        if (s.includes("物理") || s.includes("化学") || s.includes("生物")) {
+          return {
+            explain: `围绕${topic}构建“现象-规律-应用”链路，补充实验或生活情境。`,
+            interact: "设置预测-验证型提问，要求学生给出结论与证据。",
+            homework: "基础层概念题；提高层过程分析题；挑战层探究设计题。"
+          };
+        }
+        if (s.includes("语文") || s.includes("英语")) {
+          return {
+            explain: `围绕${topic}落实“理解-表达-迁移”三步，给出示例句/段。`,
+            interact: "设置同伴互评任务，关注表达完整性与语言准确性。",
+            homework: "基础层复述与摘录；提高层改写与归纳；挑战层创作与评析。"
+          };
+        }
+        return {
+          explain: `围绕${topic}完成“目标-活动-评价”闭环，确保学生可操作。`,
+          interact: "设置快速问答+小组讨论，配套明确评价标准。",
+          homework: "基础层巩固；提高层综合；挑战层迁移。"
+        };
+      }
+
       function buildOfflineStructured(rawText, pageCountHint) {
         const input = String(rawText || "");
         const pageCount = pageCountHint || extractRequestedPageCount(input) || 8;
         const grade = (input.match(/(小学[一二三四五六]|初中[一二三]|高中[一二三]|高一|高二|高三|初一|初二|初三)/) || ["通用学段"])[0];
         const subject = (input.match(/(语文|数学|英语|物理|化学|生物|历史|地理|政治|道德与法治|科学)/) || ["通用学科"])[0];
         const topic = safeTopic(input);
+        const duration = inferLessonDuration(input);
+        const hints = subjectHints(subject, topic);
 
-        const stagePool = ["导入", "目标", "讲解", "例题", "互动", "练习", "小结", "作业"];
         const plans = [];
         for (let i = 1; i <= pageCount; i++) {
-          const stage = stagePool[(i - 1) % stagePool.length];
+          const stage = stageLabel(i, pageCount);
           plans.push(`第${i}页：${stage}`);
         }
 
         const details = [];
         for (let i = 1; i <= pageCount; i++) {
-          details.push(`第${i}页：围绕${topic}组织${subject}课堂内容，包含教师讲解、板书提示与学生参与动作。`);
+          const stage = stageLabel(i, pageCount);
+          const minuteStart = Math.max(0, Math.round(((i - 1) * Number(duration.replace("分钟", ""))) / pageCount));
+          const minuteEnd = Math.max(minuteStart + 3, Math.round((i * Number(duration.replace("分钟", ""))) / pageCount));
+          details.push(
+            [
+              `第${i}页【${stage}】（${minuteStart}-${minuteEnd}分钟）`,
+              `标题建议：${topic}${i === 1 ? "学习情境" : "关键任务"}`,
+              `教师动作：${hints.explain}`,
+              `学生任务：完成“看-说-做”三步，产出1个可评价结果。`,
+              `板书/画面要点：概念关键词、步骤框架、易错提醒。`,
+              `达成判据：本页结束时，学生可用1句话复述核心点并完成1个小任务。`
+            ].join("\n")
+          );
         }
 
         return {
-          goals: `${grade}${subject}《${topic}》课堂目标：理解核心概念、掌握解题或分析方法，并完成当堂反馈。`,
+          goals: [
+            `${grade}${subject}《${topic}》课堂目标：`,
+            "1) 知识目标：理解核心概念并识别典型场景。",
+            "2) 能力目标：掌握步骤化方法，能独立完成基础任务。",
+            "3) 素养目标：能解释思路、进行同伴互评并完成当堂修正。"
+          ].join("\n"),
           pagePlan: plans.join("；"),
           pageDetails: details.join("\n"),
-          interaction: "设置2-3轮课堂互动：快速问答、同伴讨论、即时纠错，确保每轮有明确评价标准。",
-          homework: "基础层：概念巩固；提高层：综合应用；挑战层：开放迁移任务。",
-          finalPrompt: `请为${grade}${subject}《${topic}》生成${pageCount}页课堂PPT。必须覆盖导入、讲解、互动、练习、小结、作业，并给出每页标题、要点、互动设计和教师讲解提示。`
+          interaction: [
+            "课堂互动设计（至少2轮）：",
+            `- 轮次1（3分钟）：${hints.interact}`,
+            "- 轮次2（4分钟）：小组讨论后随机抽答，按“准确-完整-表达”三维评分。",
+            "- 轮次3（可选2分钟）：错题回炉，要求学生说出改正依据。"
+          ].join("\n"),
+          homework: [
+            "分层作业：",
+            `- ${hints.homework}`,
+            "- 提交要求：写出思路，不只给答案。",
+            "- 评价标准：正确率、过程完整性、表达清晰度。"
+          ].join("\n"),
+          finalPrompt: [
+            `请生成${grade}${subject}《${topic}》${pageCount}页课堂PPT（总时长约${duration}）。`,
+            "硬约束：必须逐页输出第1页到第N页，每页包含“标题、教学目标、教师讲解词、学生任务、板书/画面要点、互动设计、当页评价方式”。",
+            "内容要求：体现导入-建构-练习-总结闭环，语言可直接上课口播，避免空泛口号。",
+            "质量要求：至少包含2个易错点提醒、2个即时检测问题、1组分层作业（基础/提高/挑战）。",
+            "输出格式：按“第X页”分段，中文输出，可直接复制给AI出稿。"
+          ].join("\n")
         };
       }
 
