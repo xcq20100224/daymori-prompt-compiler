@@ -322,6 +322,7 @@
       let latestAssistantText = "";
       let latestStructured = null;
       let latestRawInput = "";
+      let latestPageTarget = null;
 
       const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
       const OFFICIAL_DEEPSEEK_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
@@ -424,19 +425,43 @@
         return filled >= 4;
       }
 
-      async function normalizeStructuredOutput(rawText) {
+      async function normalizeStructuredOutput(rawText, opts = {}) {
+        const pageClause = opts.pageCount
+          ? `必须严格为${opts.pageCount}页：pagePlan与pageDetails覆盖第1页到第${opts.pageCount}页，finalPrompt也必须是${opts.pageCount}页。`
+          : "";
         const repairPrompt = [
           "请把下面内容整理为严格 JSON。",
           "只输出 JSON，不要解释。",
           "字段必须包含：goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
           "六个字段必须都是字符串，不允许数组/对象。",
           "每个字段尽量精炼：goals<=120字，pagePlan<=120字，pageDetails<=280字，interaction<=120字，homework<=120字，finalPrompt<=420字。",
+          pageClause,
           "原始内容：",
           rawText
         ].join("\n\n");
 
         const repaired = await requestDeepSeekDirect(repairPrompt, {
           system: "你是结构化清洗器，只输出有效JSON。"
+        });
+        return parseStructuredResponse(repaired);
+      }
+
+      async function reconcilePageCount(structured, rawInput, targetPageCount) {
+        const rewritePrompt = [
+          `用户要求: ${targetPageCount}页。`,
+          "下面是当前结果，请你只修正页数一致性并保持主题不变。",
+          "只输出 JSON，不要解释。字段必须为 goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
+          "六个字段都必须是字符串。",
+          `硬约束: pagePlan与pageDetails必须覆盖第1页到第${targetPageCount}页；finalPrompt必须明确${targetPageCount}页。`,
+          "[用户原始需求]",
+          rawInput,
+          "[当前结构化结果]",
+          JSON.stringify(structured)
+        ].join("\n\n");
+
+        const repaired = await requestDeepSeekDirect(rewritePrompt, {
+          system: "你是页数一致性修正器，严格满足指定页数，只输出有效JSON。",
+          pageCount: targetPageCount
         });
         return parseStructuredResponse(repaired);
       }
@@ -476,6 +501,55 @@
           .map(([w]) => w);
       }
 
+      function cnNumberToInt(text) {
+        const map = { 零: 0, 一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
+        if (!text) return null;
+        if (text === "十") return 10;
+        if (/^十[一二三四五六七八九]$/.test(text)) return 10 + map[text[1]];
+        if (/^[一二三四五六七八九]十$/.test(text)) return map[text[0]] * 10;
+        if (/^[一二三四五六七八九]十[一二三四五六七八九]$/.test(text)) return map[text[0]] * 10 + map[text[2]];
+        if (/^[一二三四五六七八九]$/.test(text)) return map[text];
+        return null;
+      }
+
+      function extractRequestedPageCount(text) {
+        const all = String(text || "");
+        const arabic = all.match(/(\d{1,2})\s*页/);
+        if (arabic) {
+          const n = Number(arabic[1]);
+          if (Number.isFinite(n) && n >= 3 && n <= 60) return n;
+        }
+
+        const cn = all.match(/([一二三四五六七八九十两]{1,3})\s*页/);
+        if (cn) {
+          const n = cnNumberToInt(cn[1]);
+          if (Number.isFinite(n) && n >= 3 && n <= 60) return n;
+        }
+        return null;
+      }
+
+      function estimateGeneratedPageCount(structured) {
+        const text = [structured && structured.pagePlan, structured && structured.pageDetails, structured && structured.finalPrompt]
+          .filter(Boolean)
+          .join("\n");
+        if (!text.trim()) return null;
+
+        const pageNums = [];
+        const pageRegex = /第\s*(\d{1,2})\s*页/g;
+        let m;
+        while ((m = pageRegex.exec(text)) !== null) {
+          pageNums.push(Number(m[1]));
+        }
+        if (pageNums.length >= 2) return Math.max(...pageNums);
+
+        const totalMatch = text.match(/(\d{1,2})\s*页(?:课堂|PPT|课件|演示|提示词)?/);
+        if (totalMatch) {
+          const n = Number(totalMatch[1]);
+          if (Number.isFinite(n) && n >= 3 && n <= 60) return n;
+        }
+        return null;
+      }
+
       function extractTeachingFields(input, context) {
         const all = [input, context].join("\n");
         const grade = (all.match(/(小学[一二三四五六]|初中[一二三]|高中[一二三]|[一二三四五六七八九]年级|高一|高二|高三|初一|初二|初三)/) || [""])[0];
@@ -493,8 +567,9 @@
 
         const hardMatches = all.match(/(?:重难点|重点难点|难点)[：:]\s*([^\n]+)/);
         const hardPoints = hardMatches ? hardMatches[1].split(/[；;，,、]/).map((s) => s.trim()).filter(Boolean) : [];
+        const pageCount = extractRequestedPageCount(all);
 
-        return { grade, subject, topic, keywords, hardPoints };
+        return { grade, subject, topic, keywords, hardPoints, pageCount };
       }
 
       function buildSemanticPack(rawInput, context) {
@@ -644,12 +719,16 @@
       });
 
       async function requestDeepSeekDirect(userText, opts = {}) {
+        const pageHint = opts.pageCount
+          ? `硬约束：输出必须是${opts.pageCount}页。pagePlan与pageDetails覆盖第1页到第${opts.pageCount}页，finalPrompt也必须明确${opts.pageCount}页。`
+          : "";
         const systemText = opts.system || [
           "你是课堂PPT提示词专家。",
           "任务：把教师需求编译成可直接粘贴给AI生成PPT的可交付结构化结果。",
           "请严格输出 JSON，字段必须包含：goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
           "六个字段必须全部为字符串，禁止数组和对象。",
           "长度控制：goals<=120字，pagePlan<=120字，pageDetails<=280字，interaction<=120字，homework<=120字，finalPrompt<=420字。",
+          pageHint,
           "finalPrompt 必须是最终可直接复制给AI出稿的完整提示词。"
         ].join(" ");
 
@@ -748,6 +827,10 @@
           : text;
 
         const semanticPack = buildSemanticPack(text, contextText);
+        latestPageTarget = semanticPack.fields.pageCount || null;
+        const pageCountHint = latestPageTarget
+          ? `\n\n[硬约束-页数]\n用户明确要求${latestPageTarget}页，必须严格输出${latestPageTarget}页。`
+          : "";
         const payload = [
           "[用户需求]",
           text,
@@ -763,17 +846,28 @@
           "",
           "[输出要求]",
           "请只输出 JSON，字段: goals,pagePlan,pageDetails,interaction,homework,finalPrompt。六个字段全部是字符串，不允许数组/对象。"
-        ].join("\n");
+        ].join("\n") + pageCountHint;
 
         pushMessage(text, "user");
         inputEl.value = "";
         sendEl.disabled = true;
 
         try {
-          const answer = await requestDeepSeekDirect(payload);
+          const answer = await requestDeepSeekDirect(payload, { pageCount: latestPageTarget });
           let structured = parseStructuredResponse(answer);
           if (!isStructuredComplete(structured)) {
-            structured = await normalizeStructuredOutput(answer);
+            structured = await normalizeStructuredOutput(answer, { pageCount: latestPageTarget });
+          }
+
+          if (latestPageTarget) {
+            const got = estimateGeneratedPageCount(structured);
+            if (got && got !== latestPageTarget) {
+              structured = await reconcilePageCount(structured, latestRawInput, latestPageTarget);
+              const fixed = estimateGeneratedPageCount(structured);
+              if (!fixed || fixed !== latestPageTarget) {
+                pushMessage(`注意：模型仍未完全满足${latestPageTarget}页，当前检测到约${fixed || "未知"}页。可先重写“页数规划”和“终版提示词”两块。`, "assistant");
+              }
+            }
           }
           latestStructured = structured;
           latestAssistantText = structured.finalPrompt || answer;
