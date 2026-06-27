@@ -834,6 +834,43 @@
         };
       }
 
+      function safeTopic(text) {
+        const all = String(text || "");
+        const quote = all.match(/[《【](.+?)[》】]/);
+        if (quote) return quote[1];
+        const m = all.match(/(?:课题|主题|内容)[：:]\s*([^\n，。]+)/);
+        return m ? m[1].trim() : "本节课主题";
+      }
+
+      function buildOfflineStructured(rawText, pageCountHint) {
+        const input = String(rawText || "");
+        const pageCount = pageCountHint || extractRequestedPageCount(input) || 8;
+        const grade = (input.match(/(小学[一二三四五六]|初中[一二三]|高中[一二三]|高一|高二|高三|初一|初二|初三)/) || ["通用学段"])[0];
+        const subject = (input.match(/(语文|数学|英语|物理|化学|生物|历史|地理|政治|道德与法治|科学)/) || ["通用学科"])[0];
+        const topic = safeTopic(input);
+
+        const stagePool = ["导入", "目标", "讲解", "例题", "互动", "练习", "小结", "作业"];
+        const plans = [];
+        for (let i = 1; i <= pageCount; i++) {
+          const stage = stagePool[(i - 1) % stagePool.length];
+          plans.push(`第${i}页：${stage}`);
+        }
+
+        const details = [];
+        for (let i = 1; i <= pageCount; i++) {
+          details.push(`第${i}页：围绕${topic}组织${subject}课堂内容，包含教师讲解、板书提示与学生参与动作。`);
+        }
+
+        return {
+          goals: `${grade}${subject}《${topic}》课堂目标：理解核心概念、掌握解题或分析方法，并完成当堂反馈。`,
+          pagePlan: plans.join("；"),
+          pageDetails: details.join("\n"),
+          interaction: "设置2-3轮课堂互动：快速问答、同伴讨论、即时纠错，确保每轮有明确评价标准。",
+          homework: "基础层：概念巩固；提高层：综合应用；挑战层：开放迁移任务。",
+          finalPrompt: `请为${grade}${subject}《${topic}》生成${pageCount}页课堂PPT。必须覆盖导入、讲解、互动、练习、小结、作业，并给出每页标题、要点、互动设计和教师讲解提示。`
+        };
+      }
+
       function countHit(items) {
         return items.filter(Boolean).length;
       }
@@ -1229,12 +1266,9 @@
         }
 
         activeProxyEndpoint = "";
-        if (location.hostname.includes("github.io")) {
-          throw new Error(
-            `暂未找到可用后端，系统已自动尝试多个地址。${lastErrorMessage || "请稍后重试"}`
-          );
-        }
-        throw new Error(lastErrorMessage || "请求失败，请检查网络后重试");
+        const offline = buildOfflineStructured(userText, opts.pageCount);
+        proxyStatusEl.textContent = "未找到可用后端，已自动切换离线生成模式";
+        return JSON.stringify(offline);
       }
 
       dropzoneEl.addEventListener("click", () => fileEl.click());
