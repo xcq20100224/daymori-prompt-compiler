@@ -1145,9 +1145,37 @@
         };
       }
 
-      function applyQuickFixLocal(kind) {
+      function hasHomeworkLevels(text) {
+        const hw = String(text || "");
+        return /(基础|基础层)/.test(hw) && /(提高|进阶|提高层)/.test(hw) && /(挑战|拓展|挑战层|拓展层)/.test(hw);
+      }
+
+      function recommendFixOrder(spec, structured, qaResult) {
+        const acceptance = quickAcceptance(spec || {}, structured || {}, qaResult || {});
+        const order = [];
+        if (!acceptance.pageOk) order.push("page");
+        if (!acceptance.actionableOk) order.push("interaction");
+        const needHomework = !!(spec && spec.requireHomeworkLevels);
+        if (needHomework && !hasHomeworkLevels(structured && structured.homework)) order.push("homework");
+        return order;
+      }
+
+      function recommendFirstFix(spec, structured, qaResult) {
+        const order = recommendFixOrder(spec, structured, qaResult);
+        if (!order.length) return "";
+        const map = {
+          page: "一键修正页数",
+          interaction: "一键增强互动",
+          homework: "一键补齐作业"
+        };
+        return map[order[0]] || "一键修正页数";
+      }
+
+      function applyQuickFixLocal(kind, opts = {}) {
+        const silent = !!opts.silent;
+        const rerender = opts.rerender !== false;
         if (!latestStructured || !latestRawInput) {
-          pushMessage("请先生成一次结果后再使用一键修正。", "assistant");
+          if (!silent) pushMessage("请先生成一次结果后再使用一键修正。", "assistant");
           return;
         }
 
@@ -1161,7 +1189,7 @@
           latestStructured.pagePlan = seeded.pagePlan;
           latestStructured.pageDetails = seeded.pageDetails;
           latestStructured.finalPrompt = seeded.finalPrompt;
-          pushMessage(`已完成一键修正：页数统一为${targetPage}页。`, "assistant");
+          if (!silent) pushMessage(`已完成一键修正：页数统一为${targetPage}页。`, "assistant");
         }
 
         if (kind === "interaction") {
@@ -1171,7 +1199,7 @@
             "- 轮次2（4分钟）：小组讨论后随机抽答，按“准确-完整-表达”三维评分。",
             "- 轮次3（可选2分钟）：错题回炉，要求学生说出改正依据。"
           ].join("\n");
-          pushMessage("已完成一键修正：互动环节已增强。", "assistant");
+          if (!silent) pushMessage("已完成一键修正：互动环节已增强。", "assistant");
         }
 
         if (kind === "homework") {
@@ -1181,13 +1209,27 @@
             "- 提交要求：写出思路，不只给答案。",
             "- 评价标准：正确率、过程完整性、表达清晰度。"
           ].join("\n");
-          pushMessage("已完成一键修正：作业分层已补齐。", "assistant");
+          if (!silent) pushMessage("已完成一键修正：作业分层已补齐。", "assistant");
         }
 
         const qa = evaluateBySpec(latestSpec || {}, latestStructured);
         latestQaResult = qa;
         latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
-        renderDeliverable(latestStructured, qa, latestSpec || {});
+        if (rerender) renderDeliverable(latestStructured, qa, latestSpec || {});
+      }
+
+      async function autoPilotRepair(spec) {
+        let qa = evaluateBySpec(spec || {}, latestStructured || {});
+        const order = recommendFixOrder(spec || {}, latestStructured || {}, qa || {});
+        for (const kind of order) {
+          applyQuickFixLocal(kind, { silent: true, rerender: false });
+          qa = evaluateBySpec(spec || {}, latestStructured || {});
+          if (qa.pass) return qa;
+        }
+        if (!qa.pass) {
+          qa = await autoRepairByQa(spec || {}, 1);
+        }
+        return qa;
       }
 
       function renderQaResult(qaResult, spec) {
@@ -1294,6 +1336,8 @@
           if (spec && spec.pageCount) {
             qaLines.push(`页数要求=${spec.pageCount}，检测=${qaResult.generatedPageCount || "未知"}`);
           }
+          const firstFix = recommendFirstFix(spec || {}, structured || {}, qaResult || {});
+          qaLines.push(qaResult.pass ? "状态：可直接出稿" : `状态：自动修正中，建议先点“${firstFix || "一键修正页数"}”`);
           qaNode.textContent = qaLines.join(" | ");
           box.appendChild(qaNode);
         }
@@ -1603,7 +1647,7 @@
             }
           }
           latestStructured = structured;
-          const qa = await autoRepairByQa(latestSpec, 2);
+          const qa = await autoPilotRepair(latestSpec);
           latestQaResult = qa;
           latestAssistantText = structured.finalPrompt || answer;
 
