@@ -3,6 +3,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const multer = require("multer");
 const mammoth = require("mammoth");
+const cors = require("cors");
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const upload = multer({
 });
 
 app.use(express.json({ limit: "1mb" }));
+app.use(cors({ origin: "*" }));
 app.use(express.static(path.join(__dirname, "public")));
 
 async function parseUploadedFile(file) {
