@@ -144,6 +144,25 @@
         margin-bottom: 8px;
       }
 
+      .qa-inline {
+        border: 1px solid #2d2d31;
+        border-radius: 10px;
+        padding: 8px 10px;
+        margin-bottom: 8px;
+        background: #111114;
+        font-size: 12px;
+        color: #d6d6db;
+        line-height: 1.5;
+      }
+
+      .qa-inline.pass {
+        border-color: #285a3e;
+      }
+
+      .qa-inline.fail {
+        border-color: #6a2a2a;
+      }
+
       .block {
         border: 1px solid #2a2a2e;
         border-radius: 12px;
@@ -324,6 +343,11 @@
       let latestRawInput = "";
       let latestPageTarget = null;
       let latestSpec = null;
+      let latestQaResult = null;
+
+      const MAX_MESSAGES = 36;
+      const REQUEST_TIMEOUT_MS = 28000;
+      const REQUEST_RETRY = 1;
 
       const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
       const OFFICIAL_DEEPSEEK_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
@@ -714,6 +738,8 @@
       }
 
       function renderQaResult(qaResult, spec) {
+        latestQaResult = qaResult;
+        if (qaResult.pass) return;
         const passText = qaResult.pass ? "PASS" : "FAIL";
         const lines = [
           `质检结果：${passText}`,
@@ -726,6 +752,30 @@
           lines.push("未通过项：" + qaResult.issues.join("；"));
         }
         pushMessage(lines.join("\n"), "assistant");
+      }
+
+      function trimMessageList() {
+        while (messagesEl.children.length > MAX_MESSAGES) {
+          messagesEl.removeChild(messagesEl.firstElementChild);
+        }
+      }
+
+      async function fetchWithTimeoutAndRetry(url, options, retryCount = REQUEST_RETRY, timeoutMs = REQUEST_TIMEOUT_MS) {
+        let lastError = null;
+        for (let i = 0; i <= retryCount; i++) {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), timeoutMs);
+          try {
+            const resp = await fetch(url, { ...options, signal: controller.signal });
+            clearTimeout(timer);
+            return resp;
+          } catch (error) {
+            clearTimeout(timer);
+            lastError = error;
+            if (i < retryCount) continue;
+          }
+        }
+        throw lastError;
       }
 
       async function rewriteBlockBySpec(blockKey, reason) {
@@ -769,7 +819,7 @@
         return evaluateBySpec(spec, latestStructured);
       }
 
-      function renderDeliverable(structured) {
+      function renderDeliverable(structured, qaResult = null, spec = null) {
         const wrap = document.createElement("article");
         wrap.className = "msg";
 
@@ -780,6 +830,20 @@
         title.className = "deliverable-title";
         title.textContent = "可交付产物（课堂PPT提示词）";
         box.appendChild(title);
+
+        if (qaResult) {
+          const qaNode = document.createElement("div");
+          qaNode.className = "qa-inline " + (qaResult.pass ? "pass" : "fail");
+          const qaLines = [
+            `质检：${qaResult.pass ? "PASS" : "FAIL"}`,
+            `约束=${qaResult.scores.constraint} 覆盖=${qaResult.scores.coverage} 连贯=${qaResult.scores.coherence} 总分=${qaResult.scores.overall}`
+          ];
+          if (spec && spec.pageCount) {
+            qaLines.push(`页数要求=${spec.pageCount}，检测=${qaResult.generatedPageCount || "未知"}`);
+          }
+          qaNode.textContent = qaLines.join(" | ");
+          box.appendChild(qaNode);
+        }
 
         for (const def of BLOCK_DEFS) {
           const block = document.createElement("section");
@@ -818,6 +882,7 @@
 
         wrap.appendChild(box);
         messagesEl.appendChild(wrap);
+        trimMessageList();
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
 
@@ -858,6 +923,7 @@
         }
 
         messagesEl.appendChild(node);
+        trimMessageList();
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
 
@@ -900,22 +966,35 @@
           "finalPrompt 必须是最终可直接复制给AI出稿的完整提示词。"
         ].join(" ");
 
-        const resp = await fetch(OFFICIAL_DEEPSEEK_ENDPOINT, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + DEFAULT_DEEPSEEK_KEY
-          },
-          body: JSON.stringify({
-            model: DEFAULT_DEEPSEEK_MODEL,
-            messages: [
-              { role: "system", content: systemText },
-              { role: "user", content: userText }
-            ],
-            temperature: 0.2,
-            max_tokens: 850
-          })
-        });
+        let resp;
+        try {
+          resp = await fetchWithTimeoutAndRetry(
+            OFFICIAL_DEEPSEEK_ENDPOINT,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + DEFAULT_DEEPSEEK_KEY
+              },
+              body: JSON.stringify({
+                model: DEFAULT_DEEPSEEK_MODEL,
+                messages: [
+                  { role: "system", content: systemText },
+                  { role: "user", content: userText }
+                ],
+                temperature: 0.2,
+                max_tokens: 850
+              })
+            },
+            REQUEST_RETRY,
+            REQUEST_TIMEOUT_MS
+          );
+        } catch (error) {
+          if (error && error.name === "AbortError") {
+            throw new Error("请求超时，请重试（网络或模型响应过慢）");
+          }
+          throw new Error("请求失败，请检查网络后重试");
+        }
 
         const raw = await resp.text();
         let data = {};
@@ -1020,6 +1099,7 @@
         pushMessage(text, "user");
         inputEl.value = "";
         sendEl.disabled = true;
+        sendEl.textContent = "生成中...";
 
         try {
           const answer = await requestDeepSeekDirect(payload, { pageCount: latestPageTarget });
@@ -1040,16 +1120,18 @@
           }
           latestStructured = structured;
           const qa = await autoRepairByQa(latestSpec, 2);
+          latestQaResult = qa;
           latestAssistantText = structured.finalPrompt || answer;
 
           latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
-          renderDeliverable(latestStructured);
+          renderDeliverable(latestStructured, qa, latestSpec);
           renderQaResult(qa, latestSpec);
           pushMessage("已生成可交付结构化产物。可复制终版提示词直接出稿，或重写任一单块。", "assistant");
         } catch (error) {
           pushMessage("错误: " + error.message, "assistant");
         } finally {
           sendEl.disabled = false;
+          sendEl.textContent = "发送";
           inputEl.focus();
         }
       });
