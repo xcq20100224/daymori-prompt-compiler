@@ -1,0 +1,182 @@
+[
+  {
+    "id": "T01",
+    "prompt": "请为高一物理《牛顿第二定律》生成12页课堂PPT提示词，包含导入、推导、例题、互动练习和分层作业。",
+    "grade": "高一",
+    "subject": "物理",
+    "topic": "牛顿第二定律",
+    "pageCount": 12,
+    "requireHomeworkLevels": true
+  },
+  {
+    "id": "T02",
+    "prompt": "请为初二数学《一次函数》设计10页课堂PPT提示词，含导入、概念讲解、图像例题、互动题与课堂练习。",
+    "grade": "初二",
+    "subject": "数学",
+    "topic": "一次函数",
+    "pageCount": 10,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T03",
+    "prompt": "请为初一生物《细胞结构》生成8页课堂PPT提示词，要求有导入、重难点、互动题和分层作业。",
+    "grade": "初一",
+    "subject": "生物",
+    "topic": "细胞结构",
+    "pageCount": 8,
+    "requireHomeworkLevels": true
+  },
+  {
+    "id": "T04",
+    "prompt": "请为高二数学《导数应用》生成10页课堂PPT提示词，包含导入、例题、课堂练习、互动提问和分层作业。",
+    "grade": "高二",
+    "subject": "数学",
+    "topic": "导数应用",
+    "pageCount": 10,
+    "requireHomeworkLevels": true
+  },
+  {
+    "id": "T05",
+    "prompt": "请为初三化学《化学方程式配平》制作8页课堂PPT提示词，含方法讲解、典型题、互动环节与分层作业。",
+    "grade": "初三",
+    "subject": "化学",
+    "topic": "化学方程式配平",
+    "pageCount": 8,
+    "requireHomeworkLevels": true
+  },
+  {
+    "id": "T06",
+    "prompt": "请为高一英语《The Internet》做9页课堂PPT提示词，包含导入、词汇、阅读理解、口语互动和课后任务。",
+    "grade": "高一",
+    "subject": "英语",
+    "topic": "The Internet",
+    "pageCount": 9,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T07",
+    "prompt": "请为初三语文《出师表》设计10页课堂PPT提示词，要求有背景导入、文言讲解、互动提问和课堂练习。",
+    "grade": "初三",
+    "subject": "语文",
+    "topic": "出师表",
+    "pageCount": 10,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T08",
+    "prompt": "请为高三地理《城市化》设计12页课堂PPT提示词，含案例分析、互动讨论、课堂小测和分层作业。",
+    "grade": "高三",
+    "subject": "地理",
+    "topic": "城市化",
+    "pageCount": 12,
+    "requireHomeworkLevels": true
+  },
+  {
+    "id": "T09",
+    "prompt": "请为初二历史《洋务运动》制作9页课堂PPT提示词，包含导入、史料解读、互动题和小结。",
+    "grade": "初二",
+    "subject": "历史",
+    "topic": "洋务运动",
+    "pageCount": 9,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T10",
+    "prompt": "请为高二政治《价值判断与价值选择》生成10页课堂PPT提示词，要求有情境导入、案例讨论、互动问答与作业。",
+    "grade": "高二",
+    "subject": "政治",
+    "topic": "价值判断与价值选择",
+    "pageCount": 10,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T11",
+    "prompt": "请为初一数学《整式的加减》生成8页课堂PPT提示词，含概念讲解、例题训练、互动环节和课后作业。",
+    "grade": "初一",
+    "subject": "数学",
+    "topic": "整式的加减",
+    "pageCount": 8,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T12",
+    "prompt": "请为高一化学《离子反应》制作11页课堂PPT提示词，包含导入、实验现象、重难点、互动题与分层作业。",
+    "grade": "高一",
+    "subject": "化学",
+    "topic": "离子反应",
+    "pageCount": 11,
+    "requireHomeworkLevels": true
+  },
+  {
+    "id": "T13",
+    "prompt": "请为初二物理《压强》设计9页课堂PPT提示词，要求有生活导入、实验探究、例题讲解和课堂练习。",
+    "grade": "初二",
+    "subject": "物理",
+    "topic": "压强",
+    "pageCount": 9,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T14",
+    "prompt": "请为高二语文《蜀道难》制作10页课堂PPT提示词，包含背景导入、诗句赏析、互动提问和课堂小结。",
+    "grade": "高二",
+    "subject": "语文",
+    "topic": "蜀道难",
+    "pageCount": 10,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T15",
+    "prompt": "请为初三英语《Teenage Problems》生成8页课堂PPT提示词，含导入、词汇语法、口语互动和作业。",
+    "grade": "初三",
+    "subject": "英语",
+    "topic": "Teenage Problems",
+    "pageCount": 8,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T16",
+    "prompt": "请为高三生物《遗传规律》设计12页课堂PPT提示词，包含模型讲解、例题分析、互动练习和分层作业。",
+    "grade": "高三",
+    "subject": "生物",
+    "topic": "遗传规律",
+    "pageCount": 12,
+    "requireHomeworkLevels": true
+  },
+  {
+    "id": "T17",
+    "prompt": "请为初一地理《地球与地图》生成9页课堂PPT提示词，要求有导入、概念讲解、互动题和课堂练习。",
+    "grade": "初一",
+    "subject": "地理",
+    "topic": "地球与地图",
+    "pageCount": 9,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T18",
+    "prompt": "请为高二历史《辛亥革命》制作11页课堂PPT提示词，包含背景梳理、事件过程、互动讨论和作业。",
+    "grade": "高二",
+    "subject": "历史",
+    "topic": "辛亥革命",
+    "pageCount": 11,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T19",
+    "prompt": "请为初二道德与法治《网络生活新空间》设计8页课堂PPT提示词，要求含案例导入、规则讲解、互动活动与课后实践。",
+    "grade": "初二",
+    "subject": "道德与法治",
+    "topic": "网络生活新空间",
+    "pageCount": 8,
+    "requireHomeworkLevels": false
+  },
+  {
+    "id": "T20",
+    "prompt": "请为高一数学《集合与函数概念》生成10页课堂PPT提示词，包含导入、概念讲解、例题、互动题和分层作业。",
+    "grade": "高一",
+    "subject": "数学",
+    "topic": "集合与函数概念",
+    "pageCount": 10,
+    "requireHomeworkLevels": true
+  }
+]

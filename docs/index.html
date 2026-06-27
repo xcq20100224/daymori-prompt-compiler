@@ -323,6 +323,7 @@
       let latestStructured = null;
       let latestRawInput = "";
       let latestPageTarget = null;
+      let latestSpec = null;
 
       const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
       const OFFICIAL_DEEPSEEK_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
@@ -339,6 +340,11 @@
         { key: "homework", label: "作业" },
         { key: "finalPrompt", label: "终版提示词" }
       ];
+
+      function blockLabelOf(key) {
+        const hit = BLOCK_DEFS.find((b) => b.key === key);
+        return hit ? hit.label : key;
+      }
 
       async function copyText(text) {
         if (!text || !text.trim()) {
@@ -583,6 +589,186 @@
         };
       }
 
+      function detectDesiredStages(rawInput) {
+        const text = String(rawInput || "");
+        const candidates = ["导入", "讲解", "推导", "互动", "练习", "小结", "作业"];
+        const desired = candidates.filter((k) => text.includes(k));
+        if (desired.length) return desired;
+        return ["导入", "讲解", "互动", "练习", "小结", "作业"];
+      }
+
+      function buildSpecObject(rawInput, fields) {
+        const input = String(rawInput || "");
+        const pageCount = fields && fields.pageCount ? fields.pageCount : extractRequestedPageCount(input);
+        const requireHomeworkLevels = /分层作业|分层|基础层|提高层|挑战层|拓展层/.test(input);
+        return {
+          grade: (fields && fields.grade) || "",
+          subject: (fields && fields.subject) || "",
+          topic: (fields && fields.topic) || "",
+          pageCount: pageCount || null,
+          stages: detectDesiredStages(input),
+          requireHomeworkLevels
+        };
+      }
+
+      function countHit(items) {
+        return items.filter(Boolean).length;
+      }
+
+      function evaluateBySpec(spec, structured) {
+        const issues = [];
+        const checks = [];
+        const textPack = [structured.pagePlan, structured.pageDetails, structured.finalPrompt].join("\n");
+
+        for (const def of BLOCK_DEFS) {
+          const ok = !!(structured[def.key] && String(structured[def.key]).trim());
+          checks.push(ok);
+          if (!ok) issues.push(`缺失区块：${def.label}`);
+        }
+
+        const generatedPageCount = estimateGeneratedPageCount(structured);
+        let pageOk = true;
+        if (spec.pageCount) {
+          pageOk = generatedPageCount === spec.pageCount;
+          checks.push(pageOk);
+          if (!pageOk) issues.push(`页数不一致：要求${spec.pageCount}页，检测到${generatedPageCount || "未知"}页`);
+        }
+
+        const entityTargets = [spec.grade, spec.subject, spec.topic].filter(Boolean);
+        const entityHits = entityTargets.filter((e) => structured.finalPrompt.includes(e) || structured.goals.includes(e));
+        const entityCoverage = entityTargets.length ? entityHits.length / entityTargets.length : 1;
+        if (entityCoverage < 1) {
+          const missing = entityTargets.filter((e) => !entityHits.includes(e));
+          issues.push(`关键信息覆盖不足：${missing.join("/")}`);
+        }
+
+        const stageTargets = (spec.stages || []).filter(Boolean);
+        const stageHits = stageTargets.filter((s) => textPack.includes(s));
+        const stageCoverage = stageTargets.length ? stageHits.length / stageTargets.length : 1;
+        if (stageCoverage < 0.7) {
+          const miss = stageTargets.filter((s) => !stageHits.includes(s));
+          issues.push(`教学环节覆盖不足：${miss.join("/")}`);
+        }
+
+        let homeworkOk = true;
+        if (spec.requireHomeworkLevels) {
+          const hw = String(structured.homework || "");
+          homeworkOk = /(基础|基础层)/.test(hw) && /(提高|进阶|提高层)/.test(hw) && /(挑战|拓展|挑战层|拓展层)/.test(hw);
+          if (!homeworkOk) issues.push("作业分层不足：需包含基础/提高/挑战三层");
+        }
+
+        const hasPageFlow = /第\s*1\s*页/.test(textPack) && /第\s*2\s*页/.test(textPack);
+        const coherenceHints = [
+          hasPageFlow,
+          String(structured.finalPrompt || "").length >= 120,
+          String(structured.pageDetails || "").includes("第")
+        ];
+        const coherenceScore = countHit(coherenceHints) / coherenceHints.length;
+
+        const constraintChecks = checks.concat([homeworkOk]);
+        const constraintScore = countHit(constraintChecks) / constraintChecks.length;
+        const coverageScore = 0.5 * entityCoverage + 0.5 * stageCoverage;
+        const overallScore = 0.55 * constraintScore + 0.3 * coverageScore + 0.15 * coherenceScore;
+        const pass = constraintScore >= 0.95 && coverageScore >= 0.75 && overallScore >= 0.82;
+
+        return {
+          pass,
+          issues,
+          generatedPageCount,
+          scores: {
+            constraint: Number(constraintScore.toFixed(3)),
+            coverage: Number(coverageScore.toFixed(3)),
+            coherence: Number(coherenceScore.toFixed(3)),
+            overall: Number(overallScore.toFixed(3))
+          }
+        };
+      }
+
+      function mapIssuesToBlocks(issues) {
+        const keys = new Set();
+        for (const issue of issues) {
+          if (issue.includes("缺失区块")) {
+            for (const def of BLOCK_DEFS) {
+              if (issue.includes(def.label)) keys.add(def.key);
+            }
+          }
+          if (issue.includes("页数不一致")) {
+            keys.add("pagePlan");
+            keys.add("pageDetails");
+            keys.add("finalPrompt");
+          }
+          if (issue.includes("教学环节覆盖不足")) {
+            keys.add("pageDetails");
+            keys.add("finalPrompt");
+          }
+          if (issue.includes("作业分层不足")) {
+            keys.add("homework");
+          }
+          if (issue.includes("关键信息覆盖不足")) {
+            keys.add("goals");
+            keys.add("finalPrompt");
+          }
+        }
+        if (!keys.size) keys.add("finalPrompt");
+        return Array.from(keys);
+      }
+
+      function renderQaResult(qaResult, spec) {
+        const passText = qaResult.pass ? "PASS" : "FAIL";
+        const lines = [
+          `质检结果：${passText}`,
+          `约束符合度=${qaResult.scores.constraint}，内容覆盖度=${qaResult.scores.coverage}，教学连贯度=${qaResult.scores.coherence}，总分=${qaResult.scores.overall}`
+        ];
+        if (spec.pageCount) {
+          lines.push(`页数检测：要求${spec.pageCount}页，检测${qaResult.generatedPageCount || "未知"}页`);
+        }
+        if (qaResult.issues.length) {
+          lines.push("未通过项：" + qaResult.issues.join("；"));
+        }
+        pushMessage(lines.join("\n"), "assistant");
+      }
+
+      async function rewriteBlockBySpec(blockKey, reason) {
+        const keep = BLOCK_DEFS
+          .filter((b) => b.key !== blockKey)
+          .map((b) => `${b.label}:\n${latestStructured[b.key] || ""}`)
+          .join("\n\n");
+
+        const specText = latestSpec ? JSON.stringify(latestSpec, null, 2) : "{}";
+        const prompt = [
+          "你只重写一个结构块，返回纯文本，不要解释。",
+          `目标块：${blockLabelOf(blockKey)}`,
+          "失败原因：",
+          reason,
+          "[规格对象]",
+          specText,
+          "[其余块保持不变，仅供参考]",
+          keep,
+          "[用户原始需求]",
+          latestRawInput
+        ].join("\n\n");
+
+        const rewritten = await requestDeepSeekDirect(prompt, {
+          system: "你是课堂PPT结构块修复器，只输出目标块正文。",
+          pageCount: latestSpec && latestSpec.pageCount
+        });
+        return rewritten.trim();
+      }
+
+      async function autoRepairByQa(spec, maxRounds = 2) {
+        for (let i = 0; i < maxRounds; i++) {
+          const qa = evaluateBySpec(spec, latestStructured);
+          if (qa.pass) return qa;
+
+          const blocks = mapIssuesToBlocks(qa.issues);
+          for (const blockKey of blocks) {
+            const reason = qa.issues.join("；");
+            latestStructured[blockKey] = await rewriteBlockBySpec(blockKey, reason);
+          }
+        }
+        return evaluateBySpec(spec, latestStructured);
+      }
+
       function renderDeliverable(structured) {
         const wrap = document.createElement("article");
         wrap.className = "msg";
@@ -639,27 +825,9 @@
         if (!latestStructured || !latestRawInput) {
           throw new Error("请先生成一次结果");
         }
-
-        const keep = BLOCK_DEFS.filter((b) => b.key !== blockKey).map((b) => `${b.label}:\n${latestStructured[b.key] || ""}`).join("\n\n");
-
-        const blockLabel = (BLOCK_DEFS.find((b) => b.key === blockKey) || { label: blockKey }).label;
-        const prompt = [
-          "你只需要重写一个结构块，返回纯文本，不要解释。",
-          `目标块: ${blockLabel}`,
-          "其余块保持不变（供参考）：",
-          keep,
-          "用户原始需求：",
-          latestRawInput,
-          "请直接输出目标块内容。"
-        ].join("\n\n");
-
-        const rewritten = await requestDeepSeekDirect(prompt, {
-          system: "你是课堂PPT提示词改写器，只输出被要求的单块正文。"
-        });
-
-        latestStructured[blockKey] = rewritten.trim();
+        latestStructured[blockKey] = await rewriteBlockBySpec(blockKey, "用户手动触发单块重写");
         latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
-        pushMessage(`${blockLabel} 已重写完成。`, "assistant");
+        pushMessage(`${blockLabelOf(blockKey)} 已重写完成。`, "assistant");
         renderDeliverable(latestStructured);
       }
 
@@ -828,6 +996,7 @@
 
         const semanticPack = buildSemanticPack(text, contextText);
         latestPageTarget = semanticPack.fields.pageCount || null;
+        latestSpec = buildSpecObject(text, semanticPack.fields);
         const pageCountHint = latestPageTarget
           ? `\n\n[硬约束-页数]\n用户明确要求${latestPageTarget}页，必须严格输出${latestPageTarget}页。`
           : "";
@@ -870,9 +1039,12 @@
             }
           }
           latestStructured = structured;
+          const qa = await autoRepairByQa(latestSpec, 2);
           latestAssistantText = structured.finalPrompt || answer;
 
-          renderDeliverable(structured);
+          latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
+          renderDeliverable(latestStructured);
+          renderQaResult(qa, latestSpec);
           pushMessage("已生成可交付结构化产物。可复制终版提示词直接出稿，或重写任一单块。", "assistant");
         } catch (error) {
           pushMessage("错误: " + error.message, "assistant");
