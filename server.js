@@ -1,21 +1,90 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const dotenv = require("dotenv");
 const multer = require("multer");
 const mammoth = require("mammoth");
 const cors = require("cors");
+const crypto = require("crypto");
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const AUDIT_LOG_ENABLED = String(process.env.AUDIT_LOG_ENABLED || "true").toLowerCase() !== "false";
+const AUDIT_LOG_DIR = process.env.AUDIT_LOG_DIR || path.join(__dirname, "logs");
+const AUDIT_LOG_FILE = path.join(AUDIT_LOG_DIR, "audit.log");
+const AUDIT_SALT = process.env.AUDIT_SALT || "daymori-audit-salt";
+
+function parseAllowedOrigins() {
+  const raw = String(process.env.ALLOWED_ORIGINS || "").trim();
+  if (!raw) return [];
+  return raw.split(",").map((s) => s.trim()).filter(Boolean);
+}
+
+const ALLOWED_ORIGINS = parseAllowedOrigins();
+
+function corsOriginHandler(origin, callback) {
+  if (!origin) return callback(null, true);
+  if (ALLOWED_ORIGINS.length === 0) return callback(null, true);
+  if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+  return callback(new Error("CORS blocked: origin not allowed"));
+}
+
+function hashValue(value) {
+  return crypto.createHash("sha256").update(`${AUDIT_SALT}:${String(value || "")}`).digest("hex").slice(0, 16);
+}
+
+function getClientIp(req) {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (typeof forwarded === "string" && forwarded.trim()) {
+    return forwarded.split(",")[0].trim();
+  }
+  return req.ip || req.socket?.remoteAddress || "unknown";
+}
+
+function sanitizeAuditDetail(detail) {
+  if (!detail) return "";
+  const text = String(detail);
+  if (text.length <= 220) return text;
+  return `${text.slice(0, 220)}...[truncated]`;
+}
+
+function writeAuditLog(event) {
+  if (!AUDIT_LOG_ENABLED) return;
+  const line = `${JSON.stringify({ ts: new Date().toISOString(), ...event })}\n`;
+  try {
+    fs.mkdirSync(AUDIT_LOG_DIR, { recursive: true });
+    fs.appendFileSync(AUDIT_LOG_FILE, line, "utf8");
+  } catch (error) {
+    console.error("audit_log_write_failed", error.message);
+  }
+}
+
+function baseAuditEvent(req) {
+  return {
+    requestId: req.requestId,
+    route: req.path,
+    method: req.method,
+    ipHash: hashValue(getClientIp(req)),
+    uaHash: hashValue(req.headers["user-agent"] || ""),
+    originHash: hashValue(req.headers.origin || ""),
+    provider: (process.env.LLM_PROVIDER || "deepseek").toLowerCase().trim()
+  };
+}
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 15 * 1024 * 1024, files: 2 }
 });
 
 app.use(express.json({ limit: "1mb" }));
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: corsOriginHandler }));
+app.use((req, res, next) => {
+  req.requestId = crypto.randomUUID();
+  res.setHeader("x-request-id", req.requestId);
+  next();
+});
 app.use(express.static(path.join(__dirname, "public")));
 
 async function parseUploadedFile(file) {
@@ -202,20 +271,32 @@ function validateCompiledJson(parsed) {
   return { ok: true };
 }
 
+function describeUpstreamError(error) {
+  const cause = error && error.cause ? error.cause : {};
+  const code = cause.code || error.code || "UNKNOWN";
+  const message = cause.message || (error && error.message ? error.message : String(error));
+  return `upstream_connect_error(${code}): ${message}`;
+}
+
 async function callProviderText({ providerConfig, systemPrompt, userPrompt, maxTokens = 520 }) {
   if (providerConfig.type === "responses") {
-    const upstream = await fetch(providerConfig.endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${providerConfig.apiKey}`
-      },
-      body: JSON.stringify({
-        model: providerConfig.model,
-        input: `${systemPrompt}\n\n${userPrompt}`,
-        max_output_tokens: maxTokens
-      })
-    });
+    let upstream;
+    try {
+      upstream = await fetch(providerConfig.endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${providerConfig.apiKey}`
+        },
+        body: JSON.stringify({
+          model: providerConfig.model,
+          input: `${systemPrompt}\n\n${userPrompt}`,
+          max_output_tokens: maxTokens
+        })
+      });
+    } catch (error) {
+      return { ok: false, status: 502, detail: describeUpstreamError(error) };
+    }
 
     const rawText = await upstream.text();
     if (!upstream.ok) return { ok: false, status: upstream.status, detail: rawText.slice(0, 1200) };
@@ -230,22 +311,27 @@ async function callProviderText({ providerConfig, systemPrompt, userPrompt, maxT
     return { ok: true, text: data.output_text || "", raw: data };
   }
 
-  const upstream = await fetch(providerConfig.endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${providerConfig.apiKey}`
-    },
-    body: JSON.stringify({
-      model: providerConfig.model,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt }
-      ],
-      temperature: 0.2,
-      max_tokens: maxTokens
-    })
-  });
+  let upstream;
+  try {
+    upstream = await fetch(providerConfig.endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${providerConfig.apiKey}`
+      },
+      body: JSON.stringify({
+        model: providerConfig.model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt }
+        ],
+        temperature: 0.2,
+        max_tokens: maxTokens
+      })
+    });
+  } catch (error) {
+    return { ok: false, status: 502, detail: describeUpstreamError(error) };
+  }
 
   const rawText = await upstream.text();
   if (!upstream.ok) return { ok: false, status: upstream.status, detail: rawText.slice(0, 1200) };
@@ -343,22 +429,27 @@ async function compilePromptWithRetry({ providerConfig, ingestorPack }) {
 }
 
 async function callChatCompletions({ endpoint, apiKey, model, input }) {
-  const upstream = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role: "system", content: "你是高信息密度助手，回答要清晰、可执行、低废话。" },
-        { role: "user", content: input }
-      ],
-      temperature: 0.2,
-      max_tokens: 420
-    })
-  });
+  let upstream;
+  try {
+    upstream = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: "你是高信息密度助手，回答要清晰、可执行、低废话。" },
+          { role: "user", content: input }
+        ],
+        temperature: 0.2,
+        max_tokens: 420
+      })
+    });
+  } catch (error) {
+    return { ok: false, status: 502, detail: describeUpstreamError(error) };
+  }
 
   const rawText = await upstream.text();
   if (!upstream.ok) {
@@ -376,18 +467,23 @@ async function callChatCompletions({ endpoint, apiKey, model, input }) {
 }
 
 async function callResponses({ endpoint, apiKey, model, input }) {
-  const upstream = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model,
-      input,
-      max_output_tokens: 420
-    })
-  });
+  let upstream;
+  try {
+    upstream = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model,
+        input,
+        max_output_tokens: 420
+      })
+    });
+  } catch (error) {
+    return { ok: false, status: 502, detail: describeUpstreamError(error) };
+  }
 
   const rawText = await upstream.text();
   if (!upstream.ok) {
@@ -404,10 +500,127 @@ async function callResponses({ endpoint, apiKey, model, input }) {
   return { ok: true, data, text: data.output_text || "" };
 }
 
-app.post("/api/chat", upload.array("files", 2), async (req, res) => {
+app.get("/api/audit/status", (req, res) => {
+  return res.json({
+    ok: true,
+    auditEnabled: AUDIT_LOG_ENABLED,
+    auditLogFile: AUDIT_LOG_FILE,
+    allowedOriginsCount: ALLOWED_ORIGINS.length
+  });
+});
+
+app.post("/api/llm-proxy", async (req, res) => {
+  const startedAt = Date.now();
+  const audit = baseAuditEvent(req);
   try {
     const providerConfig = getProviderConfig();
     if (!providerConfig.apiKey) {
+      writeAuditLog({
+        ...audit,
+        outcome: "error",
+        status: 500,
+        latencyMs: Date.now() - startedAt,
+        reason: `missing_${providerConfig.keyEnv}`
+      });
+      return res.status(500).json({
+        error: "Missing API key",
+        detail: `服务端未配置 ${providerConfig.keyEnv}，请在 .env 中设置后重启服务`
+      });
+    }
+
+    const system = req.body && typeof req.body.system === "string" ? req.body.system : "你是高信息密度助手，回答要清晰、可执行、低废话。";
+    const userText = req.body && typeof req.body.userText === "string" ? req.body.userText : "";
+    const maxTokensRaw = req.body && req.body.maxTokens ? Number(req.body.maxTokens) : 850;
+    const maxTokens = Number.isFinite(maxTokensRaw) ? Math.min(Math.max(maxTokensRaw, 80), 1200) : 850;
+
+    if (!userText.trim()) {
+      writeAuditLog({
+        ...audit,
+        outcome: "error",
+        status: 400,
+        latencyMs: Date.now() - startedAt,
+        reason: "empty_user_text"
+      });
+      return res.status(400).json({ error: "userText is required" });
+    }
+
+    let result;
+    if (providerConfig.type === "responses") {
+      result = await callResponses({
+        endpoint: providerConfig.endpoint,
+        apiKey: providerConfig.apiKey,
+        model: providerConfig.model,
+        input: `${system}\n\n${userText}`
+      });
+    } else {
+      result = await callChatCompletions({
+        endpoint: providerConfig.endpoint,
+        apiKey: providerConfig.apiKey,
+        model: providerConfig.model,
+        input: userText
+      });
+    }
+
+    if (!result.ok) {
+      writeAuditLog({
+        ...audit,
+        outcome: "error",
+        status: result.status,
+        model: providerConfig.model,
+        latencyMs: Date.now() - startedAt,
+        promptChars: userText.length,
+        reason: sanitizeAuditDetail(result.detail)
+      });
+      return res.status(result.status).json({
+        error: `${providerConfig.provider} API error`,
+        detail: result.detail
+      });
+    }
+
+    const text = typeof result.text === "string" ? result.text : "";
+    writeAuditLog({
+      ...audit,
+      outcome: "ok",
+      status: 200,
+      model: providerConfig.model,
+      latencyMs: Date.now() - startedAt,
+      promptChars: userText.length,
+      outputChars: text.length
+    });
+
+    return res.json({
+      text,
+      provider: providerConfig.provider,
+      model: providerConfig.model
+    });
+  } catch (error) {
+    writeAuditLog({
+      ...audit,
+      outcome: "error",
+      status: 500,
+      latencyMs: Date.now() - startedAt,
+      reason: sanitizeAuditDetail(error && error.message ? error.message : String(error))
+    });
+    return res.status(500).json({
+      error: "Server error",
+      detail: error && error.message ? error.message : String(error)
+    });
+  }
+});
+
+app.post("/api/chat", upload.array("files", 2), async (req, res) => {
+  const startedAt = Date.now();
+  const audit = baseAuditEvent(req);
+  try {
+    const providerConfig = getProviderConfig();
+    if (!providerConfig.apiKey) {
+      writeAuditLog({
+        ...audit,
+        outcome: "error",
+        status: 500,
+        latencyMs: Date.now() - startedAt,
+        reason: `missing_${providerConfig.keyEnv}`
+      });
       return res.status(500).json({
         error: "Missing API key",
         detail: `服务端未配置 ${providerConfig.keyEnv}，请在 .env 中设置后重启服务`
@@ -418,6 +631,13 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
     const files = Array.isArray(req.files) ? req.files : [];
 
     if (!userInput && files.length === 0) {
+      writeAuditLog({
+        ...audit,
+        outcome: "error",
+        status: 400,
+        latencyMs: Date.now() - startedAt,
+        reason: "empty_input_and_files"
+      });
       return res.status(400).json({ error: "message or files is required" });
     }
 
@@ -434,6 +654,16 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
     const result = await compilePromptWithRetry({ providerConfig, ingestorPack });
 
     if (!result.ok) {
+      writeAuditLog({
+        ...audit,
+        outcome: "error",
+        status: result.status,
+        model: providerConfig.model,
+        latencyMs: Date.now() - startedAt,
+        promptChars: userInput.length,
+        fileCount: files.length,
+        reason: sanitizeAuditDetail(result.detail)
+      });
       return res.status(result.status).json({
         error: `${providerConfig.provider} API error`,
         detail: result.detail
@@ -450,6 +680,18 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
       compiled.finalPrompt
     ].join("\n");
 
+    writeAuditLog({
+      ...audit,
+      outcome: "ok",
+      status: 200,
+      model: providerConfig.model,
+      latencyMs: Date.now() - startedAt,
+      promptChars: userInput.length,
+      fileCount: files.length,
+      outputChars: compiled.finalPrompt.length,
+      compileRetries: result.compileRetries
+    });
+
     return res.json({
       text: displayText,
       compiled,
@@ -459,6 +701,13 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
       raw: result.raw
     });
   } catch (error) {
+    writeAuditLog({
+      ...audit,
+      outcome: "error",
+      status: 500,
+      latencyMs: Date.now() - startedAt,
+      reason: sanitizeAuditDetail(error && error.message ? error.message : String(error))
+    });
     return res.status(500).json({
       error: "Server error",
       detail: error && error.message ? error.message : String(error)
