@@ -1,13 +1,14 @@
 {
   "name": "prompt-min-platform",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Minimal chat platform with GPT-5.3-Codex",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "bench:teacher": "node tools/run-teacher-benchmark.mjs"
+    "bench:teacher": "node tools/run-teacher-benchmark.mjs",
+    "bench:teacher:mock": "node tools/run-teacher-benchmark.mjs --mock"
   },
   "dependencies": {
     "cors": "^2.8.5",

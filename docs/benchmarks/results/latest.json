@@ -1,0 +1,561 @@
+{
+  "runAt": "2026-06-27T06:09:55.242Z",
+  "runDate": "2026-06-27",
+  "model": "mock-teacher-benchmark",
+  "mockMode": true,
+  "total": 20,
+  "metrics": {
+    "initial": {
+      "pageAccuracy": 0.9,
+      "completeRate": 0.75,
+      "passRate": 0.65
+    },
+    "final": {
+      "pageAccuracy": 1,
+      "completeRate": 1,
+      "passRate": 1
+    }
+  },
+  "failureAttribution": {
+    "initial": {
+      "missing_blocks": 5,
+      "homework_levels": 2,
+      "page_mismatch": 2
+    },
+    "final": {}
+  },
+  "strategyStats": {
+    "homework_layer": {
+      "applied": 1,
+      "resolved": 1,
+      "winRate": 1
+    },
+    "schema_rewrite": {
+      "applied": 5,
+      "resolved": 5,
+      "winRate": 1
+    },
+    "page_reconcile": {
+      "applied": 1,
+      "resolved": 1,
+      "winRate": 1
+    }
+  },
+  "results": [
+    {
+      "id": "T01",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 12,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 12,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T02",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 10,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 10,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T03",
+      "initial": {
+        "pass": false,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 8,
+        "homeworkOk": false,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 8,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [
+        "homework_levels"
+      ],
+      "finalFailureTypes": [],
+      "strategyHistory": [
+        {
+          "strategy": "homework_layer",
+          "beforePass": false,
+          "afterPass": true,
+          "remainingFailures": []
+        }
+      ]
+    },
+    {
+      "id": "T04",
+      "initial": {
+        "pass": false,
+        "complete": false,
+        "pageOk": true,
+        "gotPage": 10,
+        "homeworkOk": true,
+        "missingBlocks": [
+          "interaction"
+        ]
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 10,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [
+        "missing_blocks"
+      ],
+      "finalFailureTypes": [],
+      "strategyHistory": [
+        {
+          "strategy": "schema_rewrite",
+          "beforePass": false,
+          "afterPass": true,
+          "remainingFailures": []
+        }
+      ]
+    },
+    {
+      "id": "T05",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 8,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 8,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T06",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 9,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 9,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T07",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 10,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 10,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T08",
+      "initial": {
+        "pass": false,
+        "complete": false,
+        "pageOk": true,
+        "gotPage": 12,
+        "homeworkOk": true,
+        "missingBlocks": [
+          "interaction"
+        ]
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 12,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [
+        "missing_blocks"
+      ],
+      "finalFailureTypes": [],
+      "strategyHistory": [
+        {
+          "strategy": "schema_rewrite",
+          "beforePass": false,
+          "afterPass": true,
+          "remainingFailures": []
+        }
+      ]
+    },
+    {
+      "id": "T09",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 9,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 9,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T10",
+      "initial": {
+        "pass": false,
+        "complete": true,
+        "pageOk": false,
+        "gotPage": 9,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 10,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [
+        "page_mismatch"
+      ],
+      "finalFailureTypes": [],
+      "strategyHistory": [
+        {
+          "strategy": "page_reconcile",
+          "beforePass": false,
+          "afterPass": true,
+          "remainingFailures": []
+        }
+      ]
+    },
+    {
+      "id": "T11",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 8,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 8,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T12",
+      "initial": {
+        "pass": false,
+        "complete": false,
+        "pageOk": true,
+        "gotPage": 11,
+        "homeworkOk": false,
+        "missingBlocks": [
+          "interaction"
+        ]
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 11,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [
+        "missing_blocks",
+        "homework_levels"
+      ],
+      "finalFailureTypes": [],
+      "strategyHistory": [
+        {
+          "strategy": "schema_rewrite",
+          "beforePass": false,
+          "afterPass": true,
+          "remainingFailures": []
+        }
+      ]
+    },
+    {
+      "id": "T13",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 9,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 9,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T14",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 10,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 10,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T15",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 8,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 8,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T16",
+      "initial": {
+        "pass": false,
+        "complete": false,
+        "pageOk": true,
+        "gotPage": 12,
+        "homeworkOk": true,
+        "missingBlocks": [
+          "interaction"
+        ]
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 12,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [
+        "missing_blocks"
+      ],
+      "finalFailureTypes": [],
+      "strategyHistory": [
+        {
+          "strategy": "schema_rewrite",
+          "beforePass": false,
+          "afterPass": true,
+          "remainingFailures": []
+        }
+      ]
+    },
+    {
+      "id": "T17",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 9,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 9,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T18",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 11,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 11,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T19",
+      "initial": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 8,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 8,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [],
+      "finalFailureTypes": [],
+      "strategyHistory": []
+    },
+    {
+      "id": "T20",
+      "initial": {
+        "pass": false,
+        "complete": false,
+        "pageOk": false,
+        "gotPage": 9,
+        "homeworkOk": true,
+        "missingBlocks": [
+          "interaction"
+        ]
+      },
+      "final": {
+        "pass": true,
+        "complete": true,
+        "pageOk": true,
+        "gotPage": 10,
+        "homeworkOk": true,
+        "missingBlocks": []
+      },
+      "initialFailureTypes": [
+        "missing_blocks",
+        "page_mismatch"
+      ],
+      "finalFailureTypes": [],
+      "strategyHistory": [
+        {
+          "strategy": "schema_rewrite",
+          "beforePass": false,
+          "afterPass": true,
+          "remainingFailures": []
+        }
+      ]
+    }
+  ]
+}

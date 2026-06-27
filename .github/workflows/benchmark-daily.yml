@@ -1,0 +1,44 @@
+name: Benchmark Daily Report
+
+on:
+  schedule:
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Teacher Benchmark
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL || 'deepseek-chat' }}
+          BENCH_PAGE_THRESHOLD: "0.95"
+          BENCH_COMPLETE_THRESHOLD: "0.95"
+        run: npm run bench:teacher
+
+      - name: Commit Benchmark Artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/benchmarks/results docs/benchmarks/reports
+          if git diff --cached --quiet; then
+            echo "No benchmark artifact changes"
+          else
+            git commit -m "chore: update benchmark daily report"
+            git push
+          fi

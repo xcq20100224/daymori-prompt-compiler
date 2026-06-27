@@ -63,6 +63,61 @@
         border-bottom: 1px solid var(--line);
       }
 
+      .bench {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 10px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .bench-card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #0a0a0a;
+        padding: 10px 12px;
+      }
+
+      .bench-title {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      .bench-kpi {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .bench-pill {
+        border: 1px solid #303033;
+        border-radius: 10px;
+        padding: 8px;
+        background: #101012;
+      }
+
+      .bench-pill .k {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .bench-pill .v {
+        margin-top: 4px;
+        font-size: 14px;
+      }
+
+      .bench-meta,
+      .bench-list {
+        font-size: 12px;
+        color: #d8d8db;
+        line-height: 1.45;
+      }
+
+      .bench-list {
+        white-space: pre-wrap;
+      }
+
       .intro-card {
         border: 1px solid var(--line);
         border-radius: 14px;
@@ -280,6 +335,10 @@
           grid-template-columns: 1fr;
         }
 
+        .bench {
+          grid-template-columns: 1fr;
+        }
+
         .app {
           height: 95vh;
           border-radius: 20px;
@@ -301,6 +360,21 @@
         <article class="intro-card">
           <div class="intro-label">你会得到什么</div>
           <div class="intro-value">可直接给 AI 使用的课堂PPT终版提示词，可一键复制并立即出稿。</div>
+        </article>
+      </section>
+      <section class="bench">
+        <article class="bench-card">
+          <div class="bench-title">评测工程化看板（自动跑批 + 策略修复器）</div>
+          <div id="benchKpi" class="bench-kpi">
+            <div class="bench-pill"><div class="k">Final Pass</div><div class="v">--</div></div>
+            <div class="bench-pill"><div class="k">Page Accuracy</div><div class="v">--</div></div>
+            <div class="bench-pill"><div class="k">Completeness</div><div class="v">--</div></div>
+          </div>
+        </article>
+        <article class="bench-card">
+          <div class="bench-title">失败归因 / 策略效果</div>
+          <div id="benchMeta" class="bench-meta">加载中...</div>
+          <div id="benchList" class="bench-list"></div>
         </article>
       </section>
       <section id="messages" class="messages">
@@ -336,6 +410,9 @@
       const formEl = document.getElementById("composer");
       const inputEl = document.getElementById("input");
       const sendEl = document.getElementById("send");
+      const benchKpiEl = document.getElementById("benchKpi");
+      const benchMetaEl = document.getElementById("benchMeta");
+      const benchListEl = document.getElementById("benchList");
 
       let contextText = "";
       let latestAssistantText = "";
@@ -348,13 +425,10 @@
       const MAX_MESSAGES = 36;
       const REQUEST_TIMEOUT_MS = 28000;
       const REQUEST_RETRY = 1;
+      const BACKEND_PROXY_ENDPOINT = location.protocol === "file:" ? "http://localhost:3000/api/llm-proxy" : "/api/llm-proxy";
 
       const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
-      const OFFICIAL_DEEPSEEK_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
-      const DEFAULT_DEEPSEEK_KEY = [
-        "sk-5ba1c769ac7d4708",
-        "88963788d1a7eaab"
-      ].join("");
+      const BENCH_SUMMARY_ENDPOINT = "./benchmarks/results/latest-summary.json";
 
       const BLOCK_DEFS = [
         { key: "goals", label: "教学目标" },
@@ -368,6 +442,45 @@
       function blockLabelOf(key) {
         const hit = BLOCK_DEFS.find((b) => b.key === key);
         return hit ? hit.label : key;
+      }
+
+      function pct(n) {
+        if (typeof n !== "number" || Number.isNaN(n)) return "--";
+        return `${(n * 100).toFixed(1)}%`;
+      }
+
+      async function loadBenchmarkBoard() {
+        try {
+          const res = await fetch(BENCH_SUMMARY_ENDPOINT, { cache: "no-store" });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+
+          const finalMetrics = (data && data.metrics && data.metrics.final) || {};
+          const kpi = [
+            { k: "Final Pass", v: pct(finalMetrics.passRate) },
+            { k: "Page Accuracy", v: pct(finalMetrics.pageAccuracy) },
+            { k: "Completeness", v: pct(finalMetrics.completeRate) }
+          ];
+          benchKpiEl.innerHTML = kpi.map((x) => `<div class="bench-pill"><div class="k">${x.k}</div><div class="v">${x.v}</div></div>`).join("");
+
+          benchMetaEl.textContent = `runDate=${data.runDate || "-"} | model=${data.model || "-"} | total=${data.total || 0}`;
+
+          const topFail = Object.entries((data.failureAttribution && data.failureAttribution.initial) || {})
+            .slice(0, 3)
+            .map(([name, count]) => `${name}:${count}`)
+            .join(" | ");
+          const topStrategy = Object.entries(data.strategyStats || {})
+            .slice(0, 3)
+            .map(([name, s]) => `${name}:${(Number(s.winRate || 0) * 100).toFixed(1)}%`)
+            .join(" | ");
+          benchListEl.textContent = [
+            `top-fail: ${topFail || "none"}`,
+            `strategy-win: ${topStrategy || "none"}`
+          ].join("\n");
+        } catch (error) {
+          benchMetaEl.textContent = "评测看板加载失败";
+          benchListEl.textContent = String(error && error.message ? error.message : error);
+        }
       }
 
       async function copyText(text) {
@@ -969,21 +1082,17 @@
         let resp;
         try {
           resp = await fetchWithTimeoutAndRetry(
-            OFFICIAL_DEEPSEEK_ENDPOINT,
+            BACKEND_PROXY_ENDPOINT,
             {
               method: "POST",
               headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + DEFAULT_DEEPSEEK_KEY
+                "Content-Type": "application/json"
               },
               body: JSON.stringify({
-                model: DEFAULT_DEEPSEEK_MODEL,
-                messages: [
-                  { role: "system", content: systemText },
-                  { role: "user", content: userText }
-                ],
-                temperature: 0.2,
-                max_tokens: 850
+                system: systemText,
+                userText,
+                maxTokens: 850,
+                model: DEFAULT_DEEPSEEK_MODEL
               })
             },
             REQUEST_RETRY,
@@ -1006,7 +1115,7 @@
 
         if (!resp.ok) {
           const detail = data.detail || data.error || (data.error && data.error.message) || raw.slice(0, 220);
-          throw new Error("DeepSeek 请求失败(" + resp.status + "): " + detail);
+          throw new Error("服务请求失败(" + resp.status + "): " + detail);
         }
 
         const text = data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : "";
@@ -1135,6 +1244,8 @@
           inputEl.focus();
         }
       });
+
+      loadBenchmarkBoard();
 
     </script>
   </body>

@@ -20,8 +20,7 @@ Update workflow:
 Notes:
 
 - Pages version is a static frontend in `docs/index.html`.
-- It supports provider switch and browser-local API key save.
-- API key is only stored in your own browser localStorage.
+- 生产建议走后端代理模式（`/api/llm-proxy`），不要在前端保存 API key。
 
 ## Permanent URL (Render)
 
@@ -77,6 +76,11 @@ Update workflow:
 
    - `LLM_PROVIDER=deepseek`
    - Fill `DEEPSEEK_API_KEY=...`
+    - Optional but recommended:
+       - `ALLOWED_ORIGINS=https://your-domain.com,https://your-backup-domain.com`
+       - `AUDIT_LOG_ENABLED=true`
+       - `AUDIT_LOG_DIR=./logs`
+       - `AUDIT_SALT=your-random-salt`
 
 3. Start:
 
@@ -89,6 +93,8 @@ Update workflow:
 ## Notes
 
 - Backend endpoint: `POST /api/chat`
+- Secure proxy endpoint for frontend LLM requests: `POST /api/llm-proxy`
+- Audit status endpoint: `GET /api/audit/status`
 - Multi-provider gateway with provider switch by env:
    - `deepseek` (default)
    - `qwen`
@@ -97,3 +103,47 @@ Update workflow:
 - Supports drag-and-drop upload (up to 2 files, including `.docx` text extraction).
 - Server-side key mode only: frontend never asks users to enter key.
 - Optional model override with `LLM_MODEL`.
+
+## Benchmark Engineering (Run Batch + Daily Report + Failure Attribution)
+
+Teacher benchmark now supports an execution loop upgrade:
+
+- Run batch automatically over `docs/benchmarks/teacher-prompts.json`
+- Attribute failures by type (`missing_blocks`, `page_mismatch`, `homework_levels`, `invalid_json`, `api_error`)
+- Strategy-based fixer (not block-only rewrite):
+   - `schema_rewrite` for structure/schema failures
+   - `page_reconcile` for page-count mismatch
+   - `homework_layer` for missing layered homework
+- Output daily artifacts for dashboard and history:
+   - `docs/benchmarks/results/latest-summary.json`
+   - `docs/benchmarks/results/latest.json`
+   - `docs/benchmarks/results/YYYY-MM-DD.json`
+   - `docs/benchmarks/reports/latest.md`
+   - `docs/benchmarks/reports/YYYY-MM-DD.md`
+
+### Commands
+
+- Real benchmark run (needs `DEEPSEEK_API_KEY`):
+
+   npm run bench:teacher
+
+- Mock run for local verification (no API key required):
+
+   npm run bench:teacher:mock
+
+### CI Automation
+
+Workflow `Benchmark Daily Report` runs daily and can be triggered manually:
+
+- File: `.github/workflows/benchmark-daily.yml`
+- Required secret: `DEEPSEEK_API_KEY`
+- Auto-commits benchmark artifacts under `docs/benchmarks/results` and `docs/benchmarks/reports`
+
+Because GitHub Pages deploy watches `docs/**`, benchmark report updates are published automatically. After deployment, refresh desktop/mobile page to view the latest benchmark board.
+
+## Security Baseline Checklist
+
+1. Never put API keys in frontend code or browser storage.
+2. Configure `ALLOWED_ORIGINS` in production to block untrusted origins.
+3. Keep `AUDIT_LOG_ENABLED=true` and rotate files in `AUDIT_LOG_DIR` regularly.
+4. Set a private `AUDIT_SALT` to anonymize audit hashes.

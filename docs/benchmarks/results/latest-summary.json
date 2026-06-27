@@ -1,0 +1,44 @@
+{
+  "runDate": "2026-06-27",
+  "runAt": "2026-06-27T06:09:55.242Z",
+  "model": "mock-teacher-benchmark",
+  "total": 20,
+  "metrics": {
+    "initial": {
+      "pageAccuracy": 0.9,
+      "completeRate": 0.75,
+      "passRate": 0.65
+    },
+    "final": {
+      "pageAccuracy": 1,
+      "completeRate": 1,
+      "passRate": 1
+    }
+  },
+  "failureAttribution": {
+    "initial": {
+      "missing_blocks": 5,
+      "homework_levels": 2,
+      "page_mismatch": 2
+    },
+    "final": {}
+  },
+  "strategyStats": {
+    "homework_layer": {
+      "applied": 1,
+      "resolved": 1,
+      "winRate": 1
+    },
+    "schema_rewrite": {
+      "applied": 5,
+      "resolved": 5,
+      "winRate": 1
+    },
+    "page_reconcile": {
+      "applied": 1,
+      "resolved": 1,
+      "winRate": 1
+    }
+  },
+  "remainingFailed": []
+}
