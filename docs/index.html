@@ -1388,8 +1388,7 @@
           if (spec && spec.pageCount) {
             qaLines.push(`页数要求=${spec.pageCount}，检测=${qaResult.generatedPageCount || "未知"}`);
           }
-          const firstFix = recommendFirstFix(spec || {}, structured || {}, qaResult || {});
-          qaLines.push(qaResult.pass ? "状态：可直接出稿" : `状态：自动修正中，建议先点“${firstFix || "一键修正页数"}”`);
+          qaLines.push(qaResult.pass ? "状态：可直接出稿" : "状态：自动修正中（系统后台优先修正页数->可执行->作业分层）");
           qaNode.textContent = qaLines.join(" | ");
           box.appendChild(qaNode);
         }
