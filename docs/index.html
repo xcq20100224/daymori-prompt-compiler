@@ -6,12 +6,12 @@
     <title>Daymori Prompt Compiler</title>
     <style>
       :root {
-        --bg: #0d0d0d;
-        --panel: #161616;
-        --line: #2b2b2b;
-        --text: #f3f3f3;
-        --muted: #ababab;
-        --brand: #c08a53;
+        --bg: #000000;
+        --panel: #0a0a0a;
+        --line: #252525;
+        --text: #f5f5f7;
+        --muted: #a1a1aa;
+        --brand: #ffffff;
       }
 
       * {
@@ -22,8 +22,8 @@
         margin: 0;
         min-height: 100vh;
         color: var(--text);
-        background: radial-gradient(circle at 25% 10%, #2a1c13 0%, #121212 44%, #0b0b0b 100%);
-        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        background: radial-gradient(circle at 20% 0%, #1b1b1b 0%, #090909 42%, #000000 100%);
+        font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
         display: grid;
         place-items: center;
         padding: 14px;
@@ -33,34 +33,61 @@
         width: min(980px, 100%);
         height: min(90vh, 860px);
         border: 1px solid var(--line);
-        border-radius: 14px;
+        border-radius: 28px;
         overflow: hidden;
         display: grid;
-        grid-template-rows: auto auto 1fr auto;
-        background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+        grid-template-rows: auto auto auto 1fr auto;
+        background: linear-gradient(180deg, #111111 0%, #050505 100%);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
       }
 
       .header {
-        padding: 12px 14px;
+        padding: 14px 16px;
         border-bottom: 1px solid var(--line);
-        font-size: 14px;
+        font-size: 13px;
+        letter-spacing: 0.3px;
         color: var(--muted);
       }
 
       .config {
+        display: block;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .intro {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
         padding: 10px 12px;
         border-bottom: 1px solid var(--line);
       }
 
+      .intro-card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #0a0a0a;
+        padding: 10px 12px;
+      }
+
+      .intro-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .intro-value {
+        font-size: 14px;
+        color: var(--text);
+        line-height: 1.5;
+      }
+
       .field,
       textarea,
       button {
-        border-radius: 10px;
+        border-radius: 14px;
         border: 1px solid var(--line);
-        background: #0f0f0f;
+        background: #0b0b0b;
         color: var(--text);
         font: inherit;
         outline: none;
@@ -68,7 +95,7 @@
 
       .field {
         width: 100%;
-        padding: 9px 10px;
+        padding: 10px 12px;
       }
 
       .field:focus,
@@ -85,17 +112,17 @@
 
       .msg {
         border: 1px solid var(--line);
-        border-radius: 10px;
+        border-radius: 14px;
         background: var(--panel);
-        padding: 10px 12px;
+        padding: 12px 14px;
         line-height: 1.5;
         white-space: pre-wrap;
         word-break: break-word;
       }
 
       .msg.user {
-        border-color: #5f462f;
-        background: #1f1711;
+        border-color: #444;
+        background: #151515;
       }
 
       .composer {
@@ -108,19 +135,19 @@
 
       textarea {
         width: 100%;
-        min-height: 86px;
+        min-height: 96px;
         max-height: 220px;
         resize: vertical;
-        padding: 10px 12px;
+        padding: 12px 14px;
       }
 
       button {
         cursor: pointer;
-        background: linear-gradient(180deg, #d59c62, #b27e4a);
-        border: 0;
-        color: #111;
+        background: #f5f5f7;
+        border: 1px solid #ffffff;
+        color: #050505;
         font-weight: 700;
-        padding: 0 16px;
+        padding: 0 20px;
       }
 
       button:disabled {
@@ -144,18 +171,20 @@
       }
 
       .dropzone {
-        border: 1px dashed #5f462f;
-        border-radius: 10px;
+        border: 1px dashed #4a4a4a;
+        border-radius: 14px;
         padding: 10px 12px;
         color: var(--muted);
         font-size: 13px;
-        background: #13110f;
+        background: #0c0c0c;
         cursor: pointer;
+        margin-bottom: 8px;
       }
 
       .dropzone.active {
-        border-color: var(--brand);
+        border-color: #ffffff;
         color: var(--text);
+        background: #111;
       }
 
       .file-name {
@@ -163,29 +192,40 @@
       }
 
       @media (max-width: 900px) {
-        .config {
+        .intro {
           grid-template-columns: 1fr;
         }
 
         .app {
           height: 95vh;
+          border-radius: 20px;
         }
       }
     </style>
   </head>
   <body>
     <main class="app">
-      <div class="header">Daymori · 固定链接版（GitHub Pages）</div>
+      <div class="header">Daymori Teacher Prompt Studio · 教师教务资料提示词</div>
       <section class="config">
-        <div class="field">默认模型: DeepSeek（固定官方域名，无需用户输入 Key）</div>
+        <div class="field">服务人群: 教师 | 默认模型: DeepSeek（无需用户输入 Key）</div>
+      </section>
+      <section class="intro">
+        <article class="intro-card">
+          <div class="intro-label">你要输入什么</div>
+          <div class="intro-value">输入学段、学科、课题目标；可拖入教材片段、课程标准或教学大纲文件。</div>
+        </article>
+        <article class="intro-card">
+          <div class="intro-label">你会得到什么</div>
+          <div class="intro-value">可直接给 AI 使用的高质量提示词，用于生成 PPT、教案、作业、试题与课堂活动材料。</div>
+        </article>
       </section>
       <section id="messages" class="messages">
-        <article class="msg">已进入固定链接模式。输入内容后发送即可。</article>
+        <article class="msg">示例输入：请为高一物理《牛顿第二定律》生成 12 页课堂 PPT 提示词，含导入、推导、例题、互动练习与课后作业。</article>
       </section>
       <form id="composer" class="composer">
         <div>
           <div id="dropzone" class="dropzone">拖拽文件到这里，或点击选择文件（1个）</div>
-          <textarea id="input" placeholder="输入你的需求，支持上传 1 个文本文件辅助上下文"></textarea>
+          <textarea id="input" placeholder="输入教学需求（如：年级、学科、课题、课时、资料类型）"></textarea>
           <div class="helper">
             <span>Shift+Enter 换行，Enter 发送</span>
             <div class="file-line">
@@ -259,7 +299,10 @@
           body: JSON.stringify({
             model: DEFAULT_DEEPSEEK_MODEL,
             messages: [
-              { role: "system", content: "你是高信息密度助手，回答清晰、可执行、低废话。" },
+              {
+                role: "system",
+                content: "你是教师教务提示词专家。你的任务是把教师需求转成可直接用于 AI 生成教学资料的高质量提示词，输出应结构清晰、可执行、教学目标导向明确。"
+              },
               { role: "user", content: userText }
             ],
             temperature: 0.2,
