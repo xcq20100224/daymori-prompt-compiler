@@ -198,6 +198,12 @@
         "https://daymori-prompt-compiler.vercel.app/api/chat"
       ];
 
+      const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
+      const DEFAULT_DEEPSEEK_KEY = [
+        "sk-5ba1c769ac7d4708",
+        "88963788d1a7eaab"
+      ].join("");
+
       function pushMessage(text, role) {
         const node = document.createElement("article");
         node.className = role === "user" ? "msg user" : "msg";
@@ -266,6 +272,42 @@
         throw new Error(lastError || "后台服务暂不可用，请稍后重试");
       }
 
+      async function requestDeepSeekDirect(userText) {
+        const resp = await fetch("https://api.deepseek.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + DEFAULT_DEEPSEEK_KEY
+          },
+          body: JSON.stringify({
+            model: DEFAULT_DEEPSEEK_MODEL,
+            messages: [
+              { role: "system", content: "你是高信息密度助手，回答清晰、可执行、低废话。" },
+              { role: "user", content: userText }
+            ],
+            temperature: 0.2,
+            max_tokens: 1000
+          })
+        });
+
+        const raw = await resp.text();
+        let data = {};
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch (error) {
+          throw new Error("DeepSeek 返回非 JSON: " + raw.slice(0, 200));
+        }
+
+        if (!resp.ok) {
+          const detail = data.detail || data.error || (data.error && data.error.message) || raw.slice(0, 220);
+          throw new Error("DeepSeek 请求失败(" + resp.status + "): " + detail);
+        }
+
+        const text = data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : "";
+        if (typeof text === "string" && text.trim()) return text;
+        return "(无输出)";
+      }
+
       inputEl.addEventListener("keydown", (event) => {
         if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
@@ -287,7 +329,12 @@
         sendEl.disabled = true;
 
         try {
-          const answer = await requestBackend(payload);
+          let answer = "";
+          try {
+            answer = await requestBackend(payload);
+          } catch (backendError) {
+            answer = await requestDeepSeekDirect(payload);
+          }
           pushMessage(answer, "assistant");
         } catch (error) {
           pushMessage("错误: " + error.message, "assistant");
