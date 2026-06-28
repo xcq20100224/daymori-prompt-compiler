@@ -1477,6 +1477,14 @@
 
       function extractTopic(text) {
         const all = String(text || "");
+        const aboutMatch = all.match(/(?:关于|有关|围绕|聚焦)\s*([^，。\n]{2,80}?)(?:的)?(?:ppt|PPT|幻灯片|演示文稿|课件|汇报)?(?:[，。\n]|$)/);
+        if (aboutMatch) {
+          const cleanedAbout = aboutMatch[1]
+            .replace(/^(如何|怎么|怎样)\s*/, "")
+            .replace(/(的)?(高管汇报|汇报|路演|演讲)$/g, "")
+            .trim();
+          if (cleanedAbout) return cleanedAbout;
+        }
         const intentMatch = all.match(/(?:关于|围绕|聚焦|主题[是为:：])\s*([^，。\n]{2,80})/);
         if (intentMatch) {
           const cleanedIntent = intentMatch[1]
@@ -1601,10 +1609,21 @@
 
       function normalizeBusinessTopic(topic) {
         const raw = String(topic || "").trim();
+        const about = raw.match(/(?:关于|有关|围绕|聚焦)\s*([^，。\n]{2,80})/);
+        if (about) {
+          const core = String(about[1] || "")
+            .replace(/(的)?(ppt|PPT|幻灯片|演示文稿|课件|汇报)$/g, "")
+            .replace(/\s+/g, " ")
+            .trim();
+          if (core) return core;
+        }
         const normalized = raw
+          .replace(/^(请|帮我|帮忙|做|制作|生成)\s*/g, "")
+          .replace(/^\d+\s*页\s*/g, "")
           .replace(/^(关于|围绕|聚焦)\s*/, "")
           .replace(/(的)?(高管汇报|汇报|路演|演讲|PPT|ppt|幻灯片|演示文稿|课件)$/g, "")
           .replace(/^(如何|怎么|怎样)\s*/, "")
+          .replace(/[，。].*$/g, "")
           .replace(/\s+/g, " ")
           .trim();
         return normalized || "当前需求";
@@ -1908,8 +1927,9 @@
 
       function classifyPptScene(rawText) {
         const t = String(rawText || "");
+        if (/(企业|汇报|经营|财务|项目复盘|部门|管理层|高管|商业|业务|roi|预算|战略|决策)/i.test(t)) return "企业";
+        if (/(ai学习|学习效率|学习方法|组织学习|知识管理)/i.test(t)) return "企业";
         if (/(教务|教学|课程|课堂|学生|老师|授课|复习|教案)/.test(t)) return "教务";
-        if (/(企业|汇报|经营|财务|项目复盘|部门|管理层|商业|业务)/.test(t)) return "企业";
         if (/(演讲|路演|分享|发布会|舞台|主持| keynote|开场)/i.test(t)) return "演讲";
         return "企业";
       }
@@ -1947,18 +1967,34 @@
 
       function buildSlideFromBlueprint(index, topic, blueprint, keywordSeed) {
         const safeSeeds = (keywordSeed || []).filter((k) => !/(生成|提示词|ppt|演示|课件)/i.test(String(k || ""))).slice(0, 3);
-        const keyPoints = (blueprint.keyPoints || []).map((k, i) => sanitizeKeyPoint(`${k}${safeSeeds[i] ? `：${safeSeeds[i]}` : ""}`));
+        const basePoints = (blueprint.keyPoints || ["核心结论", "关键证据", "执行动作"]).slice(0, 3);
+        const triadLabels = ["结论", "证据", "行动"];
+        const keyPoints = basePoints.map((k, i) => sanitizeKeyPoint(`${triadLabels[i]}：${k}${safeSeeds[i] ? `（${safeSeeds[i]}）` : ""}`));
         return {
           index,
           title: `${blueprint.title}（${topic}）`,
           goal: `${blueprint.goal}（围绕${topic}）`,
-          keyPoints: keyPoints.slice(0, 4),
+          keyPoints: keyPoints.slice(0, 3),
           assetPlaceholders: blueprint.assets || ["数据图", "示意图"],
           speakerNotes: `建议口播节奏：先讲结论，再讲依据，最后给执行动作。第${index}页控制在60-90秒。`
         };
       }
 
-      function buildNarrativeBlueprints(sceneType, template) {
+      function buildNarrativeBlueprints(sceneType, template, narrativeMode = "standard") {
+        if (narrativeMode === "lazyman") {
+          return [
+            { title: "执行摘要", goal: "用一页给出核心结论与决策请求", keyPoints: ["核心判断", "价值规模", "需拍板事项"], assets: ["摘要卡", "决策事项清单"] },
+            { title: "问题定义与机会窗口", goal: "明确当前业务痛点与机会时窗", keyPoints: ["问题定义", "机会大小", "不做的代价"], assets: ["问题树", "机会象限"] },
+            { title: "现状诊断", goal: "量化现状并锁定关键瓶颈", keyPoints: ["关键指标现状", "瓶颈环节", "差距来源"], assets: ["指标趋势图", "漏斗图"] },
+            { title: "根因分析", goal: "把现象拆成可干预根因", keyPoints: ["根因1", "根因2", "根因优先级"], assets: ["鱼骨图", "因果矩阵"] },
+            { title: "策略总览", goal: "提出可落地策略组合与优先级", keyPoints: ["策略A/B/C", "优先顺序", "预期收益"], assets: ["策略地图", "优先级矩阵"] },
+            { title: "实施路线图", goal: "明确阶段目标、节奏与负责人", keyPoints: ["阶段目标", "关键里程碑", "责任人"], assets: ["路线图", "RACI图"] },
+            { title: "资源与预算", goal: "说明投入边界与ROI逻辑", keyPoints: ["资源投入", "预算区间", "ROI测算"], assets: ["预算表", "ROI图"] },
+            { title: "风险与对策", goal: "提前暴露风险并给出应对预案", keyPoints: ["主要风险", "触发条件", "应对策略"], assets: ["风险热力图", "应急预案表"] },
+            { title: "试点与验收", goal: "定义试点方案和验收门槛", keyPoints: ["试点范围", "验收标准", "扩展条件"], assets: ["试点看板", "验收清单"] },
+            { title: "决策请求与下一步", goal: "收敛到管理层可直接决策动作", keyPoints: ["需决策事项", "执行起点", "30天行动"], assets: ["决策清单", "行动看板"] }
+          ];
+        }
         const base = [...(template.slideBlueprints || [])];
         const enterpriseExtension = [
           { title: "关键指标口径", goal: "统一核心指标口径，避免决策歧义", keyPoints: ["指标定义", "统计口径", "数据周期"], assets: ["指标口径表", "口径注释"] },
@@ -1985,7 +2021,7 @@
         const requested = pageCountHint || extractRequestedPageCount(text) || template.defaultPageCount;
         const keywords = extractKeywords(text).slice(0, 8);
         const narrativeMode = String((fields && fields.narrativeMode) || "standard");
-        const narrativeBlueprints = buildNarrativeBlueprints(sceneType, template);
+        const narrativeBlueprints = buildNarrativeBlueprints(sceneType, template, narrativeMode);
 
         const slides = [];
         for (let i = 0; i < requested; i++) {
@@ -2029,6 +2065,7 @@
         }
 
         const vagueWords = /(适当|尽量|可以考虑|视情况|若干|等等|相关内容)/;
+        const triadRegex = /(结论：|证据：|行动：)/g;
         for (let i = 0; i < spec.slides.length; i++) {
           const s = spec.slides[i] || {};
           const slideIssues = [];
@@ -2040,6 +2077,8 @@
 
           const packed = [s.goal, ...(s.keyPoints || []), s.speakerNotes].join(" ");
           if (vagueWords.test(packed)) slideIssues.push("存在空泛表述");
+          const triadCount = (String((s.keyPoints || []).join(" ")).match(triadRegex) || []).length;
+          if (triadCount < 3) slideIssues.push("缺少结论/证据/行动三要素");
 
           if (slideIssues.length) {
             badSlideIndexes.push(i);
@@ -2088,13 +2127,19 @@
           index: index + 1,
           title: String(original.title || `${bp.title}（${spec.topic || "主题"}）`).trim(),
           goal: String(original.goal || bp.goal || "明确本页的核心目标并给出可执行动作").trim(),
-          keyPoints: (Array.isArray(original.keyPoints) ? original.keyPoints.filter(Boolean) : []).slice(0, 4),
+          keyPoints: (Array.isArray(original.keyPoints) ? original.keyPoints.filter(Boolean) : []).slice(0, 3),
           assetPlaceholders: (Array.isArray(original.assetPlaceholders) ? original.assetPlaceholders.filter(Boolean) : []).slice(0, 3),
           speakerNotes: String(original.speakerNotes || "先结论、后依据、再行动建议，控制在60-90秒。").trim()
         };
 
-        if (repaired.keyPoints.length < 2) {
-          repaired.keyPoints = (bp.keyPoints || ["核心观点", "执行步骤", "验收标准"]).slice(0, 3);
+        const triadReady = (String(repaired.keyPoints.join(" ")).match(/(结论：|证据：|行动：)/g) || []).length >= 3;
+        if (repaired.keyPoints.length < 3 || !triadReady) {
+          const fallback = (bp.keyPoints || ["核心观点", "关键依据", "执行动作"]).slice(0, 3);
+          repaired.keyPoints = [
+            `结论：${fallback[0] || "形成清晰结论"}`,
+            `证据：${fallback[1] || "给出关键证据"}`,
+            `行动：${fallback[2] || "明确执行动作"}`
+          ];
         }
         if (repaired.assetPlaceholders.length < 1) {
           repaired.assetPlaceholders = (bp.assets || ["示意图", "数据图"]).slice(0, 2);
