@@ -1005,6 +1005,17 @@
         return "/api/audit/status";
       }
 
+      function exportEndpointOf(proxyEndpoint) {
+        const endpoint = normalizeProxyEndpoint(proxyEndpoint || "");
+        if (!endpoint) return "/api/ppt/export";
+        if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
+          if (/\/api\/llm-proxy$/i.test(endpoint)) return endpoint.replace(/\/api\/llm-proxy$/i, "/api/ppt/export");
+          return `${endpoint}/api/ppt/export`;
+        }
+        if (endpoint === "/api/llm-proxy") return "/api/ppt/export";
+        return endpoint;
+      }
+
       async function probeProxyEndpoint(proxyEndpoint) {
         try {
           const res = await fetch(auditStatusOf(proxyEndpoint), { method: "GET", cache: "no-store" });
@@ -2443,15 +2454,39 @@
           sendEl.disabled = true;
           sendEl.textContent = "导出中...";
 
-          const resp = await fetch("/api/ppt/export", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ contract })
-          });
+          const primaryProxy = await ensureProxyEndpoint();
+          const proxyCandidates = [primaryProxy, ...buildProxyCandidates()].filter(Boolean).map(normalizeProxyEndpoint);
+          const uniqueCandidates = [...new Set(proxyCandidates)];
 
-          if (!resp.ok) {
-            const err = await resp.text();
-            throw new Error(err || `HTTP ${resp.status}`);
+          let resp = null;
+          let lastErr = "";
+          for (const proxy of uniqueCandidates) {
+            const exportEndpoint = exportEndpointOf(proxy);
+            try {
+              const attempt = await fetch(exportEndpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contract })
+              });
+
+              if (attempt.ok) {
+                resp = attempt;
+                activeProxyEndpoint = proxy;
+                localStorage.setItem(PROXY_STORAGE_KEY, proxy);
+                proxyEndpointInputEl.value = proxy;
+                proxyStatusEl.textContent = `已连接后端: ${proxy}`;
+                break;
+              }
+
+              const errBody = await attempt.text();
+              lastErr = `HTTP ${attempt.status} @ ${exportEndpoint}: ${String(errBody || "").slice(0, 120)}`;
+            } catch (error) {
+              lastErr = `${exportEndpoint} 无法连接：${error.message || error}`;
+            }
+          }
+
+          if (!resp) {
+            throw new Error(lastErr || "未找到可用导出后端");
           }
 
           const engine = resp.headers.get("x-ppt-engine") || "unknown";
@@ -2460,16 +2495,51 @@
           const fileName = fileNameMatch ? fileNameMatch[1] : `daymori-${Date.now()}.pptx`;
 
           const blob = await resp.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          URL.revokeObjectURL(url);
 
-          pushMessage(`PPT导出完成：${fileName}（引擎：${engine}）`, "assistant");
+          let saved = false;
+          try {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            saved = true;
+          } catch {
+            // Continue with save fallback below.
+          }
+
+          if (!saved && window.showSaveFilePicker) {
+            try {
+              const handle = await window.showSaveFilePicker({
+                suggestedName: fileName,
+                types: [
+                  {
+                    description: "PowerPoint",
+                    accept: {
+                      "application/vnd.openxmlformats-officedocument.presentationml.presentation": [".pptx"]
+                    }
+                  }
+                ]
+              });
+              const writable = await handle.createWritable();
+              await writable.write(blob);
+              await writable.close();
+              saved = true;
+            } catch {
+              // User canceled or runtime blocked file picker.
+            }
+          }
+
+          if (!saved) {
+            const url = URL.createObjectURL(blob);
+            window.open(url, "_blank", "noopener,noreferrer");
+            setTimeout(() => URL.revokeObjectURL(url), 120000);
+          }
+
+          pushMessage(saved ? `PPT导出完成：${fileName}（引擎：${engine}）` : `PPT已生成：${fileName}（引擎：${engine}）。当前环境阻止自动下载，已为你打开预览页，请手动保存。`, "assistant");
         } catch (error) {
           pushMessage(`PPT导出失败：${error.message || error}`, "assistant");
         } finally {
