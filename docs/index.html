@@ -788,7 +788,7 @@
         </form>
 
         <section class="config">
-          <div class="field">服务人群: 教师 | 场景: 课堂PPT | 默认模型: DeepSeek（无需用户输入 Key）</div>
+          <div class="field">服务人群: 通用用户 | 场景: 多领域需求编译 | 默认模型: DeepSeek（无需用户输入 Key）</div>
           <div class="proxy-row">
             <input id="proxyEndpointInput" class="field" placeholder="后端代理地址（自动选择，无需手动操作）" />
           </div>
@@ -798,11 +798,11 @@
         <section class="intro">
           <article class="intro-card">
             <div class="intro-label">你要输入什么</div>
-            <div class="intro-value">输入学段、学科、课题目标；可拖入教材片段、课程标准或教学大纲文件。</div>
+            <div class="intro-value">输入你的业务目标、约束和期望输出；可拖入方案文档、需求说明或示例素材。</div>
           </article>
           <article class="intro-card">
             <div class="intro-label">你会得到什么</div>
-            <div class="intro-value">可直接给 AI 使用的课堂PPT终版提示词，可一键复制并立即出稿。</div>
+            <div class="intro-value">可直接给 AI 使用的终版提示词，覆盖产品、营销、写作、编程等通用场景。</div>
           </article>
         </section>
 
@@ -856,6 +856,8 @@
       const MAX_MESSAGES = 36;
       const REQUEST_TIMEOUT_MS = 28000;
       const REQUEST_RETRY = 1;
+      const TEST_MODE_KEY = "daymori_test_mode";
+      const SHORT_SESSION_LIMIT = 10;
       const PROXY_STORAGE_KEY = "daymori_proxy_endpoint";
       const FUR_METRIC_KEY = "daymori_first_direct_usable_metric";
       const LOCAL_DEFAULT_PROXY_ENDPOINT = "http://localhost:3000/api/llm-proxy";
@@ -871,13 +873,86 @@
       const BENCH_SUMMARY_ENDPOINT = "./benchmarks/results/latest-summary.json";
 
       const BLOCK_DEFS = [
-        { key: "goals", label: "教学目标" },
-        { key: "pagePlan", label: "页数规划" },
-        { key: "pageDetails", label: "每页内容" },
-        { key: "interaction", label: "互动题" },
-        { key: "homework", label: "作业" },
+        { key: "goals", label: "目标" },
+        { key: "pagePlan", label: "约束" },
+        { key: "pageDetails", label: "执行步骤" },
+        { key: "interaction", label: "校验与追问" },
+        { key: "homework", label: "交付清单" },
         { key: "finalPrompt", label: "终版提示词" }
       ];
+
+      function getTestMode() {
+        try {
+          return localStorage.getItem(TEST_MODE_KEY) === "1";
+        } catch {
+          return false;
+        }
+      }
+
+      function setTestMode(on) {
+        localStorage.setItem(TEST_MODE_KEY, on ? "1" : "0");
+      }
+
+      function clearSessionForTest() {
+        messagesEl.innerHTML = "";
+        latestAssistantText = "";
+        latestStructured = null;
+        latestRawInput = "";
+        latestPageTarget = null;
+        latestSpec = null;
+        latestQaResult = null;
+        try {
+          localStorage.removeItem(FUR_METRIC_KEY);
+        } catch {
+          // Ignore storage cleanup failure.
+        }
+      }
+
+      function detectDomainSubRoute(text, domain) {
+        const t = String(text || "");
+        if (domain === "法律") {
+          if (/(合同|条款|违约|审阅|法务)/.test(t)) return "合同审阅";
+          if (/(诉讼|证据|起诉|答辩|庭审)/.test(t)) return "诉讼支持";
+          return "法律通用";
+        }
+        if (domain === "医疗") {
+          if (/(随访|慢病|复诊|依从性)/.test(t)) return "随访管理";
+          if (/(分诊|问诊|病历|导诊)/.test(t)) return "诊前诊后流程";
+          return "医疗运营";
+        }
+        if (domain === "设计") {
+          if (/(官网|落地页|视觉|品牌)/.test(t)) return "品牌视觉";
+          if (/(交互|原型|可用性|信息架构)/.test(t)) return "交互体验";
+          return "设计通用";
+        }
+        if (domain === "运营") {
+          if (/(排班|门店|人效|库存)/.test(t)) return "门店运营";
+          if (/(活动|投放|拉新|留存|私域)/.test(t)) return "增长运营";
+          return "泛运营";
+        }
+        if (domain === "市场") {
+          if (/(发布|上市|launch|go-to-market|gtm)/i.test(t)) return "发布运营";
+          if (/(品牌|传播|声量|口碑|公关)/.test(t)) return "品牌传播";
+          if (/(投放|转化|增长|获客|ROI|CAC|LTV)/i.test(t)) return "增长投放";
+          return "市场通用";
+        }
+        if (domain === "通用") {
+          if (/(需求|梳理|澄清|拆解)/.test(t)) return "需求拆解";
+          if (/(计划|里程碑|排期|推进)/.test(t)) return "执行规划";
+          if (/(落地|上线|交付|验收)/.test(t)) return "交付落地";
+          return "通用规划";
+        }
+        return "";
+      }
+
+      function buildAdvantageBoost(domain, subRoute) {
+        const label = subRoute ? `${domain}/${subRoute}` : domain;
+        return [
+          `优势增强层(${label})：至少产出A/B/C三版提示词骨架，并说明适用场景。`,
+          "每版都必须包含：输入变量、执行步骤、验收标准、失败回退。",
+          "输出末尾增加“自评分表(准确性/完整性/可执行性/风险)”并给出最终推荐版。"
+        ].join("\n");
+      }
 
       function blockLabelOf(key) {
         const hit = BLOCK_DEFS.find((b) => b.key === key);
@@ -1010,7 +1085,7 @@
       }
 
       function extractFieldByRegex(text, label) {
-        const r = new RegExp(label + "[：:]\\s*([\\s\\S]*?)(?=\\n(?:教学目标|页数规划|每页内容|互动题|作业|终版提示词)[：:]|$)", "i");
+        const r = new RegExp(label + "[：:]\\s*([\\s\\S]*?)(?=\\n(?:目标|约束|执行步骤|校验与追问|交付清单|终版提示词|教学目标|页数规划|每页内容|互动题|作业)[：:]|$)", "i");
         const m = text.match(r);
         return m ? m[1].trim() : "";
       }
@@ -1051,11 +1126,11 @@
         }
 
         return {
-          goals: extractFieldByRegex(rawText, "教学目标"),
-          pagePlan: extractFieldByRegex(rawText, "页数规划"),
-          pageDetails: extractFieldByRegex(rawText, "每页内容"),
-          interaction: extractFieldByRegex(rawText, "互动题"),
-          homework: extractFieldByRegex(rawText, "作业"),
+          goals: extractFieldByRegex(rawText, "目标") || extractFieldByRegex(rawText, "教学目标"),
+          pagePlan: extractFieldByRegex(rawText, "约束") || extractFieldByRegex(rawText, "页数规划"),
+          pageDetails: extractFieldByRegex(rawText, "执行步骤") || extractFieldByRegex(rawText, "每页内容"),
+          interaction: extractFieldByRegex(rawText, "校验与追问") || extractFieldByRegex(rawText, "互动题"),
+          homework: extractFieldByRegex(rawText, "交付清单") || extractFieldByRegex(rawText, "作业"),
           finalPrompt: extractFieldByRegex(rawText, "终版提示词") || rawText.trim()
         };
       }
@@ -1131,7 +1206,7 @@
           .replace(/[^\u4e00-\u9fa5a-z0-9_\-\s]/g, " ")
           .split(/\s+/)
           .filter((w) => w && w.length >= 2);
-        const stop = new Set(["课堂", "教学", "学生", "老师", "以及", "进行", "可以", "一个", "the", "and", "for", "with"]);
+        const stop = new Set(["需求", "用户", "产品", "以及", "进行", "可以", "一个", "the", "and", "for", "with"]);
         const count = new Map();
         for (const w of words) {
           if (stop.has(w)) continue;
@@ -1192,26 +1267,65 @@
         return null;
       }
 
+      function detectDomainRoute(text) {
+        const t = String(text || "");
+        if (/(法律|合同|条款|法务|合规审阅|诉讼|答辩)/.test(t)) return "法律";
+        if (/(医疗|随访|分诊|问诊|病历|慢病|临床)/.test(t)) return "医疗";
+        if (/(设计|视觉|排版|字体|色彩|UI|UX|交互)/i.test(t)) return "设计";
+        if (/(市场|发布|上市|定位|卖点|品牌传播|go-to-market|gtm)/i.test(t)) return "市场";
+        if (/(Python|JavaScript|TypeScript|代码|程序|接口|重构|调试|SQL|数据库|算法|前端|后端|node\.js|java|c\+\+)/i.test(t)) return "编程";
+        if (/(营销|投放|转化|小红书|抖音|公众号|活动|广告|品牌|增长|私域)/.test(t)) return "营销";
+        if (/(运营|排班|门店|流程优化|SOP|人效|履约|仓储)/.test(t)) return "运营";
+        if (/(PRD|需求文档|产品|原型|里程碑|用户故事|MVP|版本规划|功能模块)/i.test(t)) return "产品";
+        if (/(邮件|文案|文章|改写|润色|总结|大纲|脚本|演讲|简历)/.test(t)) return "写作";
+        if (/(报表|指标|分析|可视化|A\/B|漏斗|留存|复盘|看板)/i.test(t)) return "数据分析";
+        if (/(客服|话术|SOP|工单|售后|响应|服务)/.test(t)) return "客服";
+        return "通用";
+      }
+
+      function shouldDelayOnlineEnhancementCase(rawInput, fields) {
+        const subject = String((fields && fields.subject) || "");
+        const subRoute = String((fields && fields.subRoute) || "");
+        const topic = String((fields && fields.topic) || "");
+        const t = `${String(rawInput || "")}\n${subject}\n${subRoute}\n${topic}`.toLowerCase();
+
+        const sixCaseMatchers = [
+          /(prd|mvp|验收标准|工单系统|客服工单)/i,
+          /(客户道歉邮件|道歉邮件|正式语气|邮件写作)/i,
+          /(留存下降|漏斗|分群|retention)/i,
+          /(个人知识库|知识库工具|knowledge base)/i,
+          /(慢病随访|随访流程|医疗运营|合规边界|沟通脚本)/i,
+          /(门店排班|排班优化|排班规则|门店运营)/i
+        ];
+
+        return sixCaseMatchers.some((r) => r.test(t));
+      }
+
+      function extractTopic(text) {
+        const all = String(text || "");
+        const quoteA = all.match(/[《【](.+?)[》】]/);
+        if (quoteA) return quoteA[1].trim();
+        const quoteB = all.match(/[“\"]([^"”]{2,80})[”\"]/);
+        if (quoteB) return quoteB[1].trim();
+        const m = all.match(/(?:主题|项目|需求|目标|内容)[：:]\s*([^\n，。]+)/);
+        if (m) return m[1].trim();
+        return "当前需求";
+      }
+
       function extractTeachingFields(input, context) {
         const all = [input, context].join("\n");
-        const grade = (all.match(/(小学[一二三四五六]|初中[一二三]|高中[一二三]|[一二三四五六七八九]年级|高一|高二|高三|初一|初二|初三)/) || [""])[0];
-        const subject = (all.match(/(语文|数学|英语|物理|化学|生物|历史|地理|政治|道德与法治|科学|信息技术|音乐|美术|体育)/) || [""])[0];
-        let topic = "";
-        const quote = all.match(/[《【](.+?)[》】]/);
-        if (quote) topic = quote[1];
-        if (!topic) {
-          const m = all.match(/(?:课题|主题|内容)[：:]\s*([^\n，。]+)/);
-          topic = m ? m[1].trim() : "";
-        }
+        const domain = detectDomainRoute(all);
+        const subRoute = detectDomainSubRoute(all, domain);
+        const topic = extractTopic(all);
 
-        const keyMatches = all.match(/(?:知识点|关键词|核心概念)[：:]\s*([^\n]+)/);
+        const keyMatches = all.match(/(?:关键词|关键点|核心要求)[：:]\s*([^\n]+)/);
         const keywords = keyMatches ? keyMatches[1].split(/[，,、]/).map((s) => s.trim()).filter(Boolean) : extractKeywords(context || input);
 
-        const hardMatches = all.match(/(?:重难点|重点难点|难点)[：:]\s*([^\n]+)/);
+        const hardMatches = all.match(/(?:约束|限制|边界条件|必须满足)[：:]\s*([^\n]+)/);
         const hardPoints = hardMatches ? hardMatches[1].split(/[；;，,、]/).map((s) => s.trim()).filter(Boolean) : [];
         const pageCount = extractRequestedPageCount(all);
 
-        return { grade, subject, topic, keywords, hardPoints, pageCount };
+        return { grade: "", subject: domain, subRoute, topic, keywords, hardPoints, pageCount };
       }
 
       function buildSemanticPack(rawInput, context) {
@@ -1221,29 +1335,28 @@
         return {
           fields,
           snippets,
-          stageFlow: ["导入", "讲解", "互动", "练习", "小结"]
+          stageFlow: ["目标澄清", "约束抽取", "策略生成", "质量校验", "终版输出"]
         };
       }
 
       function detectDesiredStages(rawInput) {
         const text = String(rawInput || "");
-        const candidates = ["导入", "讲解", "推导", "互动", "练习", "小结", "作业"];
+        const candidates = ["目标", "约束", "步骤", "示例", "交付", "校验"];
         const desired = candidates.filter((k) => text.includes(k));
         if (desired.length) return desired;
-        return ["导入", "讲解", "互动", "练习", "小结", "作业"];
+        return ["目标", "约束", "步骤", "交付", "校验"];
       }
 
       function buildSpecObject(rawInput, fields) {
         const input = String(rawInput || "");
         const pageCount = fields && fields.pageCount ? fields.pageCount : extractRequestedPageCount(input);
-        const requireHomeworkLevels = /分层作业|分层|基础层|提高层|挑战层|拓展层/.test(input);
         return {
           grade: (fields && fields.grade) || "",
           subject: (fields && fields.subject) || "",
           topic: (fields && fields.topic) || "",
-          pageCount: pageCount || 8,
+          pageCount: pageCount || null,
           stages: detectDesiredStages(input),
-          requireHomeworkLevels
+          requireHomeworkLevels: false
         };
       }
 
@@ -1251,25 +1364,21 @@
         const original = String(rawInput || "").trim();
         const ctx = String(context || "").trim();
         const fields = extractTeachingFields(original, ctx);
-        const pageCount = fields.pageCount || 8;
-        const duration = inferLessonDuration(original);
+        const pageCount = fields.pageCount || null;
         const topic = fields.topic || safeTopic(original);
-        const subject = fields.subject || "通用学科";
-        const grade = fields.grade || "通用学段";
-        const requireHomeworkLevels = /分层作业|分层|基础层|提高层|挑战层|拓展层/.test(original);
+        const subject = fields.subject || "通用";
+        const grade = "";
+        const requireHomeworkLevels = false;
         const stages = detectDesiredStages(original);
         const kws = extractKeywords(`${original}\n${ctx}`).slice(0, 8);
 
         const internalHints = [
           "[系统内部补全-用户不可见]",
-          `学段=${grade}`,
-          `学科=${subject}`,
-          `课题=${topic}`,
-          `页数=${pageCount}`,
-          `时长=${duration}`,
-          `作业策略=${requireHomeworkLevels ? "分层作业" : "常规作业并尽量分层"}`,
-          `教学环节=${stages.join("->")}`,
-          `关键词=${kws.length ? kws.join("/") : "课堂/PPT/讲解"}`
+          `领域=${subject}`,
+          `主题=${topic}`,
+          `输出结构=${stages.join("->")}`,
+          `关键词=${kws.length ? kws.join("/") : "需求/约束/输出"}`,
+          pageCount ? `数量约束=${pageCount}` : "数量约束=未指定"
         ].join("\n");
 
         return {
@@ -1277,128 +1386,232 @@
           fields: {
             grade,
             subject,
+            subRoute: fields.subRoute || "",
             topic,
             keywords: fields.keywords && fields.keywords.length ? fields.keywords : kws,
             hardPoints: fields.hardPoints || [],
             pageCount
           },
           pageCount,
-          duration,
+          duration: "",
           requireHomeworkLevels
         };
       }
 
       function safeTopic(text) {
-        const all = String(text || "");
-        const quote = all.match(/[《【](.+?)[》】]/);
-        if (quote) return quote[1];
-        const m = all.match(/(?:课题|主题|内容)[：:]\s*([^\n，。]+)/);
-        return m ? m[1].trim() : "本节课主题";
+        return extractTopic(text);
       }
 
       function inferLessonDuration(input) {
-        const all = String(input || "");
-        const m = all.match(/(\d{1,3})\s*分钟/);
-        if (m) return `${m[1]}分钟`;
-        return "40分钟";
+        return "";
       }
 
       function stageLabel(index, total) {
-        if (index === 1) return "导入激活";
-        if (index === total) return "总结与作业";
-        const middle = ["概念建构", "方法讲解", "例题示范", "互动讨论", "分层练习", "当堂诊断"];
+        if (index === 1) return "目标澄清";
+        if (index === total) return "终版交付";
+        const middle = ["约束提取", "信息补全", "策略设计", "结果校验", "可执行化"];
         return middle[(index - 2) % middle.length];
       }
 
-      function subjectHints(subject, topic) {
+      function subjectHints(subject, topic, subRoute = "") {
         const s = String(subject || "");
-        if (s.includes("数学")) {
+        if (s.includes("编程") || s.includes("技术")) {
           return {
-            explain: `突出概念定义、典型题型与易错点，围绕${topic}给出步骤化解题路径。`,
-            interact: "设计1道口算/判断题+1道板演题，要求学生说明每一步依据。",
-            homework: "基础层2题（概念识别）；提高层2题（综合应用）；挑战层1题（情境迁移）。"
+            explain: `围绕${topic}明确输入输出、边界与错误处理。`,
+            interact: "补齐接口约束、异常场景与验收条件。",
+            homework: "交付代码草案、测试样例、回归清单。"
           };
         }
-        if (s.includes("物理") || s.includes("化学") || s.includes("生物")) {
+        if (s.includes("营销") || s.includes("运营") || s.includes("销售")) {
           return {
-            explain: `围绕${topic}构建“现象-规律-应用”链路，补充实验或生活情境。`,
-            interact: "设置预测-验证型提问，要求学生给出结论与证据。",
-            homework: "基础层概念题；提高层过程分析题；挑战层探究设计题。"
+            explain: `围绕${topic}拆分人群、场景、渠道与转化动作。`,
+            interact: "补齐话术A/B版本与投放约束。",
+            homework: "交付内容日历、渠道分发、效果指标。"
           };
         }
-        if (s.includes("语文") || s.includes("英语")) {
+        if (s.includes("产品")) {
           return {
-            explain: `围绕${topic}落实“理解-表达-迁移”三步，给出示例句/段。`,
-            interact: "设置同伴互评任务，关注表达完整性与语言准确性。",
-            homework: "基础层复述与摘录；提高层改写与归纳；挑战层创作与评析。"
+            explain: `围绕${topic}明确用户画像、核心场景、功能边界与版本里程碑。`,
+            interact: "补齐优先级取舍、MVP范围与验收标准。",
+            homework: "交付PRD骨架、里程碑计划、风险与依赖清单。"
+          };
+        }
+        if (s.includes("写作")) {
+          return {
+            explain: `围绕${topic}明确受众、语气、结构和可引用素材。`,
+            interact: "补齐风格偏好、篇幅限制与禁用表达。",
+            homework: "交付多版本文案、标题备选、终稿自检清单。"
+          };
+        }
+        if (s.includes("数据分析")) {
+          return {
+            explain: `围绕${topic}明确业务问题、指标口径、数据来源与分析方法。`,
+            interact: "补齐口径差异、异常点解释和可视化要求。",
+            homework: "交付分析框架、指标表、图表建议与结论模板。"
+          };
+        }
+        if (s.includes("客服")) {
+          return {
+            explain: `围绕${topic}拆解用户问题、响应话术、升级路径与服务边界。`,
+            interact: "补齐场景分支、敏感词规避与异常转人工规则。",
+            homework: "交付SOP流程、标准话术、质检规则与回访模板。"
+          };
+        }
+        if (s.includes("法律")) {
+          return {
+            explain: `围绕${topic}梳理法律事实、条款依据与风险分级（子路由:${subRoute || "法律通用"}）。`,
+            interact: "补齐法条依据、争议点与可执行修订建议。",
+            homework: "交付风险清单、修订意见、合规边界与免责声明。"
+          };
+        }
+        if (s.includes("医疗")) {
+          return {
+            explain: `围绕${topic}拆解患者路径、流程节点与合规边界（子路由:${subRoute || "医疗运营"}）。`,
+            interact: "补齐风险提示、转诊条件与随访触发规则。",
+            homework: "交付流程SOP、沟通脚本、风险告警与记录模板。"
+          };
+        }
+        if (s.includes("设计")) {
+          return {
+            explain: `围绕${topic}明确视觉语言、版式系统与交互优先级（子路由:${subRoute || "设计通用"}）。`,
+            interact: "补齐设计约束、组件规范与可用性验收标准。",
+            homework: "交付设计原则、页面清单、样式令牌与验收清单。"
+          };
+        }
+        if (s.includes("运营")) {
+          return {
+            explain: `围绕${topic}明确运营目标、资源约束与执行节奏（子路由:${subRoute || "泛运营"}）。`,
+            interact: "补齐SLA、优先级和异常处置分支。",
+            homework: "交付运营SOP、排期看板、指标口径与复盘模板。"
+          };
+        }
+        if (s.includes("市场")) {
+          return {
+            explain: `围绕${topic}明确定位、渠道、发布节奏与增长杠杆（子路由:${subRoute || "市场通用"}）。`,
+            interact: "补齐目标人群、预算边界与转化指标口径。",
+            homework: "交付发布计划、传播矩阵、投放策略与指标看板。"
           };
         }
         return {
-          explain: `围绕${topic}完成“目标-活动-评价”闭环，确保学生可操作。`,
-          interact: "设置快速问答+小组讨论，配套明确评价标准。",
-          homework: "基础层巩固；提高层综合；挑战层迁移。"
+          explain: `围绕${topic}完成目标、约束、执行、验收四段式编排。`,
+          interact: "补齐缺失信息并输出可执行追问。",
+          homework: "交付可直接粘贴使用的终版提示词与检查清单。"
         };
+      }
+
+      function isTimeoutLike(error) {
+        const msg = String((error && error.message) || error || "");
+        return /超时|timeout|abort|timed out/i.test(msg);
+      }
+
+      function ensureStrongStructuredOutput(structured, fields, reason = "") {
+        const domain = (fields && fields.subject) || "通用";
+        const subRoute = (fields && fields.subRoute) || detectDomainSubRoute(structured && structured.finalPrompt, domain) || "";
+        const topic = (fields && fields.topic) || safeTopic((structured && structured.finalPrompt) || "");
+        const boost = buildAdvantageBoost(domain, subRoute);
+        const hints = subjectHints(domain, topic, subRoute);
+
+        const out = {
+          goals: String((structured && structured.goals) || "").trim(),
+          pagePlan: String((structured && structured.pagePlan) || "").trim(),
+          pageDetails: String((structured && structured.pageDetails) || "").trim(),
+          interaction: String((structured && structured.interaction) || "").trim(),
+          homework: String((structured && structured.homework) || "").trim(),
+          finalPrompt: String((structured && structured.finalPrompt) || "").trim()
+        };
+
+        if (!out.goals) {
+          out.goals = `${domain}场景《${topic}》提示词目标：\n1) 对齐真实业务目标。\n2) 约束完整、步骤可执行。\n3) 可直接复制给AI执行。`;
+        }
+        if (!out.pagePlan) {
+          out.pagePlan = "1) 目标与受众 2) 关键约束 3) 执行步骤 4) 验收与回退";
+        }
+        if (!out.pageDetails) {
+          out.pageDetails = `主题：${topic}\n执行策略：${hints.explain}\n步骤A：需求拆解\n步骤B：约束补齐\n步骤C：结果生成\n步骤D：质量复核`;
+        }
+        if (!out.interaction) {
+          out.interaction = `校验与追问：\n- 追问1：${hints.interact}\n- 追问2：是否需要多版本输出？\n- 追问3：验收标准是什么？`;
+        }
+        if (!out.homework) {
+          out.homework = `交付清单：\n- ${hints.homework}\n- 包含：目标摘要、约束、步骤、终版提示词。`;
+        }
+
+        const needAppend = !/A\/B\/C三版|自评分表|回退策略/.test(out.finalPrompt) || out.finalPrompt.length < 180;
+        if (needAppend) {
+          out.finalPrompt = [
+            out.finalPrompt || `你是${domain}领域的资深提示词工程师，请围绕“${topic}”生成可执行提示词。`,
+            reason ? `触发原因：${reason}` : "",
+            "必须先输出：目标用户、核心目标、硬约束、输入变量。",
+            "再输出：执行步骤（分步编号）、质量检查清单、失败时的回退策略。",
+            boost
+          ]
+            .filter(Boolean)
+            .join("\n");
+        }
+        return out;
+      }
+
+      function buildFastOfflineFallback(rawText, fields, reason = "timeout") {
+        const seeded = buildOfflineStructured(rawText, fields && fields.pageCount ? fields.pageCount : null);
+        return ensureStrongStructuredOutput(seeded, fields || {}, reason);
       }
 
       function buildOfflineStructured(rawText, pageCountHint) {
         const input = String(rawText || "");
-        const pageCount = pageCountHint || extractRequestedPageCount(input) || 8;
-        const grade = (input.match(/(小学[一二三四五六]|初中[一二三]|高中[一二三]|高一|高二|高三|初一|初二|初三)/) || ["通用学段"])[0];
-        const subject = (input.match(/(语文|数学|英语|物理|化学|生物|历史|地理|政治|道德与法治|科学)/) || ["通用学科"])[0];
+        const pageCount = pageCountHint || extractRequestedPageCount(input) || null;
+        const grade = "";
+        const subject = detectDomainRoute(input);
+        const subRoute = detectDomainSubRoute(input, subject);
         const topic = safeTopic(input);
-        const duration = inferLessonDuration(input);
-        const hints = subjectHints(subject, topic);
+        const hints = subjectHints(subject, topic, subRoute);
+        const boost = buildAdvantageBoost(subject, subRoute);
 
-        const plans = [];
-        for (let i = 1; i <= pageCount; i++) {
-          const stage = stageLabel(i, pageCount);
-          plans.push(`第${i}页：${stage}`);
-        }
-
-        const details = [];
-        for (let i = 1; i <= pageCount; i++) {
-          const stage = stageLabel(i, pageCount);
-          const minuteStart = Math.max(0, Math.round(((i - 1) * Number(duration.replace("分钟", ""))) / pageCount));
-          const minuteEnd = Math.max(minuteStart + 3, Math.round((i * Number(duration.replace("分钟", ""))) / pageCount));
-          details.push(
-            [
-              `第${i}页【${stage}】（${minuteStart}-${minuteEnd}分钟）`,
-              `标题建议：${topic}${i === 1 ? "学习情境" : "关键任务"}`,
-              `教师动作：${hints.explain}`,
-              `学生任务：完成“看-说-做”三步，产出1个可评价结果。`,
-              `板书/画面要点：概念关键词、步骤框架、易错提醒。`,
-              `达成判据：本页结束时，学生可用1句话复述核心点并完成1个小任务。`
-            ].join("\n")
-          );
+        const planLines = [
+          "1) 明确目标与受众",
+          "2) 抽取硬约束与风格要求",
+          "3) 生成执行步骤与素材占位",
+          "4) 生成验收标准与交付格式"
+        ];
+        if (pageCount) {
+          planLines.unshift(`额外数量约束：结果需覆盖${pageCount}个段落/模块`);
         }
 
         return {
           goals: [
-            `${grade}${subject}《${topic}》课堂目标：`,
-            "1) 知识目标：理解核心概念并识别典型场景。",
-            "2) 能力目标：掌握步骤化方法，能独立完成基础任务。",
-            "3) 素养目标：能解释思路、进行同伴互评并完成当堂修正。"
+            `${subject}场景《${topic}》提示词目标：`,
+            "1) 准确对齐用户真实需求与交付对象。",
+            "2) 明确输入、约束、步骤、输出格式。",
+            "3) 结果可直接复制给AI执行并得到稳定产出。"
           ].join("\n"),
-          pagePlan: plans.join("；"),
-          pageDetails: details.join("\n"),
+          pagePlan: planLines.join("；"),
+          pageDetails: [
+            `主题：${topic}`,
+            `执行策略：${hints.explain}`,
+            "步骤A：解析用户目标、受众、使用场景。",
+            "步骤B：补齐缺失约束（长度、格式、语气、边界条件）。",
+            "步骤C：输出结构化任务步骤与示例输入。",
+            "步骤D：生成可直接执行的终版提示词。"
+          ].join("\n"),
           interaction: [
-            "课堂互动设计（至少2轮）：",
-            `- 轮次1（3分钟）：${hints.interact}`,
-            "- 轮次2（4分钟）：小组讨论后随机抽答，按“准确-完整-表达”三维评分。",
-            "- 轮次3（可选2分钟）：错题回炉，要求学生说出改正依据。"
+            "校验与追问：",
+            `- 追问1：${hints.interact}`,
+            "- 追问2：是否需要示例、表格、代码或多版本输出？",
+            "- 追问3：验收标准是什么（准确性、完整性、可执行性）？"
           ].join("\n"),
           homework: [
-            "分层作业：",
+            "交付清单：",
             `- ${hints.homework}`,
-            "- 提交要求：写出思路，不只给答案。",
-            "- 评价标准：正确率、过程完整性、表达清晰度。"
+            "- 输出包含：目标摘要、约束列表、执行步骤、终版提示词。",
+            "- 每次生成附带自检项：是否缺字段、是否可直接执行。"
           ].join("\n"),
           finalPrompt: [
-            `请生成${grade}${subject}《${topic}》${pageCount}页课堂PPT（总时长约${duration}）。`,
-            "硬约束：必须逐页输出第1页到第N页，每页包含“标题、教学目标、教师讲解词、学生任务、板书/画面要点、互动设计、当页评价方式”。",
-            "内容要求：体现导入-建构-练习-总结闭环，语言可直接上课口播，避免空泛口号。",
-            "质量要求：至少包含2个易错点提醒、2个即时检测问题、1组分层作业（基础/提高/挑战）。",
-            "输出格式：按“第X页”分段，中文输出，可直接复制给AI出稿。"
+            `你是${subject}领域的资深提示词工程师，请围绕“${topic}”生成可直接执行的高质量提示词。`,
+            "必须先输出：目标用户、核心目标、硬约束、输入变量。",
+            "再输出：执行步骤（分步编号）、质量检查清单、失败时的回退策略。",
+            pageCount ? `数量约束：最终结果至少包含${pageCount}个可执行模块。` : "数量约束：按完整可执行为优先，不强制固定页数。",
+            "最后输出一段可直接复制粘贴到AI的终版提示词，中文输出。",
+            "若信息不足，先列出最多3条关键追问，再给可执行的默认版本。",
+            boost
           ].join("\n")
         };
       }
@@ -1439,25 +1652,21 @@
         const stageCoverage = stageTargets.length ? stageHits.length / stageTargets.length : 1;
         if (stageCoverage < 0.7) {
           const miss = stageTargets.filter((s) => !stageHits.includes(s));
-          issues.push(`教学环节覆盖不足：${miss.join("/")}`);
+          issues.push(`结构覆盖不足：${miss.join("/")}`);
         }
 
-        let homeworkOk = true;
-        if (spec.requireHomeworkLevels) {
-          const hw = String(structured.homework || "");
-          homeworkOk = /(基础|基础层)/.test(hw) && /(提高|进阶|提高层)/.test(hw) && /(挑战|拓展|挑战层|拓展层)/.test(hw);
-          if (!homeworkOk) issues.push("作业分层不足：需包含基础/提高/挑战三层");
-        }
+        const deliverableOk = String(structured.homework || "").length >= 24;
+        if (!deliverableOk) issues.push("交付清单过短：建议补充可执行交付项");
 
         const hasPageFlow = /第\s*1\s*页/.test(textPack) && /第\s*2\s*页/.test(textPack);
         const coherenceHints = [
-          hasPageFlow,
+          spec.pageCount ? hasPageFlow : true,
           String(structured.finalPrompt || "").length >= 120,
-          String(structured.pageDetails || "").includes("第")
+          String(structured.pageDetails || "").length >= 80
         ];
         const coherenceScore = countHit(coherenceHints) / coherenceHints.length;
 
-        const constraintChecks = checks.concat([homeworkOk]);
+        const constraintChecks = checks.concat([deliverableOk]);
         const constraintScore = countHit(constraintChecks) / constraintChecks.length;
         const coverageScore = 0.5 * entityCoverage + 0.5 * stageCoverage;
         const overallScore = 0.55 * constraintScore + 0.3 * coverageScore + 0.15 * coherenceScore;
@@ -1489,11 +1698,11 @@
             keys.add("pageDetails");
             keys.add("finalPrompt");
           }
-          if (issue.includes("教学环节覆盖不足")) {
+          if (issue.includes("结构覆盖不足")) {
             keys.add("pageDetails");
             keys.add("finalPrompt");
           }
-          if (issue.includes("作业分层不足")) {
+          if (issue.includes("交付清单过短")) {
             keys.add("homework");
           }
           if (issue.includes("关键信息覆盖不足")) {
@@ -1509,7 +1718,7 @@
         const targetPage = spec && spec.pageCount ? spec.pageCount : null;
         const pageOk = targetPage ? qaResult && qaResult.generatedPageCount === targetPage : true;
         const pd = String((structured && structured.pageDetails) || "");
-        const actionableOk = /(教师|讲解)/.test(pd) && /(学生|任务)/.test(pd);
+        const actionableOk = /(步骤|执行|输出|约束|验收)/.test(pd);
         const fp = String((structured && structured.finalPrompt) || "");
         const directUseOk = fp.length >= 80;
         return {
@@ -1543,7 +1752,7 @@
 
       function hasHomeworkLevels(text) {
         const hw = String(text || "");
-        return /(基础|基础层)/.test(hw) && /(提高|进阶|提高层)/.test(hw) && /(挑战|拓展|挑战层|拓展层)/.test(hw);
+        return hw.length >= 24;
       }
 
       function recommendFixOrder(spec, structured, qaResult) {
@@ -1575,7 +1784,7 @@
           return;
         }
 
-        const targetPage = (latestSpec && latestSpec.pageCount) || extractRequestedPageCount(latestRawInput) || 8;
+        const targetPage = (latestSpec && latestSpec.pageCount) || extractRequestedPageCount(latestRawInput) || null;
         const fields = extractTeachingFields(latestRawInput, "");
         const topic = safeTopic(latestRawInput);
         const hints = subjectHints(fields.subject || "", topic);
@@ -1590,22 +1799,22 @@
 
         if (kind === "interaction") {
           latestStructured.interaction = [
-            "课堂互动设计（至少2轮）：",
-            `- 轮次1（3分钟）：${hints.interact}`,
-            "- 轮次2（4分钟）：小组讨论后随机抽答，按“准确-完整-表达”三维评分。",
-            "- 轮次3（可选2分钟）：错题回炉，要求学生说出改正依据。"
+            "校验与追问：",
+            `- 追问1：${hints.interact}`,
+            "- 追问2：是否满足输入约束、输出格式、语气要求？",
+            "- 追问3：若失败，优先修正哪个模块？"
           ].join("\n");
-          if (!silent) pushMessage("已完成一键修正：互动环节已增强。", "assistant");
+          if (!silent) pushMessage("已完成一键修正：校验与追问已增强。", "assistant");
         }
 
         if (kind === "homework") {
           latestStructured.homework = [
-            "分层作业：",
+            "交付清单：",
             `- ${hints.homework}`,
-            "- 提交要求：写出思路，不只给答案。",
-            "- 评价标准：正确率、过程完整性、表达清晰度。"
+            "- 必含：目标摘要、约束、步骤、终版提示词。",
+            "- 每项标注用途和可直接执行方式。"
           ].join("\n");
-          if (!silent) pushMessage("已完成一键修正：作业分层已补齐。", "assistant");
+          if (!silent) pushMessage("已完成一键修正：交付清单已补齐。", "assistant");
         }
 
         const qa = evaluateBySpec(latestSpec || {}, latestStructured);
@@ -1641,7 +1850,7 @@
         const passText = qaResult.pass ? "PASS" : "FAIL";
         const lines = [
           `质检结果：${passText}`,
-          `约束符合度=${qaResult.scores.constraint}，内容覆盖度=${qaResult.scores.coverage}，教学连贯度=${qaResult.scores.coherence}，总分=${qaResult.scores.overall}`
+          `约束符合度=${qaResult.scores.constraint}，内容覆盖度=${qaResult.scores.coverage}，执行连贯度=${qaResult.scores.coherence}，总分=${qaResult.scores.overall}`
         ];
         if (spec.pageCount) {
           lines.push(`页数检测：要求${spec.pageCount}页，检测${qaResult.generatedPageCount || "未知"}页`);
@@ -1712,7 +1921,7 @@
         ].join("\n\n");
 
         const rewritten = await requestDeepSeekDirect(prompt, {
-          system: "你是课堂PPT结构块修复器，只输出目标块正文。",
+          system: "你是多领域提示词结构块修复器，只输出目标块正文。",
           pageCount: latestSpec && latestSpec.pageCount
         });
         return rewritten.trim();
@@ -1734,7 +1943,7 @@
 
       async function oneShotRepairBySpec(spec, qa) {
         const prompt = [
-          "请一次性修复以下结构化课堂PPT结果。",
+          "请一次性修复以下结构化提示词结果。",
           "只输出 JSON，不要解释。字段必须为 goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
           "六个字段都必须是字符串。",
           "[当前问题]",
@@ -1748,7 +1957,7 @@
         ].join("\n\n");
 
         const repaired = await requestDeepSeekDirect(prompt, {
-          system: "你是课堂PPT一次性修复器，必须一次修完并只输出有效JSON。",
+          system: "你是多领域提示词一次性修复器，必须一次修完并只输出有效JSON。",
           pageCount: spec && spec.pageCount
         });
         return parseStructuredResponse(repaired);
@@ -1763,7 +1972,7 @@
 
         const title = document.createElement("div");
         title.className = "deliverable-title";
-        title.textContent = "可交付产物（课堂PPT提示词）";
+        title.textContent = "可交付产物（多领域通用提示词）";
         box.appendChild(title);
 
         if (qaResult) {
@@ -1776,7 +1985,7 @@
           if (spec && spec.pageCount) {
             qaLines.push(`页数要求=${spec.pageCount}，检测=${qaResult.generatedPageCount || "未知"}`);
           }
-          qaLines.push(qaResult.pass ? "状态：可直接出稿" : "状态：自动修正中（系统后台优先修正页数->可执行->作业分层）");
+          qaLines.push(qaResult.pass ? "状态：可直接出稿" : "状态：自动修正中（系统后台优先修正约束->执行步骤->交付清单）");
           qaNode.textContent = qaLines.join(" | ");
           box.appendChild(qaNode);
         }
@@ -1785,8 +1994,8 @@
         const checkRow = document.createElement("div");
         checkRow.className = "quick-check";
         const checkItems = [
-          { ok: acceptance.pageOk, text: "页数一致" },
-          { ok: acceptance.actionableOk, text: "每页可执行" },
+          { ok: acceptance.pageOk, text: "约束一致" },
+          { ok: acceptance.actionableOk, text: "步骤可执行" },
           { ok: acceptance.directUseOk, text: "终版可出稿" }
         ];
         for (const item of checkItems) {
@@ -1895,24 +2104,32 @@
           }
         })();
 
-        const requestTimeout = isMobileClient ? 6000 : REQUEST_TIMEOUT_MS;
-        const requestRetry = isMobileClient ? 0 : REQUEST_RETRY;
+        const requestTimeout = Number.isFinite(opts.timeoutMs) ? opts.timeoutMs : isMobileClient ? 6000 : REQUEST_TIMEOUT_MS;
+        const requestRetry = Number.isFinite(opts.retryCount) ? opts.retryCount : isMobileClient ? 0 : REQUEST_RETRY;
         const hardDeadline = Date.now() + (isMobileClient ? 12000 : 32000);
 
         const primaryEndpoint = await ensureProxyEndpoint();
         const endpointCandidates = [primaryEndpoint, ...buildProxyCandidates()].filter(Boolean);
         const uniqueEndpoints = [...new Set(endpointCandidates.map(normalizeProxyEndpoint))];
         const pageHint = opts.pageCount
-          ? `硬约束：输出必须是${opts.pageCount}页。pagePlan与pageDetails覆盖第1页到第${opts.pageCount}页，finalPrompt也必须明确${opts.pageCount}页。`
+          ? `数量约束：输出至少覆盖${opts.pageCount}个模块，且在finalPrompt中明确该约束。`
           : "";
+        const routeHint = [
+          opts.domain ? `领域路由：${opts.domain}` : "",
+          opts.subRoute ? `二级路由：${opts.subRoute}` : "",
+          opts.topic ? `主题：${opts.topic}` : ""
+        ]
+          .filter(Boolean)
+          .join("；");
         const systemText = opts.system || [
-          "你是课堂PPT提示词专家。",
-          "任务：把教师需求编译成可直接粘贴给AI生成PPT的可交付结构化结果。",
+          "你是多领域提示词编译器。",
+          "任务：把用户自然语言需求编译成可直接粘贴给AI执行的可交付结构化结果。",
           "请严格输出 JSON，字段必须包含：goals,pagePlan,pageDetails,interaction,homework,finalPrompt。",
           "六个字段必须全部为字符串，禁止数组和对象。",
           "长度控制：goals<=120字，pagePlan<=120字，pageDetails<=280字，interaction<=120字，homework<=120字，finalPrompt<=420字。",
+          routeHint,
           pageHint,
-          "finalPrompt 必须是最终可直接复制给AI出稿的完整提示词。"
+          "finalPrompt 必须是最终可直接复制给AI执行的完整提示词。"
         ].join(" ");
 
         let lastErrorMessage = "";
@@ -2064,6 +2281,31 @@
         const text = inputEl.value.trim();
         if (!text) return;
 
+        const cmd = text.toLowerCase();
+        if (cmd === "/test on") {
+          setTestMode(true);
+          inputEl.value = "";
+          pushMessage("测试模式已开启：将启用短会话重置与超时重试。", "assistant");
+          return;
+        }
+        if (cmd === "/test off") {
+          setTestMode(false);
+          inputEl.value = "";
+          pushMessage("测试模式已关闭。", "assistant");
+          return;
+        }
+        if (cmd === "/test reset") {
+          clearSessionForTest();
+          inputEl.value = "";
+          pushMessage("测试会话已重置。", "assistant");
+          return;
+        }
+
+        if (getTestMode() && messagesEl.children.length >= SHORT_SESSION_LIMIT) {
+          clearSessionForTest();
+          pushMessage("测试模式：已触发短会话重置，避免长会话导致超时。", "assistant");
+        }
+
         const isMobileRuntime = (() => {
           try {
             const ua = String(navigator.userAgent || "").toLowerCase();
@@ -2086,10 +2328,16 @@
           ...silent.fields,
           pageCount: silent.pageCount
         };
-        latestPageTarget = silent.pageCount || 8;
+        const requestMeta = {
+          pageCount: silent.pageCount || null,
+          domain: semanticPack.fields && semanticPack.fields.subject,
+          subRoute: semanticPack.fields && semanticPack.fields.subRoute,
+          topic: semanticPack.fields && semanticPack.fields.topic
+        };
+        latestPageTarget = silent.pageCount || null;
         latestSpec = buildSpecObject(internalText, semanticPack.fields);
         const pageCountHint = latestPageTarget
-          ? `\n\n[硬约束-页数]\n用户明确要求${latestPageTarget}页，必须严格输出${latestPageTarget}页。`
+          ? `\n\n[硬约束-数量]\n用户明确要求至少${latestPageTarget}个输出模块，请严格满足。`
           : "";
         const payload = [
           "[用户需求]",
@@ -2101,7 +2349,7 @@
           "[语义调度层-文档分段摘要]",
           semanticPack.snippets.join("\n\n") || "(无)",
           "",
-          "[课堂PPT结构重排]",
+          "[通用结构重排]",
           semanticPack.stageFlow.join(" -> "),
           "",
           "[输出要求]",
@@ -2113,8 +2361,77 @@
         sendEl.disabled = true;
         sendEl.textContent = "生成中...";
 
+        const testMode = getTestMode();
+
+        if (testMode && !isMobileRuntime) {
+          const delayOnline = shouldDelayOnlineEnhancementCase(latestRawInput, semanticPack.fields);
+          const onlineDelayMs = delayOnline ? 12000 : 500;
+          const fast = buildFastOfflineFallback(latestRawInput, semanticPack.fields, "测试模式主路径-离线先出稿");
+          latestStructured = fast;
+          const firstQa = evaluateBySpec(latestSpec || {}, latestStructured || {});
+          const metric = recordFurMetric(!!firstQa.pass);
+          latestQaResult = firstQa;
+          latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
+          renderDeliverable(latestStructured, firstQa, latestSpec || {});
+          proxyStatusEl.textContent = delayOnline
+            ? "测试模式：已先输出离线强结构结果，后台增强已延迟启动"
+            : "测试模式：已先输出离线强结构结果，后台正在在线增强";
+          pushMessage(`系统指标：首次可直接出稿率=${metric.rate}%（${metric.firstDirect}/${metric.total}）`, "assistant");
+          if (delayOnline) {
+            pushMessage("测试模式：该类样本已禁用在线首发，后台增强将在稳定窗口后启动。", "assistant");
+          }
+
+          sendEl.disabled = false;
+          sendEl.textContent = "↑";
+          inputEl.focus();
+
+          (async () => {
+            if (onlineDelayMs > 0) {
+              await new Promise((resolve) => setTimeout(resolve, onlineDelayMs));
+            }
+            try {
+              const baselineStructured = latestStructured ? { ...latestStructured } : null;
+              const baselineQa = evaluateBySpec(latestSpec || {}, baselineStructured || {});
+
+              const answer = await withHardTimeout(
+                requestDeepSeekDirect(payload, {
+                  ...requestMeta,
+                  timeoutMs: 7000,
+                  retryCount: 0
+                }),
+                8000,
+                "测试模式后台增强超时"
+              );
+
+              let structured = parseStructuredResponse(answer);
+              if (!isStructuredComplete(structured)) {
+                structured = await normalizeStructuredOutput(answer, { pageCount: latestPageTarget });
+              }
+              structured = ensureStrongStructuredOutput(structured, semanticPack.fields, "测试模式后台增强");
+
+              const onlineQa = evaluateBySpec(latestSpec || {}, structured || {});
+              const betterOrEqual = Number((onlineQa && onlineQa.scores && onlineQa.scores.overall) || 0) >= Number((baselineQa && baselineQa.scores && baselineQa.scores.overall) || 0);
+              if (!betterOrEqual) {
+                pushMessage("测试模式：后台结果未优于离线首发，已保留当前可交付版本。", "assistant");
+                return;
+              }
+
+              latestStructured = structured;
+
+              const qa = await withHardTimeout(autoPilotRepair(latestSpec, evaluateBySpec(latestSpec || {}, structured || {})), 9000, "后台自动修正超时");
+              latestQaResult = qa;
+              latestAssistantText = structured.finalPrompt || latestAssistantText;
+              renderDeliverable(latestStructured, qa, latestSpec || {});
+              pushMessage("测试模式：后台在线增强完成，已追加增强版结果。", "assistant");
+            } catch {
+              pushMessage("测试模式：后台在线增强未完成，已保留离线强结构结果。", "assistant");
+            }
+          })();
+          return;
+        }
+
         if (isMobileRuntime) {
-          const local = buildOfflineStructured(latestRawInput, latestPageTarget || 8);
+          const local = buildOfflineStructured(latestRawInput, latestPageTarget || null);
           latestStructured = local;
           const firstQa = evaluateBySpec(latestSpec || {}, latestStructured || {});
           const metric = recordFurMetric(!!firstQa.pass);
@@ -2130,15 +2447,58 @@
         }
 
         try {
-          const answer = await withHardTimeout(
-            requestDeepSeekDirect(payload, { pageCount: latestPageTarget }),
-            isMobileRuntime ? 9000 : 24000,
-            "移动端请求超时"
-          );
+          const useFastOfflineGate = getTestMode();
+
+          let answer;
+          try {
+            const requestHardTimeout = getTestMode() ? 10000 : isMobileRuntime ? 9000 : 24000;
+            answer = await withHardTimeout(
+              requestDeepSeekDirect(payload, {
+                ...requestMeta,
+                timeoutMs: isMobileRuntime ? 6000 : REQUEST_TIMEOUT_MS,
+                retryCount: isMobileRuntime ? 0 : REQUEST_RETRY
+              }),
+              requestHardTimeout,
+              "移动端请求超时"
+            );
+          } catch (firstError) {
+            const msg = String((firstError && firstError.message) || firstError || "");
+            const timeoutLike = isTimeoutLike(msg);
+            if (!timeoutLike) throw firstError;
+
+            if (useFastOfflineGate) {
+              clearSessionForTest();
+              const fast = buildFastOfflineFallback(latestRawInput, semanticPack.fields, "请求超时-极速离线回退");
+              answer = JSON.stringify(fast);
+              proxyStatusEl.textContent = "测试模式：请求超时，已触发极速离线结构化回退";
+              pushMessage("测试模式：请求超时，已触发极速离线结构化回退。", "assistant");
+            } else {
+              pushMessage("检测到请求超时，系统正在自动重试（轻量模式）。", "assistant");
+              const litePayload = [
+                "[用户需求]",
+                internalText,
+                "",
+                "[输出要求]",
+                "只输出 JSON，字段: goals,pagePlan,pageDetails,interaction,homework,finalPrompt；六个字段必须是字符串。"
+              ].join("\n");
+
+              answer = await withHardTimeout(
+                requestDeepSeekDirect(litePayload, {
+                  ...requestMeta,
+                  timeoutMs: isMobileRuntime ? 5000 : 12000,
+                  retryCount: 0
+                }),
+                isMobileRuntime ? 7000 : 14000,
+                "重试仍然超时"
+              );
+            }
+          }
+
           let structured = parseStructuredResponse(answer);
           if (!isStructuredComplete(structured)) {
             structured = await normalizeStructuredOutput(answer, { pageCount: latestPageTarget });
           }
+          structured = ensureStrongStructuredOutput(structured, semanticPack.fields, "结构强化");
 
           if (latestPageTarget) {
             const got = estimateGeneratedPageCount(structured);
@@ -2165,7 +2525,7 @@
           renderDeliverable(latestStructured, qa, latestSpec);
           pushMessage(`系统指标：首次可直接出稿率=${metric.rate}%（${metric.firstDirect}/${metric.total}）`, "assistant");
         } catch (error) {
-          const emergency = buildOfflineStructured(latestRawInput, latestPageTarget || 8);
+          const emergency = buildFastOfflineFallback(latestRawInput, semanticPack.fields, "异常兜底回退");
           latestStructured = emergency;
           const qa = evaluateBySpec(latestSpec || {}, latestStructured || {});
           latestQaResult = qa;

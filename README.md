@@ -131,6 +131,26 @@ Teacher benchmark now supports an execution loop upgrade:
 
    npm run bench:teacher:mock
 
+- Final deliverable 20-case strict regression (final deliverable state scoring):
+
+   npm run bench:final
+
+- Same run with visible browser (debug):
+
+   npm run bench:final:headed
+
+Notes for final regression:
+
+- Requires Playwright in local environment. If missing, run:
+
+   npm install -D playwright
+
+- Output artifacts:
+  - `docs/benchmarks/results/final-deliverable-latest.json`
+  - `docs/benchmarks/results/final-deliverable-YYYY-MM-DD.json`
+  - `docs/benchmarks/reports/final-deliverable-latest.md`
+  - `docs/benchmarks/reports/final-deliverable-YYYY-MM-DD.md`
+
 ### CI Automation
 
 Workflow `Benchmark Daily Report` runs daily and can be triggered manually:

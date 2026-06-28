@@ -1,44 +1,50 @@
 {
-  "runDate": "2026-06-27",
-  "runAt": "2026-06-27T06:09:55.242Z",
-  "model": "mock-teacher-benchmark",
-  "total": 20,
+  "runDate": "2026-06-28",
+  "runAt": "2026-06-28T00:59:54.565Z",
+  "model": "deepseek-chat",
+  "total": 5,
   "metrics": {
     "initial": {
-      "pageAccuracy": 0.9,
-      "completeRate": 0.75,
-      "passRate": 0.65
+      "pageAccuracy": 1,
+      "completeRate": 0.8,
+      "passRate": 0.8
     },
     "final": {
       "pageAccuracy": 1,
-      "completeRate": 1,
-      "passRate": 1
+      "completeRate": 0.8,
+      "passRate": 0.8
     }
   },
   "failureAttribution": {
     "initial": {
-      "missing_blocks": 5,
-      "homework_levels": 2,
-      "page_mismatch": 2
+      "invalid_json": 1,
+      "missing_blocks": 1,
+      "homework_levels": 1
     },
-    "final": {}
-  },
-  "strategyStats": {
-    "homework_layer": {
-      "applied": 1,
-      "resolved": 1,
-      "winRate": 1
-    },
-    "schema_rewrite": {
-      "applied": 5,
-      "resolved": 5,
-      "winRate": 1
-    },
-    "page_reconcile": {
-      "applied": 1,
-      "resolved": 1,
-      "winRate": 1
+    "final": {
+      "missing_blocks": 1,
+      "homework_levels": 1
     }
   },
-  "remainingFailed": []
+  "strategyStats": {
+    "schema_rewrite": {
+      "applied": 1,
+      "resolved": 0,
+      "winRate": 0
+    },
+    "homework_layer": {
+      "applied": 1,
+      "resolved": 0,
+      "winRate": 0
+    }
+  },
+  "remainingFailed": [
+    {
+      "id": "T01",
+      "failures": [
+        "missing_blocks",
+        "homework_levels"
+      ]
+    }
+  ]
 }
