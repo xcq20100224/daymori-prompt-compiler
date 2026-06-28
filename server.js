@@ -343,13 +343,13 @@ function parseJsonSafe(text) {
 
 function getAipptExportConfig() {
   const provider = String(process.env.AIPPT_PROVIDER || "generic").toLowerCase().trim();
-  const endpoint = String(process.env.AIPPT_API_ENDPOINT || "").trim();
+  const endpointRaw = String(process.env.AIPPT_API_ENDPOINT || "").trim();
   const apiKey = String(process.env.AIPPT_API_KEY || "").trim();
   const model = String(process.env.AIPPT_API_MODEL || "").trim();
   const authMode = String(process.env.AIPPT_API_AUTH_MODE || "bearer").toLowerCase().trim();
   const keyHeader = String(process.env.AIPPT_API_KEY_HEADER || "x-api-key").trim();
   const extraHeaders = parseJsonSafe(process.env.AIPPT_API_EXTRA_HEADERS || "");
-  const supportedProviders = new Set(["generic", "openai-compatible"]);
+  const supportedProviders = new Set(["generic", "openai-compatible", "openai"]);
 
   if (!supportedProviders.has(provider)) {
     throw new Error(`Unsupported AIPPT_PROVIDER: ${provider}`);
@@ -358,6 +358,8 @@ function getAipptExportConfig() {
   if (!["bearer", "header", "none"].includes(authMode)) {
     throw new Error(`Unsupported AIPPT_API_AUTH_MODE: ${authMode}`);
   }
+
+  const endpoint = endpointRaw || (provider === "openai" ? "https://api.openai.com/v1/chat/completions" : "");
 
   return {
     provider,
@@ -392,9 +394,9 @@ function buildAipptHeaders(config) {
 }
 
 function buildAipptRequestPayload(config, contract) {
-  if (config.provider === "openai-compatible") {
+  if (config.provider === "openai-compatible" || config.provider === "openai") {
     return {
-      model: config.model || "gpt-4.1",
+      model: config.model || "gpt-4.1-mini",
       messages: [
         {
           role: "system",
@@ -428,7 +430,7 @@ function buildAipptRequestPayload(config, contract) {
 }
 
 function parseAipptResponsePayload(config, data) {
-  if (config.provider === "openai-compatible") {
+  if (config.provider === "openai-compatible" || config.provider === "openai") {
     const content = extractChatText(data);
     const jsonText = extractFirstJsonObject(content || "");
     if (!jsonText) return { ok: false, reason: "aippt_openai_no_json_payload" };

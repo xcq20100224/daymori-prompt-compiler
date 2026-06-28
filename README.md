@@ -126,7 +126,7 @@ The app now supports a direct adapter from `aippt.v1` contract JSON to `.pptx` o
    - `AIPPT_API_ENDPOINT`
    - `AIPPT_API_KEY`
    - `AIPPT_API_MODEL`
-   - `AIPPT_PROVIDER` (`generic` or `openai-compatible`)
+   - `AIPPT_PROVIDER` (`generic` / `openai-compatible` / `openai`)
    - `AIPPT_API_AUTH_MODE` (`bearer` / `header` / `none`)
    - `AIPPT_API_KEY_HEADER` (used when auth mode is `header`)
    - `AIPPT_API_EXTRA_HEADERS` (JSON object string)
@@ -143,6 +143,19 @@ The app now supports a direct adapter from `aippt.v1` contract JSON to `.pptx` o
        - `downloadUrl`
        - `fileBase64` (or `pptxBase64`)
      - Optional fields: `fileName`, `mimeType`
+
+    - `openai`:
+       - Built-in endpoint default: `https://api.openai.com/v1/chat/completions`
+       - Built-in auth default: `Bearer <AIPPT_API_KEY>`
+       - Same payload/response contract as `openai-compatible`
+       - Recommended with fallback enabled (if no valid base64/downloadUrl, server auto-fallback to local `pptxgenjs`)
+
+- Quick OpenAI setup:
+
+    - `AIPPT_PROVIDER=openai`
+    - `AIPPT_API_KEY=<your_openai_key>`
+    - `AIPPT_API_MODEL=gpt-4.1-mini`
+    - `AIPPT_API_AUTH_MODE=bearer`
 
 - Response:
 
