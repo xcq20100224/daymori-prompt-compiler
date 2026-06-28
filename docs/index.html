@@ -540,6 +540,23 @@
         min-height: 24px;
       }
 
+      .ppt-designer {
+        margin-top: 6px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .ppt-select {
+        border: 1px solid #d7dbe4;
+        background: #f7f8fa;
+        color: #4f5561;
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-size: 12px;
+        min-width: 120px;
+      }
+
       .composer-tools {
         display: flex;
         align-items: center;
@@ -783,6 +800,24 @@
           <div>
             <div id="dropzone" class="dropzone">拖拽文件到这里，或点击选择文件（1个）</div>
             <textarea id="input" placeholder="有什么我能帮您的？"></textarea>
+            <div class="ppt-designer">
+              <select id="pptTemplateSelect" class="ppt-select" title="模板选择">
+                <option value="auto">模板：自动匹配</option>
+                <option value="biz">模板：商务汇报</option>
+                <option value="edu">模板：教务课程</option>
+                <option value="speech">模板：演讲路演</option>
+              </select>
+              <select id="pptFontSelect" class="ppt-select" title="字体主题">
+                <option value="business-cn">字体：商务雅黑</option>
+                <option value="serif-cn">字体：宋体稳重</option>
+                <option value="modern-cn">字体：现代黑体</option>
+              </select>
+              <select id="pptChartSelect" class="ppt-select" title="图表风格">
+                <option value="calm">图表：稳健棕金</option>
+                <option value="contrast">图表：对比蓝灰</option>
+                <option value="growth">图表：增长绿系</option>
+              </select>
+            </div>
             <div class="composer-bottom">
               <div class="composer-tools">
                 <span id="uploadBtn" class="tool-btn" title="上传文件" role="button" tabindex="0">+</span>
@@ -859,6 +894,9 @@
       const inputEl = document.getElementById("input");
       const sendEl = document.getElementById("send");
       const quickPptBtnEl = document.getElementById("quickPpt");
+      const pptTemplateSelectEl = document.getElementById("pptTemplateSelect");
+      const pptFontSelectEl = document.getElementById("pptFontSelect");
+      const pptChartSelectEl = document.getElementById("pptChartSelect");
       const benchKpiEl = document.getElementById("benchKpi");
       const benchMetaEl = document.getElementById("benchMeta");
       const benchListEl = document.getElementById("benchList");
@@ -881,6 +919,7 @@
       const TEST_MODE_KEY = "daymori_test_mode";
       const SHORT_SESSION_LIMIT = 10;
       const PROXY_STORAGE_KEY = "daymori_proxy_endpoint";
+      const PPT_DESIGN_PREF_KEY = "daymori_ppt_design_pref";
       const FUR_METRIC_KEY = "daymori_first_direct_usable_metric";
       const LOCAL_DEFAULT_PROXY_ENDPOINT = "http://localhost:3000/api/llm-proxy";
       const PUBLIC_DEFAULT_PROXY_ENDPOINT = "https://daymori-prompt-compiler.onrender.com/api/llm-proxy";
@@ -902,6 +941,52 @@
         { key: "homework", label: "交付清单" },
         { key: "finalPrompt", label: "终版提示词" }
       ];
+
+      function getPptDesignPref() {
+        try {
+          const raw = localStorage.getItem(PPT_DESIGN_PREF_KEY);
+          const parsed = raw ? JSON.parse(raw) : {};
+          return {
+            template: parsed.template || "auto",
+            fontTheme: parsed.fontTheme || "business-cn",
+            chartStyle: parsed.chartStyle || "calm"
+          };
+        } catch {
+          return { template: "auto", fontTheme: "business-cn", chartStyle: "calm" };
+        }
+      }
+
+      function savePptDesignPref(pref) {
+        localStorage.setItem(PPT_DESIGN_PREF_KEY, JSON.stringify(pref));
+      }
+
+      function templateSelectionToSpec(selection) {
+        const map = {
+          auto: { preferredSceneType: "", preferredTemplateId: "" },
+          biz: { preferredSceneType: "企业", preferredTemplateId: "biz-report-exec-03" },
+          edu: { preferredSceneType: "教务", preferredTemplateId: "edu-teach-standard-01" },
+          speech: { preferredSceneType: "演讲", preferredTemplateId: "speech-stage-story-01" }
+        };
+        return map[selection] || map.auto;
+      }
+
+      function bindPptDesignControls() {
+        const pref = getPptDesignPref();
+        if (pptTemplateSelectEl) pptTemplateSelectEl.value = pref.template;
+        if (pptFontSelectEl) pptFontSelectEl.value = pref.fontTheme;
+        if (pptChartSelectEl) pptChartSelectEl.value = pref.chartStyle;
+
+        const onChange = () => {
+          savePptDesignPref({
+            template: (pptTemplateSelectEl && pptTemplateSelectEl.value) || "auto",
+            fontTheme: (pptFontSelectEl && pptFontSelectEl.value) || "business-cn",
+            chartStyle: (pptChartSelectEl && pptChartSelectEl.value) || "calm"
+          });
+        };
+        if (pptTemplateSelectEl) pptTemplateSelectEl.addEventListener("change", onChange);
+        if (pptFontSelectEl) pptFontSelectEl.addEventListener("change", onChange);
+        if (pptChartSelectEl) pptChartSelectEl.addEventListener("change", onChange);
+      }
 
       function getTestMode() {
         try {
@@ -1796,8 +1881,9 @@
       function buildPptSpecByTemplate(rawInput, fields, pageCountHint = null, forcedTemplateId = "") {
         const text = stripInternalMeta(rawInput);
         const topic = (fields && fields.topic) || safeTopic(text);
-        const sceneType = classifyPptScene(text);
-        const template = forcedTemplateId ? findTemplateById(sceneType, forcedTemplateId) : retrieveBestPptTemplate(sceneType, text);
+        const sceneType = (fields && fields.preferredSceneType) || classifyPptScene(text);
+        const templateIdHint = forcedTemplateId || ((fields && fields.preferredTemplateId) || "");
+        const template = templateIdHint ? findTemplateById(sceneType, templateIdHint) : retrieveBestPptTemplate(sceneType, text);
         const requested = pageCountHint || extractRequestedPageCount(text) || template.defaultPageCount;
         const keywords = extractKeywords(text).slice(0, 8);
 
@@ -1815,6 +1901,8 @@
           pageCount: requested,
           visualStyle: template.visualStyle,
           tone: template.tone,
+          fontTheme: (fields && fields.fontTheme) || "business-cn",
+          chartStyle: (fields && fields.chartStyle) || "calm",
           slides
         };
       }
@@ -1865,6 +1953,8 @@
           pageCount: spec.pageCount,
           visualStyle: spec.visualStyle,
           tone: spec.tone,
+          fontTheme: spec.fontTheme || "business-cn",
+          chartStyle: spec.chartStyle || "calm",
           topic: spec.topic,
           slides: (spec.slides || []).map((s) => ({
             index: s.index,
@@ -1943,7 +2033,7 @@
 
         return {
           goals: [`场景类型：${spec.sceneType}`, `主题：${spec.topic}`, `模板ID：${spec.templateId}`, `质量门禁：${qa.pass ? "PASS" : "FAIL"}`].join("\n"),
-          pagePlan: [`页数：${spec.pageCount}`, `视觉风格：${spec.visualStyle}`, `表达语气：${spec.tone}`, "生成策略：检索匹配模板 -> 参数填充 -> 只修坏页"].join("\n"),
+          pagePlan: [`页数：${spec.pageCount}`, `视觉风格：${spec.visualStyle}`, `表达语气：${spec.tone}`, `字体主题：${spec.fontTheme || "business-cn"}`, `图表风格：${spec.chartStyle || "calm"}`, "生成策略：检索匹配模板 -> 参数填充 -> 只修坏页"].join("\n"),
           pageDetails: details,
           interaction: assets,
           homework: notes,
@@ -2917,10 +3007,16 @@
           : internalText;
 
         const semanticPack = buildSemanticPack(internalText, contextText);
+        const designPref = getPptDesignPref();
+        const templateSpec = templateSelectionToSpec(designPref.template);
         semanticPack.fields = {
           ...semanticPack.fields,
           ...silent.fields,
-          pageCount: silent.pageCount
+          pageCount: silent.pageCount,
+          preferredSceneType: templateSpec.preferredSceneType,
+          preferredTemplateId: templateSpec.preferredTemplateId,
+          fontTheme: designPref.fontTheme,
+          chartStyle: designPref.chartStyle
         };
         const requestMeta = {
           pageCount: silent.pageCount || null,
@@ -3176,6 +3272,7 @@
       });
 
       loadBenchmarkBoard();
+      bindPptDesignControls();
       ensureProxyEndpoint();
 
     </script>

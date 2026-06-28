@@ -326,6 +326,8 @@ function normalizeContract(input) {
       pageCount,
       visualStyle: String(input.visualStyle || "简洁商务风"),
       tone: String(input.tone || "清晰、可执行"),
+      fontTheme: String(input.fontTheme || "business-cn"),
+      chartStyle: String(input.chartStyle || "calm"),
       topic: String(input.topic || "当前需求"),
       slides
     }
@@ -544,6 +546,22 @@ async function buildLocalPptx(contract) {
     accentSoft: "EBDDCB"
   };
 
+  const fontTheme = String(contract.fontTheme || "business-cn");
+  const chartStyle = String(contract.chartStyle || "calm");
+  const fontMap = {
+    "business-cn": { title: "Microsoft YaHei", body: "Microsoft YaHei" },
+    "serif-cn": { title: "SimSun", body: "SimSun" },
+    "modern-cn": { title: "Microsoft JhengHei", body: "Microsoft YaHei" }
+  };
+  const fontPack = fontMap[fontTheme] || fontMap["business-cn"];
+
+  const chartStyleMap = {
+    calm: { color: palette.accent, symbol: "circle" },
+    contrast: { color: "345F8A", symbol: "diamond" },
+    growth: { color: "2E7D57", symbol: "triangle" }
+  };
+  const chartPack = chartStyleMap[chartStyle] || chartStyleMap.calm;
+
   const storyLabels = ["封面总览", "目标对齐", "数据洞察", "问题归因", "行动落地", "补充说明"];
 
   function cleanText(value, fallback = "") {
@@ -621,7 +639,7 @@ async function buildLocalPptx(contract) {
       h: 0.28,
       fontSize: 9,
       color: palette.muted,
-      fontFace: "Microsoft YaHei"
+      fontFace: fontPack.body
     });
 
     slide.addText(`${index}/${total}`, {
@@ -632,7 +650,7 @@ async function buildLocalPptx(contract) {
       align: "right",
       fontSize: 9,
       color: palette.muted,
-      fontFace: "Microsoft YaHei"
+      fontFace: fontPack.body
     });
   }
 
@@ -678,7 +696,7 @@ async function buildLocalPptx(contract) {
         fontSize: 13,
         bold: true,
         color: palette.accent,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.body
       });
 
       slide.addText(storyLabels[Math.min(pageIndex - 1, storyLabels.length - 1)] || "封面总览", {
@@ -689,7 +707,7 @@ async function buildLocalPptx(contract) {
         align: "right",
         fontSize: 11,
         color: palette.muted,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.body
       });
 
       slide.addText(title, {
@@ -700,7 +718,7 @@ async function buildLocalPptx(contract) {
         fontSize: 39,
         bold: true,
         color: palette.title,
-        fontFace: "Microsoft YaHei",
+        fontFace: fontPack.title,
         valign: "top"
       });
 
@@ -711,7 +729,7 @@ async function buildLocalPptx(contract) {
         h: 0.9,
         fontSize: 16,
         color: palette.text,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.body
       });
 
       slide.addShape(pptx.ShapeType.roundRect, {
@@ -731,7 +749,7 @@ async function buildLocalPptx(contract) {
         h: 0.5,
         fontSize: 12,
         color: palette.text,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.body
       });
 
       slide.addText(takeaway, {
@@ -741,7 +759,7 @@ async function buildLocalPptx(contract) {
         h: 0.38,
         fontSize: 11,
         color: palette.muted,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.body
       });
     } else {
       slide.addShape(pptx.ShapeType.roundRect, {
@@ -762,7 +780,7 @@ async function buildLocalPptx(contract) {
         fontSize: 25,
         bold: true,
         color: palette.title,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.title
       });
 
       slide.addText(storyLabels[Math.min(pageIndex - 1, storyLabels.length - 1)] || "补充说明", {
@@ -773,7 +791,7 @@ async function buildLocalPptx(contract) {
         align: "right",
         fontSize: 9,
         color: palette.muted,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.body
       });
 
       slide.addShape(pptx.ShapeType.roundRect, {
@@ -794,7 +812,7 @@ async function buildLocalPptx(contract) {
         align: "center",
         fontSize: 10,
         color: palette.accent,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.body
       });
 
       slide.addShape(pptx.ShapeType.roundRect, {
@@ -815,7 +833,7 @@ async function buildLocalPptx(contract) {
         fontSize: 10,
         bold: true,
         color: palette.accent,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.body
       });
 
       keyPoints.forEach((point, i) => {
@@ -838,7 +856,7 @@ async function buildLocalPptx(contract) {
           fontSize: 9,
           bold: true,
           color: palette.accent,
-          fontFace: "Microsoft YaHei"
+          fontFace: fontPack.body
         });
 
         slide.addText(point.slice(0, 60), {
@@ -848,7 +866,7 @@ async function buildLocalPptx(contract) {
           h: 0.4,
           fontSize: 13,
           color: palette.text,
-          fontFace: "Microsoft YaHei"
+          fontFace: fontPack.body
         });
       });
 
@@ -870,7 +888,7 @@ async function buildLocalPptx(contract) {
         fontSize: 12,
         bold: true,
         color: palette.accent,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.body
       });
 
       if (dataLike) {
@@ -894,9 +912,9 @@ async function buildLocalPptx(contract) {
             catAxisLabelRotate: -25,
             valAxisMinVal: 0,
             valAxisMaxVal: Math.max(100, ...c.values) + 10,
-            chartColors: [palette.accent],
+            chartColors: [chartPack.color],
             lineSize: 2,
-            lineDataSymbol: "circle"
+            lineDataSymbol: chartPack.symbol
           }
         );
       }
@@ -909,7 +927,7 @@ async function buildLocalPptx(contract) {
           h: 0.25,
           fontSize: 10.5,
           color: palette.text,
-          fontFace: "Microsoft YaHei"
+          fontFace: fontPack.body
         });
       });
 
@@ -930,7 +948,7 @@ async function buildLocalPptx(contract) {
         h: 0.44,
         fontSize: 10.5,
         color: palette.muted,
-        fontFace: "Microsoft YaHei"
+        fontFace: fontPack.body
       });
     }
 
