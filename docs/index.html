@@ -806,6 +806,7 @@
                 <option value="biz">模板：商务汇报</option>
                 <option value="edu">模板：教务课程</option>
                 <option value="speech">模板：演讲路演</option>
+                <option value="lazyman">模板：Lazyman高管</option>
               </select>
               <select id="pptFontSelect" class="ppt-select" title="字体主题">
                 <option value="business-cn">字体：商务雅黑</option>
@@ -942,6 +943,34 @@
         { key: "finalPrompt", label: "终版提示词" }
       ];
 
+      const TEMPLATE_SPEC_MAP = {
+        auto: { preferredSceneType: "", preferredTemplateId: "" },
+        biz: { preferredSceneType: "企业", preferredTemplateId: "biz-report-exec-03" },
+        edu: { preferredSceneType: "教务", preferredTemplateId: "edu-teach-standard-01" },
+        speech: { preferredSceneType: "演讲", preferredTemplateId: "speech-stage-story-01" },
+        lazyman: { preferredSceneType: "企业", preferredTemplateId: "biz-report-exec-08" }
+      };
+
+      const TEMPLATE_DESIGN_PRESET_MAP = {
+        auto: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "standard" },
+        biz: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "standard" },
+        edu: { fontTheme: "serif-cn", chartStyle: "contrast", narrativeMode: "standard" },
+        speech: { fontTheme: "modern-cn", chartStyle: "growth", narrativeMode: "standard" },
+        lazyman: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "lazyman" }
+      };
+
+      function resolveNarrativeMode(templateSelection) {
+        const preset = TEMPLATE_DESIGN_PRESET_MAP[String(templateSelection || "auto")];
+        return (preset && preset.narrativeMode) || "standard";
+      }
+
+      function syncDesignControlsByTemplate(templateSelection) {
+        const preset = TEMPLATE_DESIGN_PRESET_MAP[String(templateSelection || "auto")];
+        if (!preset) return;
+        if (pptFontSelectEl) pptFontSelectEl.value = preset.fontTheme || "business-cn";
+        if (pptChartSelectEl) pptChartSelectEl.value = preset.chartStyle || "calm";
+      }
+
       function getPptDesignPref() {
         try {
           const raw = localStorage.getItem(PPT_DESIGN_PREF_KEY);
@@ -949,10 +978,11 @@
           return {
             template: parsed.template || "auto",
             fontTheme: parsed.fontTheme || "business-cn",
-            chartStyle: parsed.chartStyle || "calm"
+            chartStyle: parsed.chartStyle || "calm",
+            narrativeMode: parsed.narrativeMode || resolveNarrativeMode(parsed.template || "auto")
           };
         } catch {
-          return { template: "auto", fontTheme: "business-cn", chartStyle: "calm" };
+          return { template: "auto", fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "standard" };
         }
       }
 
@@ -961,26 +991,26 @@
       }
 
       function templateSelectionToSpec(selection) {
-        const map = {
-          auto: { preferredSceneType: "", preferredTemplateId: "" },
-          biz: { preferredSceneType: "企业", preferredTemplateId: "biz-report-exec-03" },
-          edu: { preferredSceneType: "教务", preferredTemplateId: "edu-teach-standard-01" },
-          speech: { preferredSceneType: "演讲", preferredTemplateId: "speech-stage-story-01" }
-        };
-        return map[selection] || map.auto;
+        return TEMPLATE_SPEC_MAP[selection] || TEMPLATE_SPEC_MAP.auto;
       }
 
       function bindPptDesignControls() {
         const pref = getPptDesignPref();
         if (pptTemplateSelectEl) pptTemplateSelectEl.value = pref.template;
-        if (pptFontSelectEl) pptFontSelectEl.value = pref.fontTheme;
-        if (pptChartSelectEl) pptChartSelectEl.value = pref.chartStyle;
+        syncDesignControlsByTemplate(pref.template);
+        if (pptFontSelectEl) pptFontSelectEl.value = pref.fontTheme || pptFontSelectEl.value;
+        if (pptChartSelectEl) pptChartSelectEl.value = pref.chartStyle || pptChartSelectEl.value;
 
-        const onChange = () => {
+        const onChange = (event) => {
+          if (event && event.target && event.target.id === "pptTemplateSelect") {
+            syncDesignControlsByTemplate((pptTemplateSelectEl && pptTemplateSelectEl.value) || "auto");
+          }
+          const selectedTemplate = (pptTemplateSelectEl && pptTemplateSelectEl.value) || "auto";
           savePptDesignPref({
-            template: (pptTemplateSelectEl && pptTemplateSelectEl.value) || "auto",
+            template: selectedTemplate,
             fontTheme: (pptFontSelectEl && pptFontSelectEl.value) || "business-cn",
-            chartStyle: (pptChartSelectEl && pptChartSelectEl.value) || "calm"
+            chartStyle: (pptChartSelectEl && pptChartSelectEl.value) || "calm",
+            narrativeMode: resolveNarrativeMode(selectedTemplate)
           });
         };
         if (pptTemplateSelectEl) pptTemplateSelectEl.addEventListener("change", onChange);
@@ -1886,6 +1916,7 @@
         const template = templateIdHint ? findTemplateById(sceneType, templateIdHint) : retrieveBestPptTemplate(sceneType, text);
         const requested = pageCountHint || extractRequestedPageCount(text) || template.defaultPageCount;
         const keywords = extractKeywords(text).slice(0, 8);
+        const narrativeMode = String((fields && fields.narrativeMode) || "standard");
 
         const slides = [];
         for (let i = 0; i < requested; i++) {
@@ -1899,10 +1930,11 @@
           templateId: template.id,
           topic,
           pageCount: requested,
-          visualStyle: template.visualStyle,
-          tone: template.tone,
+          visualStyle: narrativeMode === "lazyman" ? `${template.visualStyle}｜Lazyman对齐` : template.visualStyle,
+          tone: narrativeMode === "lazyman" ? `${template.tone}；一页一结论，先结论后证据` : template.tone,
           fontTheme: (fields && fields.fontTheme) || "business-cn",
           chartStyle: (fields && fields.chartStyle) || "calm",
+          narrativeMode,
           slides
         };
       }
@@ -1955,6 +1987,7 @@
           tone: spec.tone,
           fontTheme: spec.fontTheme || "business-cn",
           chartStyle: spec.chartStyle || "calm",
+          narrativeMode: spec.narrativeMode || "standard",
           topic: spec.topic,
           slides: (spec.slides || []).map((s) => ({
             index: s.index,
@@ -2033,7 +2066,7 @@
 
         return {
           goals: [`场景类型：${spec.sceneType}`, `主题：${spec.topic}`, `模板ID：${spec.templateId}`, `质量门禁：${qa.pass ? "PASS" : "FAIL"}`].join("\n"),
-          pagePlan: [`页数：${spec.pageCount}`, `视觉风格：${spec.visualStyle}`, `表达语气：${spec.tone}`, `字体主题：${spec.fontTheme || "business-cn"}`, `图表风格：${spec.chartStyle || "calm"}`, "生成策略：检索匹配模板 -> 参数填充 -> 只修坏页"].join("\n"),
+          pagePlan: [`页数：${spec.pageCount}`, `视觉风格：${spec.visualStyle}`, `表达语气：${spec.tone}`, `叙事模式：${spec.narrativeMode || "standard"}`, `字体主题：${spec.fontTheme || "business-cn"}`, `图表风格：${spec.chartStyle || "calm"}`, "生成策略：检索匹配模板 -> 参数填充 -> 只修坏页"].join("\n"),
           pageDetails: details,
           interaction: assets,
           homework: notes,
@@ -3016,7 +3049,8 @@
           preferredSceneType: templateSpec.preferredSceneType,
           preferredTemplateId: templateSpec.preferredTemplateId,
           fontTheme: designPref.fontTheme,
-          chartStyle: designPref.chartStyle
+          chartStyle: designPref.chartStyle,
+          narrativeMode: designPref.narrativeMode || resolveNarrativeMode(designPref.template)
         };
         const requestMeta = {
           pageCount: silent.pageCount || null,

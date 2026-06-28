@@ -333,6 +333,7 @@ function normalizeContract(input) {
       tone: String(input.tone || "清晰、可执行"),
       fontTheme: String(input.fontTheme || "business-cn"),
       chartStyle: String(input.chartStyle || "calm"),
+      narrativeMode: String(input.narrativeMode || "standard"),
       topic: String(input.topic || "当前需求"),
       slides
     }
@@ -539,7 +540,9 @@ async function buildLocalPptx(contract) {
   pptx.subject = contract.sceneType;
   pptx.title = `${contract.topic} - ${contract.sceneType}`;
 
-  const palette = {
+  const narrativeMode = String(contract.narrativeMode || "standard");
+
+  const standardPalette = {
     bg: "F6F1EA",
     panel: "FFFFFF",
     panelSoft: "EFE7DB",
@@ -550,6 +553,20 @@ async function buildLocalPptx(contract) {
     accent: "8B5E34",
     accentSoft: "EBDDCB"
   };
+
+  const lazymanPalette = {
+    bg: "111111",
+    panel: "181614",
+    panelSoft: "25211D",
+    line: "4A3A2D",
+    title: "F5E7D8",
+    text: "E9D7C3",
+    muted: "B79E83",
+    accent: "7A5130",
+    accentSoft: "2E241D"
+  };
+
+  const palette = narrativeMode === "lazyman" ? lazymanPalette : standardPalette;
 
   const fontTheme = String(contract.fontTheme || "business-cn");
   const chartStyle = String(contract.chartStyle || "calm");
@@ -567,7 +584,9 @@ async function buildLocalPptx(contract) {
   };
   const chartPack = chartStyleMap[chartStyle] || chartStyleMap.calm;
 
-  const storyLabels = ["封面总览", "目标对齐", "数据洞察", "问题归因", "行动落地", "补充说明"];
+  const storyLabels = narrativeMode === "lazyman"
+    ? ["董事会摘要", "关键目标", "数据证据", "问题归因", "执行动作", "战略补充"]
+    : ["封面总览", "目标对齐", "数据洞察", "问题归因", "行动落地", "补充说明"];
 
   function cleanText(value, fallback = "") {
     const raw = String(value || fallback).replace(/\s+/g, " ").trim();
