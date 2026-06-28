@@ -544,6 +544,8 @@ async function buildLocalPptx(contract) {
     accentSoft: "EBDDCB"
   };
 
+  const storyLabels = ["封面总览", "目标对齐", "数据洞察", "问题归因", "行动落地", "补充说明"];
+
   function cleanText(value, fallback = "") {
     const raw = String(value || fallback).replace(/\s+/g, " ").trim();
     return raw || fallback;
@@ -552,6 +554,55 @@ async function buildLocalPptx(contract) {
   function safeList(items, fallback) {
     const out = Array.isArray(items) ? items.map((x) => cleanText(x)).filter(Boolean) : [];
     return out.length ? out : [fallback];
+  }
+
+  function shortText(text, max = 26) {
+    const t = cleanText(text, "-");
+    return t.length > max ? `${t.slice(0, max)}...` : t;
+  }
+
+  function extractNumericHints(slideSpec) {
+    const source = [slideSpec.title, slideSpec.goal, ...(slideSpec.keyPoints || [])].join(" ");
+    const percentMatches = [...source.matchAll(/(-?\d+(?:\.\d+)?)\s*%/g)].map((m) => Number(m[1]));
+    const numberMatches = [...source.matchAll(/(-?\d+(?:\.\d+)?)/g)].map((m) => Number(m[1])).filter((n) => Number.isFinite(n));
+    const values = [...percentMatches, ...numberMatches].filter((n) => n >= 0).slice(0, 6);
+    return values;
+  }
+
+  function buildTakeaway(slideSpec) {
+    const lead = cleanText(slideSpec.goal, "本页聚焦关键结论与行动");
+    const first = safeList(slideSpec.keyPoints, "形成统一执行口径")[0];
+    return `本页结论：${lead}；关键抓手：${first}`;
+  }
+
+  function isDataLikeSlide(slideSpec, pageIndex) {
+    if (pageIndex === 3 || pageIndex === 4) return true;
+    const text = [slideSpec.title, slideSpec.goal, ...(slideSpec.keyPoints || [])].join(" ");
+    return /(数据|趋势|同比|环比|增长|收入|成本|转化|问题|风险|指标)/.test(text);
+  }
+
+  function chartSpecForSlide(slideSpec, pageIndex) {
+    const labels = safeList(slideSpec.keyPoints, "关键指标").slice(0, 3).map((x) => shortText(x, 12));
+    const hinted = extractNumericHints(slideSpec).slice(0, 3);
+    let values = hinted;
+    if (values.length < labels.length) {
+      const base = pageIndex === 4 ? [42, 31, 21] : [58, 66, 74];
+      values = [...values, ...base].slice(0, labels.length);
+    }
+    values = values.map((n, i) => {
+      const v = Number(n);
+      if (!Number.isFinite(v)) return 40 + i * 12;
+      if (v > 1000) return Math.round(v / 1000);
+      return Math.max(5, Math.round(v));
+    });
+
+    const type = pageIndex === 4 ? pptx.ChartType.bar : pptx.ChartType.line;
+    return {
+      type,
+      labels,
+      values,
+      seriesName: pageIndex === 4 ? "问题影响度" : "核心指标趋势"
+    };
   }
 
   function addFooter(slide, index, total) {
@@ -594,6 +645,8 @@ async function buildLocalPptx(contract) {
     const keyPoints = safeList(slideSpec.keyPoints, "补充关键业务要点").slice(0, 4);
     const assets = safeList(slideSpec.assetPlaceholders, "补充图表或配图").slice(0, 4);
     const notes = cleanText(slideSpec.speakerNotes, "先结论，再依据，最后行动建议。") || "-";
+    const takeaway = buildTakeaway(slideSpec);
+    const dataLike = isDataLikeSlide(slideSpec, pageIndex);
 
     slide.background = { color: palette.bg };
 
@@ -625,6 +678,17 @@ async function buildLocalPptx(contract) {
         fontSize: 13,
         bold: true,
         color: palette.accent,
+        fontFace: "Microsoft YaHei"
+      });
+
+      slide.addText(storyLabels[Math.min(pageIndex - 1, storyLabels.length - 1)] || "封面总览", {
+        x: 5.95,
+        y: 1.2,
+        w: 5.95,
+        h: 0.34,
+        align: "right",
+        fontSize: 11,
+        color: palette.muted,
         fontFace: "Microsoft YaHei"
       });
 
@@ -669,6 +733,16 @@ async function buildLocalPptx(contract) {
         color: palette.text,
         fontFace: "Microsoft YaHei"
       });
+
+      slide.addText(takeaway, {
+        x: 1.0,
+        y: 5.76,
+        w: 10.9,
+        h: 0.38,
+        fontSize: 11,
+        color: palette.muted,
+        fontFace: "Microsoft YaHei"
+      });
     } else {
       slide.addShape(pptx.ShapeType.roundRect, {
         x: 0.62,
@@ -688,6 +762,17 @@ async function buildLocalPptx(contract) {
         fontSize: 25,
         bold: true,
         color: palette.title,
+        fontFace: "Microsoft YaHei"
+      });
+
+      slide.addText(storyLabels[Math.min(pageIndex - 1, storyLabels.length - 1)] || "补充说明", {
+        x: 9.0,
+        y: 1.29,
+        w: 2.9,
+        h: 0.22,
+        align: "right",
+        fontSize: 9,
+        color: palette.muted,
         fontFace: "Microsoft YaHei"
       });
 
@@ -722,8 +807,19 @@ async function buildLocalPptx(contract) {
         line: { color: palette.line, pt: 1 }
       });
 
+      slide.addText(takeaway, {
+        x: 1.2,
+        y: 1.62,
+        w: 6.95,
+        h: 0.38,
+        fontSize: 10,
+        bold: true,
+        color: palette.accent,
+        fontFace: "Microsoft YaHei"
+      });
+
       keyPoints.forEach((point, i) => {
-        const y = 1.86 + i * 0.86;
+        const y = 2.06 + i * 0.8;
         slide.addShape(pptx.ShapeType.roundRect, {
           x: 1.2,
           y,
@@ -777,6 +873,34 @@ async function buildLocalPptx(contract) {
         fontFace: "Microsoft YaHei"
       });
 
+      if (dataLike) {
+        const c = chartSpecForSlide(slideSpec, pageIndex);
+        slide.addChart(
+          c.type,
+          [
+            {
+              name: c.seriesName,
+              labels: c.labels,
+              values: c.values
+            }
+          ],
+          {
+            x: 8.95,
+            y: 3.1,
+            w: 2.95,
+            h: 1.95,
+            showLegend: false,
+            valAxisTitle: "指数",
+            catAxisLabelRotate: -25,
+            valAxisMinVal: 0,
+            valAxisMaxVal: Math.max(100, ...c.values) + 10,
+            chartColors: [palette.accent],
+            lineSize: 2,
+            lineDataSymbol: "circle"
+          }
+        );
+      }
+
       assets.forEach((asset, i) => {
         slide.addText(`• ${asset.slice(0, 20)}`, {
           x: 9.0,
@@ -791,9 +915,9 @@ async function buildLocalPptx(contract) {
 
       slide.addShape(pptx.ShapeType.roundRect, {
         x: 0.95,
-        y: 5.58,
+        y: 5.52,
         w: 11.12,
-        h: 0.9,
+        h: 0.96,
         radius: 0.05,
         fill: { color: "F2EEE8" },
         line: { color: palette.line, pt: 1 }
