@@ -465,6 +465,11 @@
         box-shadow: 0 4px 12px rgba(30, 34, 44, 0.05);
       }
 
+      .composer.drag-active {
+        border-color: #8ea2c5;
+        background: #eef3fb;
+      }
+
       textarea {
         width: 100%;
         min-height: 24px;
@@ -506,6 +511,8 @@
         display: grid;
         place-items: center;
         border: 1px solid transparent;
+        cursor: pointer;
+        user-select: none;
       }
 
       .tool-btn:hover {
@@ -712,7 +719,7 @@
             <textarea id="input" placeholder="有什么我能帮您的？"></textarea>
             <div class="composer-bottom">
               <div class="composer-tools">
-                <span class="tool-btn">+</span>
+                <span id="uploadBtn" class="tool-btn" title="上传文件" role="button" tabindex="0">+</span>
                 <span class="tool-btn">◎</span>
               </div>
               <div class="composer-mode">深度思考 最高 <span class="caret">▾</span></div>
@@ -773,6 +780,7 @@
     <script>
       const fileEl = document.getElementById("file");
       const dropzoneEl = document.getElementById("dropzone");
+      const uploadBtnEl = document.getElementById("uploadBtn");
       const copyLatestBtnEl = document.getElementById("copyLatestBtn");
       const openAiBtnEl = document.getElementById("openAiBtn");
       const fileNameEl = document.getElementById("fileName");
@@ -1917,26 +1925,49 @@
         return JSON.stringify(offline);
       }
 
-      dropzoneEl.addEventListener("click", () => fileEl.click());
+      function openFilePicker() {
+        if (fileEl) fileEl.click();
+      }
 
+      if (uploadBtnEl) {
+        uploadBtnEl.addEventListener("click", openFilePicker);
+        uploadBtnEl.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openFilePicker();
+          }
+        });
+      }
+
+      if (dropzoneEl) {
+        dropzoneEl.addEventListener("click", openFilePicker);
+      }
+
+      let dragDepth = 0;
       ["dragenter", "dragover"].forEach((evt) => {
-        dropzoneEl.addEventListener(evt, (event) => {
+        formEl.addEventListener(evt, (event) => {
           event.preventDefault();
-          dropzoneEl.classList.add("active");
+          dragDepth += 1;
+          formEl.classList.add("drag-active");
         });
       });
 
       ["dragleave", "drop"].forEach((evt) => {
-        dropzoneEl.addEventListener(evt, (event) => {
+        formEl.addEventListener(evt, (event) => {
           event.preventDefault();
-          dropzoneEl.classList.remove("active");
+          dragDepth = Math.max(0, dragDepth - 1);
+          if (dragDepth === 0) {
+            formEl.classList.remove("drag-active");
+          }
         });
       });
 
-      dropzoneEl.addEventListener("drop", async (event) => {
+      formEl.addEventListener("drop", async (event) => {
         const files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : [];
         const file = files[0];
-        await loadFileContext(file);
+        if (file) {
+          await loadFileContext(file);
+        }
       });
 
       window.addEventListener("dragover", (event) => event.preventDefault());
