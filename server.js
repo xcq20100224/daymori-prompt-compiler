@@ -332,12 +332,122 @@ function parseBase64Payload(value) {
   return Buffer.from(raw, "base64");
 }
 
-async function callAipptEngine(contract) {
+function parseJsonSafe(text) {
+  if (!text || typeof text !== "string") return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
+}
+
+function getAipptExportConfig() {
+  const provider = String(process.env.AIPPT_PROVIDER || "generic").toLowerCase().trim();
   const endpoint = String(process.env.AIPPT_API_ENDPOINT || "").trim();
   const apiKey = String(process.env.AIPPT_API_KEY || "").trim();
   const model = String(process.env.AIPPT_API_MODEL || "").trim();
+  const authMode = String(process.env.AIPPT_API_AUTH_MODE || "bearer").toLowerCase().trim();
+  const keyHeader = String(process.env.AIPPT_API_KEY_HEADER || "x-api-key").trim();
+  const extraHeaders = parseJsonSafe(process.env.AIPPT_API_EXTRA_HEADERS || "");
+  const supportedProviders = new Set(["generic", "openai-compatible"]);
 
-  if (!endpoint || !apiKey) {
+  if (!supportedProviders.has(provider)) {
+    throw new Error(`Unsupported AIPPT_PROVIDER: ${provider}`);
+  }
+
+  if (!["bearer", "header", "none"].includes(authMode)) {
+    throw new Error(`Unsupported AIPPT_API_AUTH_MODE: ${authMode}`);
+  }
+
+  return {
+    provider,
+    endpoint,
+    apiKey,
+    model,
+    authMode,
+    keyHeader: keyHeader || "x-api-key",
+    extraHeaders: extraHeaders && typeof extraHeaders === "object" ? extraHeaders : {}
+  };
+}
+
+function buildAipptHeaders(config) {
+  const headers = {
+    "Content-Type": "application/json"
+  };
+
+  if (config.authMode === "bearer" && config.apiKey) {
+    headers.Authorization = `Bearer ${config.apiKey}`;
+  }
+  if (config.authMode === "header" && config.apiKey) {
+    headers[config.keyHeader] = config.apiKey;
+  }
+
+  for (const [key, value] of Object.entries(config.extraHeaders || {})) {
+    if (typeof value === "string" && key) {
+      headers[key] = value;
+    }
+  }
+
+  return headers;
+}
+
+function buildAipptRequestPayload(config, contract) {
+  if (config.provider === "openai-compatible") {
+    return {
+      model: config.model || "gpt-4.1",
+      messages: [
+        {
+          role: "system",
+          content: [
+            "You are an AIPPT export adapter.",
+            "Generate a PPTX file from the provided contract.",
+            "Return JSON only, without markdown fences.",
+            "JSON schema:",
+            "{\"fileBase64\":\"...\",\"fileName\":\"...pptx\",\"mimeType\":\"application/vnd.openxmlformats-officedocument.presentationml.presentation\"}",
+            "You may return downloadUrl instead of fileBase64 if supported."
+          ].join("\\n")
+        },
+        {
+          role: "user",
+          content: JSON.stringify({
+            task: "export_contract_to_pptx",
+            contractVersion: contract.contractVersion,
+            contract
+          })
+        }
+      ],
+      temperature: 0.1
+    };
+  }
+
+  return {
+    model: config.model || undefined,
+    contractVersion: contract.contractVersion,
+    contract
+  };
+}
+
+function parseAipptResponsePayload(config, data) {
+  if (config.provider === "openai-compatible") {
+    const content = extractChatText(data);
+    const jsonText = extractFirstJsonObject(content || "");
+    if (!jsonText) return { ok: false, reason: "aippt_openai_no_json_payload" };
+    try {
+      return { ok: true, payload: JSON.parse(jsonText) };
+    } catch {
+      return { ok: false, reason: "aippt_openai_json_parse_error" };
+    }
+  }
+
+  return { ok: true, payload: data || {} };
+}
+
+async function callAipptEngine(contract, config) {
+  const endpoint = config.endpoint;
+  const apiKey = config.apiKey;
+
+  const requiresApiKey = config.authMode !== "none";
+  if (!endpoint || (requiresApiKey && !apiKey)) {
     return { ok: false, reason: "aippt_not_configured" };
   }
 
@@ -345,15 +455,8 @@ async function callAipptEngine(contract) {
   try {
     upstream = await fetch(endpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: model || undefined,
-        contractVersion: contract.contractVersion,
-        contract
-      })
+      headers: buildAipptHeaders(config),
+      body: JSON.stringify(buildAipptRequestPayload(config, contract))
     });
   } catch (error) {
     return { ok: false, reason: sanitizeAuditDetail(describeUpstreamError(error)) };
@@ -371,16 +474,23 @@ async function callAipptEngine(contract) {
     return { ok: false, reason: "aippt_non_json_response" };
   }
 
-  if (data.downloadUrl) {
+  const parsedPayload = parseAipptResponsePayload(config, data);
+  if (!parsedPayload.ok) {
+    return { ok: false, reason: parsedPayload.reason };
+  }
+
+  const payload = parsedPayload.payload;
+
+  if (payload.downloadUrl) {
     try {
-      const fileResp = await fetch(String(data.downloadUrl));
+      const fileResp = await fetch(String(payload.downloadUrl));
       if (!fileResp.ok) return { ok: false, reason: `aippt_download_${fileResp.status}` };
       const arr = await fileResp.arrayBuffer();
       return {
         ok: true,
-        engine: "upstream-aippt",
-        fileName: String(data.fileName || `${sanitizeFileName(contract.topic)}.pptx`),
-        mimeType: String(data.mimeType || "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+        engine: `upstream-aippt-${config.provider}`,
+        fileName: String(payload.fileName || `${sanitizeFileName(contract.topic)}.pptx`),
+        mimeType: String(payload.mimeType || "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
         buffer: Buffer.from(arr)
       };
     } catch (error) {
@@ -388,7 +498,7 @@ async function callAipptEngine(contract) {
     }
   }
 
-  const b64 = data.fileBase64 || data.pptxBase64 || "";
+  const b64 = payload.fileBase64 || payload.pptxBase64 || "";
   const bin = parseBase64Payload(b64);
   if (!bin.length) {
     return { ok: false, reason: "aippt_no_file_payload" };
@@ -396,9 +506,9 @@ async function callAipptEngine(contract) {
 
   return {
     ok: true,
-    engine: "upstream-aippt",
-    fileName: String(data.fileName || `${sanitizeFileName(contract.topic)}.pptx`),
-    mimeType: String(data.mimeType || "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+    engine: `upstream-aippt-${config.provider}`,
+    fileName: String(payload.fileName || `${sanitizeFileName(contract.topic)}.pptx`),
+    mimeType: String(payload.mimeType || "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
     buffer: bin
   };
 }
@@ -958,6 +1068,7 @@ app.post("/api/ppt/export", async (req, res) => {
   const startedAt = Date.now();
   const audit = baseAuditEvent(req);
   try {
+    const exportConfig = getAipptExportConfig();
     const normalized = normalizeContract(req.body && req.body.contract);
     if (!normalized.ok) {
       writeAuditLog({
@@ -971,7 +1082,7 @@ app.post("/api/ppt/export", async (req, res) => {
     }
 
     const contract = normalized.contract;
-    let result = await callAipptEngine(contract);
+    let result = await callAipptEngine(contract, exportConfig);
     if (!result.ok) {
       result = await buildLocalPptx(contract);
       result.fallbackReason = result.fallbackReason || "upstream_unavailable";
@@ -982,10 +1093,11 @@ app.post("/api/ppt/export", async (req, res) => {
       outcome: "ok",
       status: 200,
       latencyMs: Date.now() - startedAt,
-      model: process.env.AIPPT_API_MODEL || "local-pptxgenjs",
+      model: exportConfig.model || "local-pptxgenjs",
       promptChars: JSON.stringify(contract).length,
       outputChars: result.buffer.length,
       pptEngine: result.engine,
+      aipptProvider: exportConfig.provider,
       templateId: contract.templateId
     });
 

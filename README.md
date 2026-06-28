@@ -126,11 +126,28 @@ The app now supports a direct adapter from `aippt.v1` contract JSON to `.pptx` o
    - `AIPPT_API_ENDPOINT`
    - `AIPPT_API_KEY`
    - `AIPPT_API_MODEL`
+   - `AIPPT_PROVIDER` (`generic` or `openai-compatible`)
+   - `AIPPT_API_AUTH_MODE` (`bearer` / `header` / `none`)
+   - `AIPPT_API_KEY_HEADER` (used when auth mode is `header`)
+   - `AIPPT_API_EXTRA_HEADERS` (JSON object string)
+
+- Provider mapping behavior:
+
+   - `generic`:
+     - Request payload: `{ model, contractVersion, contract }`
+     - Response payload expects one of: `downloadUrl` or `fileBase64` / `pptxBase64`
+
+   - `openai-compatible`:
+     - Request payload: OpenAI-style `chat/completions` (`messages`)
+     - Model should return JSON in assistant content with one of:
+       - `downloadUrl`
+       - `fileBase64` (or `pptxBase64`)
+     - Optional fields: `fileName`, `mimeType`
 
 - Response:
 
    - Returns `.pptx` binary as attachment
-   - Header `x-ppt-engine` indicates actual engine (`upstream-aippt` or `local-pptxgenjs`)
+   - Header `x-ppt-engine` indicates actual engine (`upstream-aippt-generic`, `upstream-aippt-openai-compatible`, or `local-pptxgenjs`)
 
 ## Benchmark Engineering (Run Batch + Daily Report + Failure Attribution)
 
