@@ -1365,7 +1365,11 @@
           .replace(/[^\u4e00-\u9fa5a-z0-9_\-\s]/g, " ")
           .split(/\s+/)
           .filter((w) => w && w.length >= 2);
-        const stop = new Set(["需求", "用户", "产品", "以及", "进行", "可以", "一个", "the", "and", "for", "with"]);
+        const stop = new Set([
+          "需求", "用户", "产品", "以及", "进行", "可以", "一个", "主题", "当前需求",
+          "生成", "制作", "输出", "编写", "提示词", "ppt", "演示", "课件", "汇报", "页面",
+          "the", "and", "for", "with"
+        ]);
         const count = new Map();
         for (const w of words) {
           if (stop.has(w)) continue;
@@ -1462,12 +1466,26 @@
 
       function extractTopic(text) {
         const all = String(text || "");
+        const intentMatch = all.match(/(?:关于|围绕|聚焦|主题[是为:：])\s*([^，。\n]{2,80})/);
+        if (intentMatch) {
+          const cleanedIntent = intentMatch[1]
+            .replace(/(的)?(ppt|PPT|幻灯片|演示文稿|课件)$/i, "")
+            .replace(/^(如何|怎么|怎样)\s*/, "")
+            .trim();
+          if (cleanedIntent) return cleanedIntent;
+        }
         const quoteA = all.match(/[《【](.+?)[》】]/);
         if (quoteA) return quoteA[1].trim();
         const quoteB = all.match(/[“\"]([^"”]{2,80})[”\"]/);
         if (quoteB) return quoteB[1].trim();
         const m = all.match(/(?:主题|项目|需求|目标|内容)[：:]\s*([^\n，。]+)/);
-        if (m) return m[1].trim();
+        if (m) {
+          const cleaned = m[1]
+            .replace(/^(生成|制作|输出|做)\s*/i, "")
+            .replace(/(的)?(ppt|PPT|幻灯片|演示文稿|课件)$/i, "")
+            .trim();
+          if (cleaned) return cleaned;
+        }
         return "当前需求";
       }
 
@@ -1558,7 +1576,27 @@
       }
 
       function safeTopic(text) {
-        return extractTopic(text);
+        const raw = stripInternalMeta(String(text || ""));
+        if (raw && raw.length >= 2 && raw.length <= 40 && !/[。\n：:]/.test(raw)) return raw;
+        const cleaned = raw
+          .replace(/请?帮?我?(生成|制作|输出|做)一?(份|个|套)?/gi, "")
+          .replace(/(关于|围绕)?\s*(.*?)\s*(的)?(ppt|PPT|幻灯片|演示文稿|课件)/gi, "$2")
+          .replace(/\d+\s*页/g, "")
+          .replace(/\s+/g, " ")
+          .trim();
+        const topic = extractTopic(cleaned || raw);
+        return topic === "当前需求" ? extractTopic(raw) : topic;
+      }
+
+      function normalizeBusinessTopic(topic) {
+        const raw = String(topic || "").trim();
+        const normalized = raw
+          .replace(/^(关于|围绕|聚焦)\s*/, "")
+          .replace(/(的)?(高管汇报|汇报|路演|演讲|PPT|ppt|幻灯片|演示文稿|课件)$/g, "")
+          .replace(/^(如何|怎么|怎样)\s*/, "")
+          .replace(/\s+/g, " ")
+          .trim();
+        return normalized || "当前需求";
       }
 
       function inferLessonDuration(input) {
@@ -1897,30 +1935,55 @@
       }
 
       function buildSlideFromBlueprint(index, topic, blueprint, keywordSeed) {
-        const keyPoints = (blueprint.keyPoints || []).map((k, i) => sanitizeKeyPoint(`${k}${keywordSeed[i] ? `：${keywordSeed[i]}` : ""}`));
+        const safeSeeds = (keywordSeed || []).filter((k) => !/(生成|提示词|ppt|演示|课件)/i.test(String(k || ""))).slice(0, 3);
+        const keyPoints = (blueprint.keyPoints || []).map((k, i) => sanitizeKeyPoint(`${k}${safeSeeds[i] ? `：${safeSeeds[i]}` : ""}`));
         return {
           index,
           title: `${blueprint.title}（${topic}）`,
-          goal: blueprint.goal,
+          goal: `${blueprint.goal}（围绕${topic}）`,
           keyPoints: keyPoints.slice(0, 4),
           assetPlaceholders: blueprint.assets || ["数据图", "示意图"],
           speakerNotes: `建议口播节奏：先讲结论，再讲依据，最后给执行动作。第${index}页控制在60-90秒。`
         };
       }
 
+      function buildNarrativeBlueprints(sceneType, template) {
+        const base = [...(template.slideBlueprints || [])];
+        const enterpriseExtension = [
+          { title: "关键指标口径", goal: "统一核心指标口径，避免决策歧义", keyPoints: ["指标定义", "统计口径", "数据周期"], assets: ["指标口径表", "口径注释"] },
+          { title: "策略拆解", goal: "把策略拆成可执行动作包", keyPoints: ["动作优先级", "动作路径", "阶段目标"], assets: ["策略路径图", "优先级矩阵"] },
+          { title: "资源与预算", goal: "明确资源投入与预算边界", keyPoints: ["资源需求", "预算区间", "投入产出"], assets: ["预算表", "ROI图"] },
+          { title: "组织协同机制", goal: "设计跨团队协同与责任闭环", keyPoints: ["责任分配", "协同流程", "沟通机制"], assets: ["RACI图", "协同流程图"] },
+          { title: "里程碑与验收", goal: "建立分阶段里程碑与验收标准", keyPoints: ["阶段里程碑", "验收标准", "偏差阈值"], assets: ["里程碑甘特", "验收清单"] },
+          { title: "结论与决策请求", goal: "形成管理层可直接决策的结论", keyPoints: ["关键结论", "需决策事项", "下一步动作"], assets: ["决策卡片", "行动看板"] }
+        ];
+        const map = {
+          企业: enterpriseExtension,
+          教务: enterpriseExtension,
+          演讲: enterpriseExtension
+        };
+        return [...base, ...(map[sceneType] || enterpriseExtension)];
+      }
+
       function buildPptSpecByTemplate(rawInput, fields, pageCountHint = null, forcedTemplateId = "") {
         const text = stripInternalMeta(rawInput);
-        const topic = (fields && fields.topic) || safeTopic(text);
+        const topic = normalizeBusinessTopic(safeTopic((fields && fields.topic) || text));
         const sceneType = (fields && fields.preferredSceneType) || classifyPptScene(text);
         const templateIdHint = forcedTemplateId || ((fields && fields.preferredTemplateId) || "");
         const template = templateIdHint ? findTemplateById(sceneType, templateIdHint) : retrieveBestPptTemplate(sceneType, text);
         const requested = pageCountHint || extractRequestedPageCount(text) || template.defaultPageCount;
         const keywords = extractKeywords(text).slice(0, 8);
         const narrativeMode = String((fields && fields.narrativeMode) || "standard");
+        const narrativeBlueprints = buildNarrativeBlueprints(sceneType, template);
 
         const slides = [];
         for (let i = 0; i < requested; i++) {
-          const bp = template.slideBlueprints[i % template.slideBlueprints.length];
+          const bp = narrativeBlueprints[i] || {
+            title: `专题页${i + 1}`,
+            goal: "补充关键分析与可执行动作",
+            keyPoints: ["关键问题", "分析结论", "执行动作"],
+            assets: ["分析图", "执行清单"]
+          };
           const seed = keywords.slice((i * 2) % Math.max(1, keywords.length), ((i * 2) % Math.max(1, keywords.length)) + 3);
           slides.push(buildSlideFromBlueprint(i + 1, topic, bp, seed));
         }
@@ -2873,9 +2936,9 @@
         }
 
         activeProxyEndpoint = "";
-        const offline = buildOfflineStructured(userText, opts.pageCount);
-        proxyStatusEl.textContent = `未找到可用后端，已自动切换离线生成模式${lastErrorMessage ? `（${lastErrorMessage}）` : ""}`;
-        return JSON.stringify(offline);
+        const reason = lastErrorMessage || "未找到可用后端代理";
+        proxyStatusEl.textContent = `在线模式失败：${reason}`;
+        throw new Error(reason);
       }
 
       function openFilePicker() {
@@ -3086,7 +3149,33 @@
         sendEl.textContent = "生成中...";
 
         try {
-          const ppt = buildStructuredPptDeliverable(latestRawInput, semanticPack.fields, latestPageTarget || null);
+          const answer = await requestDeepSeekDirect(payload, {
+            ...requestMeta,
+            timeoutMs: REQUEST_TIMEOUT_MS,
+            retryCount: REQUEST_RETRY
+          });
+          let structured = parseStructuredResponse(answer);
+          if (!isStructuredComplete(structured)) {
+            structured = await normalizeStructuredOutput(answer, { pageCount: latestPageTarget });
+          }
+          structured = ensureStrongStructuredOutput(structured, semanticPack.fields, "在线生成");
+
+          const aiSeedText = [
+            semanticPack.fields && semanticPack.fields.topic,
+            structured.goals,
+            structured.pagePlan,
+            structured.pageDetails,
+            structured.interaction,
+            structured.homework
+          ]
+            .filter(Boolean)
+            .join("\n");
+
+          const mergedFields = {
+            ...semanticPack.fields,
+            topic: normalizeBusinessTopic((semanticPack.fields && semanticPack.fields.topic) || safeTopic(aiSeedText))
+          };
+          const ppt = buildStructuredPptDeliverable(aiSeedText, mergedFields, latestPageTarget || null);
           latestPptSpec = ppt.spec;
           latestStructured = ppt.structured;
           const runtimeSpec = {
@@ -3112,12 +3201,17 @@
           latestQaResult = firstQa;
           latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
           renderDeliverable(latestStructured, firstQa, runtimeSpec || {});
-          proxyStatusEl.textContent = "结构化PPT规格模式：已完成分类、模板检索、参数填充、硬质检与按页修复";
+          proxyStatusEl.textContent = "在线模式：已完成语义理解 + 结构化PPT规格生成";
           pushMessage(`系统指标：首次可直接出稿率=${metric.rate}%（${metric.firstDirect}/${metric.total}）`, "assistant");
 
           if (pendingAutoExport) {
             await exportPptByLatestContract();
           }
+          return;
+        } catch (error) {
+          const errMsg = String((error && error.message) || error || "在线生成失败");
+          pushMessage(`在线生成失败：${errMsg}。当前已按你的要求禁用离线回退，请检查代理与网络后重试。`, "assistant");
+          proxyStatusEl.textContent = `在线模式失败：${errMsg}`;
           return;
         } finally {
           sendEl.disabled = false;
