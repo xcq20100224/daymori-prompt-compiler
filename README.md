@@ -194,7 +194,7 @@ Teacher benchmark now supports an execution loop upgrade:
 
 ### Commands
 
-- DeepSeek-only quick export self-check (requires server running):
+- DeepSeek-only quick export self-check (one command, auto starts local server if needed):
 
     npm run check:deepseek
 
