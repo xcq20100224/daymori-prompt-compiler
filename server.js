@@ -348,8 +348,9 @@ function getAipptExportConfig() {
   const model = String(process.env.AIPPT_API_MODEL || "").trim();
   const authMode = String(process.env.AIPPT_API_AUTH_MODE || "bearer").toLowerCase().trim();
   const keyHeader = String(process.env.AIPPT_API_KEY_HEADER || "x-api-key").trim();
+  const lazymanEndpoint = String(process.env.LAZYMAN_API_ENDPOINT || "").trim();
   const extraHeaders = parseJsonSafe(process.env.AIPPT_API_EXTRA_HEADERS || "");
-  const supportedProviders = new Set(["generic", "openai-compatible", "openai"]);
+  const supportedProviders = new Set(["generic", "openai-compatible", "openai", "lazyman"]);
 
   if (!supportedProviders.has(provider)) {
     throw new Error(`Unsupported AIPPT_PROVIDER: ${provider}`);
@@ -359,7 +360,9 @@ function getAipptExportConfig() {
     throw new Error(`Unsupported AIPPT_API_AUTH_MODE: ${authMode}`);
   }
 
-  const endpoint = endpointRaw || (provider === "openai" ? "https://api.openai.com/v1/chat/completions" : "");
+  const endpoint = endpointRaw
+    || (provider === "openai" ? "https://api.openai.com/v1/chat/completions" : "")
+    || (provider === "lazyman" ? lazymanEndpoint : "");
 
   return {
     provider,
@@ -394,7 +397,7 @@ function buildAipptHeaders(config) {
 }
 
 function buildAipptRequestPayload(config, contract) {
-  if (config.provider === "openai-compatible" || config.provider === "openai") {
+  if (config.provider === "openai-compatible" || config.provider === "openai" || config.provider === "lazyman") {
     return {
       model: config.model || "gpt-4.1-mini",
       messages: [
@@ -430,7 +433,7 @@ function buildAipptRequestPayload(config, contract) {
 }
 
 function parseAipptResponsePayload(config, data) {
-  if (config.provider === "openai-compatible" || config.provider === "openai") {
+  if (config.provider === "openai-compatible" || config.provider === "openai" || config.provider === "lazyman") {
     const content = extractChatText(data);
     const jsonText = extractFirstJsonObject(content || "");
     if (!jsonText) return { ok: false, reason: "aippt_openai_no_json_payload" };

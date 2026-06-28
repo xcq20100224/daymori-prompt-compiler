@@ -126,7 +126,7 @@ The app now supports a direct adapter from `aippt.v1` contract JSON to `.pptx` o
    - `AIPPT_API_ENDPOINT`
    - `AIPPT_API_KEY`
    - `AIPPT_API_MODEL`
-   - `AIPPT_PROVIDER` (`generic` / `openai-compatible` / `openai`)
+   - `AIPPT_PROVIDER` (`generic` / `openai-compatible` / `openai` / `lazyman`)
    - `AIPPT_API_AUTH_MODE` (`bearer` / `header` / `none`)
    - `AIPPT_API_KEY_HEADER` (used when auth mode is `header`)
    - `AIPPT_API_EXTRA_HEADERS` (JSON object string)
@@ -150,12 +150,25 @@ The app now supports a direct adapter from `aippt.v1` contract JSON to `.pptx` o
        - Same payload/response contract as `openai-compatible`
        - Recommended with fallback enabled (if no valid base64/downloadUrl, server auto-fallback to local `pptxgenjs`)
 
+    - `lazyman`:
+       - Uses OpenAI-compatible request/response contract
+       - Endpoint can be configured via `LAZYMAN_API_ENDPOINT` (or `AIPPT_API_ENDPOINT`)
+       - Auth defaults to `Bearer <AIPPT_API_KEY>` unless you switch to custom header mode
+
 - Quick OpenAI setup:
 
     - `AIPPT_PROVIDER=openai`
     - `AIPPT_API_KEY=<your_openai_key>`
     - `AIPPT_API_MODEL=gpt-4.1-mini`
     - `AIPPT_API_AUTH_MODE=bearer`
+
+- Quick Lazyman setup:
+
+   - `AIPPT_PROVIDER=lazyman`
+   - `LAZYMAN_API_ENDPOINT=<your_lazyman_chat_completions_endpoint>`
+   - `AIPPT_API_KEY=<your_lazyman_key>`
+   - `AIPPT_API_MODEL=<your_lazyman_model>`
+   - `AIPPT_API_AUTH_MODE=bearer` (or `header` + `AIPPT_API_KEY_HEADER` if required by Lazyman)
 
 - Response:
 
