@@ -565,7 +565,7 @@
       }
 
       .composer-mode {
-        margin-right: 44px;
+        margin-right: 132px;
         color: #6c727e;
         font-size: 13px;
       }
@@ -612,6 +612,24 @@
         font-weight: 700;
         display: grid;
         place-items: center;
+      }
+
+      #quickPpt {
+        position: absolute;
+        right: 52px;
+        bottom: 6px;
+        height: 30px;
+        border-radius: 999px;
+        padding: 0 10px;
+        border: 1px solid #c9b79f;
+        background: #f3ebe1;
+        color: #6b4a2e;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      #quickPpt:hover:not(:disabled) {
+        color: #553a23;
       }
 
       #send:hover:not(:disabled) {
@@ -714,7 +732,7 @@
 
         .composer-mode {
           font-size: 14px;
-          margin-right: 44px;
+          margin-right: 132px;
         }
 
         .composer-tools {
@@ -784,6 +802,7 @@
               <button id="openAiBtn" class="mini-btn" type="button">立即出稿（打开 DeepSeek）</button>
             </div>
           </div>
+          <button id="quickPpt" type="button">生成PPT</button>
           <button id="send" type="submit">↑</button>
         </form>
 
@@ -839,6 +858,7 @@
       const formEl = document.getElementById("composer");
       const inputEl = document.getElementById("input");
       const sendEl = document.getElementById("send");
+      const quickPptBtnEl = document.getElementById("quickPpt");
       const benchKpiEl = document.getElementById("benchKpi");
       const benchMetaEl = document.getElementById("benchMeta");
       const benchListEl = document.getElementById("benchList");
@@ -853,6 +873,7 @@
       let latestSpec = null;
       let latestQaResult = null;
       let latestPptSpec = null;
+      let autoExportAfterGenerate = false;
 
       const MAX_MESSAGES = 36;
       const REQUEST_TIMEOUT_MS = 28000;
@@ -2458,6 +2479,16 @@
         }
       }
 
+      function hasLatestContractReady() {
+        if (!latestStructured || !latestStructured.finalPrompt) return false;
+        try {
+          const contract = JSON.parse(String(latestStructured.finalPrompt || "{}"));
+          return !!(contract && contract.contractVersion === "aippt.v1" && Array.isArray(contract.slides) && contract.slides.length > 0);
+        } catch {
+          return false;
+        }
+      }
+
       async function loadFileContext(file) {
         if (!file) {
           fileNameEl.textContent = "未选择文件";
@@ -2670,6 +2701,27 @@
         window.open("https://chat.deepseek.com/", "_blank", "noopener,noreferrer");
       });
 
+      if (quickPptBtnEl) {
+        quickPptBtnEl.addEventListener("click", async () => {
+          if (sendEl.disabled) return;
+
+          if (hasLatestContractReady()) {
+            await exportPptByLatestContract();
+            return;
+          }
+
+          const currentText = inputEl.value.trim();
+          if (!currentText) {
+            pushMessage("请先输入需求后点击“生成PPT”，系统会自动生成并下载完整PPT。", "assistant");
+            inputEl.focus();
+            return;
+          }
+
+          autoExportAfterGenerate = true;
+          formEl.requestSubmit();
+        });
+      }
+
       inputEl.addEventListener("keydown", (event) => {
         if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
@@ -2681,6 +2733,9 @@
         event.preventDefault();
         const text = inputEl.value.trim();
         if (!text) return;
+
+        const pendingAutoExport = autoExportAfterGenerate;
+        autoExportAfterGenerate = false;
 
         const cmd = text.toLowerCase();
         if (cmd === "/test on") {
@@ -2809,10 +2864,15 @@
           renderDeliverable(latestStructured, firstQa, runtimeSpec || {});
           proxyStatusEl.textContent = "结构化PPT规格模式：已完成分类、模板检索、参数填充、硬质检与按页修复";
           pushMessage(`系统指标：首次可直接出稿率=${metric.rate}%（${metric.firstDirect}/${metric.total}）`, "assistant");
+
+          if (pendingAutoExport) {
+            await exportPptByLatestContract();
+          }
           return;
         } finally {
           sendEl.disabled = false;
           sendEl.textContent = "↑";
+          autoExportAfterGenerate = false;
           inputEl.focus();
         }
 
