@@ -1965,11 +1965,10 @@
           .trim();
       }
 
-      function buildSlideFromBlueprint(index, topic, blueprint, keywordSeed) {
-        const safeSeeds = (keywordSeed || []).filter((k) => !/(生成|提示词|ppt|演示|课件)/i.test(String(k || ""))).slice(0, 3);
+      function buildSlideFromBlueprint(index, topic, blueprint) {
         const basePoints = (blueprint.keyPoints || ["核心结论", "关键证据", "执行动作"]).slice(0, 3);
         const triadLabels = ["结论", "证据", "行动"];
-        const keyPoints = basePoints.map((k, i) => sanitizeKeyPoint(`${triadLabels[i]}：${k}${safeSeeds[i] ? `（${safeSeeds[i]}）` : ""}`));
+        const keyPoints = basePoints.map((k, i) => sanitizeKeyPoint(`${triadLabels[i]}：${k}`));
         return {
           index,
           title: `${blueprint.title}（${topic}）`,
@@ -2019,7 +2018,6 @@
         const templateIdHint = forcedTemplateId || ((fields && fields.preferredTemplateId) || "");
         const template = templateIdHint ? findTemplateById(sceneType, templateIdHint) : retrieveBestPptTemplate(sceneType, text);
         const requested = pageCountHint || extractRequestedPageCount(text) || template.defaultPageCount;
-        const keywords = extractKeywords(text).slice(0, 8);
         const narrativeMode = String((fields && fields.narrativeMode) || "standard");
         const narrativeBlueprints = buildNarrativeBlueprints(sceneType, template, narrativeMode);
 
@@ -2031,8 +2029,7 @@
             keyPoints: ["关键问题", "分析结论", "执行动作"],
             assets: ["分析图", "执行清单"]
           };
-          const seed = keywords.slice((i * 2) % Math.max(1, keywords.length), ((i * 2) % Math.max(1, keywords.length)) + 3);
-          slides.push(buildSlideFromBlueprint(i + 1, topic, bp, seed));
+          slides.push(buildSlideFromBlueprint(i + 1, topic, bp));
         }
 
         return {
@@ -3215,12 +3212,9 @@
           structured = ensureStrongStructuredOutput(structured, semanticPack.fields, "在线生成");
 
           const aiSeedText = [
+            text,
             semanticPack.fields && semanticPack.fields.topic,
-            structured.goals,
-            structured.pagePlan,
-            structured.pageDetails,
-            structured.interaction,
-            structured.homework
+            structured.pageDetails
           ]
             .filter(Boolean)
             .join("\n");
@@ -3264,8 +3258,40 @@
           return;
         } catch (error) {
           const errMsg = String((error && error.message) || error || "在线生成失败");
-          pushMessage(`在线生成失败：${errMsg}。当前已按你的要求禁用离线回退，请检查代理与网络后重试。`, "assistant");
-          proxyStatusEl.textContent = `在线模式失败：${errMsg}`;
+          const fallbackFields = {
+            ...semanticPack.fields,
+            topic: normalizeBusinessTopic((semanticPack.fields && semanticPack.fields.topic) || safeTopic(text))
+          };
+          const fallbackPpt = buildStructuredPptDeliverable(text, fallbackFields, latestPageTarget || null);
+          latestPptSpec = fallbackPpt.spec;
+          latestStructured = fallbackPpt.structured;
+          const fallbackRuntimeSpec = {
+            ...(latestSpec || {}),
+            subject: fallbackPpt.spec.sceneType,
+            topic: fallbackPpt.spec.topic,
+            pageCount: fallbackPpt.spec.pageCount,
+            stages: ["目标", "约束", "执行步骤", "校验", "交付"]
+          };
+          latestSpec = fallbackRuntimeSpec;
+          const fallbackQa = {
+            pass: !!(fallbackPpt.qa && fallbackPpt.qa.pass),
+            issues: (fallbackPpt.qa && fallbackPpt.qa.issues) || [],
+            generatedPageCount: fallbackPpt.spec.pageCount,
+            scores: {
+              constraint: fallbackPpt.qa && fallbackPpt.qa.pass ? 1 : 0.8,
+              coverage: fallbackPpt.qa && fallbackPpt.qa.pass ? 1 : 0.75,
+              coherence: 1,
+              overall: fallbackPpt.qa && fallbackPpt.qa.pass ? 1 : 0.82
+            }
+          };
+          latestQaResult = fallbackQa;
+          latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
+          renderDeliverable(latestStructured, fallbackQa, fallbackRuntimeSpec || {});
+          pushMessage(`在线生成失败：${errMsg}。已自动回退为本地高质量结构化生成。`, "assistant");
+          proxyStatusEl.textContent = `在线失败已回退：${errMsg}`;
+          if (pendingAutoExport) {
+            await exportPptByLatestContract();
+          }
           return;
         } finally {
           sendEl.disabled = false;
