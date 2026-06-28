@@ -1110,7 +1110,18 @@
         const byProtocol = onSecurePage ? [PUBLIC_DEFAULT_PROXY_ENDPOINT] : [LOCAL_DEFAULT_PROXY_ENDPOINT, "/api/llm-proxy"];
         const byHost = onGithubPages ? PRESET_PROXY_ENDPOINTS : ["/api/llm-proxy", LOCAL_DEFAULT_PROXY_ENDPOINT, ...PRESET_PROXY_ENDPOINTS];
         const combined = [saved, ...byProtocol, ...byHost].filter(Boolean).map(normalizeProxyEndpoint);
-        return [...new Set(combined)];
+        const unique = [...new Set(combined)];
+        return unique.sort((a, b) => {
+          const score = (v) => {
+            if (v === "/api/llm-proxy") return 0;
+            if (/^https?:\/\/localhost:3000\/api\/llm-proxy$/i.test(v)) return 1;
+            if (/^https?:\/\/localhost/i.test(v)) return 2;
+            if (/onrender\.com\/api\/llm-proxy/i.test(v)) return 3;
+            if (/vercel\.app\/api\/llm-proxy/i.test(v)) return 4;
+            return 10;
+          };
+          return score(a) - score(b);
+        });
       }
 
       function auditStatusOf(proxyEndpoint) {
@@ -2834,17 +2845,15 @@
         const isMobileClient = (() => {
           try {
             const ua = String(navigator.userAgent || "").toLowerCase();
-            const byUA = /iphone|ipad|android|mobile|harmonyos/.test(ua);
-            const byViewport = window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
-            return byUA || byViewport;
+            return /iphone|ipad|android|mobile|harmonyos/.test(ua);
           } catch {
             return false;
           }
         })();
 
-        const requestTimeout = Number.isFinite(opts.timeoutMs) ? opts.timeoutMs : isMobileClient ? 6000 : REQUEST_TIMEOUT_MS;
-        const requestRetry = Number.isFinite(opts.retryCount) ? opts.retryCount : isMobileClient ? 0 : REQUEST_RETRY;
-        const hardDeadline = Date.now() + (isMobileClient ? 12000 : 32000);
+        const requestTimeout = Number.isFinite(opts.timeoutMs) ? opts.timeoutMs : isMobileClient ? 12000 : REQUEST_TIMEOUT_MS;
+        const requestRetry = Number.isFinite(opts.retryCount) ? opts.retryCount : isMobileClient ? 1 : REQUEST_RETRY;
+        const hardDeadline = Date.now() + (isMobileClient ? 32000 : 52000);
 
         const primaryEndpoint = await ensureProxyEndpoint();
         const endpointCandidates = [primaryEndpoint, ...buildProxyCandidates()].filter(Boolean);
@@ -2873,7 +2882,7 @@
         let lastErrorMessage = "";
         for (const endpoint of uniqueEndpoints) {
           if (Date.now() > hardDeadline) {
-            lastErrorMessage = "移动端网络超时，触发快速离线兜底";
+            lastErrorMessage = "在线代理请求超时";
             break;
           }
 
