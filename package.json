@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "check:deepseek": "node tools/check-deepseek-ppt-export.mjs",
     "bench:teacher": "node tools/run-teacher-benchmark.mjs",
     "bench:teacher:mock": "node tools/run-teacher-benchmark.mjs --mock",
     "bench:final": "node tools/run-final-deliverable-regression.mjs",

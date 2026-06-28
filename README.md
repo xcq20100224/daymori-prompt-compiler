@@ -194,6 +194,14 @@ Teacher benchmark now supports an execution loop upgrade:
 
 ### Commands
 
+- DeepSeek-only quick export self-check (requires server running):
+
+    npm run check:deepseek
+
+   Expected pass signal:
+   - `x-ppt-engine: local-pptxgenjs`
+   - output file generated at `docs/benchmarks/results/deepseek-selfcheck-export.pptx`
+
 - Real benchmark run (needs `DEEPSEEK_API_KEY`):
 
    npm run bench:teacher
