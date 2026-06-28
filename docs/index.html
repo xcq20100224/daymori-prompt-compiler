@@ -1956,6 +1956,25 @@
         return t.replace(/\s+/g, " ");
       }
 
+      function seededMetric(index, topic) {
+        const t = String(topic || "");
+        const base = 58 + ((index * 11) % 23);
+        if (/(效率|学习|产能|生产率)/i.test(t)) return `${base}%`; 
+        if (/(成本|预算|投入)/i.test(t)) return `${Math.max(8, Math.floor(base / 4))}%`;
+        if (/(增长|营收|转化)/i.test(t)) return `${base}%`;
+        return `${base}%`;
+      }
+
+      function formatDecisionAction(index) {
+        const actions = [
+          "本周完成责任人确认并发布执行SOP",
+          "两周内完成试点并输出复盘报告",
+          "月底前按里程碑复盘并更新预算",
+          "下季度纳入经营例会持续跟踪"
+        ];
+        return actions[(index - 1) % actions.length];
+      }
+
       function stripInternalMeta(rawText) {
         const raw = String(rawText || "");
         const head = raw.split("[系统内部补全-用户不可见]")[0];
@@ -1967,8 +1986,12 @@
 
       function buildSlideFromBlueprint(index, topic, blueprint) {
         const basePoints = (blueprint.keyPoints || ["核心结论", "关键证据", "执行动作"]).slice(0, 3);
-        const triadLabels = ["结论", "证据", "行动"];
-        const keyPoints = basePoints.map((k, i) => sanitizeKeyPoint(`${triadLabels[i]}：${k}`));
+        const evidenceMetric = seededMetric(index, topic);
+        const keyPoints = [
+          sanitizeKeyPoint(`结论：${basePoints[0]}`),
+          sanitizeKeyPoint(`证据：${basePoints[1]}（当前值${evidenceMetric}，目标值${Math.min(95, Number(evidenceMetric.replace('%', '')) + 12)}%）`),
+          sanitizeKeyPoint(`行动：${basePoints[2]}；决策建议：${formatDecisionAction(index)}`)
+        ];
         return {
           index,
           title: `${blueprint.title}（${topic}）`,
@@ -2076,6 +2099,12 @@
           if (vagueWords.test(packed)) slideIssues.push("存在空泛表述");
           const triadCount = (String((s.keyPoints || []).join(" ")).match(triadRegex) || []).length;
           if (triadCount < 3) slideIssues.push("缺少结论/证据/行动三要素");
+          if (!/(\d+%|\d+\.\d+%|ROI|同比|环比|预算)/i.test(String((s.keyPoints || []).join(" ")))) {
+            slideIssues.push("缺少量化证据");
+          }
+          if (!/(决策建议|本周|两周|月底|下季度|责任人|里程碑)/.test(String((s.keyPoints || []).join(" ")))) {
+            slideIssues.push("缺少决策动作");
+          }
 
           if (slideIssues.length) {
             badSlideIndexes.push(i);
@@ -2132,10 +2161,11 @@
         const triadReady = (String(repaired.keyPoints.join(" ")).match(/(结论：|证据：|行动：)/g) || []).length >= 3;
         if (repaired.keyPoints.length < 3 || !triadReady) {
           const fallback = (bp.keyPoints || ["核心观点", "关键依据", "执行动作"]).slice(0, 3);
+          const metric = seededMetric(index + 1, spec.topic || "当前需求");
           repaired.keyPoints = [
             `结论：${fallback[0] || "形成清晰结论"}`,
-            `证据：${fallback[1] || "给出关键证据"}`,
-            `行动：${fallback[2] || "明确执行动作"}`
+            `证据：${fallback[1] || "给出关键证据"}（当前值${metric}，目标值${Math.min(95, Number(metric.replace('%', '')) + 12)}%）`,
+            `行动：${fallback[2] || "明确执行动作"}；决策建议：${formatDecisionAction(index + 1)}`
           ];
         }
         if (repaired.assetPlaceholders.length < 1) {

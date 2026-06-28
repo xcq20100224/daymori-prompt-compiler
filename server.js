@@ -623,6 +623,17 @@ async function buildLocalPptx(contract) {
     return /(数据|趋势|同比|环比|增长|收入|成本|转化|问题|风险|指标)/.test(text);
   }
 
+  function isStrategyLikeSlide(slideSpec) {
+    const text = [slideSpec.title, slideSpec.goal, ...(slideSpec.keyPoints || [])].join(" ");
+    return /(策略|路径|实施|里程碑|试点|验收|预算|资源)/.test(text);
+  }
+
+  function isDecisionLikeSlide(slideSpec, pageIndex, totalSlides) {
+    if (pageIndex === totalSlides) return true;
+    const text = [slideSpec.title, slideSpec.goal, ...(slideSpec.keyPoints || [])].join(" ");
+    return /(决策|下一步|拍板|行动建议|请求)/.test(text);
+  }
+
   function chartSpecForSlide(slideSpec, pageIndex) {
     const labels = safeList(slideSpec.keyPoints, "关键指标").slice(0, 3).map((x) => shortText(x, 12));
     const hinted = extractNumericHints(slideSpec).slice(0, 3);
@@ -860,15 +871,19 @@ async function buildLocalPptx(contract) {
         fontFace: fontPack.body
       });
 
+      const strategyLike = isStrategyLikeSlide(slideSpec);
+      const decisionLike = isDecisionLikeSlide(slideSpec, pageIndex, totalSlides);
+
       keyPoints.forEach((point, i) => {
         const y = 2.06 + i * 0.8;
+        const blockColor = decisionLike ? (i % 2 === 0 ? "F8EFE6" : "F4E4D4") : (i % 2 === 0 ? "FFFFFF" : "F6F1EA");
         slide.addShape(pptx.ShapeType.roundRect, {
           x: 1.2,
           y,
           w: 6.95,
           h: 0.66,
           radius: 0.05,
-          fill: { color: i % 2 === 0 ? "FFFFFF" : "F6F1EA" },
+          fill: { color: blockColor },
           line: { color: "E6DCCF", pt: 0.8 }
         });
 
@@ -941,6 +956,48 @@ async function buildLocalPptx(contract) {
             lineDataSymbol: chartPack.symbol
           }
         );
+      }
+
+      if (strategyLike) {
+        slide.addShape(pptx.ShapeType.line, {
+          x: 1.2,
+          y: 4.72,
+          w: 6.95,
+          h: 0,
+          line: { color: palette.accent, pt: 1.4 }
+        });
+        slide.addText("执行里程碑：M1 方案确认 -> M2 试点落地 -> M3 规模推广", {
+          x: 1.2,
+          y: 4.8,
+          w: 6.9,
+          h: 0.32,
+          fontSize: 10.5,
+          bold: true,
+          color: palette.accent,
+          fontFace: fontPack.body
+        });
+      }
+
+      if (decisionLike) {
+        slide.addShape(pptx.ShapeType.roundRect, {
+          x: 8.85,
+          y: 5.52,
+          w: 3.2,
+          h: 0.96,
+          radius: 0.08,
+          fill: { color: palette.accentSoft },
+          line: { color: palette.accent, pt: 1 }
+        });
+        slide.addText("管理层决策请求\n批准试点预算与跨部门协同机制", {
+          x: 9.02,
+          y: 5.72,
+          w: 2.85,
+          h: 0.56,
+          fontSize: 10,
+          bold: true,
+          color: palette.accent,
+          fontFace: fontPack.body
+        });
       }
 
       assets.forEach((asset, i) => {
