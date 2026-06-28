@@ -465,6 +465,50 @@
         box-shadow: 0 4px 12px rgba(30, 34, 44, 0.05);
       }
 
+      .file-badge {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        max-width: 56%;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #cfd6e3;
+        background: #eaf1fc;
+        color: #2f4f7e;
+        border-radius: 999px;
+        font-size: 12px;
+        line-height: 1;
+        padding: 6px 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .file-badge.hidden {
+        display: none;
+      }
+
+      .file-badge-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .file-badge-clear {
+        border: 0;
+        background: transparent;
+        color: #2f4f7e;
+        font-size: 14px;
+        line-height: 1;
+        padding: 0;
+        width: 16px;
+        height: 16px;
+        min-width: 16px;
+        cursor: pointer;
+        box-shadow: none;
+        transform: none !important;
+      }
+
       .composer.drag-active {
         border-color: #8ea2c5;
         background: #eef3fb;
@@ -714,6 +758,10 @@
         <section id="messages" class="messages"></section>
 
         <form id="composer" class="composer">
+          <div id="fileBadge" class="file-badge hidden">
+            <span id="fileBadgeName" class="file-badge-name"></span>
+            <button id="clearFileBtn" type="button" class="file-badge-clear" aria-label="清除文件">×</button>
+          </div>
           <div>
             <div id="dropzone" class="dropzone">拖拽文件到这里，或点击选择文件（1个）</div>
             <textarea id="input" placeholder="有什么我能帮您的？"></textarea>
@@ -781,6 +829,9 @@
       const fileEl = document.getElementById("file");
       const dropzoneEl = document.getElementById("dropzone");
       const uploadBtnEl = document.getElementById("uploadBtn");
+      const fileBadgeEl = document.getElementById("fileBadge");
+      const fileBadgeNameEl = document.getElementById("fileBadgeName");
+      const clearFileBtnEl = document.getElementById("clearFileBtn");
       const copyLatestBtnEl = document.getElementById("copyLatestBtn");
       const openAiBtnEl = document.getElementById("openAiBtn");
       const fileNameEl = document.getElementById("fileName");
@@ -1801,20 +1852,30 @@
         if (!file) {
           fileNameEl.textContent = "未选择文件";
           contextText = "";
+          if (fileBadgeEl) fileBadgeEl.classList.add("hidden");
+          if (fileBadgeNameEl) fileBadgeNameEl.textContent = "";
+          if (fileEl) fileEl.value = "";
           return;
         }
 
         fileNameEl.textContent = file.name;
+        if (fileBadgeNameEl) fileBadgeNameEl.textContent = file.name;
+        if (fileBadgeEl) fileBadgeEl.classList.remove("hidden");
         try {
           contextText = await file.text();
           if (contextText.length > 12000) {
             contextText = contextText.slice(0, 12000) + "\n...[已截断]";
           }
-          pushMessage("文件上下文已加载。", "assistant");
         } catch (error) {
           contextText = "";
           pushMessage("读取文件失败: " + error.message, "assistant");
         }
+      }
+
+      if (clearFileBtnEl) {
+        clearFileBtnEl.addEventListener("click", async () => {
+          await loadFileContext(null);
+        });
       }
 
       fileEl.addEventListener("change", async () => {
