@@ -1016,6 +1016,17 @@
         return endpoint;
       }
 
+      function exportSaveEndpointOf(proxyEndpoint) {
+        const endpoint = normalizeProxyEndpoint(proxyEndpoint || "");
+        if (!endpoint) return "/api/ppt/export-save";
+        if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
+          if (/\/api\/llm-proxy$/i.test(endpoint)) return endpoint.replace(/\/api\/llm-proxy$/i, "/api/ppt/export-save");
+          return `${endpoint}/api/ppt/export-save`;
+        }
+        if (endpoint === "/api/llm-proxy") return "/api/ppt/export-save";
+        return endpoint;
+      }
+
       async function probeProxyEndpoint(proxyEndpoint) {
         try {
           const res = await fetch(auditStatusOf(proxyEndpoint), { method: "GET", cache: "no-store" });
@@ -2534,9 +2545,48 @@
           }
 
           if (!saved) {
-            const url = URL.createObjectURL(blob);
-            window.open(url, "_blank", "noopener,noreferrer");
-            setTimeout(() => URL.revokeObjectURL(url), 120000);
+            try {
+              const url = URL.createObjectURL(blob);
+              window.open(url, "_blank", "noopener,noreferrer");
+              setTimeout(() => URL.revokeObjectURL(url), 120000);
+            } catch {
+              // Continue with server-side save fallback.
+            }
+          }
+
+          if (!saved) {
+            let savedByServer = null;
+            const saveCandidates = uniqueCandidates;
+            for (const proxy of saveCandidates) {
+              const saveEndpoint = exportSaveEndpointOf(proxy);
+              try {
+                const saveResp = await fetch(saveEndpoint, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ contract })
+                });
+                if (!saveResp.ok) continue;
+                const data = await saveResp.json();
+                if (data && data.ok && data.relativePath) {
+                  savedByServer = data;
+                  activeProxyEndpoint = proxy;
+                  localStorage.setItem(PROXY_STORAGE_KEY, proxy);
+                  proxyEndpointInputEl.value = proxy;
+                  proxyStatusEl.textContent = `已连接后端: ${proxy}`;
+                  break;
+                }
+              } catch {
+                // try next candidate
+              }
+            }
+
+            if (savedByServer) {
+              pushMessage(
+                `PPT已生成并已保存到项目目录：${savedByServer.relativePath}（${savedByServer.bytes} bytes，${savedByServer.engine}）。请直接在本地打开该文件查看成品。`,
+                "assistant"
+              );
+              return;
+            }
           }
 
           pushMessage(saved ? `PPT导出完成：${fileName}（引擎：${engine}）` : `PPT已生成：${fileName}（引擎：${engine}）。当前环境阻止自动下载，已为你打开预览页，请手动保存。`, "assistant");

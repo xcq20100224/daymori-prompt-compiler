@@ -638,6 +638,30 @@ async function buildLocalPptx(contract) {
   };
 }
 
+async function buildPptExportResult(contract) {
+  const exportConfig = getAipptExportConfig();
+  let result = await callAipptEngine(contract, exportConfig);
+  if (!result.ok) {
+    result = await buildLocalPptx(contract);
+    result.fallbackReason = result.fallbackReason || "upstream_unavailable";
+  }
+  return {
+    result,
+    exportConfig
+  };
+}
+
+function saveExportedPptToWorkspace(contract, result) {
+  const dir = path.join(__dirname, "docs", "benchmarks", "results", "exports");
+  fs.mkdirSync(dir, { recursive: true });
+  const stamp = new Date().toISOString().replace(/[.:]/g, "-");
+  const fileName = `${stamp}-${sanitizeFileName(contract.topic || "daymori-ppt")}.pptx`;
+  const absPath = path.join(dir, fileName);
+  fs.writeFileSync(absPath, result.buffer);
+  const relPath = path.relative(__dirname, absPath).replace(/\\/g, "/");
+  return { fileName, absPath, relPath };
+}
+
 async function callProviderText({ providerConfig, systemPrompt, userPrompt, maxTokens = 520 }) {
   if (providerConfig.type === "responses") {
     let upstream;
@@ -1079,7 +1103,6 @@ app.post("/api/ppt/export", async (req, res) => {
   const startedAt = Date.now();
   const audit = baseAuditEvent(req);
   try {
-    const exportConfig = getAipptExportConfig();
     const normalized = normalizeContract(req.body && req.body.contract);
     if (!normalized.ok) {
       writeAuditLog({
@@ -1093,11 +1116,7 @@ app.post("/api/ppt/export", async (req, res) => {
     }
 
     const contract = normalized.contract;
-    let result = await callAipptEngine(contract, exportConfig);
-    if (!result.ok) {
-      result = await buildLocalPptx(contract);
-      result.fallbackReason = result.fallbackReason || "upstream_unavailable";
-    }
+    const { result, exportConfig } = await buildPptExportResult(contract);
 
     writeAuditLog({
       ...audit,
@@ -1125,6 +1144,60 @@ app.post("/api/ppt/export", async (req, res) => {
       reason: sanitizeAuditDetail(error && error.message ? error.message : String(error))
     });
     return res.status(500).json({ error: "ppt_export_error", detail: error && error.message ? error.message : String(error) });
+  }
+});
+
+app.post("/api/ppt/export-save", async (req, res) => {
+  const startedAt = Date.now();
+  const audit = baseAuditEvent(req);
+  try {
+    const normalized = normalizeContract(req.body && req.body.contract);
+    if (!normalized.ok) {
+      writeAuditLog({
+        ...audit,
+        outcome: "error",
+        status: 400,
+        latencyMs: Date.now() - startedAt,
+        reason: normalized.reason
+      });
+      return res.status(400).json({ error: "invalid_contract", detail: normalized.reason });
+    }
+
+    const contract = normalized.contract;
+    const { result, exportConfig } = await buildPptExportResult(contract);
+    const saved = saveExportedPptToWorkspace(contract, result);
+
+    writeAuditLog({
+      ...audit,
+      outcome: "ok",
+      status: 200,
+      latencyMs: Date.now() - startedAt,
+      model: exportConfig.model || "local-pptxgenjs",
+      promptChars: JSON.stringify(contract).length,
+      outputChars: result.buffer.length,
+      pptEngine: result.engine,
+      aipptProvider: exportConfig.provider,
+      templateId: contract.templateId,
+      detail: `saved:${saved.relPath}`
+    });
+
+    return res.json({
+      ok: true,
+      engine: result.engine,
+      fileName: saved.fileName,
+      relativePath: saved.relPath,
+      absolutePath: saved.absPath,
+      bytes: result.buffer.length
+    });
+  } catch (error) {
+    writeAuditLog({
+      ...audit,
+      outcome: "error",
+      status: 500,
+      latencyMs: Date.now() - startedAt,
+      reason: sanitizeAuditDetail(error && error.message ? error.message : String(error))
+    });
+    return res.status(500).json({ error: "ppt_export_save_error", detail: error && error.message ? error.message : String(error) });
   }
 });
 
