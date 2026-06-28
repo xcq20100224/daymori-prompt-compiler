@@ -281,7 +281,13 @@ function describeUpstreamError(error) {
 
 function sanitizeFileName(name) {
   const base = String(name || "daymori-ppt").trim();
-  const safe = base.replace(/[\\/:*?"<>|]/g, "-").replace(/\s+/g, "-").slice(0, 80);
+  const safe = base
+    .replace(/[\\/:*?"<>|]/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^A-Za-z0-9._-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80);
   return safe || "daymori-ppt";
 }
 
