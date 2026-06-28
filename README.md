@@ -104,6 +104,34 @@ Update workflow:
 - Server-side key mode only: frontend never asks users to enter key.
 - Optional model override with `LLM_MODEL`.
 
+## AIPPT Export Adapter (Contract JSON -> PPTX)
+
+The app now supports a direct adapter from `aippt.v1` contract JSON to `.pptx` output.
+
+- Backend endpoint:
+
+   - `POST /api/ppt/export`
+
+- Frontend command (after generating a structured PPT contract):
+
+   - `/ppt export`
+
+- Behavior:
+
+   1. Try upstream AIPPT API first (if configured).
+   2. If upstream is unavailable, fallback to local PPTX generation (`pptxgenjs`).
+
+- Upstream config (optional):
+
+   - `AIPPT_API_ENDPOINT`
+   - `AIPPT_API_KEY`
+   - `AIPPT_API_MODEL`
+
+- Response:
+
+   - Returns `.pptx` binary as attachment
+   - Header `x-ppt-engine` indicates actual engine (`upstream-aippt` or `local-pptxgenjs`)
+
 ## Benchmark Engineering (Run Batch + Daily Report + Failure Attribution)
 
 Teacher benchmark now supports an execution loop upgrade:

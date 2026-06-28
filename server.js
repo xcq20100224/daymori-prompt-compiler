@@ -6,6 +6,7 @@ const multer = require("multer");
 const mammoth = require("mammoth");
 const cors = require("cors");
 const crypto = require("crypto");
+const PptxGenJS = require("pptxgenjs");
 
 dotenv.config();
 
@@ -276,6 +277,244 @@ function describeUpstreamError(error) {
   const code = cause.code || error.code || "UNKNOWN";
   const message = cause.message || (error && error.message ? error.message : String(error));
   return `upstream_connect_error(${code}): ${message}`;
+}
+
+function sanitizeFileName(name) {
+  const base = String(name || "daymori-ppt").trim();
+  const safe = base.replace(/[\\/:*?"<>|]/g, "-").replace(/\s+/g, "-").slice(0, 80);
+  return safe || "daymori-ppt";
+}
+
+function normalizeContract(input) {
+  if (!input || typeof input !== "object") {
+    return { ok: false, reason: "contract_required" };
+  }
+  if (String(input.contractVersion || "") !== "aippt.v1") {
+    return { ok: false, reason: "unsupported_contract_version" };
+  }
+  if (!Array.isArray(input.slides) || input.slides.length === 0) {
+    return { ok: false, reason: "slides_required" };
+  }
+
+  const pageCount = Number(input.pageCount || input.slides.length);
+  if (!Number.isFinite(pageCount) || pageCount <= 0) {
+    return { ok: false, reason: "invalid_page_count" };
+  }
+
+  const slides = input.slides.map((s, i) => ({
+    index: Number(s && s.index) || i + 1,
+    title: String((s && s.title) || `第${i + 1}页`).trim(),
+    goal: String((s && s.goal) || "").trim(),
+    keyPoints: Array.isArray(s && s.keyPoints) ? s.keyPoints.map((x) => String(x || "").trim()).filter(Boolean) : [],
+    assetPlaceholders: Array.isArray(s && s.assetPlaceholders) ? s.assetPlaceholders.map((x) => String(x || "").trim()).filter(Boolean) : [],
+    speakerNotes: String((s && s.speakerNotes) || "").trim()
+  }));
+
+  return {
+    ok: true,
+    contract: {
+      contractVersion: "aippt.v1",
+      engineType: String(input.engineType || "generic-aippt"),
+      sceneType: String(input.sceneType || "通用"),
+      templateId: String(input.templateId || "template-default"),
+      pageCount,
+      visualStyle: String(input.visualStyle || "简洁商务风"),
+      tone: String(input.tone || "清晰、可执行"),
+      topic: String(input.topic || "当前需求"),
+      slides
+    }
+  };
+}
+
+function parseBase64Payload(value) {
+  if (!value || typeof value !== "string") return Buffer.alloc(0);
+  const raw = value.includes(",") ? value.split(",").pop() : value;
+  return Buffer.from(raw, "base64");
+}
+
+async function callAipptEngine(contract) {
+  const endpoint = String(process.env.AIPPT_API_ENDPOINT || "").trim();
+  const apiKey = String(process.env.AIPPT_API_KEY || "").trim();
+  const model = String(process.env.AIPPT_API_MODEL || "").trim();
+
+  if (!endpoint || !apiKey) {
+    return { ok: false, reason: "aippt_not_configured" };
+  }
+
+  let upstream;
+  try {
+    upstream = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: model || undefined,
+        contractVersion: contract.contractVersion,
+        contract
+      })
+    });
+  } catch (error) {
+    return { ok: false, reason: sanitizeAuditDetail(describeUpstreamError(error)) };
+  }
+
+  const rawText = await upstream.text();
+  if (!upstream.ok) {
+    return { ok: false, reason: `aippt_http_${upstream.status}:${sanitizeAuditDetail(rawText)}` };
+  }
+
+  let data = {};
+  try {
+    data = rawText ? JSON.parse(rawText) : {};
+  } catch {
+    return { ok: false, reason: "aippt_non_json_response" };
+  }
+
+  if (data.downloadUrl) {
+    try {
+      const fileResp = await fetch(String(data.downloadUrl));
+      if (!fileResp.ok) return { ok: false, reason: `aippt_download_${fileResp.status}` };
+      const arr = await fileResp.arrayBuffer();
+      return {
+        ok: true,
+        engine: "upstream-aippt",
+        fileName: String(data.fileName || `${sanitizeFileName(contract.topic)}.pptx`),
+        mimeType: String(data.mimeType || "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+        buffer: Buffer.from(arr)
+      };
+    } catch (error) {
+      return { ok: false, reason: sanitizeAuditDetail(describeUpstreamError(error)) };
+    }
+  }
+
+  const b64 = data.fileBase64 || data.pptxBase64 || "";
+  const bin = parseBase64Payload(b64);
+  if (!bin.length) {
+    return { ok: false, reason: "aippt_no_file_payload" };
+  }
+
+  return {
+    ok: true,
+    engine: "upstream-aippt",
+    fileName: String(data.fileName || `${sanitizeFileName(contract.topic)}.pptx`),
+    mimeType: String(data.mimeType || "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+    buffer: bin
+  };
+}
+
+async function buildLocalPptx(contract) {
+  const pptx = new PptxGenJS();
+  pptx.layout = "LAYOUT_WIDE";
+  pptx.author = "Daymori";
+  pptx.company = "Daymori";
+  pptx.subject = contract.sceneType;
+  pptx.title = `${contract.topic} - ${contract.sceneType}`;
+
+  const titleColor = "1F2937";
+  const bodyColor = "111827";
+  const accentColor = "8B5E34";
+
+  for (const slideSpec of contract.slides) {
+    const slide = pptx.addSlide();
+    slide.background = { color: "F7F4EF" };
+
+    slide.addText(String(slideSpec.title || ""), {
+      x: 0.6,
+      y: 0.3,
+      w: 12.0,
+      h: 0.6,
+      fontSize: 24,
+      bold: true,
+      color: titleColor,
+      fontFace: "Microsoft YaHei"
+    });
+
+    slide.addShape(pptx.ShapeType.line, {
+      x: 0.6,
+      y: 0.95,
+      w: 3.0,
+      h: 0,
+      line: { color: accentColor, pt: 2 }
+    });
+
+    slide.addText(`目标：${slideSpec.goal || ""}`, {
+      x: 0.6,
+      y: 1.2,
+      w: 12.0,
+      h: 0.8,
+      fontSize: 14,
+      bold: false,
+      color: bodyColor,
+      fontFace: "Microsoft YaHei"
+    });
+
+    const bulletItems = (slideSpec.keyPoints || []).slice(0, 6).map((text) => ({
+      text: String(text || ""),
+      options: { bullet: { indent: 18 } }
+    }));
+
+    slide.addText(bulletItems.length ? bulletItems : [{ text: "（暂无要点）", options: { bullet: { indent: 18 } } }], {
+      x: 0.9,
+      y: 2.05,
+      w: 7.4,
+      h: 3.5,
+      fontSize: 13,
+      color: bodyColor,
+      fontFace: "Microsoft YaHei",
+      valign: "top"
+    });
+
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: 8.6,
+      y: 2.0,
+      w: 4.1,
+      h: 2.0,
+      radius: 0.08,
+      fill: { color: "EFE7DB" },
+      line: { color: "C7AE8B", pt: 1 }
+    });
+
+    slide.addText(`素材占位\n${(slideSpec.assetPlaceholders || []).join("\n") || "（待补素材）"}`, {
+      x: 8.85,
+      y: 2.15,
+      w: 3.6,
+      h: 1.7,
+      fontSize: 12,
+      color: bodyColor,
+      fontFace: "Microsoft YaHei",
+      valign: "top"
+    });
+
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: 0.6,
+      y: 5.9,
+      w: 12.0,
+      h: 1.15,
+      radius: 0.06,
+      fill: { color: "F1EFE9" },
+      line: { color: "DDD6CA", pt: 1 }
+    });
+
+    slide.addText(`演讲备注：${slideSpec.speakerNotes || ""}`, {
+      x: 0.8,
+      y: 6.1,
+      w: 11.6,
+      h: 0.8,
+      fontSize: 11,
+      color: "4B5563",
+      fontFace: "Microsoft YaHei"
+    });
+  }
+
+  const stream = await pptx.write({ outputType: "nodebuffer" });
+  return {
+    ok: true,
+    engine: "local-pptxgenjs",
+    fileName: `${sanitizeFileName(contract.topic)}.pptx`,
+    mimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    buffer: Buffer.from(stream)
+  };
 }
 
 async function callProviderText({ providerConfig, systemPrompt, userPrompt, maxTokens = 520 }) {
@@ -712,6 +951,57 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
       error: "Server error",
       detail: error && error.message ? error.message : String(error)
     });
+  }
+});
+
+app.post("/api/ppt/export", async (req, res) => {
+  const startedAt = Date.now();
+  const audit = baseAuditEvent(req);
+  try {
+    const normalized = normalizeContract(req.body && req.body.contract);
+    if (!normalized.ok) {
+      writeAuditLog({
+        ...audit,
+        outcome: "error",
+        status: 400,
+        latencyMs: Date.now() - startedAt,
+        reason: normalized.reason
+      });
+      return res.status(400).json({ error: "invalid_contract", detail: normalized.reason });
+    }
+
+    const contract = normalized.contract;
+    let result = await callAipptEngine(contract);
+    if (!result.ok) {
+      result = await buildLocalPptx(contract);
+      result.fallbackReason = result.fallbackReason || "upstream_unavailable";
+    }
+
+    writeAuditLog({
+      ...audit,
+      outcome: "ok",
+      status: 200,
+      latencyMs: Date.now() - startedAt,
+      model: process.env.AIPPT_API_MODEL || "local-pptxgenjs",
+      promptChars: JSON.stringify(contract).length,
+      outputChars: result.buffer.length,
+      pptEngine: result.engine,
+      templateId: contract.templateId
+    });
+
+    res.setHeader("Content-Type", result.mimeType);
+    res.setHeader("Content-Disposition", `attachment; filename="${sanitizeFileName(result.fileName)}"`);
+    res.setHeader("x-ppt-engine", result.engine);
+    return res.status(200).send(result.buffer);
+  } catch (error) {
+    writeAuditLog({
+      ...audit,
+      outcome: "error",
+      status: 500,
+      latencyMs: Date.now() - startedAt,
+      reason: sanitizeAuditDetail(error && error.message ? error.message : String(error))
+    });
+    return res.status(500).json({ error: "ppt_export_error", detail: error && error.message ? error.message : String(error) });
   }
 });
 
