@@ -532,100 +532,285 @@ async function buildLocalPptx(contract) {
   pptx.subject = contract.sceneType;
   pptx.title = `${contract.topic} - ${contract.sceneType}`;
 
-  const titleColor = "1F2937";
-  const bodyColor = "111827";
-  const accentColor = "8B5E34";
+  const palette = {
+    bg: "F6F1EA",
+    panel: "FFFFFF",
+    panelSoft: "EFE7DB",
+    line: "DCCBB6",
+    title: "17191F",
+    text: "1F2937",
+    muted: "5B6472",
+    accent: "8B5E34",
+    accentSoft: "EBDDCB"
+  };
 
-  for (const slideSpec of contract.slides) {
-    const slide = pptx.addSlide();
-    slide.background = { color: "F7F4EF" };
+  function cleanText(value, fallback = "") {
+    const raw = String(value || fallback).replace(/\s+/g, " ").trim();
+    return raw || fallback;
+  }
 
-    slide.addText(String(slideSpec.title || ""), {
-      x: 0.6,
-      y: 0.3,
-      w: 12.0,
-      h: 0.6,
-      fontSize: 24,
-      bold: true,
-      color: titleColor,
-      fontFace: "Microsoft YaHei"
-    });
+  function safeList(items, fallback) {
+    const out = Array.isArray(items) ? items.map((x) => cleanText(x)).filter(Boolean) : [];
+    return out.length ? out : [fallback];
+  }
 
+  function addFooter(slide, index, total) {
     slide.addShape(pptx.ShapeType.line, {
       x: 0.6,
-      y: 0.95,
-      w: 3.0,
+      y: 6.92,
+      w: 12.1,
       h: 0,
-      line: { color: accentColor, pt: 2 }
+      line: { color: palette.line, pt: 1 }
     });
 
-    slide.addText(`目标：${slideSpec.goal || ""}`, {
-      x: 0.6,
-      y: 1.2,
-      w: 12.0,
-      h: 0.8,
-      fontSize: 14,
-      bold: false,
-      color: bodyColor,
+    slide.addText(cleanText(contract.topic, "Daymori 演示文稿"), {
+      x: 0.62,
+      y: 6.95,
+      w: 8.6,
+      h: 0.28,
+      fontSize: 9,
+      color: palette.muted,
       fontFace: "Microsoft YaHei"
     });
 
-    const bulletItems = (slideSpec.keyPoints || []).slice(0, 6).map((text) => ({
-      text: String(text || ""),
-      options: { bullet: { indent: 18 } }
-    }));
-
-    slide.addText(bulletItems.length ? bulletItems : [{ text: "（暂无要点）", options: { bullet: { indent: 18 } } }], {
-      x: 0.9,
-      y: 2.05,
-      w: 7.4,
-      h: 3.5,
-      fontSize: 13,
-      color: bodyColor,
-      fontFace: "Microsoft YaHei",
-      valign: "top"
-    });
-
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: 8.6,
-      y: 2.0,
-      w: 4.1,
-      h: 2.0,
-      radius: 0.08,
-      fill: { color: "EFE7DB" },
-      line: { color: "C7AE8B", pt: 1 }
-    });
-
-    slide.addText(`素材占位\n${(slideSpec.assetPlaceholders || []).join("\n") || "（待补素材）"}`, {
-      x: 8.85,
-      y: 2.15,
-      w: 3.6,
-      h: 1.7,
-      fontSize: 12,
-      color: bodyColor,
-      fontFace: "Microsoft YaHei",
-      valign: "top"
-    });
-
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: 0.6,
-      y: 5.9,
-      w: 12.0,
-      h: 1.15,
-      radius: 0.06,
-      fill: { color: "F1EFE9" },
-      line: { color: "DDD6CA", pt: 1 }
-    });
-
-    slide.addText(`演讲备注：${slideSpec.speakerNotes || ""}`, {
-      x: 0.8,
-      y: 6.1,
-      w: 11.6,
-      h: 0.8,
-      fontSize: 11,
-      color: "4B5563",
+    slide.addText(`${index}/${total}`, {
+      x: 11.95,
+      y: 6.95,
+      w: 0.8,
+      h: 0.28,
+      align: "right",
+      fontSize: 9,
+      color: palette.muted,
       fontFace: "Microsoft YaHei"
     });
+  }
+
+  const totalSlides = contract.slides.length;
+  for (const slideSpec of contract.slides) {
+    const slide = pptx.addSlide();
+    const pageIndex = Number(slideSpec.index) || 1;
+    const title = cleanText(slideSpec.title, `第${pageIndex}页`);
+    const goal = cleanText(slideSpec.goal, "明确本页目标并输出可执行内容");
+    const keyPoints = safeList(slideSpec.keyPoints, "补充关键业务要点").slice(0, 4);
+    const assets = safeList(slideSpec.assetPlaceholders, "补充图表或配图").slice(0, 4);
+    const notes = cleanText(slideSpec.speakerNotes, "先结论，再依据，最后行动建议。") || "-";
+
+    slide.background = { color: palette.bg };
+
+    const isCover = pageIndex === 1;
+    if (isCover) {
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x: 0.62,
+        y: 0.52,
+        w: 12.1,
+        h: 5.9,
+        radius: 0.09,
+        fill: { color: palette.panel },
+        line: { color: palette.line, pt: 1.2 }
+      });
+
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 0.62,
+        y: 0.52,
+        w: 12.1,
+        h: 0.2,
+        fill: { color: palette.accent }
+      });
+
+      slide.addText(cleanText(contract.sceneType, "企业汇报"), {
+        x: 1.0,
+        y: 1.15,
+        w: 4.8,
+        h: 0.36,
+        fontSize: 13,
+        bold: true,
+        color: palette.accent,
+        fontFace: "Microsoft YaHei"
+      });
+
+      slide.addText(title, {
+        x: 1.0,
+        y: 1.62,
+        w: 10.9,
+        h: 1.35,
+        fontSize: 39,
+        bold: true,
+        color: palette.title,
+        fontFace: "Microsoft YaHei",
+        valign: "top"
+      });
+
+      slide.addText(goal, {
+        x: 1.0,
+        y: 3.2,
+        w: 10.9,
+        h: 0.9,
+        fontSize: 16,
+        color: palette.text,
+        fontFace: "Microsoft YaHei"
+      });
+
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x: 1.0,
+        y: 4.35,
+        w: 10.9,
+        h: 1.25,
+        radius: 0.06,
+        fill: { color: palette.accentSoft },
+        line: { color: palette.line, pt: 1 }
+      });
+
+      slide.addText(`关键要点：${keyPoints.join(" ｜ ")}`, {
+        x: 1.25,
+        y: 4.72,
+        w: 10.45,
+        h: 0.5,
+        fontSize: 12,
+        color: palette.text,
+        fontFace: "Microsoft YaHei"
+      });
+    } else {
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x: 0.62,
+        y: 0.52,
+        w: 12.1,
+        h: 6.15,
+        radius: 0.09,
+        fill: { color: palette.panel },
+        line: { color: palette.line, pt: 1.2 }
+      });
+
+      slide.addText(title, {
+        x: 0.95,
+        y: 0.82,
+        w: 8.2,
+        h: 0.5,
+        fontSize: 25,
+        bold: true,
+        color: palette.title,
+        fontFace: "Microsoft YaHei"
+      });
+
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x: 9.5,
+        y: 0.78,
+        w: 2.6,
+        h: 0.48,
+        radius: 0.08,
+        fill: { color: palette.panelSoft },
+        line: { color: palette.line, pt: 1 }
+      });
+
+      slide.addText(`目标：${goal.slice(0, 36)}`, {
+        x: 9.66,
+        y: 0.9,
+        w: 2.26,
+        h: 0.26,
+        align: "center",
+        fontSize: 10,
+        color: palette.accent,
+        fontFace: "Microsoft YaHei"
+      });
+
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x: 0.95,
+        y: 1.52,
+        w: 7.52,
+        h: 3.9,
+        radius: 0.06,
+        fill: { color: "FBFAF8" },
+        line: { color: palette.line, pt: 1 }
+      });
+
+      keyPoints.forEach((point, i) => {
+        const y = 1.86 + i * 0.86;
+        slide.addShape(pptx.ShapeType.roundRect, {
+          x: 1.2,
+          y,
+          w: 6.95,
+          h: 0.66,
+          radius: 0.05,
+          fill: { color: i % 2 === 0 ? "FFFFFF" : "F6F1EA" },
+          line: { color: "E6DCCF", pt: 0.8 }
+        });
+
+        slide.addText(`0${i + 1}`, {
+          x: 1.34,
+          y: y + 0.18,
+          w: 0.35,
+          h: 0.2,
+          fontSize: 9,
+          bold: true,
+          color: palette.accent,
+          fontFace: "Microsoft YaHei"
+        });
+
+        slide.addText(point.slice(0, 60), {
+          x: 1.78,
+          y: y + 0.12,
+          w: 6.2,
+          h: 0.4,
+          fontSize: 13,
+          color: palette.text,
+          fontFace: "Microsoft YaHei"
+        });
+      });
+
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x: 8.75,
+        y: 1.52,
+        w: 3.32,
+        h: 3.9,
+        radius: 0.06,
+        fill: { color: palette.panelSoft },
+        line: { color: palette.line, pt: 1 }
+      });
+
+      slide.addText("建议素材", {
+        x: 9.0,
+        y: 1.76,
+        w: 2.8,
+        h: 0.3,
+        fontSize: 12,
+        bold: true,
+        color: palette.accent,
+        fontFace: "Microsoft YaHei"
+      });
+
+      assets.forEach((asset, i) => {
+        slide.addText(`• ${asset.slice(0, 20)}`, {
+          x: 9.0,
+          y: 2.1 + i * 0.34,
+          w: 2.85,
+          h: 0.25,
+          fontSize: 10.5,
+          color: palette.text,
+          fontFace: "Microsoft YaHei"
+        });
+      });
+
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x: 0.95,
+        y: 5.58,
+        w: 11.12,
+        h: 0.9,
+        radius: 0.05,
+        fill: { color: "F2EEE8" },
+        line: { color: palette.line, pt: 1 }
+      });
+
+      slide.addText(`演讲备注：${notes.slice(0, 120)}`, {
+        x: 1.15,
+        y: 5.84,
+        w: 10.72,
+        h: 0.44,
+        fontSize: 10.5,
+        color: palette.muted,
+        fontFace: "Microsoft YaHei"
+      });
+    }
+
+    addFooter(slide, pageIndex, totalSlides);
   }
 
   const stream = await pptx.write({ outputType: "nodebuffer" });
