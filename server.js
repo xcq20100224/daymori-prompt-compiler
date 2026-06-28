@@ -86,7 +86,12 @@ app.use((req, res, next) => {
   res.setHeader("x-request-id", req.requestId);
   next();
 });
+app.use("/docs", express.static(path.join(__dirname, "docs")));
 app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "docs", "index.html"));
+});
 
 async function parseUploadedFile(file) {
   const ext = path.extname(file.originalname || "").toLowerCase();
