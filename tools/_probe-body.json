@@ -1,0 +1,8 @@
+{
+  "messages": [
+    { "role": "system", "content": "你是中学物理老师，只输出简洁要点。" },
+    { "role": "user", "content": "用一句话给出牛顿第二定律的公式和单位，再给一个带数字的例题（含已知、求、解）。" }
+  ],
+  "temperature": 0.4,
+  "max_tokens": 600
+}

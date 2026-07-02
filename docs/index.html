@@ -405,6 +405,135 @@
         border-color: #c9ccd4;
       }
 
+      .score-panel {
+        border: 1px solid #d4d6dd;
+        border-radius: 10px;
+        background: #f8f9fb;
+        padding: 8px;
+        margin-bottom: 8px;
+      }
+
+      .score-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .slide-preview-rail {
+        border: 1px solid #d4d6dd;
+        border-radius: 10px;
+        background: #f8f9fb;
+        padding: 10px;
+        margin-bottom: 8px;
+      }
+
+      .slide-preview-head {
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 8px;
+      }
+
+      .slide-preview-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .slide-preview-card {
+        border: 1px solid #d6d9e1;
+        border-radius: 10px;
+        background: #ffffff;
+        overflow: hidden;
+      }
+
+      .slide-preview-canvas {
+        aspect-ratio: 16 / 9;
+        padding: var(--pv-pad, 12px);
+        background: linear-gradient(145deg, var(--pv-bg, #15263f) 0%, var(--pv-surface, #22324f) 72%, #ffffff 180%);
+        color: var(--pv-body, #dce8ff);
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        gap: var(--pv-gap, 8px);
+        position: relative;
+      }
+
+      .slide-preview-canvas::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 4px;
+        background: var(--pv-accent, #7fb2ff);
+      }
+
+      .slide-preview-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 10px;
+        opacity: 0.9;
+      }
+
+      .slide-preview-title {
+        font-size: var(--pv-title-size, 16px);
+        line-height: 1.25;
+        color: var(--pv-title, #ffffff);
+        font-weight: 700;
+      }
+
+      .slide-preview-goal {
+        font-size: var(--pv-body-size, 11px);
+        line-height: 1.35;
+        color: var(--pv-body, #dce8ff);
+        opacity: 0.95;
+      }
+
+      .slide-preview-points {
+        margin: 0;
+        padding-left: 16px;
+        display: grid;
+        gap: 4px;
+        font-size: var(--pv-body-size, 11px);
+        line-height: 1.3;
+      }
+
+      .slide-preview-assets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      .slide-preview-tag {
+        border: 1px solid #d6deef;
+        background: rgba(255, 255, 255, 0.14);
+        color: var(--pv-title, #ffffff);
+        border-radius: 999px;
+        font-size: 10px;
+        padding: 1px 7px;
+      }
+
+      .score-item {
+        border: 1px solid #d4d6dd;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 6px;
+        font-size: 11px;
+        line-height: 1.3;
+      }
+
+      .score-item .k {
+        color: #6b7280;
+      }
+
+      .score-item .v {
+        margin-top: 2px;
+        font-size: 12px;
+        color: #111827;
+        font-weight: 700;
+      }
+
       .quick-fix-row {
         display: flex;
         flex-wrap: wrap;
@@ -555,6 +684,163 @@
         padding: 4px 8px;
         font-size: 12px;
         min-width: 120px;
+      }
+
+      .office-template-btn {
+        border: 1px solid #d7dbe4;
+        background: #f7f8fa;
+        color: #4f5561;
+        border-radius: 8px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .template-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(8, 12, 22, 0.45);
+        display: grid;
+        place-items: center;
+        z-index: 999;
+        padding: 20px;
+      }
+
+      .template-modal.hidden {
+        display: none;
+      }
+
+      .template-modal-panel {
+        width: min(920px, 96vw);
+        max-height: 82vh;
+        overflow: auto;
+        background: #ffffff;
+        border: 1px solid #dfe4ee;
+        border-radius: 14px;
+        box-shadow: 0 24px 52px rgba(18, 28, 52, 0.22);
+        padding: 14px;
+      }
+
+      .template-modal-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .template-modal-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #24324a;
+      }
+
+      .template-modal-sub {
+        font-size: 12px;
+        color: #5e6f8d;
+      }
+
+      .template-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 10px;
+      }
+
+      .template-card {
+        border: 1px solid #dde4f2;
+        border-radius: 10px;
+        padding: 10px;
+        background: #fbfdff;
+        cursor: pointer;
+      }
+
+      .template-card-cover {
+        height: 108px;
+        border-radius: 8px;
+        border: 1px solid rgba(23, 35, 58, 0.08);
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .template-card-cover-tag {
+        align-self: flex-start;
+        font-size: 11px;
+        line-height: 1;
+        padding: 3px 6px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.78);
+        color: #1f2d44;
+        border: 1px solid rgba(31, 45, 68, 0.16);
+      }
+
+      .template-card-cover-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #132033;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 6px;
+        padding: 6px 8px;
+      }
+
+      .template-card.active {
+        border-color: #4e7fdc;
+        box-shadow: inset 0 0 0 1px #4e7fdc;
+      }
+
+      .template-card-name {
+        margin-top: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #23314a;
+      }
+
+      .template-card-meta {
+        margin-top: 4px;
+        font-size: 12px;
+        color: #667a99;
+        line-height: 1.35;
+      }
+
+      .template-card-links {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .template-link {
+        font-size: 12px;
+        color: #2f5fba;
+        text-decoration: none;
+      }
+
+      .template-link:hover {
+        text-decoration: underline;
+      }
+
+      .template-modal-actions {
+        margin-top: 12px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .template-upload-row {
+        margin: 10px 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .template-upload-name {
+        font-size: 12px;
+        color: #4f5f7b;
+        background: #f4f7fc;
+        border: 1px solid #d8e1ef;
+        border-radius: 8px;
+        padding: 4px 8px;
       }
 
       .composer-tools {
@@ -742,6 +1028,14 @@
           max-height: 34vh;
         }
 
+        .score-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .slide-preview-list {
+          grid-template-columns: 1fr;
+        }
+
         textarea {
           font-size: 14px;
           min-height: 30px;
@@ -807,7 +1101,10 @@
                 <option value="edu">模板：教务课程</option>
                 <option value="speech">模板：演讲路演</option>
                 <option value="lazyman">模板：Lazyman高管</option>
+                <option value="lazymanEdu">模板：Lazyman讲课版</option>
+                <option value="officeplus">模板：OfficePLUS库（手动选择）</option>
               </select>
+              <button id="officeTemplateBtn" class="office-template-btn" type="button">模板库</button>
               <select id="pptFontSelect" class="ppt-select" title="字体主题">
                 <option value="business-cn">字体：商务雅黑</option>
                 <option value="serif-cn">字体：宋体稳重</option>
@@ -824,7 +1121,13 @@
                 <span id="uploadBtn" class="tool-btn" title="上传文件" role="button" tabindex="0">+</span>
                 <span class="tool-btn">◎</span>
               </div>
-              <div class="composer-mode">深度思考 最高 <span class="caret">▾</span></div>
+              <div class="composer-mode">
+                <select id="thinkingLevelSelect" class="ppt-select" title="思考档位">
+                  <option value="fast">快速思考（Flash）</option>
+                  <option value="balanced">均衡思考（Chat）</option>
+                  <option value="deep">深度思考（Reasoner）</option>
+                </select>
+              </div>
             </div>
             <div class="helper">
               <span>Shift+Enter 换行，Enter 发送</span>
@@ -880,6 +1183,28 @@
       </section>
     </main>
 
+    <div id="officeTemplateModal" class="template-modal hidden" aria-hidden="true">
+      <div class="template-modal-panel" role="dialog" aria-modal="true" aria-label="OfficePLUS 模板库">
+        <div class="template-modal-head">
+          <div>
+            <div class="template-modal-title">OfficePLUS 模板库选择</div>
+            <div class="template-modal-sub">先看模板首屏样式再选择。OfficePLUS 模式下必须带模板文件才允许生成与导出。</div>
+          </div>
+        </div>
+        <div class="template-upload-row">
+          <input id="officeTemplateFile" type="file" accept=".pptx" hidden />
+          <button id="officeTemplateUploadBtn" type="button" class="mini-btn">上传模板文件(.pptx)</button>
+          <button id="officeTemplateClearBtn" type="button" class="mini-btn">清除模板文件</button>
+          <span id="officeTemplateFileName" class="template-upload-name">未上传模板文件</span>
+        </div>
+        <div id="officeTemplateList" class="template-grid"></div>
+        <div class="template-modal-actions">
+          <button id="officeTemplateClose" type="button" class="mini-btn">取消</button>
+          <button id="officeTemplateApply" type="button" class="mini-btn">使用所选模板</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       const fileEl = document.getElementById("file");
       const dropzoneEl = document.getElementById("dropzone");
@@ -896,13 +1221,23 @@
       const sendEl = document.getElementById("send");
       const quickPptBtnEl = document.getElementById("quickPpt");
       const pptTemplateSelectEl = document.getElementById("pptTemplateSelect");
+      const officeTemplateBtnEl = document.getElementById("officeTemplateBtn");
       const pptFontSelectEl = document.getElementById("pptFontSelect");
       const pptChartSelectEl = document.getElementById("pptChartSelect");
+      const officeTemplateModalEl = document.getElementById("officeTemplateModal");
+      const officeTemplateListEl = document.getElementById("officeTemplateList");
+      const officeTemplateCloseEl = document.getElementById("officeTemplateClose");
+      const officeTemplateApplyEl = document.getElementById("officeTemplateApply");
+      const officeTemplateFileEl = document.getElementById("officeTemplateFile");
+      const officeTemplateUploadBtnEl = document.getElementById("officeTemplateUploadBtn");
+      const officeTemplateClearBtnEl = document.getElementById("officeTemplateClearBtn");
+      const officeTemplateFileNameEl = document.getElementById("officeTemplateFileName");
       const benchKpiEl = document.getElementById("benchKpi");
       const benchMetaEl = document.getElementById("benchMeta");
       const benchListEl = document.getElementById("benchList");
       const proxyEndpointInputEl = document.getElementById("proxyEndpointInput");
       const proxyStatusEl = document.getElementById("proxyStatus");
+      const thinkingLevelSelectEl = document.getElementById("thinkingLevelSelect");
 
       let contextText = "";
       let latestAssistantText = "";
@@ -913,26 +1248,72 @@
       let latestQaResult = null;
       let latestPptSpec = null;
       let autoExportAfterGenerate = false;
+      let latestLlmMeta = null;
 
       const MAX_MESSAGES = 36;
-      const REQUEST_TIMEOUT_MS = 28000;
-      const REQUEST_RETRY = 1;
+      const REQUEST_TIMEOUT_MS = 45000;
+      const REQUEST_RETRY = 2;
       const TEST_MODE_KEY = "daymori_test_mode";
       const SHORT_SESSION_LIMIT = 10;
       const PROXY_STORAGE_KEY = "daymori_proxy_endpoint";
+      const THINKING_PROFILE_KEY = "daymori_thinking_profile";
       const PPT_DESIGN_PREF_KEY = "daymori_ppt_design_pref";
+      const OFFICE_TEMPLATE_KEY = "daymori_office_template_pick";
       const FUR_METRIC_KEY = "daymori_first_direct_usable_metric";
+      const PPT_QUALITY_HISTORY_KEY = "daymori_ppt_quality_history_v1";
+      const PPT_QUALITY_GATE_KEY = "daymori_ppt_quality_gate_v1";
       const LOCAL_DEFAULT_PROXY_ENDPOINT = "http://localhost:3000/api/llm-proxy";
-      const PUBLIC_DEFAULT_PROXY_ENDPOINT = "https://daymori-prompt-compiler.onrender.com/api/llm-proxy";
+      const PUBLIC_DEFAULT_PROXY_ENDPOINT = "/api/llm-proxy";
       const PRESET_PROXY_ENDPOINTS = [
         PUBLIC_DEFAULT_PROXY_ENDPOINT,
-        "https://daymori-prompt-compiler.onrender.com/api/llm-proxy",
-        "https://daymori-prompt-compiler.vercel.app/api/llm-proxy",
+        LOCAL_DEFAULT_PROXY_ENDPOINT,
         "/api/llm-proxy"
       ];
 
       const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
+      const THINKING_MODEL_MAP = {
+        fast: { label: "快速思考", model: "deepseek-v4-flash" },
+        balanced: { label: "均衡思考", model: "deepseek-chat" },
+        deep: { label: "深度思考", model: "deepseek-reasoner" }
+      };
+      const REVIEW_MODEL_MAP = {
+        fast: "deepseek-chat",
+        balanced: "deepseek-reasoner",
+        deep: "deepseek-chat"
+      };
       const BENCH_SUMMARY_ENDPOINT = "./benchmarks/results/latest-summary.json";
+
+      function resolveThinkingProfile(level) {
+        const key = String(level || "").trim();
+        return THINKING_MODEL_MAP[key] || THINKING_MODEL_MAP.deep;
+      }
+
+      function resolveReviewModel(level) {
+        const key = String(level || "").trim();
+        return REVIEW_MODEL_MAP[key] || "deepseek-chat";
+      }
+
+      function readThinkingLevel() {
+        try {
+          const raw = String(localStorage.getItem(THINKING_PROFILE_KEY) || "").trim();
+          return THINKING_MODEL_MAP[raw] ? raw : "deep";
+        } catch {
+          return "deep";
+        }
+      }
+
+      function writeThinkingLevel(level) {
+        try {
+          const key = THINKING_MODEL_MAP[level] ? level : "deep";
+          localStorage.setItem(THINKING_PROFILE_KEY, key);
+        } catch {
+        }
+      }
+
+      function applyThinkingLevelUi() {
+        if (!thinkingLevelSelectEl) return;
+        thinkingLevelSelectEl.value = readThinkingLevel();
+      }
 
       const BLOCK_DEFS = [
         { key: "goals", label: "目标" },
@@ -943,12 +1324,73 @@
         { key: "finalPrompt", label: "终版提示词" }
       ];
 
+      const OFFICEPLUS_TEMPLATE_LIBRARY = [
+        {
+          id: "biz-report-exec-08",
+          name: "OfficePLUS·高管季度复盘",
+          coverTag: "Lazyman风",
+          coverTitle: "高管季度复盘",
+          coverGradient: "linear-gradient(135deg,#201913 0%,#3b2f24 58%,#d7b890 100%)",
+          bundledTemplateUrl: "./benchmarks/results/exports/2026-06-28T10-43-05-613Z-Lazyman.pptx",
+          preferredSceneType: "企业",
+          narrativeMode: "lazyman",
+          fontTheme: "business-cn",
+          chartStyle: "calm",
+          officialUrl: "https://www.officeplus.cn/Template/Home.shtml",
+          previewUrl: "https://www.officeplus.cn"
+        },
+        {
+          id: "biz-report-exec-03",
+          name: "OfficePLUS·业务分析汇报",
+          coverTag: "业务分析",
+          coverTitle: "业务分析汇报",
+          coverGradient: "linear-gradient(140deg,#15263f 0%,#1f3c66 56%,#9ac4ff 100%)",
+          bundledTemplateUrl: "./benchmarks/results/exports/2026-06-28T10-34-22-482Z-v2.pptx",
+          preferredSceneType: "企业",
+          narrativeMode: "standard",
+          fontTheme: "business-cn",
+          chartStyle: "contrast",
+          officialUrl: "https://www.officeplus.cn/Template/Home.shtml",
+          previewUrl: "https://www.officeplus.cn"
+        },
+        {
+          id: "edu-teach-standard-01",
+          name: "OfficePLUS·教学讲义",
+          coverTag: "课堂教学",
+          coverTitle: "教学讲义",
+          coverGradient: "linear-gradient(135deg,#1f2f48 0%,#3e5f89 54%,#d8ecff 100%)",
+          bundledTemplateUrl: "./benchmarks/results/exports/2026-06-29T05-00-47-335Z-daymori-ppt.pptx",
+          preferredSceneType: "教务",
+          narrativeMode: "standard",
+          fontTheme: "serif-cn",
+          chartStyle: "contrast",
+          officialUrl: "https://www.officeplus.cn/Template/Home.shtml",
+          previewUrl: "https://www.officeplus.cn"
+        },
+        {
+          id: "speech-stage-story-01",
+          name: "OfficePLUS·演讲路演",
+          coverTag: "演讲路演",
+          coverTitle: "路演故事线",
+          coverGradient: "linear-gradient(140deg,#2b1f36 0%,#493063 52%,#f1c78d 100%)",
+          bundledTemplateUrl: "./benchmarks/results/exports/2026-06-28T08-41-30-024Z-daymori-ppt.pptx",
+          preferredSceneType: "演讲",
+          narrativeMode: "standard",
+          fontTheme: "modern-cn",
+          chartStyle: "growth",
+          officialUrl: "https://www.officeplus.cn/Template/Home.shtml",
+          previewUrl: "https://www.officeplus.cn"
+        }
+      ];
+
       const TEMPLATE_SPEC_MAP = {
         auto: { preferredSceneType: "", preferredTemplateId: "" },
         biz: { preferredSceneType: "企业", preferredTemplateId: "biz-report-exec-03" },
         edu: { preferredSceneType: "教务", preferredTemplateId: "edu-teach-standard-01" },
         speech: { preferredSceneType: "演讲", preferredTemplateId: "speech-stage-story-01" },
-        lazyman: { preferredSceneType: "企业", preferredTemplateId: "biz-report-exec-08" }
+        lazyman: { preferredSceneType: "企业", preferredTemplateId: "biz-report-exec-08" },
+        lazymanEdu: { preferredSceneType: "教务", preferredTemplateId: "edu-lazyman-fusion-02" },
+        officeplus: { preferredSceneType: "", preferredTemplateId: "" }
       };
 
       const TEMPLATE_DESIGN_PRESET_MAP = {
@@ -956,7 +1398,9 @@
         biz: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "standard" },
         edu: { fontTheme: "serif-cn", chartStyle: "contrast", narrativeMode: "standard" },
         speech: { fontTheme: "modern-cn", chartStyle: "growth", narrativeMode: "standard" },
-        lazyman: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "lazyman" }
+        lazyman: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "lazyman" },
+        lazymanEdu: { fontTheme: "serif-cn", chartStyle: "contrast", narrativeMode: "lazyman" },
+        officeplus: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "standard" }
       };
 
       function resolveNarrativeMode(templateSelection) {
@@ -964,7 +1408,119 @@
         return (preset && preset.narrativeMode) || "standard";
       }
 
+      let officeTemplateRuntimeFile = {
+        fileName: "",
+        base64: "",
+        source: ""
+      };
+
+      function updateOfficeTemplateFileUi() {
+        if (!officeTemplateFileNameEl) return;
+        const name = String(officeTemplateRuntimeFile.fileName || "").trim();
+        const source = String(officeTemplateRuntimeFile.source || "");
+        if (!name) {
+          officeTemplateFileNameEl.textContent = "未上传模板文件";
+          return;
+        }
+        if (source === "bundled") {
+          officeTemplateFileNameEl.textContent = `已自动加载模板：${name}`;
+          return;
+        }
+        if (source === "local-inbox") {
+          officeTemplateFileNameEl.textContent = `已从本地模板收件箱同步：${name}`;
+          return;
+        }
+        officeTemplateFileNameEl.textContent = `已上传：${name}`;
+      }
+
+      function resetOfficeTemplateRuntimeFile() {
+        officeTemplateRuntimeFile = { fileName: "", base64: "", source: "" };
+        if (officeTemplateFileEl) officeTemplateFileEl.value = "";
+        updateOfficeTemplateFileUi();
+      }
+
+      async function readBinaryFileAsBase64(file) {
+        const arr = await file.arrayBuffer();
+        let binary = "";
+        const bytes = new Uint8Array(arr);
+        const chunkSize = 0x8000;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          const chunk = bytes.subarray(i, i + chunkSize);
+          binary += String.fromCharCode.apply(null, chunk);
+        }
+        return btoa(binary);
+      }
+
+      async function readRemoteBinaryAsBase64(url) {
+        const resp = await fetch(url, { cache: "no-store" });
+        if (!resp.ok) throw new Error(`模板下载失败: HTTP ${resp.status}`);
+        const arr = await resp.arrayBuffer();
+        const bytes = new Uint8Array(arr);
+        let binary = "";
+        const chunkSize = 0x8000;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          const chunk = bytes.subarray(i, i + chunkSize);
+          binary += String.fromCharCode.apply(null, chunk);
+        }
+        return btoa(binary);
+      }
+
+      async function autoAttachBundledOfficeTemplate(pick, silent = false) {
+        if (!pick || !pick.bundledTemplateUrl) return false;
+        if (officeTemplateRuntimeFile.base64 && officeTemplateRuntimeFile.source === "upload") return true;
+        if (officeTemplateRuntimeFile.base64 && officeTemplateRuntimeFile.source === "bundled" && officeTemplateRuntimeFile.fileName === `${pick.id}.pptx`) return true;
+        try {
+          const base64 = await readRemoteBinaryAsBase64(pick.bundledTemplateUrl);
+          officeTemplateRuntimeFile = {
+            fileName: `${pick.id}.pptx`,
+            base64,
+            source: "bundled"
+          };
+          updateOfficeTemplateFileUi();
+          const pref = getPptDesignPref();
+          if (String(pref.template || "") === "officeplus") {
+            savePptDesignPref({
+              ...pref,
+              externalTemplateFileName: officeTemplateRuntimeFile.fileName
+            });
+          }
+          if (!silent) {
+            pushMessage(`已自动加载模板文件：${officeTemplateRuntimeFile.fileName}。`, "assistant");
+          }
+          return true;
+        } catch (error) {
+          if (!silent) {
+            pushMessage(`自动加载模板文件失败：${error && error.message ? error.message : String(error)}。可手动上传 .pptx。`, "assistant");
+          }
+          return false;
+        }
+      }
+
+      function readOfficeTemplatePick() {
+        try {
+          const raw = localStorage.getItem(OFFICE_TEMPLATE_KEY);
+          const parsed = raw ? JSON.parse(raw) : {};
+          if (!parsed || !parsed.id) return OFFICEPLUS_TEMPLATE_LIBRARY[0];
+          return OFFICEPLUS_TEMPLATE_LIBRARY.find((x) => x.id === parsed.id) || OFFICEPLUS_TEMPLATE_LIBRARY[0];
+        } catch {
+          return OFFICEPLUS_TEMPLATE_LIBRARY[0];
+        }
+      }
+
+      function writeOfficeTemplatePick(pick) {
+        try {
+          localStorage.setItem(OFFICE_TEMPLATE_KEY, JSON.stringify({ id: pick.id }));
+        } catch {
+        }
+      }
+
       function syncDesignControlsByTemplate(templateSelection) {
+        if (String(templateSelection || "") === "officeplus") {
+          const officePick = readOfficeTemplatePick();
+          if (pptFontSelectEl) pptFontSelectEl.value = officePick.fontTheme || "business-cn";
+          if (pptChartSelectEl) pptChartSelectEl.value = officePick.chartStyle || "calm";
+          return;
+        }
         const preset = TEMPLATE_DESIGN_PRESET_MAP[String(templateSelection || "auto")];
         if (!preset) return;
         if (pptFontSelectEl) pptFontSelectEl.value = preset.fontTheme || "business-cn";
@@ -977,12 +1533,27 @@
           const parsed = raw ? JSON.parse(raw) : {};
           return {
             template: parsed.template || "auto",
+            templateSource: parsed.templateSource || (parsed.template === "officeplus" ? "officeplus" : "internal"),
+            externalTemplateId: parsed.externalTemplateId || "",
+            externalTemplateName: parsed.externalTemplateName || "",
+            externalTemplateFileName: parsed.externalTemplateFileName || "",
+            externalSceneType: parsed.externalSceneType || "",
             fontTheme: parsed.fontTheme || "business-cn",
             chartStyle: parsed.chartStyle || "calm",
             narrativeMode: parsed.narrativeMode || resolveNarrativeMode(parsed.template || "auto")
           };
         } catch {
-          return { template: "auto", fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "standard" };
+          return {
+            template: "auto",
+            templateSource: "internal",
+            externalTemplateId: "",
+            externalTemplateName: "",
+            externalTemplateFileName: "",
+            externalSceneType: "",
+            fontTheme: "business-cn",
+            chartStyle: "calm",
+            narrativeMode: "standard"
+          };
         }
       }
 
@@ -990,27 +1561,389 @@
         localStorage.setItem(PPT_DESIGN_PREF_KEY, JSON.stringify(pref));
       }
 
-      function templateSelectionToSpec(selection) {
+      function templateSelectionToSpec(selection, designPref = null) {
+        if (String(selection || "") === "officeplus") {
+          const officePick = OFFICEPLUS_TEMPLATE_LIBRARY.find((x) => x.id === String(designPref && designPref.externalTemplateId || "")) || readOfficeTemplatePick();
+          return {
+            preferredSceneType: officePick.preferredSceneType || "企业",
+            preferredTemplateId: officePick.id || "biz-report-exec-08"
+          };
+        }
         return TEMPLATE_SPEC_MAP[selection] || TEMPLATE_SPEC_MAP.auto;
+      }
+
+      async function ensureOfficeplusTemplateReady() {
+        const pref = getPptDesignPref();
+        if (String(pref.template || "") !== "officeplus") return true;
+
+        const hasTemplateId = String(pref.externalTemplateId || "").trim().length > 0;
+        if (!hasTemplateId) {
+          pushMessage("OfficePLUS 模式需要先在模板库中选择模板。", "assistant");
+          openOfficeTemplateModal();
+          return false;
+        }
+
+        const pick = OFFICEPLUS_TEMPLATE_LIBRARY.find((x) => x.id === String(pref.externalTemplateId || "")) || readOfficeTemplatePick();
+        if (!String(officeTemplateRuntimeFile.base64 || "").trim()) {
+          await autoAttachBundledOfficeTemplate(pick, true);
+        }
+        const hasTemplateFile = String(officeTemplateRuntimeFile.base64 || "").trim().length > 0;
+        if (!hasTemplateFile) {
+          pushMessage("OfficePLUS 模式必须携带模板文件（.pptx）才能生成/导出。请在模板库上传模板文件后重试。", "assistant");
+          openOfficeTemplateModal();
+          return false;
+        }
+        return true;
+      }
+
+      async function runOfficeplusCheck() {
+        const pref = getPptDesignPref();
+        const selectedOfficeplus = String(pref.template || "") === "officeplus";
+        const hasTemplateId = String(pref.externalTemplateId || "").trim().length > 0;
+        const hasTemplateFile = String(officeTemplateRuntimeFile.base64 || "").trim().length > 0;
+        const selectedName = String(pref.externalTemplateName || pref.externalTemplateId || "(未选择)");
+
+        const candidates = [activeProxyEndpoint, ...buildProxyCandidates()].filter(Boolean).map(normalizeProxyEndpoint);
+        const unique = [...new Set(candidates)];
+
+        let status = null;
+        let statusEndpoint = "";
+        let lastErr = "";
+        for (const proxy of unique) {
+          const ep = officeplusStatusEndpointOf(proxy);
+          try {
+            const resp = await fetch(ep, { method: "GET", cache: "no-store" });
+            if (!resp.ok) {
+              lastErr = `HTTP ${resp.status} @ ${ep}`;
+              continue;
+            }
+            const data = await resp.json();
+            if (data && data.ok) {
+              status = data;
+              statusEndpoint = ep;
+              break;
+            }
+            lastErr = `状态接口返回无效数据 @ ${ep}`;
+          } catch (error) {
+            lastErr = `${ep} 无法连接：${error && error.message ? error.message : String(error)}`;
+          }
+        }
+
+        const lines = ["OfficePLUS 接入自检："];
+        lines.push(`- 模板模式：${selectedOfficeplus ? "已选择 OfficePLUS" : "未选择 OfficePLUS（请先切换模板）"}`);
+        lines.push(`- 模板条目：${selectedName}`);
+        lines.push(`- 模板ID：${hasTemplateId ? "已就绪" : "未选择"}`);
+        lines.push(`- 模板文件：${hasTemplateFile ? `已就绪（${officeTemplateRuntimeFile.fileName || "runtime"}）` : "未上传 .pptx"}`);
+
+        if (!status) {
+          lines.push(`- 后端状态：失败（${lastErr || "未命中 /api/ppt/officeplus-status"}）`);
+          lines.push("下一步：确认本地服务已启动，再执行 /ppt officeplus-check。\n");
+          pushMessage(lines.join("\n"), "assistant");
+          return;
+        }
+
+        const cfg = status.config || {};
+        const localFallbackReady = !!status.officeplusLocalFallbackReady;
+        const comEnabled = !!status.officeplusComEnabled;
+        const comAvailable = !!status.officeplusComAvailable;
+        const comReason = String(status.officeplusComReason || "");
+        lines.push(`- 后端状态：已连接（${statusEndpoint || "/api/ppt/officeplus-status"}）`);
+        lines.push(`- 上游Provider：${cfg.provider || "unknown"}`);
+        lines.push(`- 上游Endpoint：${cfg.endpointConfigured ? "已配置" : "未配置"}`);
+        lines.push(`- 上游API Key：${cfg.apiKeyConfigured ? "已配置" : "未配置"}`);
+        lines.push(`- 上游Model：${cfg.modelConfigured ? "已配置" : "未配置"}`);
+        lines.push(`- PowerPoint COM：${comEnabled ? (comAvailable ? "已启用且可用" : "已启用但当前环境不可用") : "未启用"}`);
+        if (comReason && comReason !== "ok") {
+          lines.push(`- COM详情：${comReason}`);
+        }
+        lines.push(`- 本地兜底导出：${localFallbackReady ? "可用" : "不可用"}`);
+        lines.push(`- 综合就绪：${status.officeplusReady ? "是" : "否"}`);
+
+        const issues = Array.isArray(status.issues) ? status.issues : [];
+        const warnings = Array.isArray(status.warnings) ? status.warnings : [];
+        if (issues.length) {
+          lines.push("阻塞项：");
+          for (const item of issues) lines.push(`- ${item}`);
+        }
+        if (warnings.length) {
+          lines.push("提醒项：");
+          for (const item of warnings) lines.push(`- ${item}`);
+        }
+
+        const canExport = selectedOfficeplus && hasTemplateId && hasTemplateFile && (!!status.officeplusReady || localFallbackReady);
+        lines.push(canExport ? "结论：已具备 OfficePLUS 导出条件（上游或本地兜底），下一步执行 /ppt export。" : "结论：尚未完全就绪，请按阻塞项修复后再执行 /ppt export。");
+        lines.push("");
+        pushMessage(lines.join("\n"), "assistant");
+      }
+
+      async function runPowerPointTemplateWorkflow() {
+        const candidates = [activeProxyEndpoint, ...buildProxyCandidates()].filter(Boolean).map(normalizeProxyEndpoint);
+        const unique = [...new Set(candidates)];
+        let payload = null;
+        let lastErr = "";
+
+        for (const proxy of unique) {
+          const base = normalizeProxyEndpoint(proxy || "");
+          let endpoint = "/api/ppt/open-local-template-workflow";
+          if (base && base.startsWith("http") && /\/api\/llm-proxy$/i.test(base)) {
+            endpoint = base.replace(/\/api\/llm-proxy$/i, "/api/ppt/open-local-template-workflow");
+          }
+          try {
+            const resp = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" } });
+            if (!resp.ok) {
+              const text = await resp.text();
+              lastErr = `HTTP ${resp.status} @ ${endpoint}: ${String(text || "").slice(0, 140)}`;
+              continue;
+            }
+            const data = await resp.json();
+            if (data && data.ok) {
+              payload = data;
+              break;
+            }
+            lastErr = `无效响应 @ ${endpoint}`;
+          } catch (error) {
+            lastErr = `${endpoint} 无法连接：${error && error.message ? error.message : String(error)}`;
+          }
+        }
+
+        if (!payload) {
+          pushMessage(`启动 PowerPoint 模板流程失败：${lastErr || "未知错误"}`, "assistant");
+          return;
+        }
+
+        pushMessage([
+          "已启动本地 PowerPoint 模板流程：",
+          `- OfficePLUS 页面：${payload.officeplusUrl || "https://www.officeplus.cn/Template/Home.shtml"}`,
+          `- 模板收件箱：${payload.inboxRelativePath || payload.inboxDir || "docs/benchmarks/templates/inbox"}`,
+          "- 现在请你自己在 OfficePLUS 页面点击模板，并在 PowerPoint 里另存为 .pptx 到该目录",
+          "- 返回后执行 /ppt pp-sync 导入最新模板"
+        ].join("\n"), "assistant");
+      }
+
+      async function syncLatestTemplateFromInbox() {
+        const candidates = [activeProxyEndpoint, ...buildProxyCandidates()].filter(Boolean).map(normalizeProxyEndpoint);
+        const unique = [...new Set(candidates)];
+        let payload = null;
+        let lastErr = "";
+
+        for (const proxy of unique) {
+          const base = normalizeProxyEndpoint(proxy || "");
+          let endpoint = "/api/ppt/template-inbox/latest";
+          if (base && base.startsWith("http") && /\/api\/llm-proxy$/i.test(base)) {
+            endpoint = base.replace(/\/api\/llm-proxy$/i, "/api/ppt/template-inbox/latest");
+          }
+          try {
+            const resp = await fetch(endpoint, { method: "GET", cache: "no-store" });
+            if (!resp.ok) {
+              const text = await resp.text();
+              lastErr = `HTTP ${resp.status} @ ${endpoint}: ${String(text || "").slice(0, 140)}`;
+              continue;
+            }
+            const data = await resp.json();
+            if (data && data.ok && data.fileBase64) {
+              payload = data;
+              break;
+            }
+            lastErr = `无效响应 @ ${endpoint}`;
+          } catch (error) {
+            lastErr = `${endpoint} 无法连接：${error && error.message ? error.message : String(error)}`;
+          }
+        }
+
+        if (!payload) {
+          pushMessage(`同步本地模板失败：${lastErr || "未找到模板"}。请先在 PowerPoint 中另存模板后重试。`, "assistant");
+          return;
+        }
+
+        officeTemplateRuntimeFile = {
+          fileName: String(payload.fileName || "officeplus-template.pptx"),
+          base64: String(payload.fileBase64 || ""),
+          source: "local-inbox"
+        };
+        updateOfficeTemplateFileUi();
+
+        const pref = getPptDesignPref();
+        savePptDesignPref({
+          ...pref,
+          template: "officeplus",
+          templateSource: "officeplus",
+          externalTemplateFileName: officeTemplateRuntimeFile.fileName
+        });
+
+        pushMessage(`已同步本地模板：${officeTemplateRuntimeFile.fileName}（来源：${payload.relativePath || "template-inbox"}）。`, "assistant");
+      }
+
+      function closeOfficeTemplateModal() {
+        if (!officeTemplateModalEl) return;
+        officeTemplateModalEl.classList.add("hidden");
+        officeTemplateModalEl.setAttribute("aria-hidden", "true");
+      }
+
+      function openOfficeTemplateModal() {
+        if (!officeTemplateModalEl || !officeTemplateListEl) return;
+        const active = readOfficeTemplatePick();
+        officeTemplateListEl.innerHTML = "";
+        for (const tpl of OFFICEPLUS_TEMPLATE_LIBRARY) {
+          const card = document.createElement("article");
+          card.className = `template-card${tpl.id === active.id ? " active" : ""}`;
+          card.dataset.tplId = tpl.id;
+          card.innerHTML = [
+            `<div class="template-card-cover" style="background:${tpl.coverGradient || "linear-gradient(135deg,#dde7f7 0%,#eef3fb 100%)"}"><div class="template-card-cover-tag">${tpl.coverTag || "模板预览"}</div><div class="template-card-cover-title">${tpl.coverTitle || tpl.name}</div></div>`,
+            `<div class="template-card-name">${tpl.name}</div>`,
+            `<div class="template-card-meta">场景：${tpl.preferredSceneType}｜模板ID：${tpl.id}<br>默认工艺：字体 ${tpl.fontTheme}，图表 ${tpl.chartStyle}</div>`,
+            `<div class="template-card-links"><a class="template-link" target="_blank" rel="noopener noreferrer" href="${tpl.previewUrl}">预览入口</a><a class="template-link" target="_blank" rel="noopener noreferrer" href="${tpl.officialUrl}">OfficePLUS 官网</a></div>`
+          ].join("");
+          card.addEventListener("click", () => {
+            writeOfficeTemplatePick(tpl);
+            openOfficeTemplateModal();
+          });
+          officeTemplateListEl.appendChild(card);
+        }
+        officeTemplateModalEl.classList.remove("hidden");
+        officeTemplateModalEl.setAttribute("aria-hidden", "false");
+      }
+
+      function bindOfficeTemplateModal() {
+        if (officeTemplateBtnEl) {
+          officeTemplateBtnEl.addEventListener("click", () => {
+            if (pptTemplateSelectEl) {
+              pptTemplateSelectEl.value = "officeplus";
+            }
+            openOfficeTemplateModal();
+          });
+        }
+        if (officeTemplateCloseEl) {
+          officeTemplateCloseEl.addEventListener("click", closeOfficeTemplateModal);
+        }
+        if (officeTemplateApplyEl) {
+          officeTemplateApplyEl.addEventListener("click", async () => {
+            const pick = readOfficeTemplatePick();
+            await autoAttachBundledOfficeTemplate(pick, true);
+            if (pptTemplateSelectEl) pptTemplateSelectEl.value = "officeplus";
+            if (pptFontSelectEl) pptFontSelectEl.value = pick.fontTheme || "business-cn";
+            if (pptChartSelectEl) pptChartSelectEl.value = pick.chartStyle || "calm";
+
+            savePptDesignPref({
+              template: "officeplus",
+              templateSource: "officeplus",
+              externalTemplateId: pick.id,
+              externalTemplateName: pick.name,
+              externalTemplateFileName: officeTemplateRuntimeFile.fileName || "",
+              externalSceneType: pick.preferredSceneType,
+              fontTheme: (pptFontSelectEl && pptFontSelectEl.value) || pick.fontTheme || "business-cn",
+              chartStyle: (pptChartSelectEl && pptChartSelectEl.value) || pick.chartStyle || "calm",
+              narrativeMode: pick.narrativeMode || "standard"
+            });
+            closeOfficeTemplateModal();
+            const fileSuffix = officeTemplateRuntimeFile.fileName ? `，模板文件：${officeTemplateRuntimeFile.fileName}` : "（未上传模板文件，当前不可生成/导出）";
+            pushMessage(`模板已锁定：${pick.name}（${pick.id}）${fileSuffix}`, "assistant");
+          });
+        }
+        if (officeTemplateUploadBtnEl) {
+          officeTemplateUploadBtnEl.addEventListener("click", () => {
+            if (officeTemplateFileEl) officeTemplateFileEl.click();
+          });
+        }
+        if (officeTemplateClearBtnEl) {
+          officeTemplateClearBtnEl.addEventListener("click", () => {
+            resetOfficeTemplateRuntimeFile();
+            const pref = getPptDesignPref();
+            if (String(pref.template || "") === "officeplus") {
+              savePptDesignPref({
+                ...pref,
+                externalTemplateFileName: ""
+              });
+            }
+            pushMessage("已清除 OfficePLUS 模板文件。", "assistant");
+          });
+        }
+        if (officeTemplateFileEl) {
+          officeTemplateFileEl.addEventListener("change", async () => {
+            const file = officeTemplateFileEl.files && officeTemplateFileEl.files[0];
+            if (!file) return;
+            if (!/\.pptx$/i.test(String(file.name || ""))) {
+              pushMessage("模板文件必须是 .pptx 格式。", "assistant");
+              resetOfficeTemplateRuntimeFile();
+              return;
+            }
+            if (file.size > 12 * 1024 * 1024) {
+              pushMessage("模板文件过大（>12MB），请压缩后再上传。", "assistant");
+              resetOfficeTemplateRuntimeFile();
+              return;
+            }
+            try {
+              const base64 = await readBinaryFileAsBase64(file);
+              officeTemplateRuntimeFile = {
+                fileName: String(file.name || "officeplus-template.pptx"),
+                base64,
+                source: "upload"
+              };
+              updateOfficeTemplateFileUi();
+              const pref = getPptDesignPref();
+              if (String(pref.template || "") === "officeplus") {
+                savePptDesignPref({
+                  ...pref,
+                  externalTemplateFileName: officeTemplateRuntimeFile.fileName
+                });
+              }
+              pushMessage(`已上传 OfficePLUS 模板文件：${officeTemplateRuntimeFile.fileName}。`, "assistant");
+            } catch (error) {
+              pushMessage(`模板文件读取失败：${error && error.message ? error.message : String(error)}`, "assistant");
+              resetOfficeTemplateRuntimeFile();
+            }
+          });
+        }
+        if (officeTemplateModalEl) {
+          officeTemplateModalEl.addEventListener("click", (event) => {
+            if (event.target === officeTemplateModalEl) closeOfficeTemplateModal();
+          });
+        }
       }
 
       function bindPptDesignControls() {
         const pref = getPptDesignPref();
+        if (String(pref.template || "") === "officeplus" && !pref.externalTemplateId) {
+          const pick = readOfficeTemplatePick();
+          savePptDesignPref({
+            ...pref,
+            templateSource: "officeplus",
+            externalTemplateId: pick.id,
+            externalTemplateName: pick.name,
+            externalTemplateFileName: pref.externalTemplateFileName || "",
+            externalSceneType: pick.preferredSceneType,
+            narrativeMode: pick.narrativeMode || pref.narrativeMode || "standard"
+          });
+        }
         if (pptTemplateSelectEl) pptTemplateSelectEl.value = pref.template;
         syncDesignControlsByTemplate(pref.template);
         if (pptFontSelectEl) pptFontSelectEl.value = pref.fontTheme || pptFontSelectEl.value;
         if (pptChartSelectEl) pptChartSelectEl.value = pref.chartStyle || pptChartSelectEl.value;
 
-        const onChange = (event) => {
+        if (String(pref.template || "") === "officeplus") {
+          const picked = OFFICEPLUS_TEMPLATE_LIBRARY.find((x) => x.id === String(pref.externalTemplateId || "")) || readOfficeTemplatePick();
+          autoAttachBundledOfficeTemplate(picked, true).catch(() => {});
+        }
+
+        const onChange = async (event) => {
           if (event && event.target && event.target.id === "pptTemplateSelect") {
             syncDesignControlsByTemplate((pptTemplateSelectEl && pptTemplateSelectEl.value) || "auto");
           }
           const selectedTemplate = (pptTemplateSelectEl && pptTemplateSelectEl.value) || "auto";
+          const officePick = readOfficeTemplatePick();
+          if (selectedTemplate === "officeplus") {
+            openOfficeTemplateModal();
+            await autoAttachBundledOfficeTemplate(officePick, true);
+          }
           savePptDesignPref({
             template: selectedTemplate,
+            templateSource: selectedTemplate === "officeplus" ? "officeplus" : "internal",
+            externalTemplateId: selectedTemplate === "officeplus" ? officePick.id : "",
+            externalTemplateName: selectedTemplate === "officeplus" ? officePick.name : "",
+            externalTemplateFileName: selectedTemplate === "officeplus" ? (officeTemplateRuntimeFile.fileName || "") : "",
+            externalSceneType: selectedTemplate === "officeplus" ? officePick.preferredSceneType : "",
             fontTheme: (pptFontSelectEl && pptFontSelectEl.value) || "business-cn",
             chartStyle: (pptChartSelectEl && pptChartSelectEl.value) || "calm",
-            narrativeMode: resolveNarrativeMode(selectedTemplate)
+            narrativeMode: selectedTemplate === "officeplus" ? (officePick.narrativeMode || "standard") : resolveNarrativeMode(selectedTemplate)
           });
         };
         if (pptTemplateSelectEl) pptTemplateSelectEl.addEventListener("change", onChange);
@@ -1103,21 +2036,23 @@
         return t;
       }
 
+      function isLocalProxyEndpoint(endpoint) {
+        const t = normalizeProxyEndpoint(endpoint);
+        return t === "/api/llm-proxy" || /^https?:\/\/localhost(?::\d+)?\/api\/llm-proxy$/i.test(t);
+      }
+
       function buildProxyCandidates() {
         const saved = normalizeProxyEndpoint(localStorage.getItem(PROXY_STORAGE_KEY) || "");
-        const onSecurePage = location.protocol === "https:";
-        const onGithubPages = location.hostname.includes("github.io");
-        const byProtocol = onSecurePage ? [PUBLIC_DEFAULT_PROXY_ENDPOINT] : [LOCAL_DEFAULT_PROXY_ENDPOINT, "/api/llm-proxy"];
-        const byHost = onGithubPages ? PRESET_PROXY_ENDPOINTS : ["/api/llm-proxy", LOCAL_DEFAULT_PROXY_ENDPOINT, ...PRESET_PROXY_ENDPOINTS];
-        const combined = [saved, ...byProtocol, ...byHost].filter(Boolean).map(normalizeProxyEndpoint);
+        const safeSaved = isLocalProxyEndpoint(saved) ? saved : "";
+        const combined = [safeSaved, "/api/llm-proxy", LOCAL_DEFAULT_PROXY_ENDPOINT, ...PRESET_PROXY_ENDPOINTS]
+          .filter(Boolean)
+          .map(normalizeProxyEndpoint);
         const unique = [...new Set(combined)];
         return unique.sort((a, b) => {
           const score = (v) => {
             if (v === "/api/llm-proxy") return 0;
             if (/^https?:\/\/localhost:3000\/api\/llm-proxy$/i.test(v)) return 1;
             if (/^https?:\/\/localhost/i.test(v)) return 2;
-            if (/onrender\.com\/api\/llm-proxy/i.test(v)) return 3;
-            if (/vercel\.app\/api\/llm-proxy/i.test(v)) return 4;
             return 10;
           };
           return score(a) - score(b);
@@ -1134,6 +2069,7 @@
       function exportEndpointOf(proxyEndpoint) {
         const endpoint = normalizeProxyEndpoint(proxyEndpoint || "");
         if (!endpoint) return "/api/ppt/export";
+        if (!isLocalProxyEndpoint(endpoint)) return "/api/ppt/export";
         if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
           if (/\/api\/llm-proxy$/i.test(endpoint)) return endpoint.replace(/\/api\/llm-proxy$/i, "/api/ppt/export");
           return `${endpoint}/api/ppt/export`;
@@ -1145,12 +2081,52 @@
       function exportSaveEndpointOf(proxyEndpoint) {
         const endpoint = normalizeProxyEndpoint(proxyEndpoint || "");
         if (!endpoint) return "/api/ppt/export-save";
+        if (!isLocalProxyEndpoint(endpoint)) return "/api/ppt/export-save";
         if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
           if (/\/api\/llm-proxy$/i.test(endpoint)) return endpoint.replace(/\/api\/llm-proxy$/i, "/api/ppt/export-save");
           return `${endpoint}/api/ppt/export-save`;
         }
         if (endpoint === "/api/llm-proxy") return "/api/ppt/export-save";
         return endpoint;
+      }
+
+      function officeplusStatusEndpointOf(proxyEndpoint) {
+        const endpoint = normalizeProxyEndpoint(proxyEndpoint || "");
+        if (!endpoint) return "/api/ppt/officeplus-status";
+        if (!isLocalProxyEndpoint(endpoint)) return "/api/ppt/officeplus-status";
+        if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
+          if (/\/api\/llm-proxy$/i.test(endpoint)) return endpoint.replace(/\/api\/llm-proxy$/i, "/api/ppt/officeplus-status");
+          return `${endpoint}/api/ppt/officeplus-status`;
+        }
+        if (endpoint === "/api/llm-proxy") return "/api/ppt/officeplus-status";
+        return endpoint;
+      }
+
+      function explainOfficeplusExportError(rawError) {
+        const txt = String(rawError || "");
+        const out = [];
+        if (/officeplus_template_file_required/i.test(txt)) {
+          out.push("未携带 OfficePLUS 模板文件：请打开模板库并上传 .pptx 模板。");
+        }
+        if (/officeplus_upstream_required/i.test(txt)) {
+          out.push("OfficePLUS 模式必须走上游导出引擎：请先配置 AIPPT_PROVIDER/AIPPT_API_ENDPOINT/AIPPT_API_KEY。");
+        }
+        if (/aippt_not_configured/i.test(txt)) {
+          out.push("上游导出未配置：请在 .env 设置 AIPPT_PROVIDER、AIPPT_API_ENDPOINT、AIPPT_API_KEY、AIPPT_API_MODEL 并重启服务。");
+        }
+        if (/aippt_http_401|aippt_http_403/i.test(txt)) {
+          out.push("上游鉴权失败（401/403）：请核对 AIPPT_API_KEY 与 AIPPT_API_AUTH_MODE。", "如供应商要求自定义请求头，请改为 header 模式并配置 AIPPT_API_KEY_HEADER。");
+        }
+        if (/aippt_http_404/i.test(txt)) {
+          out.push("上游地址错误（404）：请核对 AIPPT_API_ENDPOINT/LAZYMAN_API_ENDPOINT 是否为正确接口路径。");
+        }
+        if (/aippt_non_json_response|aippt_openai_no_json_payload|aippt_openai_json_parse_error/i.test(txt)) {
+          out.push("上游返回格式不符合协议：请确保返回 JSON，且包含 fileBase64 或 downloadUrl。");
+        }
+        if (/aippt_download_/i.test(txt)) {
+          out.push("上游返回了 downloadUrl 但下载失败：请检查该 URL 在本机是否可访问。");
+        }
+        return out;
       }
 
       async function probeProxyEndpoint(proxyEndpoint) {
@@ -1303,6 +2279,694 @@
           homework: extractFieldByRegex(rawText, "交付清单") || extractFieldByRegex(rawText, "作业"),
           finalPrompt: extractFieldByRegex(rawText, "终版提示词") || rawText.trim()
         };
+      }
+
+      function parseContractResponse(rawText) {
+        const candidate = firstJsonObject(rawText);
+        if (!candidate) return null;
+        const parsed = safeJsonParse(candidate);
+        if (!parsed || typeof parsed !== "object") return null;
+        if (!Array.isArray(parsed.slides) || parsed.slides.length < 3) return null;
+        if (!parsed.pageCount || !Number.isFinite(Number(parsed.pageCount))) return null;
+        return parsed;
+      }
+
+      function normalizeLayoutType(layoutType, index) {
+        const allowed = ["summary-hero", "evidence-chart", "diagnosis-matrix", "strategy-compare", "roadmap-timeline", "risk-heatmap", "decision-board"];
+        const t = String(layoutType || "").trim();
+        if (allowed.includes(t)) return t;
+        return allowed[(Math.max(1, Number(index) || 1) - 1) % allowed.length];
+      }
+
+      function isEducationScene(sceneType = "", topic = "") {
+        return /教务|教学|课堂|学生|初中|物理|牛顿|力学|实验|例题|练习/.test(`${String(sceneType)} ${String(topic)}`);
+      }
+
+      function slideContentChars(slide) {
+        if (!slide || typeof slide !== "object") return 0;
+        return [slide.title, slide.goal, ...((slide.keyPoints) || []), slide.speakerNotes]
+          .join("")
+          .replace(/\s+/g, "")
+          .length;
+      }
+
+      function buildTeachingRhythmPlan(pageCount) {
+        const blocks = [
+          ["导入", 2, "summary-hero", ["情境导入", "学习目标"]],
+          ["概念", 4, "diagnosis-matrix", ["概念定义", "公式结构", "单位量纲", "适用条件"]],
+          ["实验", 4, "evidence-chart", ["实验目的", "控制变量", "数据记录", "结论提炼"]],
+          ["例题", 4, "strategy-compare", ["基础例题", "中档例题", "综合例题", "步骤拆解"]],
+          ["易错", 2, "risk-heatmap", ["易错点1", "易错点2"]],
+          ["练习", 2, "roadmap-timeline", ["当堂练习", "分层巩固"]],
+          ["小结", 2, "decision-board", ["知识小结", "作业拓展"]]
+        ];
+        const out = [];
+        let idx = 1;
+        for (const [stage, cnt, layoutType, roles] of blocks) {
+          for (let i = 0; i < cnt; i++) {
+            out.push({ index: idx, stage, role: roles[i] || `${stage}${i + 1}`, layoutType: normalizeLayoutType(layoutType, idx) });
+            idx += 1;
+          }
+        }
+        const target = Math.max(1, Number(pageCount) || 20);
+        if (target <= out.length) return out.slice(0, target);
+        while (out.length < target) {
+          const n = out.length + 1;
+          out.push({ index: n, stage: "练习", role: `补充练习${n - 20}`, layoutType: normalizeLayoutType("roadmap-timeline", n) });
+        }
+        return out;
+      }
+
+      function calcTeachingRhythmCoverage(spec) {
+        if (!spec || !Array.isArray(spec.slides) || !spec.slides.length) return 0;
+        const text = spec.slides.map((s) => `${s.title || ""} ${s.goal || ""}`).join(" ");
+        const checks = [
+          /导入|情境|目标/.test(text),
+          /概念|定义|公式|单位/.test(text),
+          /实验|变量|数据|结论/.test(text),
+          /例题|解题|步骤/.test(text),
+          /易错|误区|注意/.test(text),
+          /练习|巩固|当堂/.test(text),
+          /小结|总结|作业/.test(text)
+        ];
+        return checks.filter(Boolean).length / checks.length;
+      }
+
+      function enforceTeachingLoadConstraints(spec) {
+        if (!spec || !Array.isArray(spec.slides)) return spec;
+        if (!isEducationScene(spec.sceneType, spec.topic)) return spec;
+
+        const maxPerSlide = 140;
+        const minPerSlide = 78;
+        const maxTitleLen = 24;
+        const maxPointLen = 34;
+        const maxGoalLen = 24;
+        const maxNotesLen = 42;
+
+        spec.slides = spec.slides.map((slide, i) => {
+          const s = { ...slide };
+          s.title = String(s.title || `第${i + 1}页`).replace(/\s+/g, " ").trim().slice(0, maxTitleLen);
+          s.goal = String(s.goal || "").replace(/[；。]{2,}/g, "；").slice(0, maxGoalLen);
+          const points = Array.isArray(s.keyPoints) ? s.keyPoints : [];
+          s.keyPoints = points
+            .map((x) => String(x || "").replace(/\s+/g, " ").trim())
+            .filter(Boolean)
+            .slice(0, 3)
+            .map((kp, idx2) => {
+              const head = idx2 === 0 ? "结论：" : (idx2 === 1 ? "证据：" : "行动：");
+              const body = kp.replace(/^结论：|^证据：|^行动：/, "").slice(0, maxPointLen);
+              return `${head}${body}`;
+            });
+          while (s.keyPoints.length < 3) {
+            const head = s.keyPoints.length === 0 ? "结论：" : (s.keyPoints.length === 1 ? "证据：" : "行动：");
+            s.keyPoints.push(`${head}补充第${i + 1}页核心信息`);
+          }
+          s.speakerNotes = String(s.speakerNotes || "").replace(/\s+/g, " ").slice(0, maxNotesLen);
+
+          let total = slideContentChars(s);
+          if (total < minPerSlide) {
+            const enrich = ["并给出单位", "写出一步计算", "30秒同伴互检"];
+            s.keyPoints = s.keyPoints.map((x, idx2) => {
+              const prefix = x.startsWith("结论：") ? "结论：" : (x.startsWith("证据：") ? "证据：" : "行动：");
+              const body = x.replace(/^结论：|^证据：|^行动：/, "");
+              const nextBody = body.length >= 16 ? body : `${body}，${enrich[idx2] || "补充说明"}`;
+              return `${prefix}${nextBody.slice(0, maxPointLen)}`;
+            });
+            if (!s.speakerNotes) {
+              s.speakerNotes = "先结论后证据再行动，组织30秒复述。".slice(0, maxNotesLen);
+            }
+            total = slideContentChars(s);
+          }
+          if (total > maxPerSlide) {
+            s.speakerNotes = "";
+            total = slideContentChars(s);
+          }
+          if (total > maxPerSlide) {
+            s.goal = String(s.goal || "").slice(0, 18);
+            s.keyPoints = s.keyPoints.map((x) => {
+              const prefix = x.startsWith("结论：") ? "结论：" : (x.startsWith("证据：") ? "证据：" : "行动：");
+              return `${prefix}${x.replace(/^结论：|^证据：|^行动：/, "").slice(0, 22)}`;
+            });
+            s.title = String(s.title || "").slice(0, 18);
+          }
+          if (slideContentChars(s) > maxPerSlide) {
+            s.goal = String(s.goal || "").slice(0, 14);
+            s.keyPoints = s.keyPoints.map((x) => {
+              const prefix = x.startsWith("结论：") ? "结论：" : (x.startsWith("证据：") ? "证据：" : "行动：");
+              return `${prefix}${x.replace(/^结论：|^证据：|^行动：/, "").slice(0, 18)}`;
+            });
+            s.speakerNotes = "";
+          }
+          return s;
+        });
+
+        const avg = spec.slides.reduce((sum, s) => sum + slideContentChars(s), 0) / Math.max(1, spec.slides.length);
+        if (avg > 110) {
+          spec.slides = spec.slides.map((slide) => {
+            const s = { ...slide };
+            s.title = String(s.title || "").slice(0, 16);
+            s.goal = String(s.goal || "").slice(0, 14);
+            s.keyPoints = (s.keyPoints || []).map((x) => {
+              const prefix = x.startsWith("结论：") ? "结论：" : (x.startsWith("证据：") ? "证据：" : "行动：");
+              return `${prefix}${x.replace(/^结论：|^证据：|^行动：/, "").slice(0, 14)}`;
+            });
+            s.speakerNotes = "";
+            return s;
+          });
+        }
+        return spec;
+      }
+
+      function enforceContractSlideVariety(spec) {
+        if (!spec || !Array.isArray(spec.slides)) return spec;
+        const titleSeen = new Set();
+        const goalSeen = new Set();
+        spec.slides = spec.slides.map((slide, i) => {
+          const idx = i + 1;
+          const s = { ...slide };
+          let title = String(s.title || `第${idx}页`).trim();
+          const titleKey = title.toLowerCase();
+          if (titleSeen.has(titleKey)) {
+            title = `${title}（视角${idx}）`;
+          }
+          titleSeen.add(title.toLowerCase());
+
+          let goal = String(s.goal || "明确本页目标").trim();
+          const goalKey = goal.toLowerCase();
+          if (goalSeen.has(goalKey)) {
+            goal = `${goal}，并聚焦第${idx}页差异化决策。`;
+          }
+          goalSeen.add(goal.toLowerCase());
+
+          const keyPoints = Array.isArray(s.keyPoints) ? s.keyPoints.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 3) : [];
+          s.title = title;
+          s.goal = goal;
+          s.layoutType = normalizeLayoutType(s.layoutType, idx);
+          s.keyPoints = keyPoints;
+          return s;
+        });
+        return spec;
+      }
+
+      function buildMandatorySlideLibrary(pageCount, sceneType = "", topic = "") {
+        const isEdu = isEducationScene(sceneType, topic);
+        const bizBase = [
+          { layoutType: "summary-hero", role: "执行摘要" },
+          { layoutType: "diagnosis-matrix", role: "问题定义" },
+          { layoutType: "evidence-chart", role: "现状诊断" },
+          { layoutType: "diagnosis-matrix", role: "根因分析" },
+          { layoutType: "strategy-compare", role: "策略对比" },
+          { layoutType: "roadmap-timeline", role: "实施路线图" },
+          { layoutType: "evidence-chart", role: "预算与ROI" },
+          { layoutType: "risk-heatmap", role: "风险与预案" },
+          { layoutType: "roadmap-timeline", role: "试点与验收" },
+          { layoutType: "decision-board", role: "决策请求" }
+        ];
+        const eduBase = buildTeachingRhythmPlan(pageCount).map((x) => ({ layoutType: x.layoutType, role: `${x.stage}：${x.role}` }));
+        const base = isEdu ? eduBase : bizBase;
+        const target = Math.max(1, Number(pageCount) || 10);
+        const out = [];
+        for (let i = 0; i < target; i++) {
+          out.push(base[i] || { layoutType: "evidence-chart", role: `专题分析${i + 1}` });
+        }
+        return out;
+      }
+
+      function applyMandatorySlideLibrary(spec) {
+        if (!spec || !Array.isArray(spec.slides)) return spec;
+        const isEdu = isEducationScene(spec.sceneType, spec.topic);
+        const lib = buildMandatorySlideLibrary(spec.pageCount || spec.slides.length, spec.sceneType, spec.topic);
+        spec.slides = spec.slides.map((slide, i) => {
+          const m = lib[i] || lib[lib.length - 1];
+          const s = { ...slide };
+          s.layoutType = normalizeLayoutType(isEdu ? m.layoutType : (s.layoutType || m.layoutType), i + 1);
+          const titleRaw = String(s.title || "").trim();
+          if (!titleRaw || /^第\s*\d+\s*页/.test(titleRaw) || titleRaw === "封面页") {
+            s.title = `${m.role}（${spec.topic || "当前需求"}）`;
+          } else if (isEdu && !titleRaw.includes(String(m.role))) {
+            s.title = `${m.role}｜${titleRaw}`;
+          }
+          return s;
+        });
+        return spec;
+      }
+
+      function toPctScore(n) {
+        const v = Math.max(0, Math.min(1, Number(n) || 0));
+        return Number(v.toFixed(3));
+      }
+
+      function evaluatePptQualityScore(spec, qa, review = null) {
+        const runtimeSpec = applyVisualTokensToSpec(spec || {});
+        const slides = (runtimeSpec && runtimeSpec.slides) || [];
+        const total = Math.max(1, slides.length);
+        const eduScene = isEducationScene(runtimeSpec && runtimeSpec.sceneType, runtimeSpec && runtimeSpec.topic);
+        const visualAudit = evaluateVisualAudit(runtimeSpec);
+        const titleSet = new Set();
+        const goalSet = new Set();
+        const layoutSet = new Set();
+        let repeatHit = 0;
+        let decisionLike = 0;
+        let metricLike = 0;
+        let formulaLike = 0;
+        let exampleLike = 0;
+        let exerciseLike = 0;
+        let overLoad = 0;
+
+        for (const s of slides) {
+          const tk = String((s && s.title) || "").trim().toLowerCase();
+          const gk = String((s && s.goal) || "").trim().toLowerCase();
+          if (tk) {
+            if (titleSet.has(tk)) repeatHit += 1;
+            titleSet.add(tk);
+          }
+          if (gk) {
+            if (goalSet.has(gk)) repeatHit += 1;
+            goalSet.add(gk);
+          }
+          layoutSet.add(normalizeLayoutType(s && s.layoutType, s && s.index));
+
+          const pack = [s && s.goal, ...((s && s.keyPoints) || [])].join(" ");
+          if (/(决策建议|本周|两周|月底|下季度|里程碑)/.test(pack)) decisionLike += 1;
+          if (/(\d+%|ROI|同比|环比|预算|样本|转化)/i.test(pack)) metricLike += 1;
+          if (/(F\s*=\s*ma|牛顿第二定律|加速度|合力|N\b|m\/s2|m\/s²|质量|受力)/i.test(pack)) formulaLike += 1;
+          if (/(例题|题型|解题|步骤|已知|求|分析)/.test(pack)) exampleLike += 1;
+          if (/(练习|巩固|当堂|作业|思考题)/.test(pack)) exerciseLike += 1;
+          if (slideContentChars(s) > 140) overLoad += 1;
+        }
+
+        const constraint = toPctScore(qa && qa.pass ? 1 : 0.78);
+        const antiRepeat = toPctScore(1 - repeatHit / (total * 2));
+        const coverage = toPctScore((decisionLike / total + metricLike / total + Math.min(1, layoutSet.size / 6)) / 3);
+        const visualStyleText = String((runtimeSpec && runtimeSpec.visualStyle) || "").toLowerCase();
+        const styleHasBlue = /蓝|blue|navy|indigo|science/.test(visualStyleText);
+        const styleHasBrown = /黑|棕|dark|brown|amber|gold/.test(visualStyleText);
+        const styleVisual = toPctScore(eduScene ? (styleHasBlue ? 0.95 : 0.74) : (styleHasBrown ? 0.95 : 0.8));
+        const visual = toPctScore(0.4 * styleVisual + 0.6 * visualAudit.overall);
+
+        const avgChars = slides.reduce((sum, s) => sum + slideContentChars(s), 0) / total;
+        const readability = toPctScore(Math.max(0, 1 - Math.abs(avgChars - 90) / 90 - overLoad / total));
+        const rhythm = toPctScore(calcTeachingRhythmCoverage(runtimeSpec));
+        const solvability = toPctScore((formulaLike / total + exampleLike / total + exerciseLike / total) / 3);
+        const visualConsistency = toPctScore((visual + Math.min(1, layoutSet.size / 6) + visualAudit.consistency) / 3);
+
+        let understanding = toPctScore(0.7 + 0.3 * Math.min(1, titleSet.size / total));
+        let decision = toPctScore(decisionLike / total);
+        let overall = toPctScore(
+          eduScene
+            ? (0.35 * readability + 0.30 * rhythm + 0.25 * solvability + 0.10 * visualConsistency)
+            : (0.28 * constraint + 0.24 * antiRepeat + 0.2 * coverage + 0.14 * visual + 0.14 * decision)
+        );
+
+        if (review && review.dimensions) {
+          const rd = review.dimensions;
+          understanding = toPctScore((understanding + Number(rd.understanding || 0)) / 2);
+          const rr = toPctScore(Number(rd.antiRepeat || antiRepeat));
+          const rv = toPctScore(Number(rd.visual || visual));
+          const rdc = toPctScore(Number(rd.decision || decision));
+          overall = toPctScore(
+            eduScene
+              ? (0.30 * readability + 0.24 * rhythm + 0.2 * solvability + 0.1 * visualConsistency + 0.08 * rv + 0.08 * rr)
+              : (0.26 * constraint + 0.2 * rr + 0.18 * coverage + 0.14 * rv + 0.12 * understanding + 0.1 * rdc)
+          );
+          decision = rdc;
+        }
+
+        const issues = [];
+        if (!(qa && qa.pass)) issues.push(...(((qa && qa.issues) || []).slice(0, 6)));
+        if (antiRepeat < 0.72) issues.push("页间重复度偏高");
+        if (!eduScene && coverage < 0.8) issues.push("证据/决策覆盖不足");
+        if (eduScene && readability < 0.75) issues.push("信息负荷过高（教学页建议70-110字，单页不超140字）");
+        if (eduScene && rhythm < 0.85) issues.push("教学节奏缺失（导入/概念/实验/例题/易错/练习/小结）");
+        if (eduScene && solvability < 0.75) issues.push("例题可解性不足（公式、步骤或练习覆盖不够）");
+        if (visual < 0.85) issues.push(eduScene ? "视觉一致性不足（教学主题建议蓝白高对比）" : "视觉一致性不足（商务主题建议深色高对比）");
+        issues.push(...visualAudit.issues.slice(0, 3));
+
+        return {
+          pass: eduScene ? (overall >= 0.84 && readability >= 0.75) : (overall >= 0.86 && constraint >= 0.9),
+          issues,
+          generatedPageCount: Number(runtimeSpec && runtimeSpec.pageCount) || total,
+          scores: {
+            constraint,
+            coverage,
+            coherence: antiRepeat,
+            overall,
+            understanding,
+            antiRepeat,
+            visual,
+            decision,
+            readability,
+            cognitiveGradient: rhythm,
+            solvability,
+            visualConsistency,
+            visualAudit: visualAudit.overall,
+            visualContrast: visualAudit.contrast,
+            visualDensity: visualAudit.density,
+            tokenCoverage: visualAudit.tokenCoverage,
+            avgCharsPerSlide: Number(avgChars.toFixed(1)),
+            overloadSlideCount: overLoad
+          },
+          review
+        };
+      }
+
+      function calcTeachingRegressionMetrics(spec) {
+        if (!spec || !Array.isArray(spec.slides) || !spec.slides.length) {
+          return {
+            avgCharsPerSlide: 0,
+            layoutVariety: 0,
+            teachingSlideRatio: 0,
+            rhythmCoverage: 0
+          };
+        }
+        const total = spec.slides.length;
+        const avgCharsPerSlide = Number((spec.slides.reduce((sum, s) => sum + slideContentChars(s), 0) / total).toFixed(1));
+        const layoutVariety = Number((new Set(spec.slides.map((s, i) => normalizeLayoutType(s.layoutType, i + 1))).size / 7).toFixed(3));
+        const teachingSlideRatio = Number((spec.slides.filter((s) => /(导入|目标|概念|公式|实验|例题|练习|小结|作业|易错)/.test(`${s.title || ""} ${s.goal || ""}`)).length / total).toFixed(3));
+        const rhythmCoverage = Number(calcTeachingRhythmCoverage(spec).toFixed(3));
+        return { avgCharsPerSlide, layoutVariety, teachingSlideRatio, rhythmCoverage };
+      }
+
+      async function reviewPptSpecWithSecondModel(spec, rawInput) {
+        if (!spec || !Array.isArray(spec.slides) || !spec.slides.length) return null;
+        const level = (thinkingLevelSelectEl && thinkingLevelSelectEl.value) || readThinkingLevel();
+        const reviewerModel = resolveReviewModel(level);
+        const eduScene = isEducationScene(spec.sceneType, spec.topic);
+        const reviewPrompt = [
+          "请作为PPT质量评审员，只输出JSON。",
+          "评分维度(0-1)：understanding,antiRepeat,visual,decision。",
+          "输出字段：dimensions,overall,lowSlides。",
+          "lowSlides为数组，元素字段：index,score,reason。只列出score<0.78的页，最多3页。",
+          eduScene ? "教育场景优先评价：可读性、认知梯度、例题可解性、视觉可读性。" : "商务场景优先评价：决策力、证据力、去重复、视觉一致性。",
+          "[用户需求]",
+          rawInput,
+          "[当前PPT契约]",
+          JSON.stringify({
+            topic: spec.topic,
+            pageCount: spec.pageCount,
+            visualStyle: spec.visualStyle,
+            slides: spec.slides.map((s) => ({
+              index: s.index,
+              title: s.title,
+              goal: s.goal,
+              layoutType: s.layoutType,
+              keyPoints: s.keyPoints
+            }))
+          })
+        ].join("\n\n");
+
+        try {
+          const raw = await requestDeepSeekDirect(reviewPrompt, {
+            system: eduScene ? "你是严苛的中学教学PPT评审员，只输出有效JSON。" : "你是严苛的咨询PPT评审员，只输出有效JSON。",
+            model: reviewerModel,
+            maxTokens: 1200,
+            timeoutMs: REQUEST_TIMEOUT_MS,
+            retryCount: REQUEST_RETRY,
+            thinkingLevel: "balanced"
+          });
+          const candidate = firstJsonObject(raw);
+          const parsed = candidate ? safeJsonParse(candidate) : null;
+          if (!parsed || typeof parsed !== "object") return null;
+          return {
+            reviewerModel,
+            dimensions: {
+              understanding: toPctScore(parsed.dimensions && parsed.dimensions.understanding),
+              antiRepeat: toPctScore(parsed.dimensions && parsed.dimensions.antiRepeat),
+              visual: toPctScore(parsed.dimensions && parsed.dimensions.visual),
+              decision: toPctScore(parsed.dimensions && parsed.dimensions.decision)
+            },
+            overall: toPctScore(parsed.overall),
+            lowSlides: Array.isArray(parsed.lowSlides)
+              ? parsed.lowSlides
+                  .map((x) => ({
+                    index: Number(x && x.index),
+                    score: Number(x && x.score),
+                    reason: String((x && x.reason) || "").trim()
+                  }))
+                  .filter((x) => Number.isFinite(x.index) && x.index > 0 && x.score < 0.78)
+                  .slice(0, 3)
+              : []
+          };
+        } catch {
+          return null;
+        }
+      }
+
+      async function autoRewriteLowScoreSlides(spec, review, rawInput) {
+        if (!spec || !review || !Array.isArray(review.lowSlides) || !review.lowSlides.length) return spec;
+        const level = (thinkingLevelSelectEl && thinkingLevelSelectEl.value) || readThinkingLevel();
+        const genModel = resolveThinkingProfile(level).model;
+        const next = safeJsonParse(JSON.stringify(spec)) || spec;
+        const eduScene = isEducationScene(spec.sceneType, spec.topic);
+
+        for (const row of review.lowSlides.slice(0, 3)) {
+          const idx = Number(row.index) - 1;
+          if (idx < 0 || idx >= next.slides.length) continue;
+          const cur = next.slides[idx] || {};
+          const rewritePrompt = [
+            `重写第${idx + 1}页，只输出单页JSON。`,
+            "字段必须：index,title,goal,layoutType,keyPoints,assetPlaceholders,speakerNotes。",
+            `layoutType固定为：${normalizeLayoutType(cur.layoutType, idx + 1)}。`,
+            "keyPoints严格3条，前缀必须为：结论： 证据： 行动：。",
+            eduScene
+              ? "证据必须出现公式/单位/实验读数；行动必须是课堂动作（提问/板演/练习）并含时间锚点（本节/课后/下节）。"
+              : "证据必须有数字；行动必须有决策建议和时间锚点。",
+            eduScene ? "单页总字数必须<=140，优先控制在70-110。" : "",
+            "禁止与其他页重复句式。",
+            `[评审原因] ${row.reason || "低分重写"}`,
+            `[用户需求] ${rawInput}`,
+            "[当前页]",
+            JSON.stringify(cur)
+          ].join("\n");
+
+          try {
+            const raw = await requestDeepSeekDirect(rewritePrompt, {
+              system: eduScene ? "你是中学物理课堂PPT页重写器，只输出单页有效JSON。" : "你是高管汇报PPT页重写器，只输出单页有效JSON。",
+              model: genModel,
+              maxTokens: 1100,
+              timeoutMs: REQUEST_TIMEOUT_MS,
+              retryCount: 1
+            });
+            const candidate = firstJsonObject(raw);
+            const page = candidate ? safeJsonParse(candidate) : null;
+            if (page && typeof page === "object" && Array.isArray(page.keyPoints) && page.keyPoints.length >= 3) {
+              next.slides[idx] = {
+                index: idx + 1,
+                title: String(page.title || cur.title || `第${idx + 1}页`).trim(),
+                goal: String(page.goal || cur.goal || "明确本页目标").trim(),
+                layoutType: normalizeLayoutType(page.layoutType || cur.layoutType, idx + 1),
+                keyPoints: page.keyPoints.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 3),
+                assetPlaceholders: Array.isArray(page.assetPlaceholders)
+                  ? page.assetPlaceholders.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 4)
+                  : (Array.isArray(cur.assetPlaceholders) ? cur.assetPlaceholders : ["数据图", "对比图"]),
+                speakerNotes: String(page.speakerNotes || cur.speakerNotes || "先结论后证据，再行动。")
+              };
+            }
+          } catch {
+          }
+        }
+        return enforceTeachingLoadConstraints(enforceContractSlideVariety(applyMandatorySlideLibrary(next)));
+      }
+
+      async function requestDeepSeekPptContract(rawInput, fields, pageCountHint = null) {
+        const targetPage = pageCountHint || extractRequestedPageCount(rawInput) || 10;
+        const topic = normalizeBusinessTopic((fields && fields.topic) || safeTopic(rawInput));
+        const sceneType = (fields && fields.preferredSceneType) || classifyPptScene(rawInput);
+        const isEdu = /教务|教学|课堂|学生/.test(String(sceneType || "")) || /(初\d|初中|物理|牛顿|力学|实验)/.test(`${topic} ${rawInput}`);
+        const contractTokenBudget = targetPage >= 18 ? 6800 : 4200;
+        const compactRule = targetPage >= 18
+          ? "高页数压缩规则：每页title<=18字，goal<=28字，keyPoints每条<=38字，assetPlaceholders最多2项，speakerNotes<=48字。"
+          : "";
+        const narrativeMode = String((fields && fields.narrativeMode) || (isEdu ? "standard" : "lazyman"));
+        const templateId = (fields && fields.preferredTemplateId) || (isEdu ? "edu-teach-standard-01" : (narrativeMode === "lazyman" ? "biz-report-exec-08" : "biz-report-exec-01"));
+        const templateSource = String((fields && fields.templateSource) || "internal");
+        const externalTemplateName = String((fields && fields.externalTemplateName) || "");
+        const officeplusLockRule = templateSource === "officeplus"
+          ? "模板来源已由用户在OfficePLUS库中确定。你只能在该模板骨架内填充内容，不允许擅自更换templateId或改造页面结构。"
+          : "";
+        const systemPrompt = [
+          "你是Lazyman级PPT总监，请直接输出高质量PPT契约JSON。",
+          isEdu ? "目标：产出可直接用于初中课堂讲授的PPT，不要空泛口号，不要解释过程。" : "目标：管理层可直接决策，不要教学口吻，不要解释过程。",
+          "只输出JSON，不允许markdown。",
+          "必须包含字段：contractVersion,engineType,sceneType,templateId,pageCount,visualStyle,tone,fontTheme,chartStyle,narrativeMode,topic,slides,qualityGate,requiredFields。",
+          "slides每项必须有：index,title,goal,keyPoints(3条),assetPlaceholders,speakerNotes,layoutType。",
+          "layoutType只能从以下枚举选择：summary-hero,evidence-chart,diagnosis-matrix,strategy-compare,roadmap-timeline,risk-heatmap,decision-board。",
+          "每页keyPoints严格三条且前缀必须为：结论： 证据： 行动：",
+          isEdu ? "证据条必须包含可量化信息（数值、单位、公式变量或实验读数）。" : "证据条必须包含可量化指标（百分比或同比/环比或ROI）。",
+          isEdu ? "行动条必须包含课堂动作（提问/板演/练习/实验）和时间锚点（本节/课后/下节）。" : "行动条必须包含决策建议和时间锚点（本周/两周/月底/下季度）。",
+          "页间不得重复，标题、目标、证据数字和行动项都必须不同。",
+          isEdu ? "视觉风格按学科自动配色：理科优先蓝白高对比，强调可读性，避免低对比浅字。" : "视觉风格按主题自动配色：商务可深色、教育/科普可亮色高对比，避免全程单一棕色。",
+          isEdu ? "叙事链路必须完整：导入->目标->概念->公式->受力分析->例题->实验->练习->总结->作业拓展。" : "叙事链路必须完整：执行摘要->问题定义->现状诊断->根因->策略->路线图->预算->风险->试点->决策请求。",
+          officeplusLockRule,
+          compactRule
+        ].join(" ");
+
+        const userPrompt = [
+          `[主题] ${topic}`,
+          `[场景] ${sceneType}`,
+          `[页数] ${targetPage}`,
+          `[模板] ${templateId}`,
+          `[模板来源] ${templateSource}`,
+          externalTemplateName ? `[模板库条目] ${externalTemplateName}` : "",
+          `[叙事模式] ${narrativeMode}`,
+          `[关键词] ${Array.isArray(fields && fields.keywords) ? fields.keywords.slice(0, 8).join("、") : "无"}`,
+          `[硬约束] ${Array.isArray(fields && fields.hardPoints) ? fields.hardPoints.slice(0, 8).join("；") : "无"}`,
+          `[用户原始输入] ${rawInput}`,
+          "请按上述约束直接输出最终契约JSON。"
+        ].join("\n");
+
+        const raw = await requestDeepSeekDirect(userPrompt, {
+          system: systemPrompt,
+          pageCount: targetPage,
+          domain: sceneType,
+          topic,
+          maxTokens: contractTokenBudget,
+          timeoutMs: REQUEST_TIMEOUT_MS,
+          retryCount: REQUEST_RETRY
+        });
+        const firstPass = parseContractResponse(raw);
+        if (firstPass) return firstPass;
+
+        const repairPrompt = [
+          "把下列内容重写为严格契约JSON。",
+          "只输出JSON，不要解释，不要markdown。",
+          "必须包含字段：contractVersion,engineType,sceneType,templateId,pageCount,visualStyle,tone,fontTheme,chartStyle,narrativeMode,topic,slides,qualityGate,requiredFields。",
+          `pageCount必须是${targetPage}，slides长度必须等于${targetPage}。`,
+          "slides每项必须包含：index,title,goal,keyPoints,assetPlaceholders,speakerNotes。",
+          "keyPoints必须严格3条，且分别以结论： 证据： 行动：开头。",
+          "证据需量化，行动需有决策建议和时间锚点。",
+          "原始内容如下：",
+          raw
+        ].join("\n");
+
+        const repaired = await requestDeepSeekDirect(repairPrompt, {
+          system: "你是PPT契约JSON修复器，只输出有效JSON。",
+          pageCount: targetPage,
+          domain: sceneType,
+          topic,
+          maxTokens: contractTokenBudget,
+          timeoutMs: REQUEST_TIMEOUT_MS,
+          retryCount: REQUEST_RETRY + 1
+        });
+        const secondPass = parseContractResponse(repaired);
+        if (secondPass) return secondPass;
+
+        const compactRepairPrompt = [
+          "把内容压缩重写为最小可用契约JSON。",
+          "只输出JSON，不要解释。",
+          `pageCount=${targetPage} 且 slides长度必须等于${targetPage}。`,
+          "每页仅保留最短必要字段：index,title,goal,keyPoints(3条),assetPlaceholders,speakerNotes。",
+          "keyPoints三条前缀必须为：结论： 证据： 行动：。",
+          "原始内容：",
+          repaired
+        ].join("\n");
+
+        const compact = await requestDeepSeekDirect(compactRepairPrompt, {
+          system: "你是严格JSON压缩器，只输出有效契约JSON。",
+          pageCount: targetPage,
+          domain: sceneType,
+          topic,
+          maxTokens: contractTokenBudget,
+          timeoutMs: REQUEST_TIMEOUT_MS,
+          retryCount: REQUEST_RETRY + 1
+        });
+
+        return parseContractResponse(compact);
+      }
+
+      function structuredFromContract(contract) {
+        const sceneText = `${String(contract.sceneType || "")} ${String(contract.topic || "")}`;
+        const isEdu = /教务|教学|课堂|学生|初中|物理|牛顿|力学/.test(sceneText);
+        let spec = {
+          sceneType: String(contract.sceneType || "企业"),
+          templateId: String(contract.templateId || (isEdu ? "edu-teach-standard-01" : "biz-report-exec-08")),
+          templateSource: String(contract.templateSource || "internal"),
+          externalTemplateId: String(contract.externalTemplateId || ""),
+          externalTemplateName: String(contract.externalTemplateName || ""),
+          templateFileName: String(contract.templateFileName || ""),
+          templateFileBase64: String(contract.templateFileBase64 || ""),
+          topic: String(contract.topic || "当前需求"),
+          pageCount: Number(contract.pageCount || (contract.slides || []).length || 10),
+          visualStyle: String(contract.visualStyle || (isEdu ? "教学蓝白高对比风" : "高端黑棕商务风")),
+          tone: String(contract.tone || (isEdu ? "概念清晰、循序渐进、课堂可执行" : "结论先行、数据驱动、可决策")),
+          fontTheme: String(contract.fontTheme || (isEdu ? "modern-cn" : "business-cn")),
+          chartStyle: String(contract.chartStyle || (isEdu ? "contrast" : "calm")),
+          narrativeMode: String(contract.narrativeMode || (isEdu ? "standard" : "lazyman")),
+          slides: (contract.slides || []).map((s, i) => ({
+            index: Number(s.index || i + 1),
+            title: String(s.title || `第${i + 1}页`).trim(),
+            goal: String(s.goal || "明确本页目标").trim(),
+            layoutType: normalizeLayoutType(s.layoutType, i + 1),
+            keyPoints: Array.isArray(s.keyPoints) ? s.keyPoints.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 3) : [],
+            assetPlaceholders: Array.isArray(s.assetPlaceholders) ? s.assetPlaceholders.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 4) : [],
+            speakerNotes: String(s.speakerNotes || "先结论后证据，最后行动建议。").trim(),
+            visualTokens: s.visualTokens || null
+          }))
+        };
+        spec = applyVisualTokensToSpec(spec);
+        spec = enforceContractSlideVariety(spec);
+        const qa = validatePptSpec(spec);
+        return {
+          spec,
+          qa,
+          structured: specToStructuredBlocks(spec, qa)
+        };
+      }
+
+      async function repairPptSpecWithDeepSeek(spec, qa, maxSlides = 3) {
+        if (!spec || !qa || qa.pass) return { spec, qa };
+        const badIndexes = (qa.badSlideIndexes || []).slice(0, Math.max(1, maxSlides));
+        if (!badIndexes.length) return { spec, qa };
+
+        const clonedSpec = safeJsonParse(JSON.stringify(spec)) || spec;
+        for (const idx of badIndexes) {
+          const current = clonedSpec.slides[idx] || {};
+          const prompt = [
+            `你要重写第${idx + 1}页。`,
+            `主题：${clonedSpec.topic}`,
+            `场景：${clonedSpec.sceneType}`,
+            "只输出单页JSON，字段必须是 index,title,goal,keyPoints,assetPlaceholders,speakerNotes。",
+            "keyPoints必须正好3条，且前缀为结论： 证据： 行动：。",
+            "证据必须量化；行动必须含决策建议和时间锚点。",
+            "禁止复用原句，禁止空泛词。",
+            "当前坏页：",
+            JSON.stringify(current)
+          ].join("\n");
+
+          try {
+            const raw = await requestDeepSeekDirect(prompt, {
+              system: "你是咨询级PPT页改稿器，只输出单页有效JSON。",
+              pageCount: clonedSpec.pageCount,
+              domain: clonedSpec.sceneType,
+              topic: clonedSpec.topic,
+              timeoutMs: REQUEST_TIMEOUT_MS,
+              retryCount: 1
+            });
+            const candidate = firstJsonObject(raw);
+            const page = candidate ? safeJsonParse(candidate) : null;
+            if (
+              page &&
+              typeof page === "object" &&
+              Array.isArray(page.keyPoints) &&
+              page.keyPoints.length >= 3
+            ) {
+              clonedSpec.slides[idx] = {
+                index: idx + 1,
+                title: String(page.title || current.title || `第${idx + 1}页`).trim(),
+                goal: String(page.goal || current.goal || "明确本页目标").trim(),
+                keyPoints: page.keyPoints.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 3),
+                assetPlaceholders: Array.isArray(page.assetPlaceholders)
+                  ? page.assetPlaceholders.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 4)
+                  : (Array.isArray(current.assetPlaceholders) ? current.assetPlaceholders : ["数据图", "流程图"]),
+                speakerNotes: String(page.speakerNotes || current.speakerNotes || "先结论后证据，再给决策动作。")
+              };
+            }
+          } catch (_) {
+          }
+        }
+
+        const repairedQa = validatePptSpec(clonedSpec);
+        return { spec: clonedSpec, qa: repairedQa };
       }
 
       function isStructuredComplete(structured) {
@@ -1859,6 +3523,23 @@
               { title: "课堂互动与练习", goal: "通过互动巩固理解", keyPoints: ["互动问题", "练习任务", "即时反馈"], assets: ["题目区", "反馈统计图"] },
               { title: "总结与作业安排", goal: "完成知识回顾并布置后续任务", keyPoints: ["本节总结", "作业要求", "下节预告"], assets: ["总结清单", "作业提交指引"] }
             ]
+          },
+          {
+            id: "edu-lazyman-fusion",
+            keywords: ["教学", "课堂", "牛顿", "物理", "结论先行", "Lazyman", "管理式讲课"],
+            visualStyle: "黑棕高对比教学风（Lazyman版）",
+            tone: "结论先行、证据三联、行动闭环",
+            defaultPageCount: 8,
+            slideBlueprints: [
+              { title: "执行摘要与课堂目标", goal: "先给本节结论与学习目标", keyPoints: ["核心结论", "学习收益", "课堂动作"], assets: ["摘要卡", "目标清单"] },
+              { title: "问题定义与误区澄清", goal: "定义问题并澄清常见误区", keyPoints: ["问题定义", "高频误区", "纠偏路径"], assets: ["误区对照表", "问题树"] },
+              { title: "核心概念与公式", goal: "建立概念并锁定公式与单位", keyPoints: ["概念定义", "公式单位", "适用边界"], assets: ["公式卡", "单位对照图"] },
+              { title: "推导与证据链", goal: "形成可复述的推导证据链", keyPoints: ["推导步骤", "实验读数", "结论校验"], assets: ["推导流程图", "数据表"] },
+              { title: "受力分析方法", goal: "建立受力分析到求解闭环", keyPoints: ["分析步骤", "典型陷阱", "解题模板"], assets: ["受力图", "步骤模板"] },
+              { title: "实验验证与变量控制", goal: "通过实验验证并理解变量控制", keyPoints: ["实验设计", "控制变量", "结果解释"], assets: ["实验装置图", "记录表"] },
+              { title: "例题拆解与迁移", goal: "通过例题完成方法迁移", keyPoints: ["已知-求", "解题步骤", "迁移练习"], assets: ["例题卡", "步骤板书"] },
+              { title: "总结复盘与分层作业", goal: "收束关键结论并布置分层作业", keyPoints: ["三句总结", "作业分层", "下节衔接"], assets: ["总结卡", "作业清单"] }
+            ]
           }
         ],
         企业: [
@@ -1927,6 +3608,7 @@
 
       function classifyPptScene(rawText) {
         const t = String(rawText || "");
+        if (/(初中|初一|初二|初三|物理|化学|数学|牛顿|力学|电学|实验)/i.test(t)) return "教务";
         if (/(企业|汇报|经营|财务|项目复盘|部门|管理层|高管|商业|业务|roi|预算|战略|决策)/i.test(t)) return "企业";
         if (/(ai学习|学习效率|学习方法|组织学习|知识管理)/i.test(t)) return "企业";
         if (/(教务|教学|课程|课堂|学生|老师|授课|复习|教案)/.test(t)) return "教务";
@@ -1954,6 +3636,167 @@
       function sanitizeKeyPoint(text) {
         const t = String(text || "").trim();
         return t.replace(/\s+/g, " ");
+      }
+
+      function buildSlideVisualTokens(sceneType, fontTheme, chartStyle, slideIndex, layoutType) {
+        const eduScene = isEducationScene(sceneType, "");
+        const isLazymanEdu = String(fontTheme || "") === "serif-cn" && String(chartStyle || "") === "contrast";
+        const darkBiz = {
+          bg: "#17120f",
+          surface: "#2a201a",
+          title: "#f4e6d8",
+          body: "#ddc9b4",
+          accent: "#c98a4a"
+        };
+        const eduBlue = {
+          bg: "#0f213f",
+          surface: "#1f3761",
+          title: "#f3f8ff",
+          body: "#d8e8ff",
+          accent: "#6fa6ff"
+        };
+        const eduLazyman = {
+          bg: "#17120f",
+          surface: "#33271f",
+          title: "#f8ede0",
+          body: "#ead8c6",
+          accent: "#c49058"
+        };
+        const palette = eduScene ? (isLazymanEdu ? eduLazyman : eduBlue) : darkBiz;
+        return {
+          palette,
+          typeScale: {
+            title: eduScene ? 17 : 16,
+            body: 11,
+            note: 10
+          },
+          layout: {
+            padding: 11 + ((slideIndex - 1) % 3),
+            columns: /(strategy|diagnosis|decision)/.test(String(layoutType || "")) ? 2 : 1,
+            gap: 7 + ((slideIndex - 1) % 2)
+          },
+          shapeStyle: {
+            accent: ["bar", "orb", "line"][(slideIndex - 1) % 3],
+            chartSkin: chartStyle || "calm"
+          },
+          motion: {
+            entry: ["rise", "fade", "slide"][(slideIndex - 1) % 3]
+          }
+        };
+      }
+
+      function applyVisualTokensToSpec(spec) {
+        if (!spec || !Array.isArray(spec.slides)) return spec;
+        spec.slides = spec.slides.map((slide, i) => {
+          const s = { ...slide };
+          s.visualTokens = s.visualTokens || buildSlideVisualTokens(
+            spec.sceneType || "企业",
+            spec.fontTheme || "business-cn",
+            spec.chartStyle || "calm",
+            i + 1,
+            normalizeLayoutType(s.layoutType, i + 1)
+          );
+          return s;
+        });
+        return spec;
+      }
+
+      function hexToRgb(hex) {
+        const h = String(hex || "").trim().replace("#", "");
+        if (!/^[0-9a-fA-F]{6}$/.test(h)) return null;
+        return {
+          r: parseInt(h.slice(0, 2), 16),
+          g: parseInt(h.slice(2, 4), 16),
+          b: parseInt(h.slice(4, 6), 16)
+        };
+      }
+
+      function relativeLuminance(rgb) {
+        if (!rgb) return 0;
+        const channels = [rgb.r, rgb.g, rgb.b].map((v) => {
+          const c = v / 255;
+          return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+      }
+
+      function contrastRatio(hexA, hexB) {
+        const a = relativeLuminance(hexToRgb(hexA));
+        const b = relativeLuminance(hexToRgb(hexB));
+        const light = Math.max(a, b);
+        const dark = Math.min(a, b);
+        return Number((((light + 0.05) / (dark + 0.05)) || 1).toFixed(2));
+      }
+
+      function evaluateVisualAudit(spec) {
+        if (!spec || !Array.isArray(spec.slides) || !spec.slides.length) {
+          return {
+            tokenCoverage: 0,
+            contrast: 0,
+            density: 0,
+            consistency: 0,
+            rhythm: 0,
+            overall: 0,
+            issues: ["缺少可审计视觉规格"]
+          };
+        }
+
+        const slides = spec.slides;
+        const total = slides.length;
+        let tokenCount = 0;
+        let contrastHits = 0;
+        let densityHits = 0;
+        let rhythmSwitch = 0;
+        const titleSizes = [];
+        const paddings = [];
+        const accents = [];
+        const issues = [];
+
+        for (let i = 0; i < slides.length; i++) {
+          const s = slides[i] || {};
+          const vt = s.visualTokens || null;
+          if (vt) tokenCount += 1;
+          const palette = (vt && vt.palette) || {};
+          const titleVsBg = contrastRatio(palette.title, palette.bg);
+          const bodyVsBg = contrastRatio(palette.body, palette.bg);
+          if (titleVsBg >= 4.5 && bodyVsBg >= 3.5) contrastHits += 1;
+
+          const chars = slideContentChars(s);
+          const assetN = Array.isArray(s.assetPlaceholders) ? s.assetPlaceholders.length : 0;
+          const elementLoad = 2 + Math.min(4, assetN) + (chars / 45);
+          if (elementLoad >= 4.5 && elementLoad <= 9.5) densityHits += 1;
+
+          const typeScale = (vt && vt.typeScale) || {};
+          const layout = (vt && vt.layout) || {};
+          if (Number.isFinite(typeScale.title)) titleSizes.push(Number(typeScale.title));
+          if (Number.isFinite(layout.padding)) paddings.push(Number(layout.padding));
+          accents.push(String((vt && vt.shapeStyle && vt.shapeStyle.accent) || "none"));
+          if (i > 0 && accents[i] !== accents[i - 1]) rhythmSwitch += 1;
+        }
+
+        const tokenCoverage = toPctScore(tokenCount / total);
+        const contrast = toPctScore(contrastHits / total);
+        const density = toPctScore(densityHits / total);
+        const titleRange = titleSizes.length ? (Math.max(...titleSizes) - Math.min(...titleSizes)) : 999;
+        const padRange = paddings.length ? (Math.max(...paddings) - Math.min(...paddings)) : 999;
+        const consistency = toPctScore(Math.max(0, 1 - titleRange / 8 - padRange / 10));
+        const rhythm = toPctScore(total <= 1 ? 1 : rhythmSwitch / (total - 1));
+        const overall = toPctScore(0.3 * contrast + 0.25 * density + 0.25 * consistency + 0.2 * rhythm);
+
+        if (tokenCoverage < 1) issues.push("部分页面缺少视觉token");
+        if (contrast < 0.85) issues.push("文字对比度不足");
+        if (density < 0.78) issues.push("信息密度节奏不稳定");
+        if (consistency < 0.82) issues.push("字号/间距一致性偏弱");
+
+        return {
+          tokenCoverage,
+          contrast,
+          density,
+          consistency,
+          rhythm,
+          overall,
+          issues
+        };
       }
 
       function seededMetric(index, topic) {
@@ -2004,6 +3847,18 @@
 
       function buildNarrativeBlueprints(sceneType, template, narrativeMode = "standard") {
         if (narrativeMode === "lazyman") {
+          if (sceneType === "教务") {
+            return [
+              { title: "执行摘要", goal: "先给课堂结论、目标与达成标准", keyPoints: ["本节结论", "达成标准", "课堂动作"], assets: ["摘要卡", "目标卡"] },
+              { title: "问题定义与误区", goal: "定义问题并澄清易错点", keyPoints: ["问题定义", "高频误区", "纠偏策略"], assets: ["误区对照表", "问题树"] },
+              { title: "概念与公式", goal: "统一概念、公式、单位与边界", keyPoints: ["概念定义", "公式单位", "适用边界"], assets: ["公式卡", "单位表"] },
+              { title: "证据链推导", goal: "用推导和读数形成证据闭环", keyPoints: ["推导步骤", "实验读数", "结论校验"], assets: ["推导流程", "数据表"] },
+              { title: "方法拆解", goal: "给出可复用解题步骤", keyPoints: ["步骤框架", "关键判断", "常见陷阱"], assets: ["步骤图", "陷阱清单"] },
+              { title: "实验验证", goal: "通过控制变量验证规律", keyPoints: ["实验设计", "变量控制", "结果解释"], assets: ["实验装置", "记录表"] },
+              { title: "例题迁移", goal: "完成例题并迁移到同类题", keyPoints: ["已知与求", "解题过程", "迁移练习"], assets: ["例题卡", "板演区"] },
+              { title: "总结与作业", goal: "收束结论并布置分层作业", keyPoints: ["三句总结", "分层作业", "下节衔接"], assets: ["总结卡", "作业单"] }
+            ];
+          }
           return [
             { title: "执行摘要", goal: "用一页给出核心结论与决策请求", keyPoints: ["核心判断", "价值规模", "需拍板事项"], assets: ["摘要卡", "决策事项清单"] },
             { title: "问题定义与机会窗口", goal: "明确当前业务痛点与机会时窗", keyPoints: ["问题定义", "机会大小", "不做的代价"], assets: ["问题树", "机会象限"] },
@@ -2055,9 +3910,14 @@
           slides.push(buildSlideFromBlueprint(i + 1, topic, bp));
         }
 
-        return {
+        const spec = {
           sceneType,
           templateId: template.id,
+          templateSource: String((fields && fields.templateSource) || "internal"),
+          externalTemplateId: String((fields && fields.externalTemplateId) || ""),
+          externalTemplateName: String((fields && fields.externalTemplateName) || ""),
+          templateFileName: String((fields && fields.templateFileName) || ""),
+          templateFileBase64: String((fields && fields.templateFileBase64) || ""),
           topic,
           pageCount: requested,
           visualStyle: narrativeMode === "lazyman" ? `${template.visualStyle}｜Lazyman对齐` : template.visualStyle,
@@ -2067,11 +3927,15 @@
           narrativeMode,
           slides
         };
+        return applyVisualTokensToSpec(spec);
       }
 
       function validatePptSpec(spec) {
         const issues = [];
         const badSlideIndexes = [];
+        const seenTitle = new Set();
+        const seenGoal = new Set();
+        const eduScene = isEducationScene(spec && spec.sceneType, spec && spec.topic);
 
         if (!spec || !Array.isArray(spec.slides)) {
           return { pass: false, issues: ["规格结构非法：缺少slides数组"], badSlideIndexes: [] };
@@ -2086,29 +3950,62 @@
 
         const vagueWords = /(适当|尽量|可以考虑|视情况|若干|等等|相关内容)/;
         const triadRegex = /(结论：|证据：|行动：)/g;
+        let totalChars = 0;
         for (let i = 0; i < spec.slides.length; i++) {
           const s = spec.slides[i] || {};
           const slideIssues = [];
           if (!String(s.title || "").trim()) slideIssues.push("缺标题");
           if (!String(s.goal || "").trim()) slideIssues.push("缺目标");
+          const titleKey = String(s.title || "").trim().toLowerCase();
+          const goalKey = String(s.goal || "").trim().toLowerCase();
+          if (titleKey) {
+            if (seenTitle.has(titleKey)) slideIssues.push("标题重复");
+            seenTitle.add(titleKey);
+          }
+          if (goalKey) {
+            if (seenGoal.has(goalKey)) slideIssues.push("目标重复");
+            seenGoal.add(goalKey);
+          }
           if (!Array.isArray(s.keyPoints) || s.keyPoints.filter(Boolean).length < 2) slideIssues.push("要点不足（至少2条）");
           if (!Array.isArray(s.assetPlaceholders) || s.assetPlaceholders.filter(Boolean).length < 1) slideIssues.push("素材占位缺失");
           if (!String(s.speakerNotes || "").trim()) slideIssues.push("演讲备注缺失");
 
           const packed = [s.goal, ...(s.keyPoints || []), s.speakerNotes].join(" ");
+          const load = slideContentChars(s);
+          totalChars += load;
           if (vagueWords.test(packed)) slideIssues.push("存在空泛表述");
           const triadCount = (String((s.keyPoints || []).join(" ")).match(triadRegex) || []).length;
           if (triadCount < 3) slideIssues.push("缺少结论/证据/行动三要素");
-          if (!/(\d+%|\d+\.\d+%|ROI|同比|环比|预算)/i.test(String((s.keyPoints || []).join(" ")))) {
-            slideIssues.push("缺少量化证据");
-          }
-          if (!/(决策建议|本周|两周|月底|下季度|责任人|里程碑)/.test(String((s.keyPoints || []).join(" ")))) {
-            slideIssues.push("缺少决策动作");
+          if (eduScene) {
+            if (!/(F\s*=\s*ma|牛顿第二定律|加速度|受力|质量|N\b|m\/s2|m\/s²|公式|单位|实验)/i.test(String((s.keyPoints || []).join(" ")))) {
+              slideIssues.push("缺少公式/实验/单位等教学证据");
+            }
+            if (!/(提问|板演|练习|实验|课后|下节|步骤|解题)/.test(String((s.keyPoints || []).join(" ")))) {
+              slideIssues.push("缺少课堂动作或解题步骤");
+            }
+            if (load > 140) slideIssues.push("单页信息过载（>140字）");
+          } else {
+            if (!/(\d+%|\d+\.\d+%|ROI|同比|环比|预算)/i.test(String((s.keyPoints || []).join(" ")))) {
+              slideIssues.push("缺少量化证据");
+            }
+            if (!/(决策建议|本周|两周|月底|下季度|责任人|里程碑)/.test(String((s.keyPoints || []).join(" ")))) {
+              slideIssues.push("缺少决策动作");
+            }
           }
 
           if (slideIssues.length) {
             badSlideIndexes.push(i);
             issues.push(`第${i + 1}页：${slideIssues.join("、")}`);
+          }
+        }
+
+        if (eduScene) {
+          const avgChars = totalChars / Math.max(1, spec.slides.length);
+          if (avgChars < 70 || avgChars > 110) {
+            issues.push(`教学负荷不在建议区间：平均${avgChars.toFixed(1)}字/页（建议70-110）`);
+          }
+          if (calcTeachingRhythmCoverage(spec) < 0.85) {
+            issues.push("教学节奏覆盖不足：需包含导入/概念/实验/例题/易错/练习/小结");
           }
         }
 
@@ -2121,6 +4018,11 @@
           engineType: "generic-aippt",
           sceneType: spec.sceneType,
           templateId: spec.templateId,
+          templateSource: String(spec.templateSource || "internal"),
+          externalTemplateId: String(spec.externalTemplateId || ""),
+          externalTemplateName: String(spec.externalTemplateName || ""),
+          templateFileName: String(spec.templateFileName || ""),
+          templateFileBase64: String(spec.templateFileBase64 || ""),
           pageCount: spec.pageCount,
           visualStyle: spec.visualStyle,
           tone: spec.tone,
@@ -2132,9 +4034,11 @@
             index: s.index,
             title: s.title,
             goal: s.goal,
+            layoutType: s.layoutType,
             keyPoints: s.keyPoints,
             assetPlaceholders: s.assetPlaceholders,
-            speakerNotes: s.speakerNotes
+            speakerNotes: s.speakerNotes,
+            visualTokens: s.visualTokens || null
           })),
           qualityGate: {
             pass: !!(qa && qa.pass),
@@ -2149,10 +4053,13 @@
         const template = retrieveBestPptTemplate(scene, `${spec.topic || ""} ${scene}`);
         const bp = template.slideBlueprints[index % template.slideBlueprints.length];
         const original = spec.slides[index] || {};
+        const eduScene = isEducationScene(spec && spec.sceneType, spec && spec.topic);
+        const isNewton2 = /牛顿第二定律|f\s*=\s*ma|加速度|受力/i.test(String(spec && spec.topic || ""));
         const repaired = {
           index: index + 1,
           title: String(original.title || `${bp.title}（${spec.topic || "主题"}）`).trim(),
           goal: String(original.goal || bp.goal || "明确本页的核心目标并给出可执行动作").trim(),
+          layoutType: normalizeLayoutType(original.layoutType, index + 1),
           keyPoints: (Array.isArray(original.keyPoints) ? original.keyPoints.filter(Boolean) : []).slice(0, 3),
           assetPlaceholders: (Array.isArray(original.assetPlaceholders) ? original.assetPlaceholders.filter(Boolean) : []).slice(0, 3),
           speakerNotes: String(original.speakerNotes || "先结论、后依据、再行动建议，控制在60-90秒。").trim()
@@ -2162,12 +4069,38 @@
         if (repaired.keyPoints.length < 3 || !triadReady) {
           const fallback = (bp.keyPoints || ["核心观点", "关键依据", "执行动作"]).slice(0, 3);
           const metric = seededMetric(index + 1, spec.topic || "当前需求");
-          repaired.keyPoints = [
-            `结论：${fallback[0] || "形成清晰结论"}`,
-            `证据：${fallback[1] || "给出关键证据"}（当前值${metric}，目标值${Math.min(95, Number(metric.replace('%', '')) + 12)}%）`,
-            `行动：${fallback[2] || "明确执行动作"}；决策建议：${formatDecisionAction(index + 1)}`
-          ];
+          if (eduScene) {
+            const eduEvidence = isNewton2
+              ? `证据：F=ma，单位N/kg/m/s²；例：m=1kg,F=2N,a=2m/s²（${metric}）`
+              : `证据：含公式+单位+实验读数（${metric}）`;
+            const eduAction = isNewton2
+              ? "行动：3分钟板演受力图，2题当堂练习，课后提交步骤"
+              : "行动：提问+板演+练习，课后提交步骤";
+            repaired.keyPoints = [
+              `结论：${fallback[0] || "形成清晰结论"}`,
+              eduEvidence,
+              eduAction
+            ];
+          } else {
+            repaired.keyPoints = [
+              `结论：${fallback[0] || "形成清晰结论"}`,
+              `证据：${fallback[1] || "给出关键证据"}（当前值${metric}，目标值${Math.min(95, Number(metric.replace('%', '')) + 12)}%）`,
+              `行动：${fallback[2] || "明确执行动作"}；决策建议：${formatDecisionAction(index + 1)}`
+            ];
+          }
         }
+
+        if (eduScene) {
+          const kp = repaired.keyPoints.map((x) => String(x || "").trim());
+          if (kp[1] && !/(公式|单位|实验|m\/s2|m\/s²|牛顿第二定律|F\s*=\s*ma|N\b|kg\b)/i.test(kp[1])) {
+            kp[1] = `${kp[1]}；补充F=ma与单位N/kg/m/s²`;
+          }
+          if (kp[2] && !/(提问|板演|练习|实验|课后|下节|步骤|解题|分钟)/.test(kp[2])) {
+            kp[2] = `${kp[2]}；含提问/板演/练习`;
+          }
+          repaired.keyPoints = kp.slice(0, 3).map((x) => String(x).slice(0, 44));
+        }
+
         if (repaired.assetPlaceholders.length < 1) {
           repaired.assetPlaceholders = (bp.assets || ["示意图", "数据图"]).slice(0, 2);
         }
@@ -2194,6 +4127,101 @@
           }
         }
         return { spec, qa: validatePptSpec(spec) };
+      }
+
+      function optimizePptSpecForQuality(spec, qa = null, maxRounds = 2) {
+        if (!spec || !Array.isArray(spec.slides) || !spec.slides.length) {
+          return { spec, qa: qa || validatePptSpec(spec || {}), quality: evaluatePptQualityScore(spec || {}, qa || {}, null), changed: false };
+        }
+
+        const cloneSpec = (x) => safeJsonParse(JSON.stringify(x));
+        const baseSpec = cloneSpec(spec) || spec;
+        const baseQa = qa || validatePptSpec(baseSpec);
+        const baseQuality = evaluatePptQualityScore(baseSpec, baseQa, null);
+        let best = {
+          spec: baseSpec,
+          qa: baseQa,
+          quality: baseQuality,
+          changed: false
+        };
+
+        const scoreOf = (x) => Number((x && x.quality && x.quality.scores && x.quality.scores.overall) || 0);
+        const isEdu = isEducationScene(baseSpec.sceneType, baseSpec.topic);
+
+        const tryPick = (candidateSpec) => {
+          const fixed = hardGateRepairPptSpec(candidateSpec, maxRounds);
+          const quality = evaluatePptQualityScore(fixed.spec, fixed.qa, null);
+          const pack = {
+            spec: fixed.spec,
+            qa: fixed.qa,
+            quality,
+            changed: true
+          };
+          if (scoreOf(pack) >= scoreOf(best)) {
+            best = pack;
+          }
+        };
+
+        // Strategy A: load/readability compaction for overloaded teaching slides.
+        const compactSpec = cloneSpec(baseSpec) || baseSpec;
+        compactSpec.slides = (compactSpec.slides || []).map((slide) => {
+          const s = { ...slide };
+          s.title = String(s.title || "").slice(0, 16);
+          s.goal = String(s.goal || "").slice(0, 14);
+          s.keyPoints = (Array.isArray(s.keyPoints) ? s.keyPoints : []).slice(0, 3).map((x, idx) => {
+            const head = idx === 0 ? "结论：" : (idx === 1 ? "证据：" : "行动：");
+            const body = String(x || "").replace(/^结论：|^证据：|^行动：/, "").slice(0, 20);
+            return `${head}${body}`;
+          });
+          while (s.keyPoints.length < 3) {
+            const head = s.keyPoints.length === 0 ? "结论：" : (s.keyPoints.length === 1 ? "证据：" : "行动：");
+            s.keyPoints.push(`${head}补充要点`);
+          }
+          s.speakerNotes = String(s.speakerNotes || "").slice(0, 24);
+          return s;
+        });
+        tryPick(enforceTeachingLoadConstraints(compactSpec));
+
+        // Strategy B: education evidence/visual boost to raise solvability and visual consistency.
+        if (isEdu) {
+          const eduSpec = cloneSpec(baseSpec) || baseSpec;
+          const textVisual = String(eduSpec.visualStyle || "");
+          if (!/蓝|blue|navy|science/i.test(textVisual)) {
+            eduSpec.visualStyle = "教学蓝白高对比";
+          }
+          if (!String(eduSpec.chartStyle || "").trim()) {
+            eduSpec.chartStyle = "contrast";
+          }
+          eduSpec.slides = (eduSpec.slides || []).map((slide, idx) => {
+            const s = { ...slide };
+            const kps = (Array.isArray(s.keyPoints) ? s.keyPoints : []).slice(0, 3).map((x) => String(x || ""));
+            while (kps.length < 3) kps.push("");
+            if (!/(公式|单位|实验|F\s*=\s*ma|N\b|kg\b|m\/s2|m\/s²)/i.test(kps[1])) {
+              kps[1] = `${kps[1].replace(/^证据：/, "") || "实验读数"}；F=ma，单位N/kg/m/s²`.slice(0, 22);
+            }
+            if (!/(提问|板演|练习|步骤|解题|实验|课后|分钟)/.test(kps[2])) {
+              kps[2] = `${kps[2].replace(/^行动：/, "") || "课堂动作"}；提问+板演+练习`.slice(0, 22);
+            }
+            s.keyPoints = [
+              `结论：${kps[0].replace(/^结论：/, "").slice(0, 20) || "本页结论"}`,
+              `证据：${kps[1].replace(/^证据：/, "").slice(0, 20)}`,
+              `行动：${kps[2].replace(/^行动：/, "").slice(0, 20)}`
+            ];
+            if (idx === 3 && !/推导|步骤/.test(`${s.title || ""} ${s.goal || ""}`)) {
+              s.title = `公式推导（${String(eduSpec.topic || "教学主题").slice(0, 8)}）`;
+            }
+            if (idx === 5 && !/实验|变量/.test(`${s.title || ""} ${s.goal || ""}`)) {
+              s.title = `实验验证（${String(eduSpec.topic || "教学主题").slice(0, 8)}）`;
+            }
+            if (idx === 6 && !/例题|解题/.test(`${s.title || ""} ${s.goal || ""}`)) {
+              s.title = `例题迁移（${String(eduSpec.topic || "教学主题").slice(0, 8)}）`;
+            }
+            return s;
+          });
+          tryPick(enforceTeachingLoadConstraints(eduSpec));
+        }
+
+        return best;
       }
 
       function specToStructuredBlocks(spec, qa) {
@@ -2223,10 +4251,12 @@
       function buildStructuredPptDeliverable(rawInput, fields, pageCountHint = null) {
         const initial = buildPptSpecByTemplate(rawInput, fields, pageCountHint);
         const fixed = hardGateRepairPptSpec(initial, 2);
-        const structured = specToStructuredBlocks(fixed.spec, fixed.qa);
+        const optimized = optimizePptSpecForQuality(fixed.spec, fixed.qa, 2);
+        const runtimeSpec = applyVisualTokensToSpec(optimized.spec);
+        const structured = specToStructuredBlocks(runtimeSpec, optimized.qa);
         return {
-          spec: fixed.spec,
-          qa: fixed.qa,
+          spec: runtimeSpec,
+          qa: optimized.qa,
           structured
         };
       }
@@ -2407,6 +4437,189 @@
         localStorage.setItem(FUR_METRIC_KEY, JSON.stringify(metric));
         const rate = metric.total ? ((metric.firstDirect / metric.total) * 100).toFixed(1) : "0.0";
         return { ...metric, rate };
+      }
+
+      function getQualityGateConfig() {
+        try {
+          const raw = localStorage.getItem(PPT_QUALITY_GATE_KEY);
+          const parsed = raw ? JSON.parse(raw) : null;
+          const enabled = parsed && typeof parsed.enabled === "boolean" ? parsed.enabled : true;
+          return {
+            enabled,
+            minOverall: Number.isFinite(Number(parsed && parsed.minOverall)) ? Number(parsed.minOverall) : 0.88,
+            minConstraint: Number.isFinite(Number(parsed && parsed.minConstraint)) ? Number(parsed.minConstraint) : 0.92,
+            minReadability: Number.isFinite(Number(parsed && parsed.minReadability)) ? Number(parsed.minReadability) : 0.75
+          };
+        } catch {
+          return {
+            enabled: true,
+            minOverall: 0.88,
+            minConstraint: 0.92,
+            minReadability: 0.75
+          };
+        }
+      }
+
+      function setQualityGateEnabled(on) {
+        const prev = getQualityGateConfig();
+        localStorage.setItem(PPT_QUALITY_GATE_KEY, JSON.stringify({
+          ...prev,
+          enabled: !!on
+        }));
+      }
+
+      function evaluateQualityGate(qaResult, spec = null) {
+        const gate = getQualityGateConfig();
+        const s = (qaResult && qaResult.scores) || {};
+        if (!gate.enabled) {
+          return {
+            pass: true,
+            gate,
+            reasons: [],
+            scores: s
+          };
+        }
+
+        const eduScene = isEducationScene(spec && spec.sceneType, spec && spec.topic);
+        const reasons = [];
+        const overall = Number(s.overall || 0);
+        const constraint = Number(s.constraint || 0);
+        const readability = Number(s.readability || 0);
+
+        if (overall < gate.minOverall) {
+          reasons.push(`总分 ${overall} < ${gate.minOverall}`);
+        }
+        if (constraint < gate.minConstraint) {
+          reasons.push(`约束 ${constraint} < ${gate.minConstraint}`);
+        }
+        if (eduScene && readability < gate.minReadability) {
+          reasons.push(`可读性 ${readability} < ${gate.minReadability}`);
+        }
+
+        return {
+          pass: reasons.length === 0,
+          gate,
+          reasons,
+          scores: s
+        };
+      }
+
+      function getTemplateQualityHistory() {
+        try {
+          const raw = localStorage.getItem(PPT_QUALITY_HISTORY_KEY);
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveTemplateQualityHistory(rows) {
+        const maxRows = 240;
+        const clipped = Array.isArray(rows) ? rows.slice(-maxRows) : [];
+        localStorage.setItem(PPT_QUALITY_HISTORY_KEY, JSON.stringify(clipped));
+      }
+
+      function resolveTemplateContext(spec = null) {
+        const pref = getPptDesignPref();
+        const source = String((spec && spec.templateSource) || pref.templateSource || (pref.template === "officeplus" ? "officeplus" : "internal"));
+        const isOffice = source === "officeplus" || String(pref.template || "") === "officeplus";
+        const templateId = isOffice
+          ? String((spec && spec.externalTemplateId) || pref.externalTemplateId || "officeplus-unknown")
+          : String((spec && spec.templateId) || pref.template || "auto");
+        const templateName = isOffice
+          ? String((spec && spec.externalTemplateName) || pref.externalTemplateName || templateId)
+          : String(templateId || "auto");
+        return {
+          source: isOffice ? "officeplus" : "internal",
+          templateId,
+          templateName
+        };
+      }
+
+      function recordTemplateQualityEvent({ stage, qaResult, spec, exported = false, engine = "" }) {
+        if (!qaResult || !qaResult.scores) return null;
+        const t = resolveTemplateContext(spec || latestPptSpec || latestSpec || null);
+        const rows = getTemplateQualityHistory();
+        const row = {
+          ts: new Date().toISOString(),
+          stage: String(stage || "generate"),
+          templateSource: t.source,
+          templateId: t.templateId,
+          templateName: t.templateName,
+          sceneType: String((spec && spec.sceneType) || ""),
+          topic: String((spec && spec.topic) || ""),
+          overall: Number(qaResult.scores.overall || 0),
+          constraint: Number(qaResult.scores.constraint || 0),
+          readability: Number(qaResult.scores.readability || 0),
+          coverage: Number(qaResult.scores.coverage || 0),
+          pass: !!qaResult.pass,
+          exported: !!exported,
+          engine: String(engine || "")
+        };
+        rows.push(row);
+        saveTemplateQualityHistory(rows);
+        return row;
+      }
+
+      function buildTemplateLeaderboard(limit = 5) {
+        const rows = getTemplateQualityHistory();
+        const map = new Map();
+
+        for (const r of rows) {
+          const key = `${r.templateSource || "internal"}:${r.templateId || "unknown"}`;
+          if (!map.has(key)) {
+            map.set(key, {
+              key,
+              templateSource: r.templateSource || "internal",
+              templateId: r.templateId || "unknown",
+              templateName: r.templateName || r.templateId || "unknown",
+              attempts: 0,
+              exports: 0,
+              useful: 0,
+              sumOverall: 0,
+              bestOverall: 0,
+              lastTs: ""
+            });
+          }
+          const item = map.get(key);
+          item.attempts += 1;
+          if (r.exported) item.exports += 1;
+          item.sumOverall += Number(r.overall || 0);
+          item.bestOverall = Math.max(item.bestOverall, Number(r.overall || 0));
+          if (Number(r.overall || 0) >= 0.9 && Number(r.constraint || 0) >= 0.92) item.useful += 1;
+          if (!item.lastTs || String(r.ts || "") > item.lastTs) item.lastTs = String(r.ts || "");
+        }
+
+        return Array.from(map.values())
+          .map((x) => ({
+            ...x,
+            avgOverall: Number((x.sumOverall / Math.max(1, x.attempts)).toFixed(3))
+          }))
+          .sort((a, b) => {
+            if (b.useful !== a.useful) return b.useful - a.useful;
+            if (b.avgOverall !== a.avgOverall) return b.avgOverall - a.avgOverall;
+            if (b.exports !== a.exports) return b.exports - a.exports;
+            return (b.lastTs || "").localeCompare(a.lastTs || "");
+          })
+          .slice(0, Math.max(1, Number(limit) || 5));
+      }
+
+      function formatLatestQualitySummary(qaResult, spec = null) {
+        if (!qaResult || !qaResult.scores) return "暂无可用评分，请先生成PPT。";
+        const gate = evaluateQualityGate(qaResult, spec || latestPptSpec || latestSpec || null);
+        const gateText = gate.pass ? "PASS" : `BLOCK（${gate.reasons.join("；")}）`;
+        return [
+          `评分：总分=${qaResult.scores.overall} | 约束=${qaResult.scores.constraint} | 覆盖=${qaResult.scores.coverage} | 可读性=${qaResult.scores.readability}`,
+          `质量闸门：${gateText}`
+        ].join("\n");
+      }
+
+      function formatTemplateLeaderboardText(limit = 5) {
+        const board = buildTemplateLeaderboard(limit);
+        if (!board.length) return "模板榜单为空，请先至少生成一次PPT。";
+        const lines = board.map((x, i) => `${i + 1}. ${x.templateName} [${x.templateSource}] | useful=${x.useful} | avg=${x.avgOverall} | best=${x.bestOverall.toFixed(3)} | export=${x.exports}/${x.attempts}`);
+        return ["模板有效性榜单（本机历史）", ...lines].join("\n");
       }
 
       function hasHomeworkLevels(text) {
@@ -2647,6 +4860,44 @@
           qaLines.push(qaResult.pass ? "状态：可直接出稿" : "状态：自动修正中（系统后台优先修正约束->执行步骤->交付清单）");
           qaNode.textContent = qaLines.join(" | ");
           box.appendChild(qaNode);
+
+          const scorePanel = document.createElement("div");
+          scorePanel.className = "score-panel";
+          const scoreGrid = document.createElement("div");
+          scoreGrid.className = "score-grid";
+          const rows = [
+            ["理解", qaResult.scores.understanding],
+            ["去重复", qaResult.scores.antiRepeat],
+            ["视觉", qaResult.scores.visual],
+            ["视觉审计", qaResult.scores.visualAudit],
+            ["对比度", qaResult.scores.visualContrast],
+            ["密度节奏", qaResult.scores.visualDensity],
+            ["决策", qaResult.scores.decision],
+            ["约束", qaResult.scores.constraint],
+            ["覆盖", qaResult.scores.coverage],
+            ["连贯", qaResult.scores.coherence],
+            ["总分", qaResult.scores.overall]
+          ];
+          for (const r of rows) {
+            const item = document.createElement("div");
+            item.className = "score-item";
+            const k = document.createElement("div");
+            k.className = "k";
+            k.textContent = r[0];
+            const v = document.createElement("div");
+            v.className = "v";
+            v.textContent = String(r[1] == null ? "-" : r[1]);
+            item.appendChild(k);
+            item.appendChild(v);
+            scoreGrid.appendChild(item);
+          }
+          scorePanel.appendChild(scoreGrid);
+          box.appendChild(scorePanel);
+        }
+
+        const previewNode = renderSlidePreviewRail(spec || {});
+        if (previewNode) {
+          box.appendChild(previewNode);
         }
 
         const acceptance = quickAcceptance(spec || {}, structured || {}, qaResult || {});
@@ -2693,6 +4944,88 @@
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
 
+      function renderSlidePreviewRail(spec) {
+        if (!spec || !Array.isArray(spec.slides) || !spec.slides.length) return null;
+        const list = spec.slides.slice(0, 8);
+        const rail = document.createElement("section");
+        rail.className = "slide-preview-rail";
+
+        const head = document.createElement("div");
+        head.className = "slide-preview-head";
+        head.textContent = `视觉预览（16:9）｜展示前${list.length}页`;
+        rail.appendChild(head);
+
+        const panel = document.createElement("div");
+        panel.className = "slide-preview-list";
+
+        for (const slide of list) {
+          const card = document.createElement("article");
+          card.className = "slide-preview-card";
+          const canvas = document.createElement("div");
+          canvas.className = "slide-preview-canvas";
+
+          const vt = slide.visualTokens || buildSlideVisualTokens(
+            spec.sceneType || "企业",
+            spec.fontTheme || "business-cn",
+            spec.chartStyle || "calm",
+            Number(slide.index) || 1,
+            slide.layoutType || "evidence-chart"
+          );
+          const palette = vt.palette || {};
+          const layout = vt.layout || {};
+          const typeScale = vt.typeScale || {};
+          canvas.style.setProperty("--pv-bg", palette.bg || "#15263f");
+          canvas.style.setProperty("--pv-surface", palette.surface || "#22324f");
+          canvas.style.setProperty("--pv-title", palette.title || "#ffffff");
+          canvas.style.setProperty("--pv-body", palette.body || "#dbe8ff");
+          canvas.style.setProperty("--pv-accent", palette.accent || "#7fb2ff");
+          canvas.style.setProperty("--pv-pad", `${Number(layout.padding) || 12}px`);
+          canvas.style.setProperty("--pv-gap", `${Number(layout.gap) || 8}px`);
+          canvas.style.setProperty("--pv-title-size", `${Number(typeScale.title) || 16}px`);
+          canvas.style.setProperty("--pv-body-size", `${Number(typeScale.body) || 11}px`);
+
+          const meta = document.createElement("div");
+          meta.className = "slide-preview-meta";
+          meta.textContent = `第${slide.index}页 · ${normalizeLayoutType(slide.layoutType, slide.index)}`;
+
+          const title = document.createElement("div");
+          title.className = "slide-preview-title";
+          title.textContent = String(slide.title || "未命名页");
+
+          const goal = document.createElement("div");
+          goal.className = "slide-preview-goal";
+          goal.textContent = String(slide.goal || "");
+
+          const points = document.createElement("ul");
+          points.className = "slide-preview-points";
+          for (const point of (Array.isArray(slide.keyPoints) ? slide.keyPoints : []).slice(0, 3)) {
+            const li = document.createElement("li");
+            li.textContent = String(point || "");
+            points.appendChild(li);
+          }
+
+          const assets = document.createElement("div");
+          assets.className = "slide-preview-assets";
+          for (const asset of (Array.isArray(slide.assetPlaceholders) ? slide.assetPlaceholders : []).slice(0, 3)) {
+            const tag = document.createElement("span");
+            tag.className = "slide-preview-tag";
+            tag.textContent = String(asset || "素材");
+            assets.appendChild(tag);
+          }
+
+          canvas.appendChild(meta);
+          canvas.appendChild(title);
+          canvas.appendChild(goal);
+          canvas.appendChild(points);
+          canvas.appendChild(assets);
+          card.appendChild(canvas);
+          panel.appendChild(card);
+        }
+
+        rail.appendChild(panel);
+        return rail;
+      }
+
       async function regenerateBlock(blockKey) {
         if (!latestStructured || !latestRawInput) {
           throw new Error("请先生成一次结果");
@@ -2727,6 +5060,29 @@
           contract = JSON.parse(String(latestStructured.finalPrompt || "{}"));
         } catch {
           pushMessage("当前终版提示词不是有效契约JSON，无法导出。", "assistant");
+          return;
+        }
+
+        const designPref = getPptDesignPref();
+        if (String(designPref.template || "") === "officeplus") {
+          if (!await ensureOfficeplusTemplateReady()) {
+            return;
+          }
+          contract.templateSource = "officeplus";
+          contract.externalTemplateId = designPref.externalTemplateId || contract.externalTemplateId || "";
+          contract.externalTemplateName = designPref.externalTemplateName || contract.externalTemplateName || "";
+          if (officeTemplateRuntimeFile.base64) {
+            contract.templateFileName = officeTemplateRuntimeFile.fileName || "officeplus-template.pptx";
+            contract.templateFileBase64 = officeTemplateRuntimeFile.base64;
+          }
+        }
+
+        const gateCheck = evaluateQualityGate(latestQaResult, latestPptSpec || contract);
+        if (!gateCheck.pass) {
+          pushMessage(
+            `导出已拦截：当前未通过质量闸门。${gateCheck.reasons.join("；")}。请先优化后再导出。\n${formatLatestQualitySummary(latestQaResult, latestPptSpec || contract)}`,
+            "assistant"
+          );
           return;
         }
 
@@ -2850,6 +5206,13 @@
             }
 
             if (savedByServer) {
+              recordTemplateQualityEvent({
+                stage: "export",
+                qaResult: latestQaResult,
+                spec: latestPptSpec || contract,
+                exported: true,
+                engine: savedByServer.engine || "unknown"
+              });
               pushMessage(
                 `PPT已生成并已保存到项目目录：${savedByServer.relativePath}（${savedByServer.bytes} bytes，${savedByServer.engine}）。请直接在本地打开该文件查看成品。`,
                 "assistant"
@@ -2858,9 +5221,29 @@
             }
           }
 
+          recordTemplateQualityEvent({
+            stage: "export",
+            qaResult: latestQaResult,
+            spec: latestPptSpec || contract,
+            exported: true,
+            engine
+          });
           pushMessage(saved ? `PPT导出完成：${fileName}（引擎：${engine}）` : `PPT已生成：${fileName}（引擎：${engine}）。当前环境阻止自动下载，已为你打开预览页，请手动保存。`, "assistant");
         } catch (error) {
-          pushMessage(`PPT导出失败：${error.message || error}`, "assistant");
+          recordTemplateQualityEvent({
+            stage: "export_failed",
+            qaResult: latestQaResult,
+            spec: latestPptSpec || contract,
+            exported: false,
+            engine: "failed"
+          });
+          const errText = String((error && error.message) || error || "导出失败");
+          const guidance = explainOfficeplusExportError(errText);
+          if (guidance.length) {
+            pushMessage(`PPT导出失败：${errText}\n${guidance.join("\n")}`, "assistant");
+          } else {
+            pushMessage(`PPT导出失败：${errText}`, "assistant");
+          }
         } finally {
           sendEl.disabled = false;
           sendEl.textContent = "↑";
@@ -2925,10 +5308,16 @@
 
         const requestTimeout = Number.isFinite(opts.timeoutMs) ? opts.timeoutMs : isMobileClient ? 12000 : REQUEST_TIMEOUT_MS;
         const requestRetry = Number.isFinite(opts.retryCount) ? opts.retryCount : isMobileClient ? 1 : REQUEST_RETRY;
-        const hardDeadline = Date.now() + (isMobileClient ? 32000 : 52000);
+        const hardDeadline = Date.now() + (isMobileClient ? 60000 : 120000);
+        const thinkingLevel = opts.thinkingLevel || (thinkingLevelSelectEl && thinkingLevelSelectEl.value) || readThinkingLevel();
+        const thinkingProfile = resolveThinkingProfile(thinkingLevel);
+        const isLocalProxy = (endpoint) => {
+          const t = normalizeProxyEndpoint(endpoint);
+          return t === "/api/llm-proxy" || /^https?:\/\/localhost(?::\d+)?\/api\/llm-proxy$/i.test(t);
+        };
 
         const primaryEndpoint = await ensureProxyEndpoint();
-        const endpointCandidates = [primaryEndpoint, ...buildProxyCandidates()].filter(Boolean);
+        const endpointCandidates = [primaryEndpoint, ...buildProxyCandidates()].filter((x) => !!x && isLocalProxy(x));
         const uniqueEndpoints = [...new Set(endpointCandidates.map(normalizeProxyEndpoint))];
         const pageHint = opts.pageCount
           ? `数量约束：输出至少覆盖${opts.pageCount}个模块，且在finalPrompt中明确该约束。`
@@ -2970,8 +5359,8 @@
                 body: JSON.stringify({
                   system: systemText,
                   userText,
-                  maxTokens: 850,
-                  model: DEFAULT_DEEPSEEK_MODEL
+                  maxTokens: Number.isFinite(opts.maxTokens) ? opts.maxTokens : 850,
+                  model: String(opts.model || thinkingProfile.model || DEFAULT_DEEPSEEK_MODEL)
                 })
               },
               requestRetry,
@@ -2982,7 +5371,13 @@
             continue;
           }
 
-          const raw = await resp.text();
+          let raw = "";
+          try {
+            raw = await withHardTimeout(resp.text(), requestTimeout + 3000, "读取模型响应超时");
+          } catch {
+            lastErrorMessage = `模型响应读取超时: ${endpoint}`;
+            continue;
+          }
           let data = {};
           try {
             data = raw ? JSON.parse(raw) : {};
@@ -3008,6 +5403,12 @@
             (data && typeof data.output_text === "string" && data.output_text) ||
             (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ||
             "";
+          latestLlmMeta = {
+            provider: data && data.provider ? String(data.provider) : "unknown",
+            model: data && data.model ? String(data.model) : "unknown",
+            usage: data && data.usage ? data.usage : null,
+            endpoint
+          };
           activeProxyEndpoint = endpoint;
           localStorage.setItem(PROXY_STORAGE_KEY, endpoint);
           proxyEndpointInputEl.value = endpoint;
@@ -3038,6 +5439,16 @@
 
       if (dropzoneEl) {
         dropzoneEl.addEventListener("click", openFilePicker);
+      }
+
+      if (thinkingLevelSelectEl) {
+        applyThinkingLevelUi();
+        thinkingLevelSelectEl.addEventListener("change", () => {
+          const level = String(thinkingLevelSelectEl.value || "deep");
+          writeThinkingLevel(level);
+          const profile = resolveThinkingProfile(level);
+          proxyStatusEl.textContent = `模型档位：${profile.label}（${profile.model}）`;
+        });
       }
 
       let dragDepth = 0;
@@ -3091,6 +5502,10 @@
       if (quickPptBtnEl) {
         quickPptBtnEl.addEventListener("click", async () => {
           if (sendEl.disabled) return;
+
+          if (!await ensureOfficeplusTemplateReady()) {
+            return;
+          }
 
           if (hasLatestContractReady()) {
             await exportPptByLatestContract();
@@ -3158,7 +5573,62 @@
         }
         if (cmd === "/ppt export") {
           inputEl.value = "";
+          if (!await ensureOfficeplusTemplateReady()) return;
           await exportPptByLatestContract();
+          return;
+        }
+        if (cmd === "/ppt officeplus-check" || cmd === "/officeplus check") {
+          inputEl.value = "";
+          await runOfficeplusCheck();
+          return;
+        }
+        if (cmd === "/ppt pp-open" || cmd === "/ppt officeplus-open") {
+          inputEl.value = "";
+          await runPowerPointTemplateWorkflow();
+          return;
+        }
+        if (cmd === "/ppt pp-sync" || cmd === "/ppt officeplus-sync") {
+          inputEl.value = "";
+          await syncLatestTemplateFromInbox();
+          return;
+        }
+        if (cmd === "/ppt score") {
+          inputEl.value = "";
+          pushMessage(formatLatestQualitySummary(latestQaResult, latestPptSpec || latestSpec || null), "assistant");
+          return;
+        }
+        if (cmd === "/ppt templates") {
+          inputEl.value = "";
+          pushMessage(formatTemplateLeaderboardText(8), "assistant");
+          return;
+        }
+        if (cmd === "/ppt gate on") {
+          inputEl.value = "";
+          setQualityGateEnabled(true);
+          const cfg = getQualityGateConfig();
+          pushMessage(`质量闸门已开启：overall>=${cfg.minOverall}，constraint>=${cfg.minConstraint}，edu.readability>=${cfg.minReadability}`, "assistant");
+          return;
+        }
+        if (cmd === "/ppt gate off") {
+          inputEl.value = "";
+          setQualityGateEnabled(false);
+          pushMessage("质量闸门已关闭（仅建议调试时使用）。", "assistant");
+          return;
+        }
+        if (cmd === "/ppt optimize") {
+          inputEl.value = "";
+          if (!latestPptSpec || !Array.isArray(latestPptSpec.slides) || !latestPptSpec.slides.length) {
+            pushMessage("暂无可优化的PPT规格，请先生成一次。", "assistant");
+            return;
+          }
+          const validated = validatePptSpec(latestPptSpec);
+          const optimized = optimizePptSpecForQuality(latestPptSpec, validated, 2);
+          latestPptSpec = optimized.spec;
+          latestStructured = specToStructuredBlocks(optimized.spec, optimized.qa);
+          latestQaResult = optimized.quality;
+          latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
+          renderDeliverable(latestStructured, optimized.quality, latestSpec || {});
+          pushMessage(`已完成本地优化：总分=${optimized.quality.scores.overall}，约束=${optimized.quality.scores.constraint}，可读性=${optimized.quality.scores.readability}。`, "assistant");
           return;
         }
 
@@ -3185,17 +5655,27 @@
 
         const semanticPack = buildSemanticPack(internalText, contextText);
         const designPref = getPptDesignPref();
-        const templateSpec = templateSelectionToSpec(designPref.template);
+        const templateSpec = templateSelectionToSpec(designPref.template, designPref);
         semanticPack.fields = {
           ...semanticPack.fields,
           ...silent.fields,
           pageCount: silent.pageCount,
-          preferredSceneType: templateSpec.preferredSceneType,
-          preferredTemplateId: templateSpec.preferredTemplateId,
+          preferredSceneType: (designPref.template === "officeplus" ? (designPref.externalSceneType || templateSpec.preferredSceneType) : templateSpec.preferredSceneType),
+          preferredTemplateId: (designPref.template === "officeplus" ? (designPref.externalTemplateId || templateSpec.preferredTemplateId) : templateSpec.preferredTemplateId),
+          templateSource: designPref.templateSource || (designPref.template === "officeplus" ? "officeplus" : "internal"),
+          externalTemplateId: designPref.externalTemplateId || "",
+          externalTemplateName: designPref.externalTemplateName || "",
+          templateFileName: officeTemplateRuntimeFile.fileName || designPref.externalTemplateFileName || "",
+          templateFileBase64: officeTemplateRuntimeFile.base64 || "",
           fontTheme: designPref.fontTheme,
           chartStyle: designPref.chartStyle,
           narrativeMode: designPref.narrativeMode || resolveNarrativeMode(designPref.template)
         };
+
+        if (String(semanticPack.fields.templateSource || "") === "officeplus" && !await ensureOfficeplusTemplateReady()) {
+          return;
+        }
+
         const requestMeta = {
           pageCount: silent.pageCount || null,
           domain: semanticPack.fields && semanticPack.fields.subject,
@@ -3230,30 +5710,67 @@
         sendEl.textContent = "生成中...";
 
         try {
-          const answer = await requestDeepSeekDirect(payload, {
-            ...requestMeta,
-            timeoutMs: REQUEST_TIMEOUT_MS,
-            retryCount: REQUEST_RETRY
-          });
-          let structured = parseStructuredResponse(answer);
-          if (!isStructuredComplete(structured)) {
-            structured = await normalizeStructuredOutput(answer, { pageCount: latestPageTarget });
+          let ppt;
+          const lockTemplateByOfficeplus = String((semanticPack.fields && semanticPack.fields.templateSource) || "") === "officeplus";
+          if (lockTemplateByOfficeplus) {
+            ppt = buildStructuredPptDeliverable(text, semanticPack.fields, latestPageTarget || null);
+            pushMessage(`模板来源：OfficePLUS（${semanticPack.fields.externalTemplateName || semanticPack.fields.preferredTemplateId}），已锁定模板骨架。`, "assistant");
+          } else {
+            const contract = await requestDeepSeekPptContract(text, semanticPack.fields, latestPageTarget || null);
+            if (contract) {
+              ppt = structuredFromContract(contract);
+              if (ppt && ppt.qa && !ppt.qa.pass) {
+                const dsRepaired = await repairPptSpecWithDeepSeek(ppt.spec, ppt.qa, 3);
+                if (dsRepaired && dsRepaired.spec) {
+                  const hardFixed = hardGateRepairPptSpec(dsRepaired.spec, 1);
+                  ppt = {
+                    spec: hardFixed.spec,
+                    qa: hardFixed.qa,
+                    structured: specToStructuredBlocks(hardFixed.spec, hardFixed.qa)
+                  };
+                }
+              }
+            } else {
+              throw new Error("DeepSeek未返回有效PPT契约JSON");
+            }
           }
-          structured = ensureStrongStructuredOutput(structured, semanticPack.fields, "在线生成");
 
-          const aiSeedText = [
-            text,
-            semanticPack.fields && semanticPack.fields.topic,
-            structured.pageDetails
-          ]
-            .filter(Boolean)
-            .join("\n");
-
-          const mergedFields = {
-            ...semanticPack.fields,
-            topic: normalizeBusinessTopic((semanticPack.fields && semanticPack.fields.topic) || safeTopic(aiSeedText))
+          ppt.spec = enforceTeachingLoadConstraints(applyMandatorySlideLibrary(enforceContractSlideVariety(ppt.spec)));
+          const baseFixed = hardGateRepairPptSpec(ppt.spec, 1);
+          const optimizedPack = optimizePptSpecForQuality(baseFixed.spec, baseFixed.qa, 2);
+          ppt = {
+            spec: optimizedPack.spec,
+            qa: optimizedPack.qa,
+            structured: specToStructuredBlocks(optimizedPack.spec, optimizedPack.qa)
           };
-          const ppt = buildStructuredPptDeliverable(aiSeedText, mergedFields, latestPageTarget || null);
+
+          const reviewA = await reviewPptSpecWithSecondModel(ppt.spec, text);
+          const scoreA = evaluatePptQualityScore(ppt.spec, ppt.qa, reviewA);
+
+          if (reviewA && Array.isArray(reviewA.lowSlides) && reviewA.lowSlides.length) {
+            const rewrittenSpec = await autoRewriteLowScoreSlides(ppt.spec, reviewA, text);
+            const fixedAfterRewrite = hardGateRepairPptSpec(rewrittenSpec, 1);
+            const reviewB = await reviewPptSpecWithSecondModel(fixedAfterRewrite.spec, text);
+            const scoreB = evaluatePptQualityScore(fixedAfterRewrite.spec, fixedAfterRewrite.qa, reviewB);
+            const regA = calcTeachingRegressionMetrics(ppt.spec);
+            const regB = calcTeachingRegressionMetrics(fixedAfterRewrite.spec);
+            if (Number(scoreB.scores.overall || 0) >= Number(scoreA.scores.overall || 0)) {
+              ppt = {
+                spec: fixedAfterRewrite.spec,
+                qa: fixedAfterRewrite.qa,
+                structured: specToStructuredBlocks(fixedAfterRewrite.spec, fixedAfterRewrite.qa)
+              };
+            }
+            pushMessage(
+              `同题A/B：A=${scoreA.scores.overall}（初稿） -> B=${scoreB.scores.overall}（评审改写后），低分页=${reviewA.lowSlides.length}`,
+              "assistant"
+            );
+            pushMessage(
+              `回归指标A/B：平均字数 ${regA.avgCharsPerSlide}->${regB.avgCharsPerSlide} | 版式多样性 ${regA.layoutVariety}->${regB.layoutVariety} | 教学页占比 ${regA.teachingSlideRatio}->${regB.teachingSlideRatio} | 章节节奏完整率 ${regA.rhythmCoverage}->${regB.rhythmCoverage}`,
+              "assistant"
+            );
+          }
+
           latestPptSpec = ppt.spec;
           latestStructured = ppt.structured;
           const runtimeSpec = {
@@ -3264,22 +5781,35 @@
             stages: ["目标", "约束", "执行步骤", "校验", "交付"]
           };
           latestSpec = runtimeSpec;
-          const firstQa = {
-            pass: !!(ppt.qa && ppt.qa.pass),
-            issues: (ppt.qa && ppt.qa.issues) || [],
-            generatedPageCount: ppt.spec.pageCount,
-            scores: {
-              constraint: ppt.qa && ppt.qa.pass ? 1 : 0.8,
-              coverage: ppt.qa && ppt.qa.pass ? 1 : 0.75,
-              coherence: 1,
-              overall: ppt.qa && ppt.qa.pass ? 1 : 0.82
-            }
-          };
+          const finalReview = await reviewPptSpecWithSecondModel(ppt.spec, text);
+          const firstQa = evaluatePptQualityScore(ppt.spec, ppt.qa, finalReview);
+          const finalReg = calcTeachingRegressionMetrics(ppt.spec);
           const metric = recordFurMetric(!!firstQa.pass);
+          recordTemplateQualityEvent({
+            stage: "generate",
+            qaResult: firstQa,
+            spec: ppt.spec,
+            exported: false,
+            engine: ""
+          });
           latestQaResult = firstQa;
           latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
           renderDeliverable(latestStructured, firstQa, runtimeSpec || {});
-          proxyStatusEl.textContent = "在线模式：已完成语义理解 + 结构化PPT规格生成";
+          const llmUsage = latestLlmMeta && latestLlmMeta.usage ? latestLlmMeta.usage : null;
+          const tokenText = llmUsage && (llmUsage.total_tokens || llmUsage.prompt_tokens || llmUsage.completion_tokens)
+            ? ` | tokens=${llmUsage.total_tokens || "-"}`
+            : "";
+          proxyStatusEl.textContent = `在线模式：LLM=${(latestLlmMeta && latestLlmMeta.provider) || "unknown"}/${(latestLlmMeta && latestLlmMeta.model) || "unknown"}${tokenText}`;
+          pushMessage(`模型回执：provider=${(latestLlmMeta && latestLlmMeta.provider) || "unknown"} model=${(latestLlmMeta && latestLlmMeta.model) || "unknown"}${tokenText}`, "assistant");
+          if (finalReview && finalReview.reviewerModel) {
+            pushMessage(`评审回执：reviewer=${finalReview.reviewerModel} overall=${finalReview.overall}`, "assistant");
+          }
+          pushMessage(
+            `同题回归：平均字数=${finalReg.avgCharsPerSlide} | 版式多样性=${finalReg.layoutVariety} | 教学页占比=${finalReg.teachingSlideRatio} | 节奏完整率=${finalReg.rhythmCoverage}`,
+            "assistant"
+          );
+          pushMessage(formatLatestQualitySummary(firstQa, ppt.spec), "assistant");
+          pushMessage(formatTemplateLeaderboardText(3), "assistant");
           pushMessage(`系统指标：首次可直接出稿率=${metric.rate}%（${metric.firstDirect}/${metric.total}）`, "assistant");
 
           if (pendingAutoExport) {
@@ -3288,40 +5818,60 @@
           return;
         } catch (error) {
           const errMsg = String((error && error.message) || error || "在线生成失败");
-          const fallbackFields = {
-            ...semanticPack.fields,
-            topic: normalizeBusinessTopic((semanticPack.fields && semanticPack.fields.topic) || safeTopic(text))
-          };
-          const fallbackPpt = buildStructuredPptDeliverable(text, fallbackFields, latestPageTarget || null);
-          latestPptSpec = fallbackPpt.spec;
-          latestStructured = fallbackPpt.structured;
-          const fallbackRuntimeSpec = {
-            ...(latestSpec || {}),
-            subject: fallbackPpt.spec.sceneType,
-            topic: fallbackPpt.spec.topic,
-            pageCount: fallbackPpt.spec.pageCount,
-            stages: ["目标", "约束", "执行步骤", "校验", "交付"]
-          };
-          latestSpec = fallbackRuntimeSpec;
-          const fallbackQa = {
-            pass: !!(fallbackPpt.qa && fallbackPpt.qa.pass),
-            issues: (fallbackPpt.qa && fallbackPpt.qa.issues) || [],
-            generatedPageCount: fallbackPpt.spec.pageCount,
-            scores: {
-              constraint: fallbackPpt.qa && fallbackPpt.qa.pass ? 1 : 0.8,
-              coverage: fallbackPpt.qa && fallbackPpt.qa.pass ? 1 : 0.75,
-              coherence: 1,
-              overall: fallbackPpt.qa && fallbackPpt.qa.pass ? 1 : 0.82
+          const lockTemplateByOfficeplus = String((semanticPack.fields && semanticPack.fields.templateSource) || "") === "officeplus";
+          if (!lockTemplateByOfficeplus) {
+            try {
+              let localPpt = buildStructuredPptDeliverable(text, semanticPack.fields, latestPageTarget || null);
+              localPpt.spec = enforceTeachingLoadConstraints(applyMandatorySlideLibrary(enforceContractSlideVariety(localPpt.spec)));
+              const localFixed = hardGateRepairPptSpec(localPpt.spec, 1);
+              const localOptimized = optimizePptSpecForQuality(localFixed.spec, localFixed.qa, 2);
+              localPpt = {
+                spec: localOptimized.spec,
+                qa: localOptimized.qa,
+                structured: specToStructuredBlocks(localOptimized.spec, localOptimized.qa)
+              };
+
+              latestPptSpec = localPpt.spec;
+              latestStructured = localPpt.structured;
+              const runtimeSpec = {
+                ...(latestSpec || {}),
+                subject: localPpt.spec.sceneType,
+                topic: localPpt.spec.topic,
+                pageCount: localPpt.spec.pageCount,
+                stages: ["目标", "约束", "执行步骤", "校验", "交付"]
+              };
+              latestSpec = runtimeSpec;
+
+              const localQa = evaluatePptQualityScore(localPpt.spec, localPpt.qa, null);
+              latestQaResult = localQa;
+              latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
+              renderDeliverable(latestStructured, localQa, runtimeSpec || {});
+              recordTemplateQualityEvent({
+                stage: "generate_fallback",
+                qaResult: localQa,
+                spec: localPpt.spec,
+                exported: false,
+                engine: "local-structured"
+              });
+
+              pushMessage(`在线生成失败：${errMsg}。已自动切换本地稳态生成，可继续导出PPT。`, "assistant");
+              pushMessage(formatLatestQualitySummary(localQa, localPpt.spec), "assistant");
+              proxyStatusEl.textContent = `在线失败，已本地回退：${errMsg}`;
+
+              if (pendingAutoExport) {
+                await exportPptByLatestContract();
+              }
+              return;
+            } catch (fallbackError) {
+              const fallbackMsg = String((fallbackError && fallbackError.message) || fallbackError || "本地回退失败");
+              pushMessage(`在线生成失败：${errMsg}；本地回退也失败：${fallbackMsg}。请检查当前LLM配置（智谱/DeepSeek）后重试。`, "assistant");
+              proxyStatusEl.textContent = `在线失败（回退失败）：${errMsg}`;
+              return;
             }
-          };
-          latestQaResult = fallbackQa;
-          latestAssistantText = latestStructured.finalPrompt || latestAssistantText;
-          renderDeliverable(latestStructured, fallbackQa, fallbackRuntimeSpec || {});
-          pushMessage(`在线生成失败：${errMsg}。已自动回退为本地高质量结构化生成。`, "assistant");
-          proxyStatusEl.textContent = `在线失败已回退：${errMsg}`;
-          if (pendingAutoExport) {
-            await exportPptByLatestContract();
           }
+
+          pushMessage(`在线生成失败：${errMsg}。OfficePLUS 模式已禁用本地内容回退，请检查当前LLM配置（智谱/DeepSeek）后重试。`, "assistant");
+          proxyStatusEl.textContent = `在线失败（OfficePLUS禁回退）：${errMsg}`;
           return;
         } finally {
           sendEl.disabled = false;
@@ -3511,6 +6061,8 @@
 
       loadBenchmarkBoard();
       bindPptDesignControls();
+      bindOfficeTemplateModal();
+      updateOfficeTemplateFileUi();
       ensureProxyEndpoint();
 
     </script>

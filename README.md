@@ -131,6 +131,14 @@ The app now supports a direct adapter from `aippt.v1` contract JSON to `.pptx` o
    - `AIPPT_API_KEY_HEADER` (used when auth mode is `header`)
    - `AIPPT_API_EXTRA_HEADERS` (JSON object string)
 
+- Windows PowerPoint COM export (optional, OfficePLUS high-fidelity local path):
+
+    - `POWERPOINT_COM_ENABLED=true` (default on Windows)
+    - `POWERPOINT_COM_TIMEOUT_MS=120000`
+    - When OfficePLUS template file is present and upstream AIPPT is unavailable,
+       backend will try local PowerPoint COM automation first, then fallback to
+       local `pptxgenjs` for stability.
+
 - Provider mapping behavior:
 
    - `generic`:

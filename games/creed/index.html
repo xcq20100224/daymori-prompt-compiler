@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>信念之地 · CREED</title>
+    <style>
+      :root {
+        --bg-0: #050403;
+        --bg-1: #120c07;
+        --brown: #3a2717;
+        --brown-2: #241710;
+        --gold: #e7b661;
+        --gold-soft: #f3d79a;
+        --text: #f4ecdf;
+        --muted: #9c8c76;
+        --line: #4a3620;
+      }
+
+      * {
+        box-sizing: border-box;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: var(--bg-0);
+        color: var(--text);
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      #stage {
+        position: fixed;
+        inset: 0;
+        display: block;
+        touch-action: none;
+      }
+
+      /* ---------- HUD ---------- */
+      .hud {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 14px 16px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        pointer-events: none;
+        z-index: 5;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+      }
+
+      .hud .region {
+        font-size: 13px;
+        letter-spacing: 2px;
+        color: var(--gold-soft);
+        opacity: 0.9;
+      }
+
+      .hud .region small {
+        display: block;
+        font-size: 11px;
+        letter-spacing: 1px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .meter {
+        min-width: 180px;
+        text-align: right;
+      }
+
+      .meter .label {
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: var(--muted);
+      }
+
+      .meter .val {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--gold);
+      }
+
+      .bar {
+        margin-top: 6px;
+        height: 6px;
+        width: 180px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+
+      .bar > i {
+        display: block;
+        height: 100%;
+        width: 0%;
+        border-radius: 6px;
+        background: linear-gradient(90deg, var(--brown), var(--gold));
+        transition: width 0.4s ease;
+      }
+
+      /* ---------- Dialogue ---------- */
+      .dialogue {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        transform: translateX(-50%) translateY(20px);
+        width: min(680px, calc(100% - 28px));
+        background: linear-gradient(160deg, rgba(36, 23, 16, 0.96), rgba(10, 7, 5, 0.97));
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px 20px 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(231, 182, 97, 0.12);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        z-index: 6;
+      }
+
+      .dialogue.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+        pointer-events: auto;
+      }
+
+      .dialogue .who {
+        font-size: 12px;
+        letter-spacing: 3px;
+        color: var(--gold);
+        margin-bottom: 8px;
+      }
+
+      .dialogue .say {
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--text);
+        min-height: 52px;
+      }
+
+      .choices {
+        margin-top: 14px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .choice {
+        pointer-events: auto;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        border-radius: 10px;
+        padding: 11px 14px;
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: left;
+        transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+      }
+
+      .choice:hover {
+        background: rgba(231, 182, 97, 0.1);
+        border-color: var(--gold);
+      }
+
+      .choice:active {
+        transform: scale(0.99);
+      }
+
+      .choice .k {
+        color: var(--gold);
+        font-weight: 700;
+        margin-right: 8px;
+      }
+
+      /* ---------- Intro / End ---------- */
+      .veil {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        background: radial-gradient(1000px 600px at 50% 30%, #1a1108 0%, #060402 70%);
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: 24px;
+        transition: opacity 0.6s ease;
+      }
+
+      .veil.hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .veil h1 {
+        font-size: clamp(34px, 8vw, 66px);
+        letter-spacing: 14px;
+        margin: 0 0 6px;
+        color: var(--gold-soft);
+        text-shadow: 0 0 40px rgba(231, 182, 97, 0.35);
+      }
+
+      .veil .sub {
+        letter-spacing: 6px;
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 26px;
+      }
+
+      .veil p {
+        max-width: 560px;
+        line-height: 1.9;
+        color: #cdbda3;
+        font-size: 15px;
+        margin: 0 auto 30px;
+      }
+
+      .btn {
+        cursor: pointer;
+        border: 1px solid var(--gold);
+        color: var(--bg-0);
+        background: linear-gradient(180deg, var(--gold-soft), var(--gold));
+        padding: 13px 34px;
+        border-radius: 999px;
+        font-size: 15px;
+        letter-spacing: 3px;
+        font-weight: 700;
+        box-shadow: 0 10px 30px rgba(231, 182, 97, 0.25);
+        transition: transform 0.08s ease, box-shadow 0.2s ease;
+      }
+
+      .btn:hover {
+        box-shadow: 0 14px 40px rgba(231, 182, 97, 0.4);
+      }
+
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      .hint {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 14px;
+        font-size: 12px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        z-index: 4;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+      }
+
+      /* ---------- Mobile joystick ---------- */
+      .stick {
+        position: fixed;
+        z-index: 4;
+        width: 118px;
+        height: 118px;
+        border-radius: 50%;
+        border: 1px solid var(--line);
+        background: rgba(20, 12, 7, 0.4);
+        display: none;
+        touch-action: none;
+      }
+
+      .stick > i {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 52px;
+        height: 52px;
+        margin: -26px 0 0 -26px;
+        border-radius: 50%;
+        background: rgba(231, 182, 97, 0.45);
+        border: 1px solid var(--gold);
+      }
+
+      @media (hover: none) and (pointer: coarse) {
+        .stick {
+          display: block;
+        }
+      }
+
+      .toast {
+        position: fixed;
+        top: 74px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-8px);
+        background: rgba(36, 23, 16, 0.95);
+        border: 1px solid var(--gold);
+        color: var(--gold-soft);
+        padding: 9px 18px;
+        border-radius: 999px;
+        font-size: 13px;
+        letter-spacing: 2px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 7;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="stage"></canvas>
+
+    <div class="hud">
+      <div class="region" id="regionName">
+        灰烬平原
+        <small id="regionDesc">被遗忘的人在此沉默</small>
+      </div>
+      <div class="meter">
+        <div class="label">信念之光</div>
+        <div class="val"><span id="lightVal">0</span></div>
+        <div class="bar"><i id="lightBar"></i></div>
+        <div class="label" style="margin-top: 8px">已点燃 <span id="souls">0</span> / <span id="soulsTotal">6</span> 人</div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="dialogue" id="dialogue">
+      <div class="who" id="dWho">旅人</div>
+      <div class="say" id="dSay"></div>
+      <div class="choices" id="dChoices"></div>
+    </div>
+
+    <div class="hint" id="hint">WASD / 方向键移动 · 走近发光之人按 空格 / E 对话</div>
+
+    <div class="stick" id="stick"><i></i></div>
+
+    <div class="veil" id="veil">
+      <h1>信念之地</h1>
+      <div class="sub">C · R · E · E · D</div>
+      <p>
+        这个世界正在失去光。<br />
+        不是因为怪物，而是因为人们忘记了自己为何而活。<br />
+        你没有武器，也没有魔法——你唯一的力量，<br />
+        是让别人重新想起心中的使命。<br />
+        <span style="color: var(--gold)">每点燃一个人，世界就亮一分。</span>
+      </p>
+      <button class="btn" id="startBtn">踏上旅途</button>
+    </div>
+
+    <script>
+      "use strict";
+
+      // ============================================================
+      // 《信念之地 · CREED》 —— 第一性原理开放世界原型
+      // 核心：货币不是"力量"，而是"信念之光"。
+      // 唤醒失去使命的人 → 世界被点亮 → 新区域开放。
+      // ============================================================
+
+      const canvas = document.getElementById("stage");
+      const ctx = canvas.getContext("2d");
+      let W = 0, H = 0, DPR = 1;
+
+      function resize() {
+        DPR = Math.min(window.devicePixelRatio || 1, 2);
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = W * DPR;
+        canvas.height = H * DPR;
+        canvas.style.width = W + "px";
+        canvas.style.height = H + "px";
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+      window.addEventListener("resize", resize);
+      resize();
+
+      // ---------- 世界（比屏幕大得多 = 开放世界感） ----------
+      const WORLD = { w: 3600, h: 2600 };
+
+      // 区域：每个区域有名字、中心、半径、氛围色
+      const REGIONS = [
+        { name: "灰烬平原", desc: "被遗忘的人在此沉默", x: 600, y: 1300, r: 700, tint: "#2a1d12" },
+        { name: "回声山谷", desc: "曾经的英雄葬在这里", x: 1800, y: 700, r: 720, tint: "#22201a" },
+        { name: "静默之城", desc: "无人再抬头看星", x: 2000, y: 2000, r: 760, tint: "#1c1616" },
+        { name: "破晓岬角", desc: "世界尽头，光的源头", x: 3100, y: 1300, r: 640, tint: "#2c2213" },
+      ];
+
+      // ---------- 玩家 ----------
+      const player = {
+        x: 600, y: 1300, r: 15,
+        vx: 0, vy: 0, speed: 3.4, face: 1, walk: 0,
+      };
+
+      const cam = { x: 0, y: 0 };
+
+      // ---------- 失去信念的人 (NPC) ----------
+      // 每个人有：残缺的使命、三个对话节点、点亮后世界照亮
+      const SOULS = [
+        {
+          x: 780, y: 1180, name: "熄灯的守望者", lit: false, glow: 0,
+          lines: [
+            "我曾在灯塔守了三十年……可船再也不来了。守着一盏没人需要的灯，有什么意义？",
+          ],
+          q: "他不再相信自己的坚守有价值。",
+          choices: [
+            { t: "灯塔不是为了船，是为了让迷路的人知道——岸还在。", good: true,
+              r: "……岸还在。是啊，只要还有一个人可能迷路，这灯就得亮着。我懂了。" },
+            { t: "那就熄灯吧，反正没人看。", good: false,
+              r: "你说得对，没人看……不，不对。总会有人看的。我不该问你。" },
+          ],
+        },
+        {
+          x: 500, y: 1480, name: "放下锤子的铁匠", lit: false, glow: 0,
+          lines: ["我打了一辈子剑，可战争早结束了。我的手艺，成了没用的东西。"],
+          q: "他把自己的价值绑死在了'战争'上。",
+          choices: [
+            { t: "剑能保护人，犁也能养活人。你的手能造的，从来不止杀戮。", good: true,
+              r: "犁……对，我可以打农具、打工具。让人活下去，也是一种战斗。" },
+            { t: "时代变了，接受现实吧。", good: false,
+              r: "接受……可我的手还想创造点什么。也许我该自己找答案。" },
+          ],
+        },
+        {
+          x: 1750, y: 620, name: "遗忘名字的老兵", lit: false, glow: 0,
+          lines: ["我的战友都记得英雄的名字，却没人记得我做了什么。我像从没存在过。"],
+          q: "他渴望被承认，却把承认交给了别人。",
+          choices: [
+            { t: "英雄不是被记住的人，是明知无人记得、仍然去做的人。", good: true,
+              r: "明知无人记得……仍然去做。那我，一直都是英雄。谢谢你，旅人。" },
+            { t: "我会记住你的名字。", good: false,
+              r: "你会忘的，人都会。但……也许我该先自己记住自己。" },
+          ],
+        },
+        {
+          x: 1950, y: 820, name: "停笔的诗人", lit: false, glow: 0,
+          lines: ["我写不出让人流泪的句子了。没有痛苦，就没有诗，可我又害怕痛苦。"],
+          q: "他以为信念必须建立在痛苦之上。",
+          choices: [
+            { t: "最动人的诗，写的不是痛苦，是痛苦里没熄灭的那点光。", good: true,
+              r: "没熄灭的那点光……我一直盯着黑暗，忘了写光。笔又变热了。" },
+            { t: "那就去经历更多痛苦。", good: false,
+              r: "更多痛苦……不，我受够了。也许诗在别的地方。" },
+          ],
+        },
+        {
+          x: 2050, y: 1950, name: "不再仰望的天文学者", lit: false, glow: 0,
+          lines: ["我算出了星星终将熄灭。既然一切都会结束，探索又有什么用？"],
+          q: "他被'终将毁灭'压垮，否定了过程的意义。",
+          choices: [
+            { t: "星星会熄灭，但它的光要走一万年才到这里。意义在路上，不在终点。", good: true,
+              r: "意义在路上……我们现在看到的光，是它一万年前的信念。我要继续看下去。" },
+            { t: "那你可以停下来了。", good: false,
+              r: "停下来……可停下来更空虚。我想我还是得抬头。" },
+          ],
+        },
+        {
+          x: 3050, y: 1300, name: "背对黎明的引路人", lit: false, glow: 0,
+          lines: ["人们都说破晓岬角有光的源头。可我带过太多人，最后都失望而归。我不敢再带路了。"],
+          q: "他因为怕让人失望，放弃了引领的使命。",
+          choices: [
+            { t: "光的源头也许根本不在岬角——是你带的每个人心里,被你点亮的那一簇。", good: true,
+              r: "在他们心里……原来光一直跟着我走。转过身,我就是黎明。走吧,我带你去看真正的光。" },
+            { t: "那我自己去找。", good: false,
+              r: "你一个人会迷路的。也罢……让我最后再带一次路。" },
+          ],
+        },
+      ];
+
+      // ---------- 装饰物（枯树 / 石碑），随世界渲染 ----------
+      const DECOR = [];
+      (function seedDecor() {
+        let s = 1337;
+        const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+        for (let i = 0; i < 90; i++) {
+          DECOR.push({
+            x: rnd() * WORLD.w, y: rnd() * WORLD.h,
+            k: rnd() < 0.5 ? "tree" : "rock",
+            s: 0.7 + rnd() * 0.8,
+          });
+        }
+      })();
+
+      // ---------- 状态 ----------
+      const state = {
+        started: false, light: 0, souls: 0,
+        illum: 0, // 全局照亮 0..1
+        talking: null,
+        currentRegion: REGIONS[0],
+      };
+      const TOTAL = SOULS.length;
+      document.getElementById("soulsTotal").textContent = TOTAL;
+
+      // ---------- 输入 ----------
+      const keys = {};
+      window.addEventListener("keydown", (e) => {
+        keys[e.key.toLowerCase()] = true;
+        if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(e.key.toLowerCase()))
+          e.preventDefault();
+        if ((e.key === " " || e.key.toLowerCase() === "e") && state.started) tryInteract();
+      });
+      window.addEventListener("keyup", (e) => (keys[e.key.toLowerCase()] = false));
+
+      // 摇杆（移动端）
+      const stickEl = document.getElementById("stick");
+      const knob = stickEl.querySelector("i");
+      let stickActive = false, stickVec = { x: 0, y: 0 }, stickId = null;
+      function placeStick(x, y) {
+        stickEl.style.left = x - 59 + "px";
+        stickEl.style.top = y - 59 + "px";
+      }
+      window.addEventListener("touchstart", (e) => {
+        for (const t of e.changedTouches) {
+          if (t.clientX < W * 0.55 && state.started && !state.talking) {
+            stickActive = true; stickId = t.identifier;
+            placeStick(t.clientX, t.clientY);
+            stickEl.dataset.cx = t.clientX; stickEl.dataset.cy = t.clientY;
+          }
+        }
+      }, { passive: true });
+      window.addEventListener("touchmove", (e) => {
+        if (!stickActive) return;
+        for (const t of e.changedTouches) {
+          if (t.identifier !== stickId) continue;
+          const cx = +stickEl.dataset.cx, cy = +stickEl.dataset.cy;
+          let dx = t.clientX - cx, dy = t.clientY - cy;
+          const d = Math.hypot(dx, dy) || 1, max = 46;
+          const cl = Math.min(d, max);
+          stickVec.x = (dx / d); stickVec.y = (dy / d);
+          knob.style.left = 59 + (dx / d) * cl + "px";
+          knob.style.top = 59 + (dy / d) * cl + "px";
+        }
+      }, { passive: true });
+      window.addEventListener("touchend", (e) => {
+        for (const t of e.changedTouches) {
+          if (t.identifier === stickId) {
+            stickActive = false; stickVec = { x: 0, y: 0 };
+            knob.style.left = "50%"; knob.style.top = "50%";
+          }
+        }
+      });
+      // 移动端点击对话
+      canvas.addEventListener("click", () => { if (state.started) tryInteract(); });
+
+      // ---------- 对话系统 ----------
+      const dlg = document.getElementById("dialogue");
+      const dWho = document.getElementById("dWho");
+      const dSay = document.getElementById("dSay");
+      const dChoices = document.getElementById("dChoices");
+
+      function nearestSoul() {
+        let best = null, bd = 70;
+        for (const s of SOULS) {
+          if (s.lit) continue;
+          const d = Math.hypot(s.x - player.x, s.y - player.y);
+          if (d < bd) { bd = d; best = s; }
+        }
+        return best;
+      }
+
+      function tryInteract() {
+        if (state.talking) return;
+        const s = nearestSoul();
+        if (s) openDialogue(s);
+      }
+
+      function openDialogue(s) {
+        state.talking = s;
+        dWho.textContent = s.name;
+        dSay.textContent = s.lines[0];
+        dChoices.innerHTML = "";
+        s.choices.forEach((c, i) => {
+          const el = document.createElement("button");
+          el.className = "choice";
+          el.innerHTML = `<span class="k">${i === 0 ? "①" : "②"}</span>${c.t}`;
+          el.onclick = () => resolveChoice(s, c);
+          dChoices.appendChild(el);
+        });
+        dlg.classList.add("show");
+        document.getElementById("hint").style.opacity = "0";
+      }
+
+      function resolveChoice(s, c) {
+        dSay.textContent = c.r;
+        dChoices.innerHTML = "";
+        const cont = document.createElement("button");
+        cont.className = "choice";
+        cont.innerHTML = c.good
+          ? `<span class="k">✦</span>（他的眼里重新有了光…… 点击继续）`
+          : `<span class="k">·</span>（他仍在迷茫，但你没有夺走他的路…… 点击继续）`;
+        cont.onclick = () => {
+          dlg.classList.remove("show");
+          state.talking = null;
+          if (c.good && !s.lit) igniteSoul(s);
+          else if (!c.good) showToast("有些答案，得他自己找到");
+        };
+        dChoices.appendChild(cont);
+      }
+
+      function igniteSoul(s) {
+        s.lit = true;
+        state.souls++;
+        const gain = 100;
+        state.light += gain;
+        document.getElementById("souls").textContent = state.souls;
+        document.getElementById("lightVal").textContent = state.light;
+        document.getElementById("lightBar").style.width =
+          Math.min(100, (state.souls / TOTAL) * 100) + "%";
+        showToast("✦ 一个人重新想起了自己的使命  +" + gain + " 信念之光");
+        if (state.souls >= TOTAL) setTimeout(showEnding, 1400);
+      }
+
+      // ---------- Toast ----------
+      const toastEl = document.getElementById("toast");
+      let toastT = null;
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastT);
+        toastT = setTimeout(() => toastEl.classList.remove("show"), 2600);
+      }
+
+      // ---------- 结局 ----------
+      function showEnding() {
+        const veil = document.getElementById("veil");
+        veil.innerHTML = `
+          <h1 style="letter-spacing:10px">黎明</h1>
+          <div class="sub">你没有击败任何人</div>
+          <p>
+            你走过四个区域，点燃了六个灵魂。<br/>
+            他们没有变强，世界也没有变简单——<br/>
+            但每个人都重新握住了自己活下去的理由。<br/>
+            <span style="color:var(--gold)">这，就是英雄主义的第一性：<br/>
+            不是让自己发光，是让别人重新愿意发光。</span>
+          </p>
+          <button class="btn" id="againBtn">再次启程</button>`;
+        veil.classList.remove("hide");
+        document.getElementById("againBtn").onclick = () => location.reload();
+      }
+
+      // ---------- 摄像机 & 区域检测 ----------
+      function updateCamera() {
+        cam.x = player.x - W / 2;
+        cam.y = player.y - H / 2;
+        cam.x = Math.max(0, Math.min(WORLD.w - W, cam.x));
+        cam.y = Math.max(0, Math.min(WORLD.h - H, cam.y));
+      }
+
+      function updateRegion() {
+        let best = state.currentRegion, bd = Infinity;
+        for (const rg of REGIONS) {
+          const d = Math.hypot(rg.x - player.x, rg.y - player.y);
+          if (d < bd) { bd = d; best = rg; }
+        }
+        if (best !== state.currentRegion) {
+          state.currentRegion = best;
+          document.getElementById("regionName").firstChild.textContent = best.name + " ";
+          document.getElementById("regionDesc").textContent = best.desc;
+        }
+      }
+
+      // ---------- 更新 ----------
+      function update() {
+        if (!state.started || state.talking) {
+          player.vx *= 0.8; player.vy *= 0.8;
+        } else {
+          let dx = 0, dy = 0;
+          if (keys["w"] || keys["arrowup"]) dy -= 1;
+          if (keys["s"] || keys["arrowdown"]) dy += 1;
+          if (keys["a"] || keys["arrowleft"]) dx -= 1;
+          if (keys["d"] || keys["arrowright"]) dx += 1;
+          if (stickActive) { dx += stickVec.x; dy += stickVec.y; }
+          const m = Math.hypot(dx, dy);
+          if (m > 0) {
+            dx /= m; dy /= m;
+            player.vx = dx * player.speed;
+            player.vy = dy * player.speed;
+            if (dx !== 0) player.face = dx > 0 ? 1 : -1;
+            player.walk += 0.25;
+          } else {
+            player.vx *= 0.7; player.vy *= 0.7;
+          }
+        }
+        player.x += player.vx;
+        player.y += player.vy;
+        player.x = Math.max(20, Math.min(WORLD.w - 20, player.x));
+        player.y = Math.max(20, Math.min(WORLD.h - 20, player.y));
+
+        // 全局照亮平滑趋近目标
+        const target = state.souls / TOTAL;
+        state.illum += (target - state.illum) * 0.03;
+
+        // NPC 光晕呼吸
+        for (const s of SOULS) {
+          s.glow += 0.05;
+        }
+
+        updateCamera();
+        updateRegion();
+      }
+
+      // ---------- 绘制 ----------
+      function drawGround() {
+        // 基础地面：深棕，随照亮变暖
+        const warm = state.illum;
+        const base = mix([18, 12, 7], [46, 34, 20], warm);
+        ctx.fillStyle = `rgb(${base[0]},${base[1]},${base[2]})`;
+        ctx.fillRect(0, 0, W, H);
+
+        // 区域氛围光晕（世界坐标 → 屏幕）
+        for (const rg of REGIONS) {
+          const sx = rg.x - cam.x, sy = rg.y - cam.y;
+          if (sx < -rg.r || sx > W + rg.r || sy < -rg.r || sy > H + rg.r) continue;
+          const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, rg.r);
+          g.addColorStop(0, hexA(rg.tint, 0.5));
+          g.addColorStop(1, hexA(rg.tint, 0));
+          ctx.fillStyle = g;
+          ctx.fillRect(sx - rg.r, sy - rg.r, rg.r * 2, rg.r * 2);
+        }
+
+        // 网格纹理（微弱），暗示"未知世界的坐标"
+        ctx.strokeStyle = `rgba(231,182,97,${0.03 + warm * 0.04})`;
+        ctx.lineWidth = 1;
+        const grid = 120;
+        const ox = -(cam.x % grid), oy = -(cam.y % grid);
+        ctx.beginPath();
+        for (let x = ox; x < W; x += grid) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
+        for (let y = oy; y < H; y += grid) { ctx.moveTo(0, y); ctx.lineTo(W, y); }
+        ctx.stroke();
+      }
+
+      function drawDecor() {
+        for (const d of DECOR) {
+          const sx = d.x - cam.x, sy = d.y - cam.y;
+          if (sx < -40 || sx > W + 40 || sy < -60 || sy > H + 40) continue;
+          ctx.save();
+          ctx.translate(sx, sy);
+          ctx.scale(d.s, d.s);
+          const dim = 0.4 + state.illum * 0.6;
+          if (d.k === "tree") {
+            ctx.fillStyle = `rgba(30,20,12,${dim})`;
+            ctx.beginPath();
+            ctx.ellipse(0, -2, 6, 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = `rgba(58,39,23,${dim})`;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, -2); ctx.lineTo(0, -24);
+            ctx.moveTo(0, -14); ctx.lineTo(-8, -22);
+            ctx.moveTo(0, -14); ctx.lineTo(9, -20);
+            ctx.moveTo(0, -8); ctx.lineTo(7, -14);
+            ctx.stroke();
+          } else {
+            ctx.fillStyle = `rgba(40,30,20,${dim})`;
+            ctx.beginPath();
+            ctx.moveTo(-10, 0); ctx.lineTo(-6, -10); ctx.lineTo(6, -12);
+            ctx.lineTo(11, -2); ctx.lineTo(4, 4); ctx.closePath();
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+      }
+
+      function drawSouls() {
+        for (const s of SOULS) {
+          const sx = s.x - cam.x, sy = s.y - cam.y;
+          if (sx < -80 || sx > W + 80 || sy < -80 || sy > H + 80) continue;
+          const pulse = 0.5 + 0.5 * Math.sin(s.glow);
+
+          // 光晕
+          const glowR = s.lit ? 90 : 34 + pulse * 8;
+          const g = ctx.createRadialGradient(sx, sy - 6, 0, sx, sy - 6, glowR);
+          const col = s.lit ? "231,182,97" : "150,120,80";
+          g.addColorStop(0, `rgba(${col},${s.lit ? 0.55 : 0.18 + pulse * 0.1})`);
+          g.addColorStop(1, `rgba(${col},0)`);
+          ctx.fillStyle = g;
+          ctx.fillRect(sx - glowR, sy - 6 - glowR, glowR * 2, glowR * 2);
+
+          // 身体（简约人形）
+          ctx.save();
+          ctx.translate(sx, sy);
+          const body = s.lit ? "#f3d79a" : "#6b5a44";
+          const head = s.lit ? "#f8e8c4" : "#7d6a52";
+          ctx.fillStyle = body;
+          roundRect(-6, -20, 12, 22, 5); ctx.fill();
+          ctx.fillStyle = head;
+          ctx.beginPath();
+          ctx.arc(0, -26, 6.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          // 未点亮：头顶问号提示可对话
+          if (!s.lit) {
+            const near = Math.hypot(s.x - player.x, s.y - player.y) < 70;
+            ctx.fillStyle = near ? "#e7b661" : "rgba(156,140,118,0.7)";
+            ctx.font = "bold 16px Segoe UI";
+            ctx.textAlign = "center";
+            ctx.fillText(near ? "✦" : "?", sx, sy - 40 - (near ? pulse * 3 : 0));
+          }
+        }
+      }
+
+      function drawPlayer() {
+        const sx = player.x - cam.x, sy = player.y - cam.y;
+        // 玩家自带信念光（随点亮人数增强）
+        const pr = 60 + state.souls * 18;
+        const g = ctx.createRadialGradient(sx, sy - 4, 0, sx, sy - 4, pr);
+        g.addColorStop(0, `rgba(231,182,97,${0.12 + state.souls * 0.04})`);
+        g.addColorStop(1, "rgba(231,182,97,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(sx - pr, sy - 4 - pr, pr * 2, pr * 2);
+
+        ctx.save();
+        ctx.translate(sx, sy);
+        ctx.scale(player.face, 1);
+        const bob = Math.sin(player.walk) * 1.5 * (Math.hypot(player.vx, player.vy) > 0.3 ? 1 : 0);
+        // 斗篷/身体
+        ctx.fillStyle = "#2a1c11";
+        roundRect(-8, -22 + bob, 16, 26, 6); ctx.fill();
+        ctx.fillStyle = "#e7b661";
+        roundRect(-8, -6 + bob, 16, 4, 2); ctx.fill(); // 腰带（金）
+        // 头
+        ctx.fillStyle = "#e9d3ad";
+        ctx.beginPath();
+        ctx.arc(0, -30 + bob, 7, 0, Math.PI * 2);
+        ctx.fill();
+        // 兜帽
+        ctx.fillStyle = "#3a2717";
+        ctx.beginPath();
+        ctx.arc(0, -32 + bob, 8, Math.PI, 0);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 让黑暗随照亮消退的暗角（vignette）
+      function drawVignette() {
+        const dark = 0.7 - state.illum * 0.55;
+        const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, H * 0.85);
+        g.addColorStop(0, "rgba(0,0,0,0)");
+        g.addColorStop(1, `rgba(0,0,0,${dark})`);
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      function drawMiniIndicator() {
+        // 指向最近未点亮之人的箭头（引导，不破坏探索）
+        let best = null, bd = Infinity;
+        for (const s of SOULS) {
+          if (s.lit) continue;
+          const d = Math.hypot(s.x - player.x, s.y - player.y);
+          if (d < bd) { bd = d; best = s; }
+        }
+        if (!best || bd < 260) return;
+        const ang = Math.atan2(best.y - player.y, best.x - player.x);
+        const cx = W / 2, cy = H / 2, rad = Math.min(W, H) * 0.32;
+        const ax = cx + Math.cos(ang) * rad, ay = cy + Math.sin(ang) * rad;
+        ctx.save();
+        ctx.translate(ax, ay);
+        ctx.rotate(ang);
+        ctx.fillStyle = "rgba(231,182,97,0.55)";
+        ctx.beginPath();
+        ctx.moveTo(10, 0); ctx.lineTo(-6, -6); ctx.lineTo(-6, 6); ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, W, H);
+        drawGround();
+        drawDecor();
+        drawSouls();
+        drawPlayer();
+        drawVignette();
+        if (state.started) drawMiniIndicator();
+      }
+
+      // ---------- 工具 ----------
+      function roundRect(x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+      function mix(a, b, t) {
+        return [
+          Math.round(a[0] + (b[0] - a[0]) * t),
+          Math.round(a[1] + (b[1] - a[1]) * t),
+          Math.round(a[2] + (b[2] - a[2]) * t),
+        ];
+      }
+      function hexA(hex, a) {
+        const n = parseInt(hex.slice(1), 16);
+        const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+        return `rgba(${r},${g},${b},${a})`;
+      }
+
+      // ---------- 主循环 ----------
+      function loop() {
+        update();
+        render();
+        requestAnimationFrame(loop);
+      }
+      loop();
+
+      // ---------- 开场 ----------
+      document.getElementById("startBtn").onclick = () => {
+        document.getElementById("veil").classList.add("hide");
+        state.started = true;
+        showToast("找到发光的人，重新点燃他们的使命");
+      };
+    </script>
+  </body>
+</html>

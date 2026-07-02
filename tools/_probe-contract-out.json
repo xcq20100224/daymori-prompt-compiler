@@ -1,0 +1,16 @@
+﻿{
+    "text":  "牛顿第二定律：F=ma，F单位N，m单位kg，a单位m/s²。\n\n例题：\n已知：m=2kg，a=3m/s²\n求：F\n解：F=ma=2kg×3m/s²=6N",
+    "provider":  "zhipu",
+    "model":  "glm-4.5",
+    "usage":  {
+                  "completion_tokens":  60,
+                  "completion_tokens_details":  {
+                                                    "reasoning_tokens":  0
+                                                },
+                  "prompt_tokens":  54,
+                  "prompt_tokens_details":  {
+                                                "cached_tokens":  5
+                                            },
+                  "total_tokens":  114
+              }
+}
