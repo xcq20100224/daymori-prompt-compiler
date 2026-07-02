@@ -1,0 +1,82 @@
+{
+  "runAt": "2026-07-02T05:08:08.170Z",
+  "runDate": "2026-07-02",
+  "templateApplied": true,
+  "totalRuns": 6,
+  "passed": 6,
+  "avgScore": 100,
+  "results": [
+    {
+      "caseId": "biz-growth",
+      "mode": "strict-layout",
+      "ok": true,
+      "status": 200,
+      "score": 100,
+      "minScore": 84,
+      "pass": true,
+      "engine": "local-powerpoint-com",
+      "file": "docs/benchmarks/results/exports/2026-07-02T05-07-50-661Z-Q3.pptx",
+      "error": ""
+    },
+    {
+      "caseId": "biz-growth",
+      "mode": "balanced",
+      "ok": true,
+      "status": 200,
+      "score": 100,
+      "minScore": 68,
+      "pass": true,
+      "engine": "local-powerpoint-com",
+      "file": "docs/benchmarks/results/exports/2026-07-02T05-07-54-211Z-Q3.pptx",
+      "error": ""
+    },
+    {
+      "caseId": "biz-growth",
+      "mode": "strict-content",
+      "ok": true,
+      "status": 200,
+      "score": 100,
+      "minScore": 55,
+      "pass": true,
+      "engine": "local-powerpoint-com",
+      "file": "docs/benchmarks/results/exports/2026-07-02T05-07-58-080Z-Q3.pptx",
+      "error": ""
+    },
+    {
+      "caseId": "edu-physics",
+      "mode": "strict-layout",
+      "ok": true,
+      "status": 200,
+      "score": 100,
+      "minScore": 84,
+      "pass": true,
+      "engine": "local-powerpoint-com",
+      "file": "docs/benchmarks/results/exports/2026-07-02T05-08-01-843Z-daymori-ppt.pptx",
+      "error": ""
+    },
+    {
+      "caseId": "edu-physics",
+      "mode": "balanced",
+      "ok": true,
+      "status": 200,
+      "score": 100,
+      "minScore": 68,
+      "pass": true,
+      "engine": "local-powerpoint-com",
+      "file": "docs/benchmarks/results/exports/2026-07-02T05-08-05-003Z-daymori-ppt.pptx",
+      "error": ""
+    },
+    {
+      "caseId": "edu-physics",
+      "mode": "strict-content",
+      "ok": true,
+      "status": 200,
+      "score": 100,
+      "minScore": 55,
+      "pass": true,
+      "engine": "local-powerpoint-com",
+      "file": "docs/benchmarks/results/exports/2026-07-02T05-08-08-164Z-daymori-ppt.pptx",
+      "error": ""
+    }
+  ]
+}

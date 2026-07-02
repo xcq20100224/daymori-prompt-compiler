@@ -11,7 +11,9 @@
     "bench:teacher": "node tools/run-teacher-benchmark.mjs",
     "bench:teacher:mock": "node tools/run-teacher-benchmark.mjs --mock",
     "bench:final": "node tools/run-final-deliverable-regression.mjs",
-    "bench:final:headed": "node tools/run-final-deliverable-regression.mjs --headed"
+    "bench:final:headed": "node tools/run-final-deliverable-regression.mjs --headed",
+    "bench:layout": "node tools/run-ppt-layout-regression.mjs",
+    "bench:production": "node tools/run-production-sla-benchmark.mjs"
   },
   "dependencies": {
     "adm-zip": "^0.5.17",

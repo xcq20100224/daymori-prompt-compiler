@@ -592,6 +592,20 @@ function normalizeContract(input) {
     speakerNotes: sanitizeContractText((s && s.speakerNotes) || "", 520)
   }));
 
+  const rawMode = String(input.layoutPolicy && input.layoutPolicy.mode || input.failureStrategy || "balanced").trim().toLowerCase();
+  const mode = ["strict-layout", "balanced", "strict-content"].includes(rawMode) ? rawMode : "balanced";
+  const minScoreRaw = Number(input.layoutPolicy && input.layoutPolicy.minScore);
+  const defaultMinScore = mode === "strict-layout" ? 84 : (mode === "strict-content" ? 55 : 68);
+  const minScore = Number.isFinite(minScoreRaw) ? Math.max(0, Math.min(100, minScoreRaw)) : defaultMinScore;
+  const mappingVersion = String(input.layoutPolicy && input.layoutPolicy.mappingVersion || "semantic-slot-v1").trim() || "semantic-slot-v1";
+
+  const layoutPolicy = {
+    mode,
+    minScore,
+    mappingVersion,
+    overflowPolicy: mode === "strict-content" ? "notes-first" : "layout-first"
+  };
+
   return {
     ok: true,
     contract: {
@@ -611,8 +625,254 @@ function normalizeContract(input) {
       chartStyle: String(input.chartStyle || "calm"),
       narrativeMode: String(input.narrativeMode || "standard"),
       topic: sanitizeContractText(input.topic || "当前需求", 140),
+      layoutPolicy,
       slides
     }
+  };
+}
+
+function decodeXmlText(value) {
+  return String(value || "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, "&")
+    .trim();
+}
+
+function parseSlideSizeFromPresentationXml(xml) {
+  const m = String(xml || "").match(/<p:sldSz[^>]*\bcx="(\d+)"[^>]*\bcy="(\d+)"/i);
+  return {
+    cx: m && m[1] ? Number(m[1]) : 12192000,
+    cy: m && m[2] ? Number(m[2]) : 6858000
+  };
+}
+
+function extractSlideTextBoxesFromXml(xml) {
+  const boxes = [];
+  const src = String(xml || "");
+  const shapeRegex = /<p:sp\b[\s\S]*?<\/p:sp>/g;
+  let sm;
+  while ((sm = shapeRegex.exec(src)) !== null) {
+    const part = sm[0];
+    const textMatches = [...part.matchAll(/<a:t>([\s\S]*?)<\/a:t>/g)];
+    if (!textMatches.length) continue;
+    const text = textMatches.map((t) => decodeXmlText(t[1] || "")).filter(Boolean).join(" ").trim();
+    if (!text) continue;
+
+    const off = part.match(/<a:off[^>]*\bx="(-?\d+)"[^>]*\by="(-?\d+)"/i);
+    const ext = part.match(/<a:ext[^>]*\bcx="(\d+)"[^>]*\bcy="(\d+)"/i);
+    const x = off && off[1] ? Number(off[1]) : 0;
+    const y = off && off[2] ? Number(off[2]) : 0;
+    const w = ext && ext[1] ? Number(ext[1]) : 0;
+    const h = ext && ext[2] ? Number(ext[2]) : 0;
+
+    boxes.push({ text, x, y, w, h });
+  }
+  return boxes;
+}
+
+function isMetaText(text) {
+  return /^(logo|content)$/i.test(text) || /officeplus|^时间[:：]|^part\s*\d+|^\d+([\/\-]\d+)?$/i.test(text);
+}
+
+function isTitleHintText(text) {
+  return /输入.*标题|标题文字添加|enter\s*your\s*title|work\s*report|this is your title|^title$|汇报|总结|大标题/i.test(text);
+}
+
+function isBodyHintText(text) {
+  return /您的内容打在这里|点击此处|输入副标题|lorem|添加文本|输入标题|标题信息|副标题内容/i.test(text);
+}
+
+function buildSemanticModelFromPptxBuffer(buffer) {
+  try {
+    const zip = new AdmZip(buffer);
+    const presentationEntry = zip.getEntry("ppt/presentation.xml");
+    const presentationXml = presentationEntry ? presentationEntry.getData().toString("utf8") : "";
+    const slideSize = parseSlideSizeFromPresentationXml(presentationXml);
+
+    const slideEntries = zip.getEntries()
+      .filter((e) => /^ppt\/slides\/slide\d+\.xml$/i.test(e.entryName))
+      .sort((a, b) => {
+        const ai = Number((a.entryName.match(/slide(\d+)\.xml/i) || [])[1] || 0);
+        const bi = Number((b.entryName.match(/slide(\d+)\.xml/i) || [])[1] || 0);
+        return ai - bi;
+      });
+
+    const slides = slideEntries.map((entry, idx) => {
+      const xml = entry.getData().toString("utf8");
+      const boxes = extractSlideTextBoxesFromXml(xml);
+      const validH = Math.max(1, Number(slideSize.cy) || 1);
+
+      const normalized = boxes.map((b) => {
+        const topRatio = b.y / validH;
+        const bottomRatio = (b.y + b.h) / validH;
+        let role = "body-candidate";
+        if (isMetaText(b.text)) role = "meta";
+        else if (isTitleHintText(b.text)) role = "title-hint";
+        else if (isBodyHintText(b.text)) role = "body-hint";
+        return {
+          text: b.text,
+          role,
+          x: b.x,
+          y: b.y,
+          w: b.w,
+          h: b.h,
+          topRatio,
+          bottomRatio,
+          centerXRatio: (b.x + (b.w / 2)) / Math.max(1, Number(slideSize.cx) || 1),
+          centerYRatio: (b.y + (b.h / 2)) / validH
+        };
+      });
+
+      const bodyHints = normalized.filter((b) => b.role === "body-hint");
+      const titleHints = normalized.filter((b) => b.role === "title-hint");
+      const bodyBandCandidates = normalized.filter((b) => b.role === "body-candidate");
+      const bodyTop = bodyHints.length ? Math.max(0.16, Math.min(...bodyHints.map((b) => b.topRatio)) - 0.03) : 0.28;
+      const bodyBottom = bodyHints.length ? Math.min(0.96, Math.max(...bodyHints.map((b) => b.bottomRatio)) + 0.03) : 0.9;
+      const titleMaxTop = titleHints.length
+        ? Math.min(0.62, Math.max(...titleHints.map((b) => b.bottomRatio)) + 0.04)
+        : 0.36;
+      const expectedTitleMin = titleHints.length > 0 ? 1 : 0;
+      const inferredBodyCandidates = bodyBandCandidates.filter((b) => b.topRatio >= bodyTop && b.bottomRatio <= bodyBottom);
+      const expectedBodyMin = bodyHints.length > 0
+        ? Math.max(1, Math.min(2, bodyHints.length))
+        : (inferredBodyCandidates.length > 0 ? 1 : 0);
+
+      return {
+        index: idx + 1,
+        bodyBand: {
+          minTopRatio: Number(bodyTop.toFixed(4)),
+          maxTopRatio: Number(bodyBottom.toFixed(4))
+        },
+        titleBand: {
+          maxTopRatio: Number(titleMaxTop.toFixed(4))
+        },
+        expectedSlots: {
+          titleMin: expectedTitleMin,
+          bodyMin: expectedBodyMin
+        },
+        anchors: bodyHints
+          .sort((a, b) => (a.topRatio - b.topRatio) || (a.centerXRatio - b.centerXRatio))
+          .slice(0, 4)
+          .map((b) => ({ xRatio: Number(b.centerXRatio.toFixed(4)), yRatio: Number(b.centerYRatio.toFixed(4)) })),
+        slotCount: normalized.length,
+        slots: normalized
+      };
+    });
+
+    return {
+      version: "semantic-slot-v1",
+      slideSize,
+      slides
+    };
+  } catch {
+    return null;
+  }
+}
+
+function resolveTemplateSemanticModel(contract) {
+  const b64 = String(contract && contract.templateFileBase64 || "").trim();
+  if (!b64) return null;
+  const buffer = parseBase64Payload(b64);
+  if (!buffer.length) return null;
+  return buildSemanticModelFromPptxBuffer(buffer);
+}
+
+function evaluateLayoutQualityAgainstModel(model, outputBuffer, contract) {
+  const outputModel = buildSemanticModelFromPptxBuffer(outputBuffer);
+  const policy = (contract && contract.layoutPolicy) || { mode: "balanced", minScore: 68 };
+  if (!outputModel || !outputModel.slides.length) {
+    return {
+      pass: false,
+      score: 0,
+      minScore: Number(policy.minScore) || 68,
+      mode: String(policy.mode || "balanced"),
+      issues: ["output_semantic_parse_failed"],
+      slideStats: []
+    };
+  }
+
+  const slideStats = [];
+  let totalPenalty = 0;
+  const count = Math.min(outputModel.slides.length, Array.isArray(contract && contract.slides) ? contract.slides.length : outputModel.slides.length);
+
+  for (let i = 0; i < count; i += 1) {
+    const outSlide = outputModel.slides[i];
+    const refSlide = model && model.slides && model.slides[i] ? model.slides[i] : null;
+    const titleMax = refSlide ? Number(refSlide.titleBand.maxTopRatio || 0.36) : 0.36;
+    const bodyMin = refSlide ? Number(refSlide.bodyBand.minTopRatio || 0.28) : 0.28;
+    const bodyMax = refSlide ? Number(refSlide.bodyBand.maxTopRatio || 0.9) : 0.9;
+    const expectedTitleMin = refSlide && refSlide.expectedSlots ? Number(refSlide.expectedSlots.titleMin || 0) : 1;
+    const expectedBodyMin = refSlide && refSlide.expectedSlots ? Number(refSlide.expectedSlots.bodyMin || 0) : 1;
+
+    const contentSlots = outSlide.slots.filter((s) => !isMetaText(s.text));
+    const titleSlots = contentSlots.filter((s) => s.topRatio <= titleMax && s.text.length >= 2);
+    const bodySlots = contentSlots.filter((s) => s.topRatio >= bodyMin && s.bottomRatio <= bodyMax && s.text.length >= 2);
+    const outOfBand = contentSlots.filter((s) => s.topRatio < bodyMin && s.bottomRatio > titleMax && s.text.length >= 10);
+
+    let overlapRisk = 0;
+    for (let a = 0; a < bodySlots.length; a += 1) {
+      for (let b = a + 1; b < bodySlots.length; b += 1) {
+        const sa = bodySlots[a];
+        const sb = bodySlots[b];
+        const dx = Math.abs(sa.centerXRatio - sb.centerXRatio);
+        const dy = Math.abs(sa.centerYRatio - sb.centerYRatio);
+        if (dx < 0.05 && dy < 0.03) overlapRisk += 1;
+      }
+    }
+
+    const penalties = {
+      missingTitle: titleSlots.length >= expectedTitleMin ? 0 : (expectedTitleMin > 0 ? 14 : 0),
+      missingBody: bodySlots.length >= expectedBodyMin ? 0 : (expectedBodyMin > 0 ? 14 : 0),
+      outOfBand: Math.min(22, outOfBand.length * 8),
+      overlap: Math.min(18, overlapRisk * 6)
+    };
+    const slidePenalty = penalties.missingTitle + penalties.missingBody + penalties.outOfBand + penalties.overlap;
+    totalPenalty += slidePenalty;
+    const expectedMiss = (titleSlots.length >= expectedTitleMin ? 0 : (expectedTitleMin > 0 ? 1 : 0))
+      + (bodySlots.length >= expectedBodyMin ? 0 : (expectedBodyMin > 0 ? 1 : 0));
+
+    slideStats.push({
+      index: i + 1,
+      expectedTitleMin,
+      expectedBodyMin,
+      titleSlots: titleSlots.length,
+      bodySlots: bodySlots.length,
+      outOfBand: outOfBand.length,
+      overlapRisk,
+      expectedMiss,
+      penalty: slidePenalty
+    });
+  }
+
+  const avgPenalty = count > 0 ? (totalPenalty / count) : 100;
+  const score = Math.max(0, Math.min(100, Math.round(100 - avgPenalty)));
+  const minScore = Number(policy.minScore) || 68;
+  const visibleIssueSlides = slideStats.filter((s) => s.outOfBand > 0 || s.overlapRisk > 0).length;
+  const structuralMissSlides = slideStats.filter((s) => Number(s.titleSlots || 0) === 0 && Number(s.bodySlots || 0) === 0).length;
+  const expectedMissCount = slideStats.reduce((acc, s) => acc + Number(s.expectedMiss || 0), 0);
+  const estimatedManualFixes = Math.max(0, Math.ceil((visibleIssueSlides * 2 + structuralMissSlides) / 3));
+  const issues = [];
+  if (score < minScore) issues.push("layout_quality_below_threshold");
+  if (slideStats.some((s) => s.outOfBand > 0)) issues.push("content_out_of_body_band");
+  if (slideStats.some((s) => s.overlapRisk > 0)) issues.push("potential_overlap_detected");
+  if (slideStats.some((s) => s.expectedMiss > 0)) issues.push("slot_missing_expected_content");
+
+  return {
+    pass: score >= minScore,
+    strictLeakSafe: visibleIssueSlides === 0,
+    score,
+    minScore,
+    mode: String(policy.mode || "balanced"),
+    mappingVersion: String(policy.mappingVersion || "semantic-slot-v1"),
+    visibleIssueSlides,
+    structuralMissSlides,
+    expectedMissCount,
+    estimatedManualFixes,
+    issues,
+    slideStats
   };
 }
 
@@ -690,8 +950,11 @@ function clampText(value, max) {
 // 关键：所有中文/项目符号的正文组装都在 Node 侧完成，PowerShell 脚本保持纯 ASCII，
 // 避免 .ps1 non-ASCII 解析失败导致回退低保真引擎。
 function buildPowerPointComContractPayload(contract) {
+  const semanticModel = resolveTemplateSemanticModel(contract);
+  const semanticSlides = semanticModel && Array.isArray(semanticModel.slides) ? semanticModel.slides : [];
   const slidesIn = Array.isArray(contract && contract.slides) ? contract.slides : [];
   const slides = slidesIn.map((s, i) => {
+    const semanticHint = semanticSlides[i] || null;
     const title = sanitizeContractText((s && s.title) || `第${i + 1}页`, 88);
     const goal = sanitizeContractText((s && s.goal) || "", 220);
     const points = (Array.isArray(s && s.keyPoints) ? s.keyPoints : [])
@@ -718,13 +981,22 @@ function buildPowerPointComContractPayload(contract) {
       pointText,
       notes,
       blocks,
-      bodyText: blocks.join("\r\n\r\n")
+      bodyText: blocks.join("\r\n\r\n"),
+      semanticHint: semanticHint
+        ? {
+            bodyBand: semanticHint.bodyBand || { minTopRatio: 0.28, maxTopRatio: 0.9 },
+            titleBand: semanticHint.titleBand || { maxTopRatio: 0.36 },
+            anchors: Array.isArray(semanticHint.anchors) ? semanticHint.anchors.slice(0, 4) : []
+          }
+        : null
     };
   });
 
   return {
     topic: sanitizeContractText((contract && contract.topic) || "Daymori", 120),
     sceneType: sanitizeContractText((contract && contract.sceneType) || "通用", 40),
+    layoutPolicy: (contract && contract.layoutPolicy) || { mode: "balanced", minScore: 68, mappingVersion: "semantic-slot-v1" },
+    semanticModelVersion: semanticModel && semanticModel.version ? semanticModel.version : "semantic-slot-v1",
     slideCount: slides.length,
     slides
   };
@@ -883,6 +1155,84 @@ function buildPowerPointComScript() {
     "    }",
     "  }",
     "",
+    "  $selectBodyTargets = {",
+    "    param($candidates, [int]$limit)",
+    "    $picked = New-Object System.Collections.ArrayList",
+    "    foreach ($cand in $candidates) {",
+    "      $ok = $true",
+    "      foreach ($keep in $picked) {",
+    "        try {",
+    "          $dx = [Math]::Abs(([double]$cand.Left + ([double]$cand.Width / 2.0)) - ([double]$keep.Left + ([double]$keep.Width / 2.0)))",
+    "          $dy = [Math]::Abs(([double]$cand.Top + ([double]$cand.Height / 2.0)) - ([double]$keep.Top + ([double]$keep.Height / 2.0)))",
+    "          $xCap = [Math]::Min([double]$cand.Width, [double]$keep.Width) * 0.34",
+    "          $yCap = [Math]::Min([double]$cand.Height, [double]$keep.Height) * 0.34",
+    "          if ($dx -lt $xCap -and $dy -lt $yCap) { $ok = $false; break }",
+    "        } catch {}",
+    "      }",
+    "      if ($ok) { [void]$picked.Add($cand) }",
+    "      if ($limit -gt 0 -and $picked.Count -ge $limit) { break }",
+    "    }",
+    "    return ,$picked",
+    "  }",
+    "",
+    "  $sortByAnchors = {",
+    "    param($candidates, $anchors)",
+    "    if ($candidates -eq $null) { return @() }",
+    "    if ($anchors -eq $null -or $anchors.Count -eq 0) { return @($candidates) }",
+    "    return @($candidates | Sort-Object @{ Expression = {",
+    "      $cx = 0.0; $cy = 0.0",
+    "      try { $cx = ([double]$_.Left + ([double]$_.Width / 2.0)) } catch {}",
+    "      try { $cy = ([double]$_.Top + ([double]$_.Height / 2.0)) } catch {}",
+    "      $best = 1e12",
+    "      foreach ($a in $anchors) {",
+    "        try {",
+    "          $dx = $cx - [double]$a.x",
+    "          $dy = $cy - [double]$a.y",
+    "          $d = ($dx * $dx) + ($dy * $dy)",
+    "          if ($d -lt $best) { $best = $d }",
+    "        } catch {}",
+    "      }",
+    "      $best",
+    "    } }, @{ Expression = { $_.Top } }, @{ Expression = { $_.Left } })",
+    "  }",
+    "",
+    "  $createTitleFallbackBox = {",
+    "    param($slide, [double]$slideW, [double]$slideH, [double]$titleMaxTopRatio)",
+    "    $left = $slideW * 0.10",
+    "    $top = $slideH * 0.08",
+    "    $width = $slideW * 0.80",
+    "    $height = $slideH * ([Math]::Min(0.18, [Math]::Max(0.10, $titleMaxTopRatio - 0.02)))",
+    "    if ($height -lt 52) { $height = 52 }",
+    "    try {",
+    "      $shape = $slide.Shapes.AddTextbox(1, $left, $top, $width, $height)",
+    "      $shape.TextFrame.WordWrap = -1",
+    "      $shape.TextFrame.AutoSize = 0",
+    "      return $shape",
+    "    } catch {",
+    "      return $null",
+    "    }",
+    "  }",
+    "",
+    "  $createBodyFallbackBox = {",
+    "    param($slide, [double]$slideW, [double]$slideH, [double]$bodyMinTopRatio, [double]$bodyMaxTopRatio)",
+    "    $left = $slideW * 0.10",
+    "    $top = $slideH * ([Math]::Max(0.24, $bodyMinTopRatio))",
+    "    if ($top -gt ($slideH * 0.72)) { $top = $slideH * 0.58 }",
+    "    $band = [Math]::Max(0.14, [Math]::Min(0.30, $bodyMaxTopRatio - $bodyMinTopRatio - 0.02))",
+    "    $width = $slideW * 0.80",
+    "    $height = $slideH * $band",
+    "    if ($height -lt 80) { $height = 80 }",
+    "    if (($top + $height) -gt ($slideH * 0.94)) { $height = [Math]::Max(64, ($slideH * 0.94) - $top) }",
+    "    try {",
+    "      $shape = $slide.Shapes.AddTextbox(1, $left, $top, $width, $height)",
+    "      $shape.TextFrame.WordWrap = -1",
+    "      $shape.TextFrame.AutoSize = 0",
+    "      return $shape",
+    "    } catch {",
+    "      return $null",
+    "    }",
+    "  }",
+    "",
     "  $keepCount = 0",
     "  try { $keepCount = [int]$payload.slideCount } catch { $keepCount = 0 }",
     "",
@@ -899,10 +1249,33 @@ function buildPowerPointComScript() {
     "    $goalText = [string]$s.goal",
     "    $pointText = [string]$s.pointText",
     "    $notes = [string]$s.notes",
+    "    $layoutMode = 'balanced'",
+    "    try { if ($payload.layoutPolicy -and $payload.layoutPolicy.mode) { $layoutMode = [string]$payload.layoutPolicy.mode } } catch {}",
+    "    $titleMaxTopRatio = 0.36",
+    "    $bodyMinTopRatio = 0.30",
+    "    $bodyMaxTopRatio = 0.88",
+    "    if ($layoutMode -eq 'strict-layout') { $titleMaxTopRatio = 0.34; $bodyMinTopRatio = 0.34; $bodyMaxTopRatio = 0.86 }",
+    "    elseif ($layoutMode -eq 'strict-content') { $titleMaxTopRatio = 0.40; $bodyMinTopRatio = 0.24; $bodyMaxTopRatio = 0.92 }",
+    "    try {",
+    "      if ($s.semanticHint) {",
+    "        if ($s.semanticHint.titleBand -and $s.semanticHint.titleBand.maxTopRatio) { $titleMaxTopRatio = [double]$s.semanticHint.titleBand.maxTopRatio }",
+    "        if ($s.semanticHint.bodyBand -and $s.semanticHint.bodyBand.minTopRatio) { $bodyMinTopRatio = [double]$s.semanticHint.bodyBand.minTopRatio }",
+    "        if ($s.semanticHint.bodyBand -and $s.semanticHint.bodyBand.maxTopRatio) { $bodyMaxTopRatio = [double]$s.semanticHint.bodyBand.maxTopRatio }",
+    "      }",
+    "    } catch {}",
+    "    if ($titleMaxTopRatio -lt 0.18) { $titleMaxTopRatio = 0.18 }",
+    "    if ($titleMaxTopRatio -gt 0.72) { $titleMaxTopRatio = 0.72 }",
+    "    if ($bodyMinTopRatio -lt 0.16) { $bodyMinTopRatio = 0.16 }",
+    "    if ($bodyMinTopRatio -gt 0.82) { $bodyMinTopRatio = 0.82 }",
+    "    if ($bodyMaxTopRatio -lt ($bodyMinTopRatio + 0.06)) { $bodyMaxTopRatio = $bodyMinTopRatio + 0.06 }",
+    "    if ($bodyMaxTopRatio -gt 0.96) { $bodyMaxTopRatio = 0.96 }",
     "",
     "    $blocks = @()",
     "    if ($s.blocks) { foreach ($b in $s.blocks) { $blocks += [string]$b } }",
     "    if ($blocks.Count -eq 0 -and [string]::IsNullOrWhiteSpace($pointText) -eq $false) { $blocks += $pointText }",
+    "    if ($blocks.Count -eq 0 -and [string]::IsNullOrWhiteSpace($goalText) -eq $false) { $blocks += $goalText }",
+    "    if ($blocks.Count -eq 0 -and [string]::IsNullOrWhiteSpace($titleText) -eq $false) { $blocks += $titleText }",
+    "    $bodyAppliedCount = 0",
     "",
     "    $titleTargets = New-Object System.Collections.ArrayList",
     "    $bodyTargets = New-Object System.Collections.ArrayList",
@@ -937,7 +1310,7 @@ function buildPowerPointComScript() {
     "            [void]$bodyHintTargets.Add($shape)",
     "          }",
 
-    "          if ([string]::IsNullOrWhiteSpace($origTrim) -eq $false -and -not $isTitleHint -and $shape.Top -ge ($slideH * 0.30) -and $shape.Top -lt ($slideH * 0.88)) {",
+    "          if ([string]::IsNullOrWhiteSpace($origTrim) -eq $false -and -not $isTitleHint -and $shape.Top -ge ($slideH * $bodyMinTopRatio) -and $shape.Top -lt ($slideH * $bodyMaxTopRatio)) {",
     "            [void]$bodyTextTargets.Add($shape)",
     "          }",
     "        }",
@@ -975,7 +1348,7 @@ function buildPowerPointComScript() {
     "      foreach ($shape in $textShapes) {",
     "        try {",
     "          if ($shape.Width -lt ($slideW * 0.35)) { continue }",
-    "          if ($shape.Top -gt ($slideH * 0.35)) { continue }",
+    "          if ($shape.Top -gt ($slideH * $titleMaxTopRatio)) { continue }",
     "          if ($shape.Height -lt 180000) { continue }",
     "          $score = (($slideH - $shape.Top) * 2.0) + ($shape.Width * 0.4) + ($shape.Height * 0.2)",
     "          if ($score -gt $bestScore) { $bestScore = $score; $bestTitle = $shape }",
@@ -987,6 +1360,13 @@ function buildPowerPointComScript() {
     "    if ($titleTargets.Count -gt 0) {",
     "      [void](&$applyText $titleTargets[0] $titleText 'title')",
     "      try { [void]$usedShapeIds.Add([int]$titleTargets[0].Id) } catch {}",
+    "    }",
+    "    elseif ([string]::IsNullOrWhiteSpace($titleText) -eq $false) {",
+    "      $titleFallback = &$createTitleFallbackBox $slide $slideW $slideH $titleMaxTopRatio",
+    "      if ($titleFallback -ne $null) {",
+    "        [void](&$applyText $titleFallback $titleText 'title')",
+    "        try { [void]$usedShapeIds.Add([int]$titleFallback.Id) } catch {}",
+    "      }",
     "    }",
     "",
     "    foreach ($token in $tokenTargets) {",
@@ -1011,8 +1391,8 @@ function buildPowerPointComScript() {
     "    } | Where-Object {",
     "      try {",
     "        if ($_.Width -lt 140 -or $_.Height -lt 56) { return $false }",
-    "        if ($slideH -gt 0 -and $_.Top -lt ($slideH * 0.30)) { return $false }",
-    "        if ($slideH -gt 0 -and $_.Top -gt ($slideH * 0.88)) { return $false }",
+    "        if ($slideH -gt 0 -and $_.Top -lt ($slideH * $bodyMinTopRatio)) { return $false }",
+    "        if ($slideH -gt 0 -and $_.Top -gt ($slideH * $bodyMaxTopRatio)) { return $false }",
     "        return $true",
     "      } catch { return $false }",
     "    } | Sort-Object @{ Expression = { $_.Top } }, @{ Expression = { $_.Left } }, @{ Expression = { -($_.Width * $_.Height) } })",
@@ -1034,8 +1414,8 @@ function buildPowerPointComScript() {
     "    } | Where-Object {",
     "      try {",
     "        if ($_.Width -lt 140 -or $_.Height -lt 56) { return $false }",
-    "        if ($slideH -gt 0 -and $_.Top -lt ($slideH * 0.30)) { return $false }",
-    "        if ($slideH -gt 0 -and $_.Top -gt ($slideH * 0.88)) { return $false }",
+    "        if ($slideH -gt 0 -and $_.Top -lt ($slideH * $bodyMinTopRatio)) { return $false }",
+    "        if ($slideH -gt 0 -and $_.Top -gt ($slideH * $bodyMaxTopRatio)) { return $false }",
     "        return $true",
     "      } catch { return $false }",
     "    } | Sort-Object @{ Expression = { -($_.Width * $_.Height) } }, @{ Expression = { $_.Top } }, @{ Expression = { $_.Left } })",
@@ -1046,18 +1426,79 @@ function buildPowerPointComScript() {
     "        try { -not $usedShapeIds.Contains([int]$_.Id) } catch { $true }",
     "      } | Where-Object {",
     "        try {",
-    "          if ($_.Width -lt 140 -or $_.Height -lt 56) { return $false }",
-          "          if ($slideH -gt 0 -and $_.Top -lt ($slideH * 0.30)) { return $false }",
-    "          if ($slideH -gt 0 -and $_.Top -gt ($slideH * 0.88)) { return $false }",
+        "          if ($_.Width -lt 140 -or $_.Height -lt 56) { return $false }",
+        "          if ($slideH -gt 0 -and $_.Top -lt ($slideH * $bodyMinTopRatio)) { return $false }",
+        "          if ($slideH -gt 0 -and $_.Top -gt ($slideH * $bodyMaxTopRatio)) { return $false }",
     "          return $true",
     "        } catch { return $false }",
     "      } | Sort-Object @{ Expression = { -($_.Width * $_.Height) } }, @{ Expression = { $_.Top } }, @{ Expression = { $_.Left } })",
+    "    }",
+    "",
+    "    if ($orderedBodies.Count -eq 0) {",
+    "      $fallbackBodies = @($textShapes | Where-Object {",
+    "        try { -not $usedShapeIds.Contains([int]$_.Id) } catch { $true }",
+    "      } | Where-Object {",
+    "        try {",
+    "          $ft = ''",
+    "          try { $ft = [string]$_.TextFrame.TextRange.Text } catch { $ft = '' }",
+    "          $ftrim = $ft.Trim()",
+    "          if ([string]::IsNullOrWhiteSpace($ftrim)) { return $false }",
+    "          if ($ftrim -match '(?i)^logo$|officeplus|^时间[:：]|^part\\s*\\d+|^content$|^\\d+([\\/\\-]\\d+)?$') { return $false }",
+    "          if ($ftrim -match '(?i)请在此输入|输入标题|添加标题|添加文本|this is your title|enter your title|click to add') { return $true }",
+    "          return $false",
+    "        } catch { return $false }",
+    "      } | Sort-Object @{ Expression = { $_.Top } }, @{ Expression = { $_.Left } }, @{ Expression = { -($_.Width * $_.Height) } })",
+    "      if ($fallbackBodies.Count -gt 0) { $orderedBodies = $fallbackBodies }",
+    "    }",
+    "",
+    "    if ($orderedBodies.Count -eq 0) {",
+    "      $orderedBodies = @($textShapes | Where-Object {",
+    "        try { -not $usedShapeIds.Contains([int]$_.Id) } catch { $true }",
+    "      } | Where-Object {",
+    "        try {",
+    "          if ($_.Width -lt 80 -or $_.Height -lt 24) { return $false }",
+    "          if ($slideH -gt 0 -and $_.Top -lt ($slideH * $bodyMinTopRatio)) { return $false }",
+    "          if ($slideH -gt 0 -and $_.Top -gt ($slideH * $bodyMaxTopRatio)) { return $false }",
+    "          return $true",
+    "        } catch { return $false }",
+    "      } | Sort-Object @{ Expression = { $_.Top } }, @{ Expression = { $_.Left } }, @{ Expression = { -($_.Width * $_.Height) } })",
+    "    }",
+    "",
+    "    if ($orderedBodies.Count -gt 0) {",
+    "      $anchors = @()",
+    "      try {",
+    "        if ($s.semanticHint -and $s.semanticHint.anchors) {",
+    "          foreach ($a in $s.semanticHint.anchors) {",
+    "            try {",
+    "              $ax = [double]$a.xRatio * $slideW",
+    "              $ay = [double]$a.yRatio * $slideH",
+    "              if ($ax -gt 0 -and $ay -gt 0) { $anchors += @{ x = $ax; y = $ay } }",
+    "            } catch {}",
+    "          }",
+    "        }",
+    "      } catch {}",
+    "      if ($anchors.Count -gt 0) { $orderedBodies = @(&$sortByAnchors $orderedBodies $anchors) }",
+    "    }",
+    "",
+    "    if ($orderedBodies.Count -gt 0) {",
+    "      $expectedBodyMin = 1",
+    "      try {",
+    "        if ($s.semanticHint -and $s.semanticHint.expectedSlots -and $s.semanticHint.expectedSlots.bodyMin) {",
+    "          $expectedBodyMin = [int]$s.semanticHint.expectedSlots.bodyMin",
+    "        }",
+    "      } catch {}",
+    "      if ($expectedBodyMin -lt 1) { $expectedBodyMin = 1 }",
+    "      $needCount = [Math]::Max(1, $blocks.Count)",
+    "      $capByHint = [Math]::Max(1, $expectedBodyMin + 1)",
+    "      if ($needCount -gt $capByHint) { $needCount = $capByHint }",
+    "      $orderedBodies = @(&$selectBodyTargets $orderedBodies $needCount)",
     "    }",
     "",
     "    if ($orderedBodies.Count -gt 0 -and $blocks.Count -gt 0) {",
     "      if ($blocks.Count -eq 1) {",
     "        $b0 = [string]$blocks[0]",
     "        $ov = [string](&$applyText $orderedBodies[0] $b0 'body')",
+    "        $bodyAppliedCount = $bodyAppliedCount + 1",
     "        if ([string]::IsNullOrWhiteSpace($ov) -eq $false) {",
     "          if ([string]::IsNullOrWhiteSpace($notes)) { $notes = $ov } else { $notes = ($notes + ' ' + $ov).Trim() }",
     "        }",
@@ -1067,6 +1508,7 @@ function buildPowerPointComScript() {
     "        for ($i = 0; $i -lt $blocks.Count; $i++) {",
     "          $bi = [string]$blocks[$i]",
     "          $ov = [string](&$applyText $orderedBodies[$i] $bi 'body')",
+    "          $bodyAppliedCount = $bodyAppliedCount + 1",
     "          if ([string]::IsNullOrWhiteSpace($ov) -eq $false) {",
     "            if ([string]::IsNullOrWhiteSpace($notes)) { $notes = $ov } else { $notes = ($notes + ' ' + $ov).Trim() }",
     "          }",
@@ -1080,6 +1522,7 @@ function buildPowerPointComScript() {
     "            if ($i -lt $blocks.Count) { $txt = [string]$blocks[$i] }",
     "            if ([string]::IsNullOrWhiteSpace($txt) -eq $false) {",
     "              $ov = [string](&$applyText $orderedBodies[$i] $txt 'body')",
+    "              $bodyAppliedCount = $bodyAppliedCount + 1",
     "              if ([string]::IsNullOrWhiteSpace($ov) -eq $false) {",
     "                if ([string]::IsNullOrWhiteSpace($notes)) { $notes = $ov } else { $notes = ($notes + ' ' + $ov).Trim() }",
     "              }",
@@ -1090,12 +1533,31 @@ function buildPowerPointComScript() {
     "            for ($j = $i; $j -lt $blocks.Count; $j++) { $rest += [string]$blocks[$j] }",
     "            $restText = ($rest -join \"`r`n`r`n\")",
     "            $ov = [string](&$applyText $orderedBodies[$i] $restText 'body')",
+    "            $bodyAppliedCount = $bodyAppliedCount + 1",
     "            if ([string]::IsNullOrWhiteSpace($ov) -eq $false) {",
     "              if ([string]::IsNullOrWhiteSpace($notes)) { $notes = $ov } else { $notes = ($notes + ' ' + $ov).Trim() }",
     "            }",
     "            try { [void]$usedShapeIds.Add([int]$orderedBodies[$i].Id) } catch {}",
     "          }",
     "        }",
+    "      }",
+    "    }",
+    "",
+    "    if ($bodyAppliedCount -le 0 -and $blocks.Count -gt 0) {",
+    "      $bodyFallback = &$createBodyFallbackBox $slide $slideW $slideH $bodyMinTopRatio $bodyMaxTopRatio",
+    "      if ($bodyFallback -ne $null) {",
+    "        $fallbackText = [string]$blocks[0]",
+    "        if ($blocks.Count -gt 1) {",
+    "          $tmp = New-Object System.Collections.ArrayList",
+    "          for ($bi = 0; $bi -lt [Math]::Min(3, $blocks.Count); $bi++) { [void]$tmp.Add([string]$blocks[$bi]) }",
+    "          $fallbackText = ($tmp -join \"`r`n`r`n\")",
+    "        }",
+    "        $ov = [string](&$applyText $bodyFallback $fallbackText 'body')",
+    "        $bodyAppliedCount = $bodyAppliedCount + 1",
+    "        if ([string]::IsNullOrWhiteSpace($ov) -eq $false) {",
+    "          if ([string]::IsNullOrWhiteSpace($notes)) { $notes = $ov } else { $notes = ($notes + ' ' + $ov).Trim() }",
+    "        }",
+    "        try { [void]$usedShapeIds.Add([int]$bodyFallback.Id) } catch {}",
     "      }",
     "    }",
     "",
@@ -1117,6 +1579,7 @@ function buildPowerPointComScript() {
     "    # only clear known placeholder copy that was not used; keep branded/meta template text",
     "    foreach ($shape in $textShapes) {",
     "      try {",
+    "        if ($bodyAppliedCount -le 0) { continue }",
     "        $sid = [int]$shape.Id",
     "        if ($usedShapeIds.Contains($sid)) { continue }",
     "        $cur = [string]$shape.TextFrame.TextRange.Text",
@@ -2339,6 +2802,7 @@ async function buildLocalPptx(contract) {
 
 async function buildPptExportResult(contract) {
   const exportConfig = getAipptExportConfig();
+  const templateModel = resolveTemplateSemanticModel(contract);
   let result = await callAipptEngine(contract, exportConfig);
   const officeplusMode = String(contract && contract.templateSource || "").toLowerCase() === "officeplus";
 
@@ -2359,6 +2823,45 @@ async function buildPptExportResult(contract) {
         result.fallbackReason = `officeplus_local_fallback:${(comResult && comResult.reason) || (result && result.reason) || "upstream_unavailable"}`;
       }
     }
+    if (result && result.ok && result.buffer) {
+      result.layoutQuality = evaluateLayoutQualityAgainstModel(templateModel, result.buffer, contract);
+      const mode = String(contract && contract.layoutPolicy && contract.layoutPolicy.mode || "balanced");
+      const needsRemediation = mode === "balanced"
+        && result.layoutQuality
+        && (result.layoutQuality.visibleIssueSlides > 0 || result.layoutQuality.estimatedManualFixes > 1 || !result.layoutQuality.pass);
+      if (needsRemediation) {
+        const strictTryContract = {
+          ...contract,
+          layoutPolicy: {
+            ...(contract.layoutPolicy || {}),
+            mode: "strict-layout",
+            minScore: Math.max(80, Number(contract && contract.layoutPolicy && contract.layoutPolicy.minScore) || 80)
+          }
+        };
+        const strictTry = await buildPowerPointComPptx(strictTryContract);
+        if (strictTry && strictTry.ok && strictTry.buffer) {
+          strictTry.layoutQuality = evaluateLayoutQualityAgainstModel(templateModel, strictTry.buffer, strictTryContract);
+          const currentIssues = Number(result.layoutQuality.visibleIssueSlides || 0);
+          const strictIssues = Number(strictTry.layoutQuality.visibleIssueSlides || 0);
+          const currentScore = Number(result.layoutQuality.score || 0);
+          const strictScore = Number(strictTry.layoutQuality.score || 0);
+          if (strictIssues < currentIssues || (strictIssues === currentIssues && strictScore >= currentScore)) {
+            strictTry.fallbackReason = result.fallbackReason || "officeplus_com_fallback:remediated";
+            result = strictTry;
+          }
+        }
+      }
+      if (mode === "strict-layout" && result.layoutQuality && (!result.layoutQuality.pass || !result.layoutQuality.strictLeakSafe)) {
+        return {
+          result: {
+            ok: false,
+            reason: `layout_quality_gate_failed:score_${result.layoutQuality.score}_lt_${result.layoutQuality.minScore}_or_visible_issue`,
+            layoutQuality: result.layoutQuality
+          },
+          exportConfig
+        };
+      }
+    }
     return {
       result,
       exportConfig
@@ -2368,6 +2871,19 @@ async function buildPptExportResult(contract) {
   if (!result.ok) {
     result = await buildLocalPptx(contract);
     result.fallbackReason = result.fallbackReason || "upstream_unavailable";
+  }
+  if (result && result.ok && result.buffer) {
+    result.layoutQuality = evaluateLayoutQualityAgainstModel(templateModel, result.buffer, contract);
+    if (contract.layoutPolicy && contract.layoutPolicy.mode === "strict-layout" && result.layoutQuality && (!result.layoutQuality.pass || !result.layoutQuality.strictLeakSafe)) {
+      return {
+        result: {
+          ok: false,
+          reason: `layout_quality_gate_failed:score_${result.layoutQuality.score}_lt_${result.layoutQuality.minScore}_or_visible_issue`,
+          layoutQuality: result.layoutQuality
+        },
+        exportConfig
+      };
+    }
   }
   return {
     result,
@@ -2941,6 +3457,7 @@ app.post("/api/ppt/export", async (req, res) => {
 
     if (!result || !result.ok) {
       const detail = sanitizeAuditDetail(result && result.reason ? result.reason : "ppt_export_unavailable");
+      const layoutQuality = result && result.layoutQuality ? result.layoutQuality : null;
       writeAuditLog({
         ...audit,
         outcome: "error",
@@ -2951,7 +3468,7 @@ app.post("/api/ppt/export", async (req, res) => {
         templateId: contract.templateId,
         aipptProvider: exportConfig.provider
       });
-      return res.status(409).json({ error: "ppt_export_unavailable", detail });
+      return res.status(409).json({ error: "ppt_export_unavailable", detail, layoutQuality });
     }
 
     writeAuditLog({
@@ -2971,6 +3488,13 @@ app.post("/api/ppt/export", async (req, res) => {
     res.setHeader("Content-Disposition", `attachment; filename="${sanitizeFileName(result.fileName)}"`);
     res.setHeader("x-ppt-engine", result.engine);
     res.setHeader("x-template-source", String(contract.templateSource || "internal"));
+    res.setHeader("x-export-ms", String(Date.now() - startedAt));
+    if (result.layoutQuality) {
+      res.setHeader("x-layout-score", String(result.layoutQuality.score));
+      res.setHeader("x-layout-min", String(result.layoutQuality.minScore));
+      res.setHeader("x-layout-pass", result.layoutQuality.pass ? "1" : "0");
+      res.setHeader("x-layout-leak-safe", result.layoutQuality.strictLeakSafe ? "1" : "0");
+    }
     if (String(contract.templateFileName || "").trim()) {
       res.setHeader("x-template-file", encodeURIComponent(String(contract.templateFileName || "")).slice(0, 240));
     }
@@ -3012,6 +3536,7 @@ app.post("/api/ppt/export-save", async (req, res) => {
 
     if (!result || !result.ok) {
       const detail = sanitizeAuditDetail(result && result.reason ? result.reason : "ppt_export_unavailable");
+      const layoutQuality = result && result.layoutQuality ? result.layoutQuality : null;
       writeAuditLog({
         ...audit,
         outcome: "error",
@@ -3022,10 +3547,11 @@ app.post("/api/ppt/export-save", async (req, res) => {
         templateId: contract.templateId,
         aipptProvider: exportConfig.provider
       });
-      return res.status(409).json({ error: "ppt_export_unavailable", detail });
+      return res.status(409).json({ error: "ppt_export_unavailable", detail, layoutQuality });
     }
 
     const saved = saveExportedPptToWorkspace(contract, result);
+    const elapsedMs = Date.now() - startedAt;
 
     writeAuditLog({
       ...audit,
@@ -3045,6 +3571,13 @@ app.post("/api/ppt/export-save", async (req, res) => {
       ok: true,
       engine: result.engine,
       fallbackReason: result.fallbackReason || "",
+      layoutQuality: result.layoutQuality || null,
+      elapsedMs,
+      sla: {
+        under60s: elapsedMs <= 60000,
+        strictLeakSafe: !!(result.layoutQuality && result.layoutQuality.strictLeakSafe),
+        manualAdjustmentsLe1: !!(result.layoutQuality && Number(result.layoutQuality.estimatedManualFixes || 0) <= 1)
+      },
       fileName: saved.fileName,
       relativePath: saved.relPath,
       absolutePath: saved.absPath,

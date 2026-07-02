@@ -222,6 +222,14 @@ Teacher benchmark now supports an execution loop upgrade:
 
    npm run bench:final
 
+- PPT layout regression (strict-layout / balanced / strict-content triple run):
+
+   npm run bench:layout
+
+- Production SLA benchmark (20 real topics, one-pass/strict leak/speed/manual adjust):
+
+   npm run bench:production
+
 - Same run with visible browser (debug):
 
    npm run bench:final:headed
@@ -237,6 +245,10 @@ Notes for final regression:
   - `docs/benchmarks/results/final-deliverable-YYYY-MM-DD.json`
   - `docs/benchmarks/reports/final-deliverable-latest.md`
   - `docs/benchmarks/reports/final-deliverable-YYYY-MM-DD.md`
+   - `docs/benchmarks/results/layout-regression-latest.json`
+   - `docs/benchmarks/reports/layout-regression-latest.md`
+   - `docs/benchmarks/results/production-sla-latest.json`
+   - `docs/benchmarks/reports/production-sla-latest.md`
 
 ### CI Automation
 

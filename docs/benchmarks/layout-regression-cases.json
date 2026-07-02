@@ -1,0 +1,62 @@
+[
+  {
+    "id": "biz-growth",
+    "topic": "Q3 增长复盘",
+    "slides": [
+      {
+        "title": "增长复盘总览",
+        "goal": "明确本季度增长质量和缺口",
+        "layoutType": "summary-hero",
+        "keyPoints": [
+          "结论：收入同比增长 18.4%，但利润率下降 2.1pct",
+          "证据：新增客户 126 家，留存率 78.6%，获客成本 312 元/人",
+          "行动：本节锁定三项提效动作并在下节复盘执行结果"
+        ],
+        "assetPlaceholders": ["趋势图", "指标卡"],
+        "speakerNotes": "强调质量增长而非单点冲量"
+      },
+      {
+        "title": "问题拆解",
+        "goal": "定位利润率下滑的主因",
+        "layoutType": "diagnosis-matrix",
+        "keyPoints": [
+          "结论：主要压力来自促销折扣和履约成本",
+          "证据：大促订单占比 41%，毛利率比常规单低 6.8pct",
+          "行动：本节完成责任拆分，课后提交成本压降计划"
+        ],
+        "assetPlaceholders": ["矩阵图"],
+        "speakerNotes": "避免泛泛叙述，聚焦可控杠杆"
+      }
+    ]
+  },
+  {
+    "id": "edu-physics",
+    "topic": "牛顿第二定律",
+    "slides": [
+      {
+        "title": "核心公式与含义",
+        "goal": "让学生理解 F=ma 的物理意义",
+        "layoutType": "summary-hero",
+        "keyPoints": [
+          "结论：受力越大，加速度越大；质量越大，加速度越小",
+          "证据：m=2kg 物体受 6N 力时 a=3m/s^2，受 10N 力时 a=5m/s^2",
+          "行动：本节进行提问与板演，课后完成 3 题计算练习"
+        ],
+        "assetPlaceholders": ["公式卡"],
+        "speakerNotes": "先讲变量定义再讲比例关系"
+      },
+      {
+        "title": "例题与实验",
+        "goal": "通过数字例题建立计算路径",
+        "layoutType": "evidence-chart",
+        "keyPoints": [
+          "结论：先列已知再代入公式可显著降低错误率",
+          "证据：班级抽测中按三步法作答正确率 84%，自由作答 61%",
+          "行动：本节完成实验记录，下一节进行错题复盘"
+        ],
+        "assetPlaceholders": ["实验表", "对比图"],
+        "speakerNotes": "要求单位换算写全"
+      }
+    ]
+  }
+]

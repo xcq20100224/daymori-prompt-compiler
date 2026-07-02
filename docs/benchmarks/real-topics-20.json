@@ -1,0 +1,22 @@
+[
+  { "id": "edu-phy-01", "sceneType": "初中物理课堂", "topic": "牛顿第二定律" },
+  { "id": "edu-phy-02", "sceneType": "初中物理课堂", "topic": "压强与浮力" },
+  { "id": "edu-che-01", "sceneType": "初中化学课堂", "topic": "酸碱中和反应" },
+  { "id": "edu-che-02", "sceneType": "初中化学课堂", "topic": "质量守恒定律" },
+  { "id": "edu-bio-01", "sceneType": "初中生物课堂", "topic": "光合作用" },
+  { "id": "edu-bio-02", "sceneType": "初中生物课堂", "topic": "呼吸作用" },
+  { "id": "edu-math-01", "sceneType": "初中数学课堂", "topic": "一次函数" },
+  { "id": "edu-math-02", "sceneType": "初中数学课堂", "topic": "勾股定理" },
+  { "id": "edu-cn-01", "sceneType": "初中语文课堂", "topic": "议论文论证方法" },
+  { "id": "edu-eng-01", "sceneType": "初中英语课堂", "topic": "现在完成时" },
+  { "id": "biz-01", "sceneType": "商业汇报", "topic": "Q3增长复盘" },
+  { "id": "biz-02", "sceneType": "商业汇报", "topic": "渠道投放ROI优化" },
+  { "id": "biz-03", "sceneType": "商业汇报", "topic": "供应链降本计划" },
+  { "id": "biz-04", "sceneType": "商业汇报", "topic": "客户留存提升方案" },
+  { "id": "biz-05", "sceneType": "商业汇报", "topic": "新品上市90天战役" },
+  { "id": "tech-01", "sceneType": "技术评审", "topic": "RAG系统性能优化" },
+  { "id": "tech-02", "sceneType": "技术评审", "topic": "服务稳定性SLO升级" },
+  { "id": "tech-03", "sceneType": "技术评审", "topic": "多租户权限模型重构" },
+  { "id": "ops-01", "sceneType": "运营复盘", "topic": "暑期活动转化复盘" },
+  { "id": "ops-02", "sceneType": "运营复盘", "topic": "私域留资漏斗优化" }
+]

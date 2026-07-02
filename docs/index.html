@@ -1385,8 +1385,8 @@
 
       const TEMPLATE_SPEC_MAP = {
         auto: { preferredSceneType: "", preferredTemplateId: "" },
-        biz: { preferredSceneType: "企业", preferredTemplateId: "biz-report-exec-03" },
-        edu: { preferredSceneType: "教务", preferredTemplateId: "edu-teach-standard-01" },
+        biz: { preferredSceneType: "企业", preferredTemplateId: "biz-report-exec-08" },
+        edu: { preferredSceneType: "教务", preferredTemplateId: "edu-lazyman-fusion-02" },
         speech: { preferredSceneType: "演讲", preferredTemplateId: "speech-stage-story-01" },
         lazyman: { preferredSceneType: "企业", preferredTemplateId: "biz-report-exec-08" },
         lazymanEdu: { preferredSceneType: "教务", preferredTemplateId: "edu-lazyman-fusion-02" },
@@ -1394,9 +1394,9 @@
       };
 
       const TEMPLATE_DESIGN_PRESET_MAP = {
-        auto: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "standard" },
-        biz: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "standard" },
-        edu: { fontTheme: "serif-cn", chartStyle: "contrast", narrativeMode: "standard" },
+        auto: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "lazyman" },
+        biz: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "lazyman" },
+        edu: { fontTheme: "serif-cn", chartStyle: "contrast", narrativeMode: "lazyman" },
         speech: { fontTheme: "modern-cn", chartStyle: "growth", narrativeMode: "standard" },
         lazyman: { fontTheme: "business-cn", chartStyle: "calm", narrativeMode: "lazyman" },
         lazymanEdu: { fontTheme: "serif-cn", chartStyle: "contrast", narrativeMode: "lazyman" },
@@ -1405,7 +1405,7 @@
 
       function resolveNarrativeMode(templateSelection) {
         const preset = TEMPLATE_DESIGN_PRESET_MAP[String(templateSelection || "auto")];
-        return (preset && preset.narrativeMode) || "standard";
+        return (preset && preset.narrativeMode) || "lazyman";
       }
 
       let officeTemplateRuntimeFile = {
@@ -2768,6 +2768,47 @@
         return enforceTeachingLoadConstraints(enforceContractSlideVariety(applyMandatorySlideLibrary(next)));
       }
 
+      async function refinePptToLazymanGate(ppt, rawInput, maxRounds = 2) {
+        let current = ppt;
+        const rounds = [];
+
+        for (let r = 1; r <= Math.max(1, maxRounds); r++) {
+          const review = await reviewPptSpecWithSecondModel(current.spec, rawInput);
+          const qaResult = evaluatePptQualityScore(current.spec, current.qa, review);
+          const gate = evaluateQualityGate(qaResult, current.spec);
+          rounds.push({
+            round: r,
+            overall: Number((qaResult && qaResult.scores && qaResult.scores.overall) || 0),
+            gatePass: !!gate.pass,
+            reasons: (gate.reasons || []).slice(0, 3),
+            lowSlideCount: review && Array.isArray(review.lowSlides) ? review.lowSlides.length : 0
+          });
+
+          if (gate.pass || r === maxRounds) {
+            return { ppt: current, qaResult, gate, rounds };
+          }
+
+          let nextSpec = current.spec;
+          if (review && Array.isArray(review.lowSlides) && review.lowSlides.length) {
+            nextSpec = await autoRewriteLowScoreSlides(current.spec, review, rawInput);
+          }
+
+          nextSpec = enforceTeachingLoadConstraints(applyMandatorySlideLibrary(enforceContractSlideVariety(nextSpec)));
+          const fixed = hardGateRepairPptSpec(nextSpec, 1);
+          const optimized = optimizePptSpecForQuality(fixed.spec, fixed.qa, 2);
+          current = {
+            spec: optimized.spec,
+            qa: optimized.qa,
+            structured: specToStructuredBlocks(optimized.spec, optimized.qa)
+          };
+        }
+
+        const finalReview = await reviewPptSpecWithSecondModel(current.spec, rawInput);
+        const finalQa = evaluatePptQualityScore(current.spec, current.qa, finalReview);
+        const finalGate = evaluateQualityGate(finalQa, current.spec);
+        return { ppt: current, qaResult: finalQa, gate: finalGate, rounds };
+      }
+
       async function requestDeepSeekPptContract(rawInput, fields, pageCountHint = null) {
         const targetPage = pageCountHint || extractRequestedPageCount(rawInput) || 10;
         const topic = normalizeBusinessTopic((fields && fields.topic) || safeTopic(rawInput));
@@ -2777,8 +2818,8 @@
         const compactRule = targetPage >= 18
           ? "高页数压缩规则：每页title<=18字，goal<=28字，keyPoints每条<=38字，assetPlaceholders最多2项，speakerNotes<=48字。"
           : "";
-        const narrativeMode = String((fields && fields.narrativeMode) || (isEdu ? "standard" : "lazyman"));
-        const templateId = (fields && fields.preferredTemplateId) || (isEdu ? "edu-teach-standard-01" : (narrativeMode === "lazyman" ? "biz-report-exec-08" : "biz-report-exec-01"));
+        const narrativeMode = String((fields && fields.narrativeMode) || "lazyman");
+        const templateId = (fields && fields.preferredTemplateId) || (isEdu ? "edu-lazyman-fusion-02" : "biz-report-exec-08");
         const templateSource = String((fields && fields.templateSource) || "internal");
         const externalTemplateName = String((fields && fields.externalTemplateName) || "");
         const officeplusLockRule = templateSource === "officeplus"
@@ -2879,7 +2920,7 @@
         const isEdu = /教务|教学|课堂|学生|初中|物理|牛顿|力学/.test(sceneText);
         let spec = {
           sceneType: String(contract.sceneType || "企业"),
-          templateId: String(contract.templateId || (isEdu ? "edu-teach-standard-01" : "biz-report-exec-08")),
+          templateId: String(contract.templateId || (isEdu ? "edu-lazyman-fusion-02" : "biz-report-exec-08")),
           templateSource: String(contract.templateSource || "internal"),
           externalTemplateId: String(contract.externalTemplateId || ""),
           externalTemplateName: String(contract.externalTemplateName || ""),
@@ -2889,9 +2930,9 @@
           pageCount: Number(contract.pageCount || (contract.slides || []).length || 10),
           visualStyle: String(contract.visualStyle || (isEdu ? "教学蓝白高对比风" : "高端黑棕商务风")),
           tone: String(contract.tone || (isEdu ? "概念清晰、循序渐进、课堂可执行" : "结论先行、数据驱动、可决策")),
-          fontTheme: String(contract.fontTheme || (isEdu ? "modern-cn" : "business-cn")),
+          fontTheme: String(contract.fontTheme || (isEdu ? "serif-cn" : "business-cn")),
           chartStyle: String(contract.chartStyle || (isEdu ? "contrast" : "calm")),
-          narrativeMode: String(contract.narrativeMode || (isEdu ? "standard" : "lazyman")),
+          narrativeMode: String(contract.narrativeMode || "lazyman"),
           slides: (contract.slides || []).map((s, i) => ({
             index: Number(s.index || i + 1),
             title: String(s.title || `第${i + 1}页`).trim(),
@@ -3169,6 +3210,20 @@
             .trim();
           if (cleaned) return cleaned;
         }
+
+        // Fallback: extract topic from the first clause of free-form requests.
+        const head = all.split(/[，,。；;\n]/)[0] || "";
+        const headTopic = head
+          .replace(/^(请|麻烦|帮我|帮忙|给我|我想|我要|需要|现在|目前)\s*/g, "")
+          .replace(/^(给[^，,。；;\n]{1,16})(做|制作|生成|出)\s*/g, "")
+          .replace(/^(做|制作|生成|输出|整理|写|出)\s*(一份|一个|一套|份|个|套)?\s*/g, "")
+          .replace(/(ppt|PPT|幻灯片|演示文稿|课件|汇报|讲稿)/g, "")
+          .replace(/\d+\s*页.*/g, "")
+          .replace(/(用于|给|面向).{0,12}(老师|教师|管理层|校长|学生).*/g, "")
+          .replace(/\s+/g, " ")
+          .trim();
+        if (headTopic && headTopic.length >= 2) return headTopic;
+
         return "当前需求";
       }
 
@@ -3283,6 +3338,7 @@
         }
         const normalized = raw
           .replace(/^(请|帮我|帮忙|做|制作|生成)\s*/g, "")
+          .replace(/^(一份|一套|一个|份|套)\s*/g, "")
           .replace(/^\d+\s*页\s*/g, "")
           .replace(/^(关于|围绕|聚焦)\s*/, "")
           .replace(/(的)?(高管汇报|汇报|路演|演讲|PPT|ppt|幻灯片|演示文稿|课件)$/g, "")
@@ -3896,7 +3952,7 @@
         const templateIdHint = forcedTemplateId || ((fields && fields.preferredTemplateId) || "");
         const template = templateIdHint ? findTemplateById(sceneType, templateIdHint) : retrieveBestPptTemplate(sceneType, text);
         const requested = pageCountHint || extractRequestedPageCount(text) || template.defaultPageCount;
-        const narrativeMode = String((fields && fields.narrativeMode) || "standard");
+        const narrativeMode = String((fields && fields.narrativeMode) || "lazyman");
         const narrativeBlueprints = buildNarrativeBlueprints(sceneType, template, narrativeMode);
 
         const slides = [];
@@ -5049,6 +5105,134 @@
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
 
+      async function ensurePptxGenJsReady() {
+        if (window.PptxGenJS) return window.PptxGenJS;
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js";
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error("pptxgenjs_load_failed"));
+          document.head.appendChild(script);
+        });
+        if (!window.PptxGenJS) throw new Error("pptxgenjs_unavailable");
+        return window.PptxGenJS;
+      }
+
+      function toHexColor(value, fallback = "2A201A") {
+        const raw = String(value || "").replace(/[^0-9a-fA-F]/g, "").toUpperCase();
+        return raw.length >= 6 ? raw.slice(0, 6) : fallback;
+      }
+
+      function sanitizeFileName(name) {
+        return String(name || "daymori-ppt")
+          .replace(/[\\/:*?"<>|\n\r\t]/g, "-")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "")
+          .slice(0, 80) || "daymori-ppt";
+      }
+
+      async function exportPptByBrowserFallback(localContract) {
+        const PptxGenJS = await ensurePptxGenJsReady();
+        const pptx = new PptxGenJS();
+        pptx.layout = "LAYOUT_WIDE";
+        pptx.author = "Daymori";
+        pptx.company = "Daymori";
+        pptx.subject = String(localContract.topic || "AIPPT");
+        pptx.title = String(localContract.topic || "AIPPT");
+
+        const slides = Array.isArray(localContract.slides) ? localContract.slides : [];
+        for (let i = 0; i < slides.length; i++) {
+          const s = slides[i] || {};
+          const visual = s.visualTokens || {};
+          const palette = visual.palette || {};
+          const bg = toHexColor(palette.bg, "17120F");
+          const titleColor = toHexColor(palette.title, "F4E6D8");
+          const bodyColor = toHexColor(palette.body, "DDC9B4");
+          const accent = toHexColor(palette.accent, "C98A4A");
+
+          const slide = pptx.addSlide();
+          slide.background = { color: bg };
+          slide.addShape(pptx.ShapeType.rect, { x: 0.45, y: 0.42, w: 12.45, h: 0.06, fill: { color: accent }, line: { color: accent, pt: 0 } });
+
+          slide.addText(String(s.title || `第${i + 1}页`), {
+            x: 0.6,
+            y: 0.18,
+            w: 12,
+            h: 0.55,
+            fontFace: "Microsoft YaHei",
+            fontSize: 22,
+            color: titleColor,
+            bold: true,
+            fit: "shrink"
+          });
+
+          slide.addText(`目标：${String(s.goal || "明确本页目标")}`.slice(0, 120), {
+            x: 0.62,
+            y: 0.56,
+            w: 11.9,
+            h: 0.45,
+            fontFace: "Microsoft YaHei",
+            fontSize: 14,
+            color: bodyColor,
+            fit: "shrink"
+          });
+
+          const kps = Array.isArray(s.keyPoints) ? s.keyPoints.slice(0, 3) : [];
+          const bulletRuns = kps.map((item) => ({
+            text: String(item || "").slice(0, 120),
+            options: {
+              bullet: { indent: 18 },
+              breakLine: true
+            }
+          }));
+          if (!bulletRuns.length) {
+            bulletRuns.push({ text: "结论：待补充", options: { bullet: { indent: 18 }, breakLine: true } });
+            bulletRuns.push({ text: "证据：待补充", options: { bullet: { indent: 18 }, breakLine: true } });
+            bulletRuns.push({ text: "行动：待补充", options: { bullet: { indent: 18 }, breakLine: true } });
+          }
+
+          slide.addText(bulletRuns, {
+            x: 0.78,
+            y: 1.08,
+            w: 11.6,
+            h: 4.25,
+            fontFace: "Microsoft YaHei",
+            fontSize: 16,
+            color: bodyColor,
+            valign: "top",
+            fit: "shrink"
+          });
+
+          const assets = Array.isArray(s.assetPlaceholders) ? s.assetPlaceholders.slice(0, 3) : [];
+          slide.addText(`素材占位：${assets.length ? assets.join(" / ") : "数据图 / 对比图"}`, {
+            x: 0.62,
+            y: 5.55,
+            w: 12,
+            h: 0.42,
+            fontFace: "Microsoft YaHei",
+            fontSize: 12,
+            color: bodyColor,
+            fit: "shrink"
+          });
+
+          slide.addText(String(s.speakerNotes || "").slice(0, 140), {
+            x: 0.62,
+            y: 6.05,
+            w: 12,
+            h: 0.42,
+            fontFace: "Microsoft YaHei",
+            fontSize: 11,
+            color: bodyColor,
+            fit: "shrink"
+          });
+        }
+
+        const fileName = `${sanitizeFileName(localContract.topic || "daymori-ppt")}-${Date.now()}.pptx`;
+        await pptx.writeFile({ fileName });
+        return fileName;
+      }
+
       async function exportPptByLatestContract() {
         if (!latestStructured || !latestStructured.finalPrompt) {
           pushMessage("请先生成一份结构化PPT规格后再导出。", "assistant");
@@ -5079,11 +5263,27 @@
 
         const gateCheck = evaluateQualityGate(latestQaResult, latestPptSpec || contract);
         if (!gateCheck.pass) {
-          pushMessage(
-            `导出已拦截：当前未通过质量闸门。${gateCheck.reasons.join("；")}。请先优化后再导出。\n${formatLatestQualitySummary(latestQaResult, latestPptSpec || contract)}`,
-            "assistant"
-          );
-          return;
+          try {
+            const draftFile = await exportPptByBrowserFallback(contract);
+            recordTemplateQualityEvent({
+              stage: "export_local_draft",
+              qaResult: latestQaResult,
+              spec: latestPptSpec || contract,
+              exported: true,
+              engine: "browser-pptxgenjs"
+            });
+            pushMessage(
+              `质量闸门未通过（${gateCheck.reasons.join("；")}），已按草稿模式导出：${draftFile}。建议先根据质检提示继续优化后再用于正式授课/汇报。`,
+              "assistant"
+            );
+            return;
+          } catch {
+            pushMessage(
+              `导出已拦截：当前未通过质量闸门。${gateCheck.reasons.join("；")}。请先优化后再导出。\n${formatLatestQualitySummary(latestQaResult, latestPptSpec || contract)}`,
+              "assistant"
+            );
+            return;
+          }
         }
 
         try {
@@ -5230,6 +5430,24 @@
           });
           pushMessage(saved ? `PPT导出完成：${fileName}（引擎：${engine}）` : `PPT已生成：${fileName}（引擎：${engine}）。当前环境阻止自动下载，已为你打开预览页，请手动保存。`, "assistant");
         } catch (error) {
+          try {
+            const localFile = await exportPptByBrowserFallback(contract);
+            recordTemplateQualityEvent({
+              stage: "export_local_fallback",
+              qaResult: latestQaResult,
+              spec: latestPptSpec || contract,
+              exported: true,
+              engine: "browser-pptxgenjs"
+            });
+            const sourceTag = String(contract.templateSource || "internal") === "officeplus"
+              ? "（已按内容兜底导出，未复用原OfficePLUS母版版式）"
+              : "";
+            pushMessage(`后端导出不可用，已自动走本地浏览器导出：${localFile}${sourceTag}`, "assistant");
+            return;
+          } catch {
+            // Continue to original failure handling.
+          }
+
           recordTemplateQualityEvent({
             stage: "export_failed",
             qaResult: latestQaResult,
@@ -5771,6 +5989,8 @@
             );
           }
 
+          const refined = await refinePptToLazymanGate(ppt, text, 2);
+          ppt = refined.ppt;
           latestPptSpec = ppt.spec;
           latestStructured = ppt.structured;
           const runtimeSpec = {
@@ -5781,10 +6001,25 @@
             stages: ["目标", "约束", "执行步骤", "校验", "交付"]
           };
           latestSpec = runtimeSpec;
-          const finalReview = await reviewPptSpecWithSecondModel(ppt.spec, text);
-          const firstQa = evaluatePptQualityScore(ppt.spec, ppt.qa, finalReview);
+          const firstQa = refined.qaResult;
+          const gateCheck = refined.gate;
           const finalReg = calcTeachingRegressionMetrics(ppt.spec);
-          const metric = recordFurMetric(!!firstQa.pass);
+          const metric = recordFurMetric(!!(firstQa && firstQa.pass && gateCheck && gateCheck.pass));
+
+          for (const row of refined.rounds || []) {
+            pushMessage(
+              `Lazyman质量轮次 R${row.round}：overall=${row.overall} gate=${row.gatePass ? "PASS" : "FAIL"} lowSlides=${row.lowSlideCount}${row.reasons && row.reasons.length ? ` | ${row.reasons.join("；")}` : ""}`,
+              "assistant"
+            );
+          }
+
+          if (!gateCheck.pass) {
+            pushMessage(
+              `质量闸门仍未通过：${gateCheck.reasons.join("；")}。当前结果已保留用于继续编辑，但系统会拦截导出，直到质量达标。`,
+              "assistant"
+            );
+          }
+
           recordTemplateQualityEvent({
             stage: "generate",
             qaResult: firstQa,
@@ -5801,8 +6036,8 @@
             : "";
           proxyStatusEl.textContent = `在线模式：LLM=${(latestLlmMeta && latestLlmMeta.provider) || "unknown"}/${(latestLlmMeta && latestLlmMeta.model) || "unknown"}${tokenText}`;
           pushMessage(`模型回执：provider=${(latestLlmMeta && latestLlmMeta.provider) || "unknown"} model=${(latestLlmMeta && latestLlmMeta.model) || "unknown"}${tokenText}`, "assistant");
-          if (finalReview && finalReview.reviewerModel) {
-            pushMessage(`评审回执：reviewer=${finalReview.reviewerModel} overall=${finalReview.overall}`, "assistant");
+          if (firstQa && firstQa.review && firstQa.review.reviewerModel) {
+            pushMessage(`评审回执：reviewer=${firstQa.review.reviewerModel} overall=${firstQa.review.overall}`, "assistant");
           }
           pushMessage(
             `同题回归：平均字数=${finalReg.avgCharsPerSlide} | 版式多样性=${finalReg.layoutVariety} | 教学页占比=${finalReg.teachingSlideRatio} | 节奏完整率=${finalReg.rhythmCoverage}`,
