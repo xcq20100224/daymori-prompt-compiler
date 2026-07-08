@@ -149,6 +149,22 @@
         min-height: 24px;
       }
 
+      .default-template-banner {
+        position: sticky;
+        top: 8px;
+        z-index: 6;
+        margin: 0 auto 8px;
+        width: min(900px, 100%);
+        padding: 8px 12px;
+        border: 1px solid #d9c5ab;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #f7eee4 0%, #f1e5d8 100%);
+        color: #5a3e27;
+        font-size: 13px;
+        line-height: 1.4;
+        box-shadow: 0 6px 14px rgba(71, 44, 24, 0.08);
+      }
+
       .model-name {
         font-size: 30px;
         color: #22252d;
@@ -1078,6 +1094,7 @@
 
       <section class="main">
         <div class="header">
+          <div id="defaultTemplateBanner" class="default-template-banner">当前默认模板：未设置（拖拽 .pptx 到聊天框即可设为默认）</div>
           <div class="hero">
             <h1 class="hero-title">我能帮助您做什么？</h1>
             <p class="hero-sub">输入需求，获得提示词</p>
@@ -1132,7 +1149,7 @@
             <div class="helper">
               <span>Shift+Enter 换行，Enter 发送</span>
               <div class="file-line">
-                <input id="file" type="file" accept=".txt,.md,.json,.js,.ts,.html,.css,.csv" hidden />
+                <input id="file" type="file" accept=".txt,.md,.json,.js,.ts,.html,.css,.csv,.pptx" hidden />
                 <span id="fileName" class="file-name">未选择文件</span>
               </div>
             </div>
@@ -1238,6 +1255,7 @@
       const proxyEndpointInputEl = document.getElementById("proxyEndpointInput");
       const proxyStatusEl = document.getElementById("proxyStatus");
       const thinkingLevelSelectEl = document.getElementById("thinkingLevelSelect");
+      const defaultTemplateBannerEl = document.getElementById("defaultTemplateBanner");
 
       let contextText = "";
       let latestAssistantText = "";
@@ -1262,7 +1280,7 @@
       const FUR_METRIC_KEY = "daymori_first_direct_usable_metric";
       const PPT_QUALITY_HISTORY_KEY = "daymori_ppt_quality_history_v1";
       const PPT_QUALITY_GATE_KEY = "daymori_ppt_quality_gate_v1";
-      const LOCAL_DEFAULT_PROXY_ENDPOINT = "http://localhost:3000/api/llm-proxy";
+      const LOCAL_DEFAULT_PROXY_ENDPOINT = "http://localhost:3402/api/llm-proxy";
       const PUBLIC_DEFAULT_PROXY_ENDPOINT = "/api/llm-proxy";
       const PRESET_PROXY_ENDPOINTS = [
         PUBLIC_DEFAULT_PROXY_ENDPOINT,
@@ -1414,23 +1432,45 @@
         source: ""
       };
 
+      function refreshDefaultTemplateBanner() {
+        if (!defaultTemplateBannerEl) return;
+        const pref = getPptDesignPref();
+        const runtimeName = String(officeTemplateRuntimeFile.fileName || "").trim();
+        const prefName = String(pref.externalTemplateFileName || "").trim();
+        const templateName = runtimeName || prefName;
+        if (!templateName) {
+          defaultTemplateBannerEl.textContent = "当前默认模板：未设置（拖拽 .pptx 到聊天框即可设为默认）";
+          return;
+        }
+        defaultTemplateBannerEl.textContent = `当前默认模板：${templateName}`;
+      }
+
       function updateOfficeTemplateFileUi() {
         if (!officeTemplateFileNameEl) return;
         const name = String(officeTemplateRuntimeFile.fileName || "").trim();
         const source = String(officeTemplateRuntimeFile.source || "");
         if (!name) {
           officeTemplateFileNameEl.textContent = "未上传模板文件";
+          refreshDefaultTemplateBanner();
           return;
         }
         if (source === "bundled") {
           officeTemplateFileNameEl.textContent = `已自动加载模板：${name}`;
+          refreshDefaultTemplateBanner();
           return;
         }
         if (source === "local-inbox") {
           officeTemplateFileNameEl.textContent = `已从本地模板收件箱同步：${name}`;
+          refreshDefaultTemplateBanner();
+          return;
+        }
+        if (source === "chat-upload") {
+          officeTemplateFileNameEl.textContent = `已设为默认模板：${name}`;
+          refreshDefaultTemplateBanner();
           return;
         }
         officeTemplateFileNameEl.textContent = `已上传：${name}`;
+        refreshDefaultTemplateBanner();
       }
 
       function resetOfficeTemplateRuntimeFile() {
@@ -1559,6 +1599,7 @@
 
       function savePptDesignPref(pref) {
         localStorage.setItem(PPT_DESIGN_PREF_KEY, JSON.stringify(pref));
+        refreshDefaultTemplateBanner();
       }
 
       function templateSelectionToSpec(selection, designPref = null) {
@@ -1689,7 +1730,11 @@
             endpoint = base.replace(/\/api\/llm-proxy$/i, "/api/ppt/open-local-template-workflow");
           }
           try {
-            const resp = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" } });
+            const resp = await fetch(endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ openOfficeplus: false, openInbox: false })
+            });
             if (!resp.ok) {
               const text = await resp.text();
               lastErr = `HTTP ${resp.status} @ ${endpoint}: ${String(text || "").slice(0, 140)}`;
@@ -1713,9 +1758,10 @@
 
         pushMessage([
           "已启动本地 PowerPoint 模板流程：",
-          `- OfficePLUS 页面：${payload.officeplusUrl || "https://www.officeplus.cn/Template/Home.shtml"}`,
-          `- 模板收件箱：${payload.inboxRelativePath || payload.inboxDir || "docs/benchmarks/templates/inbox"}`,
-          "- 现在请你自己在 OfficePLUS 页面点击模板，并在 PowerPoint 里另存为 .pptx 到该目录",
+          "- 当前仅打开 PowerPoint（避免浏览器/文件夹抢焦点跳转）",
+          `- OfficePLUS 页面（手动打开）：${payload.officeplusUrl || "https://www.officeplus.cn/Template/Home.shtml"}`,
+          `- 模板收件箱（手动打开）：${payload.inboxRelativePath || payload.inboxDir || "docs/benchmarks/templates/inbox"}`,
+          "- 现在请你在 OfficePLUS 手动选模板，并在 PowerPoint 里另存为 .pptx 到收件箱目录",
           "- 返回后执行 /ppt pp-sync 导入最新模板"
         ].join("\n"), "assistant");
       }
@@ -2051,8 +2097,9 @@
         return unique.sort((a, b) => {
           const score = (v) => {
             if (v === "/api/llm-proxy") return 0;
-            if (/^https?:\/\/localhost:3000\/api\/llm-proxy$/i.test(v)) return 1;
-            if (/^https?:\/\/localhost/i.test(v)) return 2;
+            if (/^https?:\/\/localhost:3402\/api\/llm-proxy$/i.test(v)) return 1;
+            if (/^https?:\/\/localhost:3000\/api\/llm-proxy$/i.test(v)) return 2;
+            if (/^https?:\/\/localhost/i.test(v)) return 3;
             return 10;
           };
           return score(a) - score(b);
@@ -2302,6 +2349,93 @@
         return /教务|教学|课堂|学生|初中|物理|牛顿|力学|实验|例题|练习/.test(`${String(sceneType)} ${String(topic)}`);
       }
 
+      function isNewtonSecondLawTopic(sceneType = "", topic = "", rawInput = "") {
+        const text = `${String(sceneType)} ${String(topic)} ${String(rawInput)}`;
+        const lawHit = /牛顿第?二定律|f\s*=\s*m\s*a|F\s*=\s*ma|合力|加速度/.test(text);
+        const eduHit = /初二|初中|教学|课堂|物理|教务|学生/.test(text);
+        return lawHit && eduHit;
+      }
+
+      function ensureNewtonSecondLawCoverage(spec, rawInput = "") {
+        if (!spec || !Array.isArray(spec.slides) || !spec.slides.length) return spec;
+        if (!isNewtonSecondLawTopic(spec.sceneType, spec.topic, rawInput)) return spec;
+
+        const outline20 = [
+          ["封面：牛顿第二定律课堂讲解", "建立本节学习目标与评价标准", "结论：本课围绕F=ma构建探究到应用闭环", "证据：评价维度含概念、实验、计算三项", "行动：开场2分钟完成情境提问", "先告知课堂目标和达标标准。"],
+          ["目录与学习路径", "明确5个章节和每段产出任务", "结论：课堂按引入-探究-应用-反馈-总结推进", "证据：每章均配置可检核任务与时间点", "行动：让学生同步标注本节难点", "目录页要给出时间分配。"],
+          ["一、问题引入与知识回顾", "连接生活现象与已学运动概念", "结论：只看速度无法解释受力变化", "证据：同车不同推力时a变化明显", "行动：组织30秒同伴讨论", "先激活旧知再引新知。"],
+          ["导入：从生活现象出发", "用推车案例建立合力概念", "结论：合力不为零时物体产生加速度", "证据：2N与4N推力下加速度近似翻倍", "行动：板书并口头复述一次", "把生活语言转成物理语言。"],
+          ["复习：第一定律与加速度定义", "澄清惯性与加速度关系", "结论：第一定律描述无合力状态", "证据：a=Δv/Δt且方向与合力一致", "行动：完成1道快问快答", "避免把速度与加速度混淆。"],
+          ["二、实验探究与定律发现", "进入控制变量实验框架", "结论：实验是建立定律的核心证据", "证据：仅改变F或m可观察a变化规律", "行动：按小组分工填写记录表", "强调实验变量控制。"],
+          ["实验探究：控制变量法", "观察a随F变化规律", "结论：质量不变时a与F成正比", "证据：F:1N→3N对应a:0.5→1.5m/s²", "行动：完成3组数据采集", "给出标准记录模板。"],
+          ["定律推导：从数据到公式", "从图像归纳数学关系", "结论：实验支持F=ma线性关系", "证据：力-加速度图近似过原点直线", "行动：写出比例式并解释含义", "训练从图到式的表达。"],
+          ["公式详解：F=ma深度理解", "掌握公式变形与单位", "结论：F=ma、a=F/m、m=F/a可互化", "证据：F=12N,m=3kg时a=4m/s²", "行动：完成2题单位换算", "必须强调N=kg·m/s²。"],
+          ["三、例题应用：从理论到计算", "建立标准解题流程", "结论：先受力分析再列方程最稳健", "证据：流程为选对象-画图-定向-列合力", "行动：每题先画受力图", "避免直接代公式。"],
+          ["例题1：水平面受力", "训练合力与加速度求解", "结论：求a前必须先算F合", "证据：F合=9N,m=1.5kg得a=6m/s²", "行动：独立完成同型题", "要求写出单位与方向。"],
+          ["例题2：斜面与摩擦力", "处理多力情景综合题", "结论：加速度取决于合力不是单力", "证据：F拉10N,f=4N,m=2kg时a=3m/s²", "行动：分组比较两种解法", "突出正方向约定。"],
+          ["四、互动练习与即时反馈", "通过练习定位薄弱环节", "结论：即时反馈可显著提升纠错效率", "证据：当堂纠错后正确率可提升20%", "行动：进行3题即时测", "把反馈变成再讲解依据。"],
+          ["选择题：判断对错", "识别概念类误区", "结论：常见误区是把合力当单个力", "证据：漏减摩擦力会使a偏大约33%", "行动：完成错因标注卡", "让学生说出错因。"],
+          ["计算题：灵活应用公式", "强化多步骤规范书写", "结论：规范步骤比心算更稳定", "证据：全步骤作答得分率更高", "行动：按四步模板书写", "训练表达完整性。"],
+          ["五、课堂总结与分层作业", "收束主线并部署作业", "结论：会解释物理意义才算真正掌握", "证据：基础题目标80%，提升题目标60%", "行动：发布A/B/C分层任务", "强调基础与提升并行。"],
+          ["课堂小结：知识结构图", "把概念方法串成链路", "结论：主线是受力分析→合力→F=ma→求解", "证据：结构图覆盖概念、实验、例题三块", "行动：学生用1分钟复述", "收束时回到主线。"],
+          ["分层作业：巩固与拓展", "兼顾下限保障与上限拓展", "结论：分层训练能提升整体掌握度", "证据：A/B/C层分别覆盖概念到综合迁移", "行动：课后提交错因并订正", "作业要可追踪。"],
+          ["课堂反思与提问", "沉淀疑问并形成学习闭环", "结论：会提问是深度理解信号", "证据：高频问题集中在方向与单位", "行动：每人提交1问1得", "引导学生元认知。"],
+          ["课堂收束与下节预告", "完成课堂结束与迁移铺垫", "结论：本节已完成概念-实验-计算闭环", "证据：全班达标按完成率与纠错率评估", "行动：预习下节综合受力题", "替代感谢页，直接服务教学。"]
+        ];
+
+        const pick10 = [0, 2, 4, 6, 8, 10, 11, 13, 16, 19];
+        const use20 = (Number(spec.pageCount || spec.slides.length || 0) >= 18) || spec.slides.length >= 18;
+        const planRows = use20 ? outline20 : pick10.map((i) => outline20[i]);
+        const blueprint = planRows.map((row) => ({
+          title: row[0],
+          goal: row[1],
+          points: [row[2], row[3], row[4]],
+          notes: row[5]
+        }));
+
+        const bannedTitle = /^(LOGO|CONTENT|目录|阶段工作概述|工作完成进度|行动计划|关键数据趋势|目标与范围|问题与对策|企业|汇报|report|项目成果展示|未来工作规划|添加标题|感谢聆听|封面页|01|汇报人)$/i;
+        const teachToken = /牛顿|合力|加速度|受力|实验|变量|例题|练习|作业|课堂|定律|公式|单位|图像|摩擦|质量|力|误区/;
+        const actionToken = /提问|板演|练习|实验|讨论|互评|复述|订正|分钟|课后|下节|本节/;
+
+        spec.sceneType = "教务";
+        spec.topic = String(spec.topic || "初二牛顿第二定律讲解").includes("牛顿") ? String(spec.topic || "初二牛顿第二定律讲解") : "初二牛顿第二定律讲解";
+
+        if (spec.slides.length < blueprint.length) {
+          while (spec.slides.length < blueprint.length) {
+            spec.slides.push({ index: spec.slides.length + 1, title: "", goal: "", keyPoints: [], speakerNotes: "" });
+          }
+        }
+        if (use20) spec.pageCount = 20;
+
+        spec.slides = spec.slides.slice(0, blueprint.length).map((slide, i) => {
+          const plan = blueprint[Math.min(i, blueprint.length - 1)];
+          const s = { ...slide };
+          const body = `${s.title || ""} ${s.goal || ""} ${(s.keyPoints || []).join(" ")}`;
+          const genericTitle = bannedTitle.test(String(s.title || "").trim());
+          const weak = body.replace(/\s+/g, "").length < 52 || /(当前需求|待补充|占位|后续完善|示例|通用模板|项目成果|未来工作)/.test(body);
+          if (genericTitle || weak || !teachToken.test(body)) {
+            s.title = plan.title;
+            s.goal = plan.goal;
+            s.keyPoints = plan.points.slice(0, 3);
+            s.speakerNotes = plan.notes;
+          } else {
+            const points = Array.isArray(s.keyPoints) ? s.keyPoints : [];
+            s.keyPoints = points.slice(0, 3).map((x, idx) => {
+              const head = idx === 0 ? "结论：" : idx === 1 ? "证据：" : "行动：";
+              return `${head}${String(x || "").replace(/^结论：|^证据：|^行动：/, "").trim()}`;
+            });
+            while (s.keyPoints.length < 3) s.keyPoints.push(plan.points[s.keyPoints.length]);
+            if (!/\d/.test(String(s.keyPoints[1] || ""))) s.keyPoints[1] = plan.points[1];
+            if (!actionToken.test(String(s.keyPoints[2] || ""))) s.keyPoints[2] = plan.points[2];
+            if (String(s.goal || "").replace(/\s+/g, "").length < 14) s.goal = plan.goal;
+            if (bannedTitle.test(String(s.title || "").trim())) s.title = plan.title;
+            if (!String(s.speakerNotes || "").trim() || String(s.speakerNotes || "").length < 12) s.speakerNotes = plan.notes;
+          }
+          return s;
+        });
+        return spec;
+      }
+
       function slideContentChars(slide) {
         if (!slide || typeof slide !== "object") return 0;
         return [slide.title, slide.goal, ...((slide.keyPoints) || []), slide.speakerNotes]
@@ -2358,14 +2492,20 @@
 
         const maxPerSlide = 140;
         const minPerSlide = 78;
-        const maxTitleLen = 24;
+        const maxTitleLen = 18;
         const maxPointLen = 34;
         const maxGoalLen = 24;
         const maxNotesLen = 42;
+        const chapterTitle = /^(一、|二、|三、|四、|五、|目录|封面|课堂小结|课堂总结|课堂收束|分层作业)/;
+        const cleanTitle = (t) => String(t || "").replace(/[•|｜]+/g, " ").replace(/\s+/g, " ").trim();
+        const pickBody = (text) => String(text || "").replace(/^结论：|^证据：|^行动：/, "").trim();
 
         spec.slides = spec.slides.map((slide, i) => {
           const s = { ...slide };
-          s.title = String(s.title || `第${i + 1}页`).replace(/\s+/g, " ").trim().slice(0, maxTitleLen);
+          const rawTitle = cleanTitle(s.title || `第${i + 1}页`);
+          const splitByBullet = rawTitle.split(/\s*[•｜|]\s*/).map((x) => x.trim()).filter(Boolean);
+          const candidateTitle = splitByBullet[0] || rawTitle;
+          s.title = candidateTitle.slice(0, maxTitleLen);
           s.goal = String(s.goal || "").replace(/[；。]{2,}/g, "；").slice(0, maxGoalLen);
           const points = Array.isArray(s.keyPoints) ? s.keyPoints : [];
           s.keyPoints = points
@@ -2381,7 +2521,35 @@
             const head = s.keyPoints.length === 0 ? "结论：" : (s.keyPoints.length === 1 ? "证据：" : "行动：");
             s.keyPoints.push(`${head}补充第${i + 1}页核心信息`);
           }
+
+          const overflowTail = splitByBullet.slice(1).join("；");
+          if (overflowTail) {
+            const mergedGoal = `${s.goal || ""}；${overflowTail}`.replace(/^；+/, "").trim();
+            s.goal = mergedGoal.slice(0, maxGoalLen);
+          }
+
+          if (chapterTitle.test(s.title)) {
+            s.keyPoints = [
+              `结论：本章聚焦${s.title.replace(/^[一二三四五]、/, "")}`.slice(0, maxPointLen + 3),
+              `证据：本章将通过1个核心案例和1次课堂互动达成目标`.slice(0, maxPointLen + 3),
+              `行动：先讲解后提问，安排2分钟同伴复述`.slice(0, maxPointLen + 3)
+            ];
+            if (!s.goal || s.goal.length < 10) s.goal = `明确${s.title.replace(/^[一二三四五]、/, "")}学习任务`.slice(0, maxGoalLen);
+          }
+
+          if (!/提问|板演|练习|实验|讨论|互评|复述|订正|分钟|课后|下节|本节/.test(String(s.keyPoints[2] || ""))) {
+            s.keyPoints[2] = `行动：本节先讲解后提问，安排1分钟练习`.slice(0, maxPointLen + 3);
+          }
+          if (!/\d|N|kg|m\/s²|%|组|次|题/.test(String(s.keyPoints[1] || ""))) {
+            s.keyPoints[1] = `证据：以2组数据和1道例题验证本页结论`.slice(0, maxPointLen + 3);
+          }
+          if (!String(s.keyPoints[0] || "").startsWith("结论：")) {
+            s.keyPoints[0] = `结论：${pickBody(s.keyPoints[0] || s.goal || "本页核心结论")}`.slice(0, maxPointLen + 3);
+          }
           s.speakerNotes = String(s.speakerNotes || "").replace(/\s+/g, " ").slice(0, maxNotesLen);
+          if (!s.speakerNotes) {
+            s.speakerNotes = "讲解30秒，提问30秒，练习1分钟并即时订正。".slice(0, maxNotesLen);
+          }
 
           let total = slideContentChars(s);
           if (total < minPerSlide) {
@@ -2810,10 +2978,12 @@
       }
 
       async function requestDeepSeekPptContract(rawInput, fields, pageCountHint = null) {
-        const targetPage = pageCountHint || extractRequestedPageCount(rawInput) || 10;
+        const requestedPage = pageCountHint || extractRequestedPageCount(rawInput) || 0;
         const topic = normalizeBusinessTopic((fields && fields.topic) || safeTopic(rawInput));
         const sceneType = (fields && fields.preferredSceneType) || classifyPptScene(rawInput);
         const isEdu = /教务|教学|课堂|学生/.test(String(sceneType || "")) || /(初\d|初中|物理|牛顿|力学|实验)/.test(`${topic} ${rawInput}`);
+        const isNewtonLesson = isNewtonSecondLawTopic(sceneType, topic, rawInput);
+        const targetPage = requestedPage || 10;
         const contractTokenBudget = targetPage >= 18 ? 6800 : 4200;
         const compactRule = targetPage >= 18
           ? "高页数压缩规则：每页title<=18字，goal<=28字，keyPoints每条<=38字，assetPlaceholders最多2项，speakerNotes<=48字。"
@@ -2830,14 +3000,21 @@
           isEdu ? "目标：产出可直接用于初中课堂讲授的PPT，不要空泛口号，不要解释过程。" : "目标：管理层可直接决策，不要教学口吻，不要解释过程。",
           "只输出JSON，不允许markdown。",
           "必须包含字段：contractVersion,engineType,sceneType,templateId,pageCount,visualStyle,tone,fontTheme,chartStyle,narrativeMode,topic,slides,qualityGate,requiredFields。",
-          "slides每项必须有：index,title,goal,keyPoints(3条),assetPlaceholders,speakerNotes,layoutType。",
-          "layoutType只能从以下枚举选择：summary-hero,evidence-chart,diagnosis-matrix,strategy-compare,roadmap-timeline,risk-heatmap,decision-board。",
-          "每页keyPoints严格三条且前缀必须为：结论： 证据： 行动：",
-          isEdu ? "证据条必须包含可量化信息（数值、单位、公式变量或实验读数）。" : "证据条必须包含可量化指标（百分比或同比/环比或ROI）。",
-          isEdu ? "行动条必须包含课堂动作（提问/板演/练习/实验）和时间锚点（本节/课后/下节）。" : "行动条必须包含决策建议和时间锚点（本周/两周/月底/下季度）。",
+          "slides每项必须有：id,type,index,title,subtitle,bullets,notes,footer,date,layoutType。",
+          "type 只能是：cover,agenda,section,content,comparison,process,example,exercise,summary,qa。",
+          "bullets 每页 3-5 条，每条不超过 28 个中文字符。",
+          isEdu ? "课堂语言必须自然可讲，不允许机械使用‘结论/证据/行动’固定句式。" : "商务语言要求自然简洁，避免机械模板句式。",
+          isEdu ? "每页只表达一个核心观点，优先课堂口语化表达。" : "每页只表达一个核心观点。",
           "页间不得重复，标题、目标、证据数字和行动项都必须不同。",
           isEdu ? "视觉风格按学科自动配色：理科优先蓝白高对比，强调可读性，避免低对比浅字。" : "视觉风格按主题自动配色：商务可深色、教育/科普可亮色高对比，避免全程单一棕色。",
           isEdu ? "叙事链路必须完整：导入->目标->概念->公式->受力分析->例题->实验->练习->总结->作业拓展。" : "叙事链路必须完整：执行摘要->问题定义->现状诊断->根因->策略->路线图->预算->风险->试点->决策请求。",
+          isNewtonLesson ? "牛顿第二定律专项约束：至少覆盖10个模块（导入、定律表述、公式变形、受力分析、控制变量实验、数据图像解读、基础例题、综合例题、易错纠偏、分层练习与作业）。" : "",
+          isNewtonLesson ? "牛顿第二定律专项约束：每页都要出现明确物理量或实验数据，禁止空泛叙述；至少2页包含完整计算步骤。" : "",
+          isNewtonLesson ? "牛顿第二定律专项约束：标题必须是教学标题，禁止目录、阶段工作概述、工作完成进度、行动计划、关键数据趋势、目标与范围、问题与对策等商务模板标题。" : "",
+          isNewtonLesson ? "牛顿第二定律专项约束：每页goal不少于16字，且证据条必须含数字+单位（N/kg/m/s²/%）。" : "",
+          isNewtonLesson ? "牛顿第二定律专项约束：采用10页课堂节奏（封面、章节页、内容页、例题页、练习页、总结页、答疑页），章节标题需简洁明确。" : "",
+          isNewtonLesson ? "牛顿第二定律专项约束：禁词后置白名单；禁止出现LOGO、CONTENT、目录、阶段工作概述、工作完成进度、项目成果展示、未来工作规划、添加标题、感谢聆听等模板词。" : "",
+          isNewtonLesson ? "牛顿第二定律专项约束：每页必须能让老师直接讲，至少包含‘讲解动作+学生动作+时间锚点’中的两项。" : "",
           officeplusLockRule,
           compactRule
         ].join(" ");
@@ -2846,23 +3023,28 @@
           `[主题] ${topic}`,
           `[场景] ${sceneType}`,
           `[页数] ${targetPage}`,
+          isNewtonLesson ? "[结构要求] 章节分隔页与内容页交替组织，避免连续堆叠同质信息页。" : "",
           `[模板] ${templateId}`,
           `[模板来源] ${templateSource}`,
           externalTemplateName ? `[模板库条目] ${externalTemplateName}` : "",
           `[叙事模式] ${narrativeMode}`,
           `[关键词] ${Array.isArray(fields && fields.keywords) ? fields.keywords.slice(0, 8).join("、") : "无"}`,
           `[硬约束] ${Array.isArray(fields && fields.hardPoints) ? fields.hardPoints.slice(0, 8).join("；") : "无"}`,
+          isNewtonLesson ? "[专项要求] 本次是初二牛顿第二定律讲解，内容要可直接上课，不要模板化空话。" : "",
           `[用户原始输入] ${rawInput}`,
           "请按上述约束直接输出最终契约JSON。"
         ].join("\n");
 
         const raw = await requestDeepSeekDirect(userPrompt, {
           system: systemPrompt,
+          model: "deepseek-reasoner",
+          fallbackModel: "deepseek-chat",
           pageCount: targetPage,
           domain: sceneType,
           topic,
           maxTokens: contractTokenBudget,
           timeoutMs: REQUEST_TIMEOUT_MS,
+          totalTimeoutMs: 70000,
           retryCount: REQUEST_RETRY
         });
         const firstPass = parseContractResponse(raw);
@@ -2873,20 +3055,24 @@
           "只输出JSON，不要解释，不要markdown。",
           "必须包含字段：contractVersion,engineType,sceneType,templateId,pageCount,visualStyle,tone,fontTheme,chartStyle,narrativeMode,topic,slides,qualityGate,requiredFields。",
           `pageCount必须是${targetPage}，slides长度必须等于${targetPage}。`,
-          "slides每项必须包含：index,title,goal,keyPoints,assetPlaceholders,speakerNotes。",
-          "keyPoints必须严格3条，且分别以结论： 证据： 行动：开头。",
-          "证据需量化，行动需有决策建议和时间锚点。",
+          "slides每项必须包含：id,type,index,title,subtitle,bullets,notes,footer,date,layoutType。",
+          "bullets必须为3-5条短句，每条<=28中文字符。",
+          "严禁机械‘结论/证据/行动’句式。",
+          isNewtonLesson ? "若主题是牛顿第二定律，标题禁止目录/阶段工作概述/工作完成进度/行动计划/关键数据趋势/目标与范围/问题与对策/项目成果展示/未来工作规划/添加标题/感谢聆听。" : "",
           "原始内容如下：",
           raw
         ].join("\n");
 
         const repaired = await requestDeepSeekDirect(repairPrompt, {
           system: "你是PPT契约JSON修复器，只输出有效JSON。",
+          model: "deepseek-reasoner",
+          fallbackModel: "deepseek-chat",
           pageCount: targetPage,
           domain: sceneType,
           topic,
           maxTokens: contractTokenBudget,
           timeoutMs: REQUEST_TIMEOUT_MS,
+          totalTimeoutMs: 70000,
           retryCount: REQUEST_RETRY + 1
         });
         const secondPass = parseContractResponse(repaired);
@@ -2896,19 +3082,22 @@
           "把内容压缩重写为最小可用契约JSON。",
           "只输出JSON，不要解释。",
           `pageCount=${targetPage} 且 slides长度必须等于${targetPage}。`,
-          "每页仅保留最短必要字段：index,title,goal,keyPoints(3条),assetPlaceholders,speakerNotes。",
-          "keyPoints三条前缀必须为：结论： 证据： 行动：。",
+          "每页仅保留最短必要字段：index,title,goal,keyPoints(3-5条),assetPlaceholders,speakerNotes。",
+          "keyPoints使用自然课堂语言，不允许结论/证据/行动前缀。",
           "原始内容：",
           repaired
         ].join("\n");
 
         const compact = await requestDeepSeekDirect(compactRepairPrompt, {
           system: "你是严格JSON压缩器，只输出有效契约JSON。",
+          model: "deepseek-reasoner",
+          fallbackModel: "deepseek-chat",
           pageCount: targetPage,
           domain: sceneType,
           topic,
           maxTokens: contractTokenBudget,
           timeoutMs: REQUEST_TIMEOUT_MS,
+          totalTimeoutMs: 70000,
           retryCount: REQUEST_RETRY + 1
         });
 
@@ -2935,16 +3124,27 @@
           narrativeMode: String(contract.narrativeMode || "lazyman"),
           slides: (contract.slides || []).map((s, i) => ({
             index: Number(s.index || i + 1),
+            slideType: String(s.slideType || s.type || "content").trim().toLowerCase() || "content",
             title: String(s.title || `第${i + 1}页`).trim(),
-            goal: String(s.goal || "明确本页目标").trim(),
+            subtitle: String(s.subtitle || s.goal || "").trim(),
+            goal: String(s.goal || s.subtitle || "明确本页目标").trim(),
             layoutType: normalizeLayoutType(s.layoutType, i + 1),
-            keyPoints: Array.isArray(s.keyPoints) ? s.keyPoints.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 3) : [],
+            bullets: Array.isArray(s.bullets)
+              ? s.bullets.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 5)
+              : (Array.isArray(s.keyPoints) ? s.keyPoints.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 5) : []),
+            keyPoints: Array.isArray(s.keyPoints)
+              ? s.keyPoints.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 5)
+              : (Array.isArray(s.bullets) ? s.bullets.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 5) : []),
             assetPlaceholders: Array.isArray(s.assetPlaceholders) ? s.assetPlaceholders.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 4) : [],
-            speakerNotes: String(s.speakerNotes || "先结论后证据，最后行动建议。").trim(),
+            notes: String(s.notes || s.speakerNotes || "").trim(),
+            speakerNotes: String(s.speakerNotes || s.notes || "先讲核心概念，再给例题与练习。").trim(),
+            footer: String(s.footer || "").trim(),
+            date: String(s.date || "").trim(),
             visualTokens: s.visualTokens || null
           }))
         };
         spec = applyVisualTokensToSpec(spec);
+        spec = ensureNewtonSecondLawCoverage(spec, contract.topic || "");
         spec = enforceContractSlideVariety(spec);
         const qa = validatePptSpec(spec);
         return {
@@ -2967,7 +3167,7 @@
             `主题：${clonedSpec.topic}`,
             `场景：${clonedSpec.sceneType}`,
             "只输出单页JSON，字段必须是 index,title,goal,keyPoints,assetPlaceholders,speakerNotes。",
-            "keyPoints必须正好3条，且前缀为结论： 证据： 行动：。",
+            "keyPoints使用自然课堂语言，3到5条，不要结论/证据/行动前缀。",
             "证据必须量化；行动必须含决策建议和时间锚点。",
             "禁止复用原句，禁止空泛词。",
             "当前坏页：",
@@ -4031,7 +4231,7 @@
           totalChars += load;
           if (vagueWords.test(packed)) slideIssues.push("存在空泛表述");
           const triadCount = (String((s.keyPoints || []).join(" ")).match(triadRegex) || []).length;
-          if (triadCount < 3) slideIssues.push("缺少结论/证据/行动三要素");
+          if (triadCount > 0) slideIssues.push("存在机械三段式用语");
           if (eduScene) {
             if (!/(F\s*=\s*ma|牛顿第二定律|加速度|受力|质量|N\b|m\/s2|m\/s²|公式|单位|实验)/i.test(String((s.keyPoints || []).join(" ")))) {
               slideIssues.push("缺少公式/实验/单位等教学证据");
@@ -4075,6 +4275,7 @@
           sceneType: spec.sceneType,
           templateId: spec.templateId,
           templateSource: String(spec.templateSource || "internal"),
+          codegenOnly: false,
           externalTemplateId: String(spec.externalTemplateId || ""),
           externalTemplateName: String(spec.externalTemplateName || ""),
           templateFileName: String(spec.templateFileName || ""),
@@ -4088,7 +4289,17 @@
           topic: spec.topic,
           slides: (spec.slides || []).map((s) => ({
             index: s.index,
+            slideType: String(s.slideType || s.type || "content"),
+            type: String(s.slideType || s.type || "content"),
             title: s.title,
+            subtitle: s.subtitle || s.goal || "",
+            bullets: (Array.isArray(s.bullets) ? s.bullets : (Array.isArray(s.keyPoints) ? s.keyPoints : []))
+              .map((x) => String(x || "").replace(/^(结论：|证据：|行动：)/, "").trim())
+              .filter(Boolean)
+              .slice(0, 5),
+            notes: s.notes || s.speakerNotes || "",
+            footer: s.footer || "",
+            date: s.date || "",
             goal: s.goal,
             layoutType: s.layoutType,
             keyPoints: s.keyPoints,
@@ -4100,7 +4311,7 @@
             pass: !!(qa && qa.pass),
             issues: (qa && qa.issues) || []
           },
-          requiredFields: ["sceneType", "pageCount", "slides[].title", "slides[].goal", "slides[].keyPoints", "slides[].assetPlaceholders", "slides[].speakerNotes"]
+          requiredFields: ["sceneType", "pageCount", "slides[].type", "slides[].title", "slides[].subtitle", "slides[].bullets", "slides[].notes"]
         };
       }
 
@@ -5263,27 +5474,11 @@
 
         const gateCheck = evaluateQualityGate(latestQaResult, latestPptSpec || contract);
         if (!gateCheck.pass) {
-          try {
-            const draftFile = await exportPptByBrowserFallback(contract);
-            recordTemplateQualityEvent({
-              stage: "export_local_draft",
-              qaResult: latestQaResult,
-              spec: latestPptSpec || contract,
-              exported: true,
-              engine: "browser-pptxgenjs"
-            });
-            pushMessage(
-              `质量闸门未通过（${gateCheck.reasons.join("；")}），已按草稿模式导出：${draftFile}。建议先根据质检提示继续优化后再用于正式授课/汇报。`,
-              "assistant"
-            );
-            return;
-          } catch {
-            pushMessage(
-              `导出已拦截：当前未通过质量闸门。${gateCheck.reasons.join("；")}。请先优化后再导出。\n${formatLatestQualitySummary(latestQaResult, latestPptSpec || contract)}`,
-              "assistant"
-            );
-            return;
-          }
+          pushMessage(
+            `导出已拦截：当前未通过质量闸门。${gateCheck.reasons.join("；")}。请先优化后再导出。\n${formatLatestQualitySummary(latestQaResult, latestPptSpec || contract)}`,
+            "assistant"
+          );
+          return;
         }
 
         try {
@@ -5296,6 +5491,7 @@
 
           let resp = null;
           let lastErr = "";
+          let validationFailure = null;
           for (const proxy of uniqueCandidates) {
             const exportEndpoint = exportEndpointOf(proxy);
             try {
@@ -5315,6 +5511,13 @@
               }
 
               const errBody = await attempt.text();
+              let parsedErr = null;
+              try { parsedErr = JSON.parse(String(errBody || "{}")); } catch {}
+              if (attempt.status === 422 && parsedErr && String(parsedErr.error || "") === "ppt_export_validation_failed") {
+                validationFailure = parsedErr;
+                lastErr = `PPT质量检查失败`;
+                break;
+              }
               lastErr = `HTTP ${attempt.status} @ ${exportEndpoint}: ${String(errBody || "").slice(0, 120)}`;
             } catch (error) {
               lastErr = `${exportEndpoint} 无法连接：${error.message || error}`;
@@ -5322,6 +5525,17 @@
           }
 
           if (!resp) {
+            if (validationFailure) {
+              const errs = Array.isArray(validationFailure.validation && validationFailure.validation.errors)
+                ? validationFailure.validation.errors
+                : [];
+              const detailLines = errs.slice(0, 10).map((e) => `- 第${Number(e.slideIndex || 0)}页 ${String(e.type || "unknown")} ${String(e.message || e.text || "")}`);
+              pushMessage([
+                `PPT质量检查失败（requestId: ${validationFailure.requestId || "-"}）`,
+                ...(detailLines.length ? detailLines : [String(validationFailure.detail || "未知校验错误")])
+              ].join("\n"), "assistant");
+              return;
+            }
             throw new Error(lastErr || "未找到可用导出后端");
           }
 
@@ -5430,24 +5644,10 @@
           });
           pushMessage(saved ? `PPT导出完成：${fileName}（引擎：${engine}）` : `PPT已生成：${fileName}（引擎：${engine}）。当前环境阻止自动下载，已为你打开预览页，请手动保存。`, "assistant");
         } catch (error) {
-          try {
-            const localFile = await exportPptByBrowserFallback(contract);
-            recordTemplateQualityEvent({
-              stage: "export_local_fallback",
-              qaResult: latestQaResult,
-              spec: latestPptSpec || contract,
-              exported: true,
-              engine: "browser-pptxgenjs"
-            });
-            const sourceTag = String(contract.templateSource || "internal") === "officeplus"
-              ? "（已按内容兜底导出，未复用原OfficePLUS母版版式）"
-              : "";
-            pushMessage(`后端导出不可用，已自动走本地浏览器导出：${localFile}${sourceTag}`, "assistant");
+          if (/PPT质量检查失败/.test(String((error && error.message) || ""))) {
+            pushMessage(String(error && error.message ? error.message : error), "assistant");
             return;
-          } catch {
-            // Continue to original failure handling.
           }
-
           recordTemplateQualityEvent({
             stage: "export_failed",
             qaResult: latestQaResult,
@@ -5479,6 +5679,41 @@
         }
       }
 
+      function isPptxFile(file) {
+        if (!file) return false;
+        const name = String(file.name || "").trim();
+        if (/\.pptx$/i.test(name)) return true;
+        const mime = String(file.type || "").toLowerCase();
+        return mime === "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+      }
+
+      async function applyChatPptxAsDefaultTemplate(file) {
+        const base64 = await readBinaryFileAsBase64(file);
+        const fileName = String(file && file.name ? file.name : "officeplus-template.pptx");
+        officeTemplateRuntimeFile = {
+          fileName,
+          base64,
+          source: "chat-upload"
+        };
+        updateOfficeTemplateFileUi();
+
+        const pick = readOfficeTemplatePick();
+        const prev = getPptDesignPref();
+        if (pptTemplateSelectEl) pptTemplateSelectEl.value = "officeplus";
+
+        savePptDesignPref({
+          template: "officeplus",
+          templateSource: "officeplus",
+          externalTemplateId: prev.externalTemplateId || pick.id,
+          externalTemplateName: prev.externalTemplateName || pick.name,
+          externalTemplateFileName: fileName,
+          externalSceneType: prev.externalSceneType || pick.preferredSceneType,
+          fontTheme: (pptFontSelectEl && pptFontSelectEl.value) || prev.fontTheme || pick.fontTheme || "business-cn",
+          chartStyle: (pptChartSelectEl && pptChartSelectEl.value) || prev.chartStyle || pick.chartStyle || "calm",
+          narrativeMode: prev.narrativeMode || pick.narrativeMode || "standard"
+        });
+      }
+
       async function loadFileContext(file) {
         if (!file) {
           fileNameEl.textContent = "未选择文件";
@@ -5492,6 +5727,19 @@
         fileNameEl.textContent = file.name;
         if (fileBadgeNameEl) fileBadgeNameEl.textContent = file.name;
         if (fileBadgeEl) fileBadgeEl.classList.remove("hidden");
+
+        if (isPptxFile(file)) {
+          try {
+            await applyChatPptxAsDefaultTemplate(file);
+            contextText = "";
+            pushMessage(`已将 ${file.name} 设为默认模板文件，后续 OfficePLUS 生成/导出将优先使用该模板。`, "assistant");
+          } catch (error) {
+            contextText = "";
+            pushMessage(`模板文件读取失败：${error && error.message ? error.message : String(error)}`, "assistant");
+          }
+          return;
+        }
+
         try {
           contextText = await file.text();
           if (contextText.length > 12000) {
@@ -5526,9 +5774,30 @@
 
         const requestTimeout = Number.isFinite(opts.timeoutMs) ? opts.timeoutMs : isMobileClient ? 12000 : REQUEST_TIMEOUT_MS;
         const requestRetry = Number.isFinite(opts.retryCount) ? opts.retryCount : isMobileClient ? 1 : REQUEST_RETRY;
-        const hardDeadline = Date.now() + (isMobileClient ? 60000 : 120000);
+        const totalTimeoutMs = Number.isFinite(opts.totalTimeoutMs)
+          ? Math.max(8000, Number(opts.totalTimeoutMs))
+          : (isMobileClient ? 45000 : 90000);
+        const hardDeadline = Date.now() + totalTimeoutMs;
         const thinkingLevel = opts.thinkingLevel || (thinkingLevelSelectEl && thinkingLevelSelectEl.value) || readThinkingLevel();
         const thinkingProfile = resolveThinkingProfile(thinkingLevel);
+        const primaryModel = String(opts.model || thinkingProfile.model || DEFAULT_DEEPSEEK_MODEL).trim() || DEFAULT_DEEPSEEK_MODEL;
+        const fallbackModel = String(opts.fallbackModel || DEFAULT_DEEPSEEK_MODEL).trim() || DEFAULT_DEEPSEEK_MODEL;
+        const rawModelCandidates = Array.isArray(opts.modelCandidates) ? opts.modelCandidates : [];
+        const modelCandidates = [];
+        const pushModel = (name) => {
+          const v = String(name || "").trim();
+          if (!v) return;
+          if (!modelCandidates.some((x) => String(x).toLowerCase() === v.toLowerCase())) {
+            modelCandidates.push(v);
+          }
+        };
+        pushModel(primaryModel);
+        for (const item of rawModelCandidates) pushModel(item);
+        if (/deepseek-reasoner/i.test(primaryModel)) {
+          pushModel(fallbackModel);
+          pushModel("deepseek-chat");
+        }
+        if (!modelCandidates.length) pushModel(DEFAULT_DEEPSEEK_MODEL);
         const isLocalProxy = (endpoint) => {
           const t = normalizeProxyEndpoint(endpoint);
           return t === "/api/llm-proxy" || /^https?:\/\/localhost(?::\d+)?\/api\/llm-proxy$/i.test(t);
@@ -5565,74 +5834,87 @@
             break;
           }
 
-          let resp;
-          try {
-            resp = await fetchWithTimeoutAndRetry(
-              endpoint,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                  system: systemText,
-                  userText,
-                  maxTokens: Number.isFinite(opts.maxTokens) ? opts.maxTokens : 850,
-                  model: String(opts.model || thinkingProfile.model || DEFAULT_DEEPSEEK_MODEL)
-                })
-              },
-              requestRetry,
-              requestTimeout
-            );
-          } catch (error) {
-            lastErrorMessage = `无法连接后端代理: ${endpoint}`;
-            continue;
-          }
+          for (const modelName of modelCandidates) {
+            const remainingMs = hardDeadline - Date.now();
+            if (remainingMs <= 1000) {
+              lastErrorMessage = "在线代理请求超时";
+              break;
+            }
+            const modelTimeout = Math.max(5000, Math.min(requestTimeout, remainingMs - 500));
+            if (modelName !== primaryModel) {
+              proxyStatusEl.textContent = `模型降级重试：${primaryModel} -> ${modelName}`;
+            }
 
-          let raw = "";
-          try {
-            raw = await withHardTimeout(resp.text(), requestTimeout + 3000, "读取模型响应超时");
-          } catch {
-            lastErrorMessage = `模型响应读取超时: ${endpoint}`;
-            continue;
-          }
-          let data = {};
-          try {
-            data = raw ? JSON.parse(raw) : {};
-          } catch (error) {
-            const head = raw.slice(0, 120).toLowerCase();
-            const htmlLike = head.includes("<html") || head.includes("<!doctype") || head.includes("cannot post");
-            if (htmlLike) {
-              lastErrorMessage = `后端返回HTML而非JSON: ${endpoint}`;
+            let resp;
+            try {
+              resp = await fetchWithTimeoutAndRetry(
+                endpoint,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                    system: systemText,
+                    userText,
+                    maxTokens: Number.isFinite(opts.maxTokens) ? opts.maxTokens : 850,
+                    model: modelName
+                  })
+                },
+                requestRetry,
+                modelTimeout
+              );
+            } catch (error) {
+              const emsg = error && error.message ? error.message : String(error);
+              lastErrorMessage = `模型请求失败(${modelName}) @ ${endpoint}: ${emsg}`;
               continue;
             }
-            lastErrorMessage = "后端代理返回非 JSON: " + raw.slice(0, 120);
-            continue;
-          }
 
-          if (!resp.ok) {
-            const detail = data.detail || data.error || (data.error && data.error.message) || raw.slice(0, 220);
-            lastErrorMessage = `服务请求失败(${resp.status}) @ ${endpoint}: ${detail}`;
-            continue;
-          }
+            let raw = "";
+            try {
+              raw = await withHardTimeout(resp.text(), modelTimeout + 3000, "读取模型响应超时");
+            } catch {
+              lastErrorMessage = `模型响应读取超时(${modelName}) @ ${endpoint}`;
+              continue;
+            }
+            let data = {};
+            try {
+              data = raw ? JSON.parse(raw) : {};
+            } catch (error) {
+              const head = raw.slice(0, 120).toLowerCase();
+              const htmlLike = head.includes("<html") || head.includes("<!doctype") || head.includes("cannot post");
+              if (htmlLike) {
+                lastErrorMessage = `后端返回HTML而非JSON(${modelName}) @ ${endpoint}`;
+                continue;
+              }
+              lastErrorMessage = `后端代理返回非JSON(${modelName}): ` + raw.slice(0, 120);
+              continue;
+            }
 
-          const text =
-            (data && typeof data.text === "string" && data.text) ||
-            (data && typeof data.output_text === "string" && data.output_text) ||
-            (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ||
-            "";
-          latestLlmMeta = {
-            provider: data && data.provider ? String(data.provider) : "unknown",
-            model: data && data.model ? String(data.model) : "unknown",
-            usage: data && data.usage ? data.usage : null,
-            endpoint
-          };
-          activeProxyEndpoint = endpoint;
-          localStorage.setItem(PROXY_STORAGE_KEY, endpoint);
-          proxyEndpointInputEl.value = endpoint;
-          proxyStatusEl.textContent = `已连接后端: ${endpoint}`;
-          if (typeof text === "string" && text.trim()) return text;
-          return "(无输出)";
+            if (!resp.ok) {
+              const detail = data.detail || data.error || (data.error && data.error.message) || raw.slice(0, 220);
+              lastErrorMessage = `服务请求失败(${resp.status}, ${modelName}) @ ${endpoint}: ${detail}`;
+              continue;
+            }
+
+            const text =
+              (data && typeof data.text === "string" && data.text) ||
+              (data && typeof data.output_text === "string" && data.output_text) ||
+              (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ||
+              "";
+            latestLlmMeta = {
+              provider: data && data.provider ? String(data.provider) : "unknown",
+              model: data && data.model ? String(data.model) : modelName,
+              usage: data && data.usage ? data.usage : null,
+              endpoint
+            };
+            activeProxyEndpoint = endpoint;
+            localStorage.setItem(PROXY_STORAGE_KEY, endpoint);
+            proxyEndpointInputEl.value = endpoint;
+            proxyStatusEl.textContent = `已连接后端: ${endpoint}`;
+            if (typeof text === "string" && text.trim()) return text;
+            return "(无输出)";
+          }
         }
 
         activeProxyEndpoint = "";
@@ -5931,31 +6213,38 @@
           let ppt;
           const lockTemplateByOfficeplus = String((semanticPack.fields && semanticPack.fields.templateSource) || "") === "officeplus";
           if (lockTemplateByOfficeplus) {
-            ppt = buildStructuredPptDeliverable(text, semanticPack.fields, latestPageTarget || null);
-            pushMessage(`模板来源：OfficePLUS（${semanticPack.fields.externalTemplateName || semanticPack.fields.preferredTemplateId}），已锁定模板骨架。`, "assistant");
-          } else {
-            const contract = await requestDeepSeekPptContract(text, semanticPack.fields, latestPageTarget || null);
-            if (contract) {
-              ppt = structuredFromContract(contract);
-              if (ppt && ppt.qa && !ppt.qa.pass) {
-                const dsRepaired = await repairPptSpecWithDeepSeek(ppt.spec, ppt.qa, 3);
-                if (dsRepaired && dsRepaired.spec) {
-                  const hardFixed = hardGateRepairPptSpec(dsRepaired.spec, 1);
-                  ppt = {
-                    spec: hardFixed.spec,
-                    qa: hardFixed.qa,
-                    structured: specToStructuredBlocks(hardFixed.spec, hardFixed.qa)
-                  };
-                }
-              }
-            } else {
-              throw new Error("DeepSeek未返回有效PPT契约JSON");
-            }
+            pushMessage(`模板来源：OfficePLUS（${semanticPack.fields.externalTemplateName || semanticPack.fields.preferredTemplateId}），已锁定模板骨架并启动大模型内容生成。`, "assistant");
           }
 
+          const contract = await requestDeepSeekPptContract(text, semanticPack.fields, latestPageTarget || null);
+          if (contract) {
+            ppt = structuredFromContract(contract);
+            if (ppt && ppt.qa && !ppt.qa.pass) {
+              const dsRepaired = await repairPptSpecWithDeepSeek(ppt.spec, ppt.qa, 3);
+              if (dsRepaired && dsRepaired.spec) {
+                const hardFixed = hardGateRepairPptSpec(dsRepaired.spec, 1);
+                ppt = {
+                  spec: hardFixed.spec,
+                  qa: hardFixed.qa,
+                  structured: specToStructuredBlocks(hardFixed.spec, hardFixed.qa)
+                };
+              }
+            }
+          } else {
+            throw new Error("DeepSeek未返回有效PPT契约JSON");
+          }
+
+          if (!ppt || !ppt.spec || !Array.isArray(ppt.spec.slides) || !ppt.spec.slides.length) {
+            ppt = buildStructuredPptDeliverable(text, semanticPack.fields, latestPageTarget || null);
+            pushMessage("大模型返回异常，已临时切换本地内容生成兜底。", "assistant");
+          }
+
+          ppt.spec = ensureNewtonSecondLawCoverage(ppt.spec, text);
           ppt.spec = enforceTeachingLoadConstraints(applyMandatorySlideLibrary(enforceContractSlideVariety(ppt.spec)));
           const baseFixed = hardGateRepairPptSpec(ppt.spec, 1);
-          const optimizedPack = optimizePptSpecForQuality(baseFixed.spec, baseFixed.qa, 2);
+          const topicForRounds = `${String((ppt.spec && ppt.spec.topic) || "")} ${text}`;
+          const qualityRounds = /牛顿第?二定律|F\s*=\s*ma|合力|加速度/.test(topicForRounds) ? 3 : 2;
+          const optimizedPack = optimizePptSpecForQuality(baseFixed.spec, baseFixed.qa, qualityRounds);
           ppt = {
             spec: optimizedPack.spec,
             qa: optimizedPack.qa,
@@ -5967,7 +6256,8 @@
 
           if (reviewA && Array.isArray(reviewA.lowSlides) && reviewA.lowSlides.length) {
             const rewrittenSpec = await autoRewriteLowScoreSlides(ppt.spec, reviewA, text);
-            const fixedAfterRewrite = hardGateRepairPptSpec(rewrittenSpec, 1);
+            const rewrittenNewtonSafe = ensureNewtonSecondLawCoverage(rewrittenSpec, text);
+            const fixedAfterRewrite = hardGateRepairPptSpec(rewrittenNewtonSafe, 1);
             const reviewB = await reviewPptSpecWithSecondModel(fixedAfterRewrite.spec, text);
             const scoreB = evaluatePptQualityScore(fixedAfterRewrite.spec, fixedAfterRewrite.qa, reviewB);
             const regA = calcTeachingRegressionMetrics(ppt.spec);

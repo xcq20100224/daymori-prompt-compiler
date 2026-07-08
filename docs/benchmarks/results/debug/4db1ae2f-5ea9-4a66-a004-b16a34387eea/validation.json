@@ -1,0 +1,25 @@
+{
+  "requestId": "4db1ae2f-5ea9-4a66-a004-b16a34387eea",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 1,
+      "type": "slotOrder",
+      "text": "title_written_to_body"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 92,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 94,
+    "cleanliness": 92,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

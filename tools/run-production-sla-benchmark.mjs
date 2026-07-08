@@ -1,10 +1,14 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { analyzePptxFile } from "./ppt-quality-metrics.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "..");
+const OUTPUT_PREFIX = String(process.env.BENCH_OUTPUT_PREFIX || "production-sla").trim() || "production-sla";
+const PROVIDER_LABEL = String(process.env.BENCH_PROVIDER_LABEL || "daymori").trim() || "daymori";
+const API_BASE = String(process.env.BENCH_API_BASE || "http://localhost:3000").trim() || "http://localhost:3000";
 
 function nowIso() {
   return new Date().toISOString();
@@ -79,7 +83,7 @@ async function postExportSave(contract) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 70000);
   try {
-    const resp = await fetch("http://localhost:3000/api/ppt/export-save", {
+    const resp = await fetch(`${API_BASE.replace(/\/$/, "")}/api/ppt/export-save`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ contract }),
@@ -109,10 +113,30 @@ async function postExportSave(contract) {
   }
 }
 
+function inferGateDefaultReason(run) {
+  if (!run) return "missing_export_file";
+  if (run.ok) {
+    const raw = String(run.data && (run.data.raw || run.data.error) || "").toLowerCase();
+    if (raw.includes("<html") || raw.includes("<!doctype")) return "api_invalid_response_html";
+    return "api_missing_relative_path";
+  }
+  if (Number(run.status || 0) === 0) {
+    const err = String(run.data && run.data.error || "").toLowerCase();
+    if (err.includes("econnrefused") || err.includes("fetch failed") || err.includes("network")) return "api_unreachable";
+    if (err.includes("abort") || err.includes("timeout")) return "api_timeout";
+    return `api_error:${err || "unknown"}`;
+  }
+  return `export_status_${Number(run.status || 0)}`;
+}
+
 function passBalanced(run) {
   const q = run.data && run.data.layoutQuality ? run.data.layoutQuality : null;
+  const g = run.qualityGate || null;
   if (!run.ok || !q) return false;
-  return q.pass && Number(q.score || 0) >= 82 && Number(run.elapsedMs || 999999) <= 60000;
+  return q.pass
+    && Number(q.score || 0) >= 82
+    && Number(run.elapsedMs || 999999) <= 60000
+    && !!(g && g.pass);
 }
 
 function strictLeakEscaped(run) {
@@ -143,12 +167,15 @@ function buildMd(payload) {
   lines.push(`- Strict leak escaped: ${payload.strictLeakEscaped}`);
   lines.push(`- Avg export ms: ${payload.avgExportMs.toFixed(0)}`);
   lines.push(`- Manual adjust sample avg: ${payload.manualAdjustAvg.toFixed(2)}`);
+  lines.push(`- Blank slides total: ${payload.blankSlidesTotal}`);
+  lines.push(`- Placeholder-only slides total: ${payload.placeholderOnlyTotal}`);
+  lines.push(`- Avg content coverage: ${(payload.avgContentCoverage * 100).toFixed(1)}%`);
   lines.push(`- Target pass: ${payload.targetPass ? "YES" : "NO"}`);
   lines.push("");
   lines.push("## Balanced Runs");
   lines.push("");
   for (const r of payload.balanced) {
-    lines.push(`- ${r.id} ${r.topic} | ok=${r.ok} | score=${r.score} | ms=${r.elapsedMs} | manual=${r.manualAdjustments}`);
+    lines.push(`- ${r.id} ${r.topic} | ok=${r.ok} | score=${r.score} | ms=${r.elapsedMs} | manual=${r.manualAdjustments} | gate=${r.qualityGate && r.qualityGate.pass ? "pass" : "fail"} | coverage=${((r.qualityGate && r.qualityGate.contentCoverage) || 0).toFixed(2)} | reasons=${(r.qualityGate && r.qualityGate.reasons || []).join(",")}`);
   }
   lines.push("");
   lines.push("## Strict Runs");
@@ -175,6 +202,35 @@ async function run() {
     const bc = buildContract(item, tpl, "balanced");
     const br = await postExportSave(bc);
     const bq = br.data && br.data.layoutQuality ? br.data.layoutQuality : null;
+    let qualityGate = {
+      pass: false,
+      reasons: [inferGateDefaultReason(br)],
+      emptySlides: [],
+      placeholderOnlySlides: [],
+      contentCoverage: 0
+    };
+    const rel = br && br.data ? String(br.data.relativePath || "") : "";
+    if (rel) {
+      try {
+        const abs = path.join(repoRoot, rel);
+        const m = analyzePptxFile(abs);
+        qualityGate = {
+          pass: !!(m && m.gate && m.gate.pass),
+          reasons: m && m.gate ? m.gate.reasons : ["gate_eval_failed"],
+          emptySlides: m.emptySlides || [],
+          placeholderOnlySlides: m.placeholderOnlySlides || [],
+          contentCoverage: Number(m.contentCoverage || 0)
+        };
+      } catch {
+        qualityGate = {
+          pass: false,
+          reasons: ["quality_eval_failed"],
+          emptySlides: [],
+          placeholderOnlySlides: [],
+          contentCoverage: 0
+        };
+      }
+    }
     balanced.push({
       id: item.id,
       topic: item.topic,
@@ -183,7 +239,8 @@ async function run() {
       score: bq ? Number(bq.score || 0) : 0,
       strictLeakSafe: bq ? !!bq.strictLeakSafe : false,
       manualAdjustments: adjustCount(br),
-      passed: passBalanced(br)
+      qualityGate,
+      passed: passBalanced({ ...br, qualityGate })
     });
 
   console.log(`[strict] ${item.id} ${item.topic}`);
@@ -206,20 +263,32 @@ async function run() {
   const avgExportMs = avg(balanced.map((x) => Number(x.elapsedMs || 0)));
   const manualSample = balanced.slice(0, 10);
   const manualAdjustAvg = avg(manualSample.map((x) => Number(x.manualAdjustments || 0)));
+  const blankSlidesTotal = balanced.reduce((acc, x) => acc + Number(x.qualityGate && x.qualityGate.emptySlides ? x.qualityGate.emptySlides.length : 0), 0);
+  const placeholderOnlyTotal = balanced.reduce((acc, x) => acc + Number(x.qualityGate && x.qualityGate.placeholderOnlySlides ? x.qualityGate.placeholderOnlySlides.length : 0), 0);
+  const avgContentCoverage = balanced.length
+    ? balanced.reduce((acc, x) => acc + Number((x.qualityGate && x.qualityGate.contentCoverage) || 0), 0) / balanced.length
+    : 0;
 
   const targetPass = onePassRate >= 0.95
     && strictLeakEscapedCount === 0
     && avgExportMs <= 60000
-    && manualAdjustAvg <= 1;
+    && manualAdjustAvg <= 1
+    && blankSlidesTotal === 0
+    && placeholderOnlyTotal === 0
+    && avgContentCoverage >= 0.98;
 
   const payload = {
     runAt: nowIso(),
     runDate: todayDate(),
+    providerLabel: PROVIDER_LABEL,
     totalTopics: topics.length,
     onePassRate,
     strictLeakEscaped: strictLeakEscapedCount,
     avgExportMs,
     manualAdjustAvg,
+    blankSlidesTotal,
+    placeholderOnlyTotal,
+    avgContentCoverage,
     targetPass,
     balanced,
     strict
@@ -230,10 +299,10 @@ async function run() {
   await ensureDir(resultsDir);
   await ensureDir(reportsDir);
 
-  const latestJson = path.join(resultsDir, "production-sla-latest.json");
-  const datedJson = path.join(resultsDir, `production-sla-${payload.runDate}.json`);
-  const latestMd = path.join(reportsDir, "production-sla-latest.md");
-  const datedMd = path.join(reportsDir, `production-sla-${payload.runDate}.md`);
+  const latestJson = path.join(resultsDir, `${OUTPUT_PREFIX}-latest.json`);
+  const datedJson = path.join(resultsDir, `${OUTPUT_PREFIX}-${payload.runDate}.json`);
+  const latestMd = path.join(reportsDir, `${OUTPUT_PREFIX}-latest.md`);
+  const datedMd = path.join(reportsDir, `${OUTPUT_PREFIX}-${payload.runDate}.md`);
 
   const md = buildMd(payload);
   await fs.writeFile(latestJson, JSON.stringify(payload, null, 2));
@@ -245,9 +314,13 @@ async function run() {
   console.log(`Strict leak escaped: ${strictLeakEscapedCount}`);
   console.log(`Avg export ms: ${avgExportMs.toFixed(0)}`);
   console.log(`Manual adjust avg (sample10): ${manualAdjustAvg.toFixed(2)}`);
+  console.log(`Blank slides total: ${blankSlidesTotal}`);
+  console.log(`Placeholder-only slides total: ${placeholderOnlyTotal}`);
+  console.log(`Avg content coverage: ${(avgContentCoverage * 100).toFixed(1)}%`);
   console.log(`Target pass: ${targetPass ? "YES" : "NO"}`);
-  console.log("Report: docs/benchmarks/reports/production-sla-latest.md");
-  console.log("Result: docs/benchmarks/results/production-sla-latest.json");
+  console.log(`Provider label: ${PROVIDER_LABEL}`);
+  console.log(`Report: docs/benchmarks/reports/${OUTPUT_PREFIX}-latest.md`);
+  console.log(`Result: docs/benchmarks/results/${OUTPUT_PREFIX}-latest.json`);
 
   if (!targetPass) process.exitCode = 1;
 }

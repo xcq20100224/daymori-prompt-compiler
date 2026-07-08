@@ -1,0 +1,209 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slideCountMismatch_slide_0,pageCountMismatch_slide_0,mixedLayout_slide_2,mixedLayout_slide_5",
+    "requestId": "32b5fc15-c4d4-453e-b081-181a36c64561",
+    "generationTracePath": "docs/benchmarks/results/debug/32b5fc15-c4d4-453e-b081-181a36c64561/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 0,
+      "overall": 80,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 0,
+          "type": "slideCountMismatch",
+          "text": "input=10,output=5"
+        },
+        {
+          "slideIndex": 0,
+          "type": "slideCountMismatch",
+          "text": "input=10,physical=5"
+        },
+        {
+          "slideIndex": 0,
+          "type": "slideCountMismatch",
+          "text": "input=10,visible=5"
+        },
+        {
+          "slideIndex": 0,
+          "type": "pageCountMismatch",
+          "text": "output=5"
+        },
+        {
+          "slideIndex": 2,
+          "type": "mixedLayout",
+          "text": "section_body_too_long"
+        },
+        {
+          "slideIndex": 5,
+          "type": "mixedLayout",
+          "text": "section_body_too_long"
+        }
+      ],
+      "issues": [
+        "slideCountMismatch_slide_0",
+        "pageCountMismatch_slide_0",
+        "mixedLayout_slide_2",
+        "mixedLayout_slide_5"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slideCountMismatch_slide_0,pageCountMismatch_slide_0,mixedLayout_slide_2,mixedLayout_slide_5",
+    "requestId": "95cad152-b224-4bbf-85ed-7834b347d0c7",
+    "generationTracePath": "docs/benchmarks/results/debug/95cad152-b224-4bbf-85ed-7834b347d0c7/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 0,
+      "overall": 80,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 0,
+          "type": "slideCountMismatch",
+          "text": "input=10,output=5"
+        },
+        {
+          "slideIndex": 0,
+          "type": "slideCountMismatch",
+          "text": "input=10,physical=5"
+        },
+        {
+          "slideIndex": 0,
+          "type": "slideCountMismatch",
+          "text": "input=10,visible=5"
+        },
+        {
+          "slideIndex": 0,
+          "type": "pageCountMismatch",
+          "text": "output=5"
+        },
+        {
+          "slideIndex": 2,
+          "type": "mixedLayout",
+          "text": "section_body_too_long"
+        },
+        {
+          "slideIndex": 5,
+          "type": "mixedLayout",
+          "text": "section_body_too_long"
+        }
+      ],
+      "issues": [
+        "slideCountMismatch_slide_0",
+        "pageCountMismatch_slide_0",
+        "mixedLayout_slide_2",
+        "mixedLayout_slide_5"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 2,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slideCountMismatch_slide_0,pageCountMismatch_slide_0,mixedLayout_slide_2,mixedLayout_slide_5",
+    "requestId": "7022b5c6-5a3b-4415-84f6-98e36b158fce",
+    "generationTracePath": "docs/benchmarks/results/debug/7022b5c6-5a3b-4415-84f6-98e36b158fce/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 0,
+      "overall": 80,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 0,
+          "type": "slideCountMismatch",
+          "text": "input=10,output=5"
+        },
+        {
+          "slideIndex": 0,
+          "type": "slideCountMismatch",
+          "text": "input=10,physical=5"
+        },
+        {
+          "slideIndex": 0,
+          "type": "slideCountMismatch",
+          "text": "input=10,visible=5"
+        },
+        {
+          "slideIndex": 0,
+          "type": "pageCountMismatch",
+          "text": "output=5"
+        },
+        {
+          "slideIndex": 2,
+          "type": "mixedLayout",
+          "text": "section_body_too_long"
+        },
+        {
+          "slideIndex": 5,
+          "type": "mixedLayout",
+          "text": "section_body_too_long"
+        }
+      ],
+      "issues": [
+        "slideCountMismatch_slide_0",
+        "pageCountMismatch_slide_0",
+        "mixedLayout_slide_2",
+        "mixedLayout_slide_5"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]

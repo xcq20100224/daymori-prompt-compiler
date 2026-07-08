@@ -1,0 +1,22 @@
+{
+  "topic": "产品市场策略",
+  "scenario": "proposal",
+  "audience": "通用受众",
+  "tone": "专业可信",
+  "pageCount": 10,
+  "narrative": "产品市场策略从背景到行动的单线叙事",
+  "structure": [
+    {
+      "sectionTitle": "问题背景",
+      "pages": 2
+    },
+    {
+      "sectionTitle": "核心分析",
+      "pages": 4
+    },
+    {
+      "sectionTitle": "方案与行动",
+      "pages": 3
+    }
+  ]
+}

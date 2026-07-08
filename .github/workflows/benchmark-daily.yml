@@ -31,6 +31,9 @@ jobs:
           BENCH_COMPLETE_THRESHOLD: "0.95"
         run: npm run bench:teacher
 
+      - name: Build VS Lazyman Dashboard
+        run: npm run bench:vs:lazyman
+
       - name: Commit Benchmark Artifacts
         run: |
           git config user.name "github-actions[bot]"

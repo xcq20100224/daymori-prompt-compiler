@@ -1,0 +1,70 @@
+{
+  "requestId": "56a7f3f6-aa8b-4a2b-91ca-bb194dbed6e0",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 3,
+      "type": "blankOrHalfFilled",
+      "text": "核心概念"
+    },
+    {
+      "slideIndex": 7,
+      "type": "blankOrHalfFilled",
+      "text": "实验或应用"
+    },
+    {
+      "slideIndex": 8,
+      "type": "blankOrHalfFilled",
+      "text": "总结与作业"
+    },
+    {
+      "slideIndex": 2,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    },
+    {
+      "slideIndex": 3,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    },
+    {
+      "slideIndex": 4,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    },
+    {
+      "slideIndex": 5,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    },
+    {
+      "slideIndex": 6,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    },
+    {
+      "slideIndex": 7,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    },
+    {
+      "slideIndex": 8,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 72,
+    "contentSpecificity": 95,
+    "narrativeFlow": 68,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 87,
+    "cleanliness": 72,
+    "structure": 68,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

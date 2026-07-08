@@ -1,0 +1,22 @@
+{
+  "topic": "质量守恒定律",
+  "scenario": "teaching",
+  "audience": "通用受众",
+  "tone": "清晰、可执行",
+  "pageCount": 8,
+  "narrative": "质量守恒定律从背景到行动的单线叙事",
+  "structure": [
+    {
+      "sectionTitle": "问题背景",
+      "pages": 2
+    },
+    {
+      "sectionTitle": "核心分析",
+      "pages": 3
+    },
+    {
+      "sectionTitle": "方案与行动",
+      "pages": 2
+    }
+  ]
+}

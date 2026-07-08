@@ -1,0 +1,25 @@
+{
+  "requestId": "37390e0c-0c1b-40a3-b242-5678779c6387",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 1,
+      "type": "blankOrHalfFilled",
+      "text": "AI客服降本增效方案"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 72,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 91,
+    "cleanliness": 72,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

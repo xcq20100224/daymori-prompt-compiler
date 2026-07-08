@@ -1,0 +1,73 @@
+{
+  "requestId": "d33bce48-75dd-438d-a6fb-20db02ab297a",
+  "inputSlideCount": 11,
+  "outputSlideCount": 11,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "AI客服降本增效方案（新版）"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 2,
+      "slideType": "content_text",
+      "slideTitle": "现状痛点"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 3,
+      "slideType": "content_text",
+      "slideTitle": "方案总览"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 4,
+      "slideType": "content_bullets",
+      "slideTitle": "知识库治理"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 5,
+      "slideType": "content_text",
+      "slideTitle": "模型与路由策略"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 6,
+      "slideType": "content_bullets",
+      "slideTitle": "分阶段推进"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 7,
+      "slideType": "content_text",
+      "slideTitle": "组织协同机制"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 8,
+      "slideType": "content_bullets",
+      "slideTitle": "关键KPI"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 9,
+      "slideType": "content_text",
+      "slideTitle": "风险与应对"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 10,
+      "slideType": "content_text",
+      "slideTitle": "行动计划"
+    },
+    {
+      "sourceTemplateIndex": 4,
+      "outputSlideIndex": 11,
+      "slideType": "thanks",
+      "slideTitle": "谢谢观看"
+    }
+  ]
+}

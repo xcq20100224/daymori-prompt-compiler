@@ -1,0 +1,161 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_3,slotOrder_slide_4,slotOrder_slide_6",
+    "requestId": "f8bda902-36e8-478b-b9ab-c271448803d8",
+    "generationTracePath": "docs/benchmarks/results/debug/f8bda902-36e8-478b-b9ab-c271448803d8/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 4,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_3",
+        "slotOrder_slide_4",
+        "slotOrder_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_3,slotOrder_slide_4,slotOrder_slide_6",
+    "requestId": "ab6df0a9-243e-44fe-b31c-0af565959c0f",
+    "generationTracePath": "docs/benchmarks/results/debug/ab6df0a9-243e-44fe-b31c-0af565959c0f/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 4,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_3",
+        "slotOrder_slide_4",
+        "slotOrder_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 2,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_3,slotOrder_slide_4,slotOrder_slide_6",
+    "requestId": "f19117db-8d5b-4c97-9d75-74ec388ef4db",
+    "generationTracePath": "docs/benchmarks/results/debug/f19117db-8d5b-4c97-9d75-74ec388ef4db/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 4,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_3",
+        "slotOrder_slide_4",
+        "slotOrder_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 0,
+      "type": "invalid_contract",
+      "text": "unsupported_contract_version",
+      "message": "请求合同不合法"
+    }
+  ]
+}

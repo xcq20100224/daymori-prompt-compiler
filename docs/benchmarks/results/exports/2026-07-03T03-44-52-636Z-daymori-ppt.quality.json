@@ -1,0 +1,373 @@
+{
+  "generatedAt": "2026-07-03T03:44:52.637Z",
+  "topic": "牛顿第二定律",
+  "templateSource": "officeplus",
+  "templateFileName": "3.pptx",
+  "engine": "local-powerpoint-com",
+  "fallbackReason": "officeplus_template_first:local_powerpoint_com",
+  "layoutPolicy": {
+    "mode": "strict-layout",
+    "minScore": 80,
+    "mappingVersion": "semantic-slot-v1",
+    "overflowPolicy": "layout-first"
+  },
+  "layoutQuality": {
+    "pass": true,
+    "strictLeakSafe": false,
+    "score": 98,
+    "minScore": 80,
+    "mode": "strict-layout",
+    "mappingVersion": "semantic-slot-v1",
+    "visibleIssueSlides": 1,
+    "structuralMissSlides": 0,
+    "expectedMissCount": 0,
+    "estimatedManualFixes": 1,
+    "issues": [
+      "potential_overlap_detected"
+    ],
+    "slideStats": [
+      {
+        "index": 1,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 2,
+        "bodySlots": 1,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 2,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 0,
+        "titleSlots": 3,
+        "bodySlots": 3,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 3,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 2,
+        "bodySlots": 2,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 4,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 2,
+        "bodySlots": 1,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 5,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 0,
+        "titleSlots": 3,
+        "bodySlots": 2,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 6,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 0,
+        "titleSlots": 3,
+        "bodySlots": 1,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 7,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 2,
+        "bodySlots": 1,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 8,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 3,
+        "bodySlots": 2,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 9,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 11,
+        "bodySlots": 10,
+        "outOfBand": 0,
+        "overlapRisk": 13,
+        "expectedMiss": 0,
+        "penalty": 18
+      },
+      {
+        "index": 10,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 2,
+        "bodySlots": 1,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      }
+    ]
+  },
+  "contentQuality": {
+    "pass": true,
+    "contentCoverage": 1,
+    "emptySlides": [],
+    "placeholderOnlySlides": [],
+    "reasons": [],
+    "slideStats": [
+      {
+        "index": 1,
+        "slotCount": 5,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 2,
+        "slotCount": 7,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 3,
+        "slotCount": 4,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 4,
+        "slotCount": 3,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 5,
+        "slotCount": 4,
+        "nonMetaCount": 4,
+        "placeholderCount": 0,
+        "contentCount": 4,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 6,
+        "slotCount": 3,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 7,
+        "slotCount": 3,
+        "nonMetaCount": 2,
+        "placeholderCount": 0,
+        "contentCount": 2,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 8,
+        "slotCount": 4,
+        "nonMetaCount": 4,
+        "placeholderCount": 0,
+        "contentCount": 4,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 9,
+        "slotCount": 15,
+        "nonMetaCount": 11,
+        "placeholderCount": 5,
+        "contentCount": 6,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 10,
+        "slotCount": 7,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      }
+    ]
+  },
+  "teachingQuality": {
+    "pass": true,
+    "enabled": true,
+    "avgCharsPerSlide": 60.6,
+    "formulaSlideRatio": 0.9,
+    "genericSlideRatio": 0.1,
+    "actionTimeCoverage": 0,
+    "titleViolationSlides": [
+      2
+    ],
+    "reasons": [],
+    "slideStats": [
+      {
+        "index": 1,
+        "title": "牛顿第二定律",
+        "chars": 57,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 2,
+        "title": "• 本页核心结论",
+        "chars": 18,
+        "hasFormula": false,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": true
+      },
+      {
+        "index": 3,
+        "title": "牛顿第二定律 - 要点 3",
+        "chars": 47,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 4,
+        "title": "导入：从生活现象出发",
+        "chars": 81,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 5,
+        "title": "章节 05",
+        "chars": 31,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 6,
+        "title": "二、实验探究与定律发现",
+        "chars": 51,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 7,
+        "title": "牛顿第二定律 - 要点 7",
+        "chars": 20,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 8,
+        "title": "定律推导：从数据到公式",
+        "chars": 41,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 9,
+        "title": "公式详解： F=ma 的深度理解",
+        "chars": 188,
+        "hasFormula": true,
+        "hasGeneric": true,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 10,
+        "title": "三、例题应用：从理论到计算",
+        "chars": 72,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      }
+    ]
+  },
+  "diagnostics": {
+    "failedSlideCount": 1,
+    "failedSlides": [
+      {
+        "index": 9,
+        "reasons": [
+          "potential_overlap"
+        ]
+      }
+    ],
+    "summary": {
+      "layoutPass": true,
+      "strictLeakSafe": false,
+      "contentPass": true,
+      "contentCoverage": 1,
+      "emptySlides": [],
+      "placeholderOnlySlides": []
+    }
+  }
+}

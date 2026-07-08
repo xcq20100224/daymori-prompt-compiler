@@ -1,0 +1,22 @@
+[
+    {
+        "key": "ctrl+alt+0",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Day0: 完整状态检查"
+    },
+    {
+        "key": "ctrl+alt+t",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Day0: 完整流程（一键执行）"
+    },
+    {
+        "key": "ctrl+alt+q",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Day0: 质量检查"
+    },
+    {
+        "key": "ctrl+alt+s",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Day0: 稳定性测试"
+    }
+]

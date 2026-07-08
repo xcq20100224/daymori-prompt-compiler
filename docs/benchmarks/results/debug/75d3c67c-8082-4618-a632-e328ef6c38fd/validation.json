@@ -1,0 +1,40 @@
+{
+  "requestId": "75d3c67c-8082-4618-a632-e328ef6c38fd",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 3,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    },
+    {
+      "slideIndex": 4,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    },
+    {
+      "slideIndex": 6,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    },
+    {
+      "slideIndex": 8,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 92,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 94,
+    "cleanliness": 92,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "requestId": "14ace81a-f370-4749-9a19-1928a11e8d2f",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 4,
+      "type": "blankOrHalfFilled",
+      "text": "牛顿第二定律课堂讲解第4页"
+    },
+    {
+      "slideIndex": 8,
+      "type": "blankOrHalfFilled",
+      "text": "牛顿第二定律课堂讲解第8页"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 72,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 91,
+    "cleanliness": 72,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

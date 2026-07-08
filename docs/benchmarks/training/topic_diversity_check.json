@@ -1,0 +1,32 @@
+{
+  "diversity": {
+    "totalSamples": 3,
+    "uniqueTitles": 3,
+    "uniqueTextPreviews": 3,
+    "topicEffective": true,
+    "warning": "✅ 所有主题标题不同，topic参数生效"
+  },
+  "samples": [
+    {
+      "topic": "用户增长策略",
+      "expectTopic": "用户增长策略",
+      "titleCount": 3,
+      "firstTitle": "用户增长策略",
+      "textPreview": "用户增长策略 用户增长策略提案汇报 用户增长策略提案汇报 内容由 AI 生成 用户增长策略提案汇报 内容由 AI 生成 1/10 现状与问题 01 02 用户增长策略的核心约束与机会 内容由 AI 生"
+    },
+    {
+      "topic": "新产品上市计划",
+      "expectTopic": "新产品上市计划",
+      "titleCount": 3,
+      "firstTitle": "新产品上市计划",
+      "textPreview": "新产品上市计划 新产品上市计划提案汇报 新产品上市计划提案汇报 内容由 AI 生成 新产品上市计划提案汇报 内容由 AI 生成 1/10 现状与问题 01 02 新产品上市计划的核心约束与机会 内容由"
+    },
+    {
+      "topic": "客户留存提升方案",
+      "expectTopic": "客户留存提升方案",
+      "titleCount": 3,
+      "firstTitle": "客户留存提升方案",
+      "textPreview": "客户留存提升方案 客户留存提升方案提案汇报 客户留存提升方案提案汇报 内容由 AI 生成 客户留存提升方案提案汇报 内容由 AI 生成 1/10 现状与问题 01 02 客户留存提升方案的核心约束与机"
+    }
+  ]
+}

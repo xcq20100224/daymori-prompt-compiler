@@ -1,0 +1,27 @@
+{
+    "folders": [
+        {
+            "path": ".",
+            "name": "🏠 Daymori Root"
+        },
+        {
+            "path": "tools",
+            "name": "🔧 Training Tools"
+        },
+        {
+            "path": "docs/benchmarks/training",
+            "name": "📊 Training Data"
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/node_modules": true,
+            "**/.git": true,
+            "**/docs/benchmarks/results/exports/**/*.pptx": true
+        }
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": []
+    }
+}

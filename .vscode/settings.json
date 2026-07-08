@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "*.mjs": "javascript"
+    },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/docs/benchmarks/results/exports/**/*.pptx": true
+    },
+    "files.watcherExclude": {
+        "**/docs/benchmarks/results/exports/**": true
+    }
+}

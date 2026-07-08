@@ -1,0 +1,22 @@
+{
+  "topic": "AI客服降本增效方案",
+  "scenario": "proposal",
+  "audience": "通用受众",
+  "tone": "自然表达、可直接讲解",
+  "pageCount": 10,
+  "narrative": "AI客服降本增效方案从背景到行动的单线叙事",
+  "structure": [
+    {
+      "sectionTitle": "问题背景",
+      "pages": 2
+    },
+    {
+      "sectionTitle": "核心分析",
+      "pages": 4
+    },
+    {
+      "sectionTitle": "方案与行动",
+      "pages": 3
+    }
+  ]
+}

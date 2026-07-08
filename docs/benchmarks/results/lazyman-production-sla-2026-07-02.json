@@ -1,0 +1,518 @@
+{
+  "runAt": "2026-07-02T08:40:25.968Z",
+  "runDate": "2026-07-02",
+  "providerLabel": "lazyman",
+  "totalTopics": 20,
+  "onePassRate": 1,
+  "strictLeakEscaped": 20,
+  "avgExportMs": 77.75,
+  "manualAdjustAvg": 3,
+  "blankSlidesTotal": 0,
+  "placeholderOnlyTotal": 0,
+  "avgContentCoverage": 1,
+  "targetPass": false,
+  "balanced": [
+    {
+      "id": "edu-phy-01",
+      "topic": "牛顿第二定律",
+      "ok": true,
+      "elapsedMs": 145,
+      "score": 90,
+      "strictLeakSafe": false,
+      "manualAdjustments": 3,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "edu-phy-02",
+      "topic": "压强与浮力",
+      "ok": true,
+      "elapsedMs": 79,
+      "score": 90,
+      "strictLeakSafe": false,
+      "manualAdjustments": 3,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "edu-che-01",
+      "topic": "酸碱中和反应",
+      "ok": true,
+      "elapsedMs": 82,
+      "score": 90,
+      "strictLeakSafe": false,
+      "manualAdjustments": 3,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "edu-che-02",
+      "topic": "质量守恒定律",
+      "ok": true,
+      "elapsedMs": 77,
+      "score": 90,
+      "strictLeakSafe": false,
+      "manualAdjustments": 3,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "edu-bio-01",
+      "topic": "光合作用",
+      "ok": true,
+      "elapsedMs": 81,
+      "score": 90,
+      "strictLeakSafe": false,
+      "manualAdjustments": 3,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "edu-bio-02",
+      "topic": "呼吸作用",
+      "ok": true,
+      "elapsedMs": 61,
+      "score": 90,
+      "strictLeakSafe": false,
+      "manualAdjustments": 3,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "edu-math-01",
+      "topic": "一次函数",
+      "ok": true,
+      "elapsedMs": 61,
+      "score": 90,
+      "strictLeakSafe": false,
+      "manualAdjustments": 3,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "edu-math-02",
+      "topic": "勾股定理",
+      "ok": true,
+      "elapsedMs": 74,
+      "score": 90,
+      "strictLeakSafe": false,
+      "manualAdjustments": 3,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "edu-cn-01",
+      "topic": "议论文论证方法",
+      "ok": true,
+      "elapsedMs": 62,
+      "score": 90,
+      "strictLeakSafe": false,
+      "manualAdjustments": 3,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "edu-eng-01",
+      "topic": "现在完成时",
+      "ok": true,
+      "elapsedMs": 87,
+      "score": 90,
+      "strictLeakSafe": false,
+      "manualAdjustments": 3,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "biz-01",
+      "topic": "Q3增长复盘",
+      "ok": true,
+      "elapsedMs": 67,
+      "score": 94,
+      "strictLeakSafe": false,
+      "manualAdjustments": 2,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "biz-02",
+      "topic": "渠道投放ROI优化",
+      "ok": true,
+      "elapsedMs": 77,
+      "score": 94,
+      "strictLeakSafe": false,
+      "manualAdjustments": 2,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "biz-03",
+      "topic": "供应链降本计划",
+      "ok": true,
+      "elapsedMs": 74,
+      "score": 94,
+      "strictLeakSafe": false,
+      "manualAdjustments": 2,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "biz-04",
+      "topic": "客户留存提升方案",
+      "ok": true,
+      "elapsedMs": 76,
+      "score": 94,
+      "strictLeakSafe": false,
+      "manualAdjustments": 2,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "biz-05",
+      "topic": "新品上市90天战役",
+      "ok": true,
+      "elapsedMs": 60,
+      "score": 94,
+      "strictLeakSafe": false,
+      "manualAdjustments": 2,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "tech-01",
+      "topic": "RAG系统性能优化",
+      "ok": true,
+      "elapsedMs": 82,
+      "score": 94,
+      "strictLeakSafe": false,
+      "manualAdjustments": 2,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "tech-02",
+      "topic": "服务稳定性SLO升级",
+      "ok": true,
+      "elapsedMs": 73,
+      "score": 94,
+      "strictLeakSafe": false,
+      "manualAdjustments": 2,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "tech-03",
+      "topic": "多租户权限模型重构",
+      "ok": true,
+      "elapsedMs": 97,
+      "score": 94,
+      "strictLeakSafe": false,
+      "manualAdjustments": 2,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "ops-01",
+      "topic": "暑期活动转化复盘",
+      "ok": true,
+      "elapsedMs": 63,
+      "score": 94,
+      "strictLeakSafe": false,
+      "manualAdjustments": 2,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    },
+    {
+      "id": "ops-02",
+      "topic": "私域留资漏斗优化",
+      "ok": true,
+      "elapsedMs": 77,
+      "score": 94,
+      "strictLeakSafe": false,
+      "manualAdjustments": 2,
+      "qualityGate": {
+        "pass": true,
+        "reasons": [],
+        "emptySlides": [],
+        "placeholderOnlySlides": [],
+        "contentCoverage": 1
+      },
+      "passed": true
+    }
+  ],
+  "strict": [
+    {
+      "id": "edu-phy-01",
+      "topic": "牛顿第二定律",
+      "ok": true,
+      "score": 90,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "edu-phy-02",
+      "topic": "压强与浮力",
+      "ok": true,
+      "score": 90,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "edu-che-01",
+      "topic": "酸碱中和反应",
+      "ok": true,
+      "score": 90,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "edu-che-02",
+      "topic": "质量守恒定律",
+      "ok": true,
+      "score": 90,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "edu-bio-01",
+      "topic": "光合作用",
+      "ok": true,
+      "score": 90,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "edu-bio-02",
+      "topic": "呼吸作用",
+      "ok": true,
+      "score": 90,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "edu-math-01",
+      "topic": "一次函数",
+      "ok": true,
+      "score": 90,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "edu-math-02",
+      "topic": "勾股定理",
+      "ok": true,
+      "score": 90,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "edu-cn-01",
+      "topic": "议论文论证方法",
+      "ok": true,
+      "score": 90,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "edu-eng-01",
+      "topic": "现在完成时",
+      "ok": true,
+      "score": 90,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "biz-01",
+      "topic": "Q3增长复盘",
+      "ok": true,
+      "score": 94,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "biz-02",
+      "topic": "渠道投放ROI优化",
+      "ok": true,
+      "score": 94,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "biz-03",
+      "topic": "供应链降本计划",
+      "ok": true,
+      "score": 94,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "biz-04",
+      "topic": "客户留存提升方案",
+      "ok": true,
+      "score": 94,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "biz-05",
+      "topic": "新品上市90天战役",
+      "ok": true,
+      "score": 94,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "tech-01",
+      "topic": "RAG系统性能优化",
+      "ok": true,
+      "score": 94,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "tech-02",
+      "topic": "服务稳定性SLO升级",
+      "ok": true,
+      "score": 94,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "tech-03",
+      "topic": "多租户权限模型重构",
+      "ok": true,
+      "score": 94,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "ops-01",
+      "topic": "暑期活动转化复盘",
+      "ok": true,
+      "score": 94,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    },
+    {
+      "id": "ops-02",
+      "topic": "私域留资漏斗优化",
+      "ok": true,
+      "score": 94,
+      "strictLeakSafe": false,
+      "leakEscaped": true
+    }
+  ]
+}

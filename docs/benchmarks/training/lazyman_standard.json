@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "target": "LazyMan质量水准",
+  "description": "基于94分成功样本反推的标准",
+  "coreMetrics": {
+    "autoScore": {
+      "min": 90,
+      "ideal": 95,
+      "current": 94
+    },
+    "systemScore": {
+      "min": 92,
+      "ideal": 96,
+      "current": 94
+    },
+    "layoutScore": {
+      "min": 95,
+      "ideal": 98,
+      "current": 96
+    }
+  },
+  "mustHaveZero": [
+    {
+      "rule": "no_page_numbers",
+      "description": "标题区域不应有页码",
+      "strength": 0.8,
+      "currentStatus": "部分解决"
+    },
+    {
+      "rule": "no_version_words",
+      "description": "标题不应有版本词",
+      "strength": 0.4,
+      "currentStatus": "未知"
+    },
+    {
+      "rule": "no_blocker_errors",
+      "description": "无BLOCKER级错误",
+      "strength": 1,
+      "currentStatus": "已达成"
+    }
+  ],
+  "shouldMinimize": [
+    {
+      "rule": "repetition_rate",
+      "threshold": 0.05,
+      "strength": 0.5,
+      "currentStatus": "需改进"
+    },
+    {
+      "rule": "half_filled_slides",
+      "threshold": 0.1,
+      "strength": 0.0069,
+      "currentStatus": "接近达标"
+    }
+  ],
+  "benchmark": {
+    "source": "2026-07-08 10:24 成功样本",
+    "sampleCount": 3,
+    "topics": ["用户增长策略", "新产品上市计划", "客户留存提升方案"],
+    "avgScore": 94,
+    "gap": 1
+  }
+}

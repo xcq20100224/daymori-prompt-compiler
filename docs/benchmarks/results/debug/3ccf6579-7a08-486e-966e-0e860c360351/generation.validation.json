@@ -1,0 +1,14 @@
+{
+  "ok": false,
+  "pass": false,
+  "errors": [
+    {
+      "slideIndex": 1,
+      "type": "schemaBoundary",
+      "text": "forbidden_pattern_in_title"
+    }
+  ],
+  "issues": [
+    "schemaBoundary_slide_1_forbidden_pattern_in_title"
+  ]
+}

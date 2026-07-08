@@ -1,0 +1,27 @@
+{
+  "ok": false,
+  "pass": false,
+  "errors": [
+    {
+      "slideIndex": 7,
+      "type": "textBudgetExceeded",
+      "text": "7/70"
+    },
+    {
+      "slideIndex": 9,
+      "type": "textBudgetExceeded",
+      "text": "7/58"
+    },
+    {
+      "slideIndex": 10,
+      "type": "textBudgetExceeded",
+      "text": "5/20"
+    }
+  ],
+  "issues": [
+    "textBudgetExceeded_slide_7",
+    "textBudgetExceeded_slide_9",
+    "textBudgetExceeded_slide_10"
+  ],
+  "warnings": []
+}

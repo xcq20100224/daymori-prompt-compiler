@@ -1,0 +1,443 @@
+{
+  "runAt": "2026-07-02T08:40:26.066Z",
+  "runDate": "2026-07-02",
+  "sides": [
+    {
+      "label": "Daymori",
+      "available": true,
+      "topics": 20,
+      "metrics": {
+        "avgContentCoverage": 1,
+        "blankSlidesTotal": 0,
+        "placeholderOnlySlidesTotal": 0,
+        "avgLayoutScore": 92
+      },
+      "top2FailureTypes": [],
+      "runs": [
+        {
+          "id": "edu-phy-01",
+          "topic": "牛顿第二定律",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-phy-02",
+          "topic": "压强与浮力",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-che-01",
+          "topic": "酸碱中和反应",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-che-02",
+          "topic": "质量守恒定律",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-bio-01",
+          "topic": "光合作用",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-bio-02",
+          "topic": "呼吸作用",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-math-01",
+          "topic": "一次函数",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-math-02",
+          "topic": "勾股定理",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-cn-01",
+          "topic": "议论文论证方法",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-eng-01",
+          "topic": "现在完成时",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "biz-01",
+          "topic": "Q3增长复盘",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "biz-02",
+          "topic": "渠道投放ROI优化",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "biz-03",
+          "topic": "供应链降本计划",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "biz-04",
+          "topic": "客户留存提升方案",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "biz-05",
+          "topic": "新品上市90天战役",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "tech-01",
+          "topic": "RAG系统性能优化",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "tech-02",
+          "topic": "服务稳定性SLO升级",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "tech-03",
+          "topic": "多租户权限模型重构",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "ops-01",
+          "topic": "暑期活动转化复盘",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "ops-02",
+          "topic": "私域留资漏斗优化",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "label": "Lazyman",
+      "available": true,
+      "topics": 20,
+      "metrics": {
+        "avgContentCoverage": 1,
+        "blankSlidesTotal": 0,
+        "placeholderOnlySlidesTotal": 0,
+        "avgLayoutScore": 92
+      },
+      "top2FailureTypes": [],
+      "runs": [
+        {
+          "id": "edu-phy-01",
+          "topic": "牛顿第二定律",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-phy-02",
+          "topic": "压强与浮力",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-che-01",
+          "topic": "酸碱中和反应",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-che-02",
+          "topic": "质量守恒定律",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-bio-01",
+          "topic": "光合作用",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-bio-02",
+          "topic": "呼吸作用",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-math-01",
+          "topic": "一次函数",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-math-02",
+          "topic": "勾股定理",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-cn-01",
+          "topic": "议论文论证方法",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "edu-eng-01",
+          "topic": "现在完成时",
+          "score": 90,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "biz-01",
+          "topic": "Q3增长复盘",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "biz-02",
+          "topic": "渠道投放ROI优化",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "biz-03",
+          "topic": "供应链降本计划",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "biz-04",
+          "topic": "客户留存提升方案",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "biz-05",
+          "topic": "新品上市90天战役",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "tech-01",
+          "topic": "RAG系统性能优化",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "tech-02",
+          "topic": "服务稳定性SLO升级",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "tech-03",
+          "topic": "多租户权限模型重构",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "ops-01",
+          "topic": "暑期活动转化复盘",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        },
+        {
+          "id": "ops-02",
+          "topic": "私域留资漏斗优化",
+          "score": 94,
+          "hasQualityGate": true,
+          "coverage": 1,
+          "blankCount": 0,
+          "placeholderOnlyCount": 0,
+          "reasons": []
+        }
+      ]
+    }
+  ],
+  "trainingPairs": {
+    "available": false,
+    "pairCount7d": 0,
+    "sample": []
+  },
+  "sources": {
+    "ours": "docs/benchmarks/results/daymori-production-sla-latest.json",
+    "lazyman": "docs/benchmarks/results/lazyman-production-sla-latest.json"
+  }
+}

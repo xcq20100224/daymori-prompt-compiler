@@ -1,0 +1,105 @@
+{
+  "requestId": "f44f8565-6ad9-46dc-bca8-7879d11be56c",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 2,
+      "type": "slotOrder",
+      "text": "title_after_body"
+    },
+    {
+      "slideIndex": 5,
+      "type": "slotOrder",
+      "text": "title_after_body"
+    },
+    {
+      "slideIndex": 2,
+      "type": "minimumEffectiveSlide",
+      "text": "section_missing_marker"
+    },
+    {
+      "slideIndex": 3,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_missing_label_or_visual"
+    },
+    {
+      "slideIndex": 4,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_missing_label_or_visual"
+    },
+    {
+      "slideIndex": 5,
+      "type": "minimumEffectiveSlide",
+      "text": "section_missing_marker"
+    },
+    {
+      "slideIndex": 6,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_missing_label_or_visual"
+    },
+    {
+      "slideIndex": 7,
+      "type": "minimumEffectiveSlide",
+      "text": "content_bullets_missing_label"
+    },
+    {
+      "slideIndex": 7,
+      "type": "minimumEffectiveSlide",
+      "text": "bullet_2_chars_15"
+    },
+    {
+      "slideIndex": 7,
+      "type": "minimumEffectiveSlide",
+      "text": "bullet_3_chars_15"
+    },
+    {
+      "slideIndex": 8,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_missing_label_or_visual"
+    },
+    {
+      "slideIndex": 8,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_69"
+    },
+    {
+      "slideIndex": 9,
+      "type": "minimumEffectiveSlide",
+      "text": "content_bullets_missing_label"
+    },
+    {
+      "slideIndex": 9,
+      "type": "minimumEffectiveSlide",
+      "text": "bullet_1_chars_11"
+    },
+    {
+      "slideIndex": 9,
+      "type": "minimumEffectiveSlide",
+      "text": "bullet_2_chars_12"
+    },
+    {
+      "slideIndex": 9,
+      "type": "minimumEffectiveSlide",
+      "text": "bullet_3_chars_13"
+    },
+    {
+      "slideIndex": 10,
+      "type": "minimumEffectiveSlide",
+      "text": "thanks_has_body_content"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 92,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 94,
+    "cleanliness": 92,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

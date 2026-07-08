@@ -1,0 +1,4296 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小车控制</title>
+    <style>
+      :root {
+        --bg: #000000;
+        --panel: #111111;
+        --panel-2: #1b1b1d;
+        --line: #2b2b2f;
+        --line-soft: #3a3a41;
+        --text: #f5f5f7;
+        --muted: #a1a1aa;
+        --chip: #202024;
+        --accent: #ffffff;
+        --danger: #ff3b30;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 30% -15%, #1f1f24 0%, transparent 40%),
+          radial-gradient(circle at 100% 100%, #121215 0%, transparent 35%),
+          var(--bg);
+        display: grid;
+        place-items: center;
+        padding: 14px;
+      }
+
+      .app {
+        width: min(430px, 100%);
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        background: linear-gradient(180deg, rgba(22, 22, 25, 0.92), rgba(10, 10, 12, 0.94));
+        backdrop-filter: blur(16px);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+      }
+
+      .top {
+        padding: 14px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .url-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+      }
+
+      .url-input {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #0c0c0f;
+        color: var(--text);
+        padding: 12px 14px;
+        font-size: 15px;
+        outline: none;
+      }
+
+      .url-input:focus {
+        border-color: #4a4a52;
+      }
+
+      .btn {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        color: var(--text);
+        background: linear-gradient(180deg, #242427, #17171a);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.08),
+          0 6px 16px rgba(0, 0, 0, 0.32);
+        transition: transform 0.16s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      }
+
+      .btn:active {
+        transform: translateY(1px) scale(0.99);
+        filter: brightness(1.06);
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .chip {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: var(--chip);
+        color: #d4d4d8;
+        font-size: 13px;
+        cursor: pointer;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        transition: transform 0.14s ease, filter 0.14s ease;
+      }
+
+      .chip:active {
+        transform: scale(0.98);
+        filter: brightness(1.06);
+      }
+
+      .stage {
+        padding: 12px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .panel {
+        border: 1px solid var(--line-soft);
+        border-radius: 20px;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.06) 0%, transparent 48%),
+          linear-gradient(180deg, #18181d, #0f0f12);
+        padding: 14px;
+        display: grid;
+        gap: 10px;
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.08),
+          0 14px 30px rgba(0, 0, 0, 0.36);
+      }
+
+      .pad {
+        margin: 0 auto;
+        width: fit-content;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(88px, 116px));
+        grid-template-rows: repeat(3, minmax(88px, 116px));
+        gap: 8px;
+      }
+
+      .ghost {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .ctrl {
+        border: 1px solid #3c3c43;
+        border-radius: 28px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02) 42%, transparent 43%),
+          linear-gradient(180deg, #2b2b31, #18181d);
+        color: #f4f4f5;
+        font-size: 30px;
+        font-weight: 800;
+        cursor: pointer;
+        touch-action: none;
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.14),
+          inset 0 -10px 20px rgba(0, 0, 0, 0.32),
+          0 10px 22px rgba(0, 0, 0, 0.42);
+        transition: transform 0.12s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      }
+
+      .ctrl.aux {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .ctrl:active,
+      .ctrl.active {
+        transform: translateY(1px) scale(0.982);
+        filter: brightness(1.08);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.1),
+          inset 0 -8px 16px rgba(0, 0, 0, 0.4),
+          0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+
+      .ctrl.stop {
+        border-color: #4b4b53;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 45%),
+          linear-gradient(180deg, #313138, #1c1c22);
+        color: #fff;
+      }
+
+      .status {
+        display: none;
+      }
+
+      .ai {
+        margin-top: 8px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: #0f0f12;
+        overflow: hidden;
+      }
+
+      .ai-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 10px;
+        border-bottom: 1px solid #26262c;
+        font-size: 12px;
+        color: #d4d4d8;
+      }
+
+      .ai-badge {
+        border: 1px solid #33333a;
+        border-radius: 999px;
+        padding: 3px 8px;
+        background: #1a1a1f;
+        color: #f5f5f7;
+      }
+
+      .ai-log {
+        max-height: 130px;
+        overflow: auto;
+        padding: 8px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .msg {
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-size: 13px;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .msg.user {
+        border: 1px solid #3b3b45;
+        background: #202028;
+        color: #f4f4f5;
+      }
+
+      .msg.assistant {
+        border: 1px solid #2f2f36;
+        background: #17171c;
+        color: #d4d4d8;
+      }
+
+      .msg .traj-card {
+        margin-top: 6px;
+        border: 1px solid #35353d;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #15151a, #0f0f14);
+        padding: 8px;
+      }
+
+      .msg .traj-title {
+        font-size: 12px;
+        color: #e5e7eb;
+        margin-bottom: 6px;
+      }
+
+      .msg .traj-sub {
+        font-size: 11px;
+        color: #9ca3af;
+        margin-top: 5px;
+      }
+
+      .msg .traj-svg {
+        width: 100%;
+        height: 86px;
+        display: block;
+        border-radius: 8px;
+        border: 1px solid #2a2a31;
+        background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.04), transparent 60%), #0b0b10;
+      }
+
+      .ai-controls {
+        border-top: 1px solid #26262c;
+        padding: 8px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .ai-input {
+        width: 100%;
+        border: 1px solid #34343b;
+        border-radius: 10px;
+        background: #111116;
+        color: #f5f5f7;
+        padding: 9px 10px;
+        font-size: 14px;
+        outline: none;
+      }
+
+      .ai-input:focus {
+        border-color: #51515b;
+      }
+
+      .ai-row {
+        display: grid;
+        grid-template-columns: auto auto 1fr;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .ai-btn {
+        border: 1px solid #3a3a43;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #2c2c33, #1b1b20);
+        color: #f5f5f7;
+        padding: 8px 10px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .ai-btn.listening {
+        border-color: #7f1d1d;
+        background: linear-gradient(180deg, #7f1d1d, #450a0a);
+      }
+
+      .ai-hint {
+        color: #a1a1aa;
+        font-size: 12px;
+      }
+
+      .docx-bar {
+        margin-top: 2px;
+        border: 1px solid var(--line-soft);
+        border-radius: 12px;
+        background: linear-gradient(180deg, #16161a, #0d0d10);
+        padding: 8px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .docx-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .docx-tab-btn {
+        border: 1px solid #3a3a43;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #2c2c33, #1b1b20);
+        color: #d4d4d8;
+        padding: 6px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .docx-tab-btn.active {
+        border-color: #555560;
+        background: linear-gradient(180deg, #3a3a43, #26262e);
+        color: #ffffff;
+      }
+
+      .vision-page {
+        border: 1px solid var(--line-soft);
+        border-radius: 16px;
+        background: linear-gradient(180deg, #111116, #0a0a0d);
+        padding: 12px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .vision-page[hidden] {
+        display: none !important;
+      }
+
+      .docx-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .docx-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #f5f5f7;
+      }
+
+      .docx-sub {
+        font-size: 11px;
+        color: #a1a1aa;
+      }
+
+      .docx-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .docx-block {
+        border: 1px solid #2f2f36;
+        border-radius: 12px;
+        background: #121216;
+        padding: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .docx-block-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #e4e4e7;
+      }
+
+      .docx-note {
+        font-size: 12px;
+        color: #a1a1aa;
+      }
+
+      .vision-url {
+        width: 100%;
+        border: 1px solid #34343b;
+        border-radius: 10px;
+        background: #0f0f13;
+        color: #d4d4d8;
+        padding: 8px 10px;
+        font-size: 12px;
+        outline: none;
+      }
+
+      .vision-actions {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .vision-btn {
+        border: 1px solid #3a3a43;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #2c2c33, #1b1b20);
+        color: #f5f5f7;
+        padding: 8px 6px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .vision-frame {
+        width: 100%;
+        height: 220px;
+        border: 1px solid #31313a;
+        border-radius: 10px;
+        background: #09090b;
+      }
+
+      .vision-hint {
+        font-size: 12px;
+        color: #a1a1aa;
+      }
+
+      .vision-result {
+        border: 1px solid #2f2f36;
+        border-radius: 10px;
+        background: #0f0f13;
+        color: #d4d4d8;
+        padding: 8px 10px;
+        font-size: 12px;
+        line-height: 1.5;
+        min-height: 44px;
+        white-space: pre-wrap;
+      }
+
+      .vision-chat {
+        border: 1px solid #2f2f36;
+        border-radius: 12px;
+        background: #121216;
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        max-height: min(46vh, 360px);
+      }
+
+      .vision-chat .ai-log {
+        max-height: none;
+        min-height: 0;
+      }
+
+      .vision-chat-top {
+        padding: 8px 10px;
+        border-bottom: 1px solid #26262c;
+        font-size: 12px;
+        color: #d4d4d8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .vision-ai-row {
+        display: grid;
+        grid-template-columns: auto auto 1fr;
+        gap: 6px;
+        align-items: center;
+      }
+
+      @media (max-width: 540px) {
+        .url-row {
+          grid-template-columns: 1fr;
+        }
+
+        .pad {
+          grid-template-columns: repeat(3, 86px);
+          grid-template-rows: repeat(3, 86px);
+          gap: 7px;
+        }
+
+        .ctrl {
+          border-radius: 18px;
+          font-size: 22px;
+        }
+
+        .vision-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .vision-ai-row {
+          grid-template-columns: 1fr;
+        }
+
+        .vision-frame {
+          height: 180px;
+        }
+      }
+
+      @media (min-width: 560px) {
+        body {
+          padding: 24px;
+        }
+
+        .app {
+          width: min(980px, 94vw);
+          border-radius: 40px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .app::before {
+          content: '';
+          position: absolute;
+          top: 8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 180px;
+          height: 18px;
+          border-radius: 999px;
+          background: linear-gradient(180deg, #101015, #070709);
+          border: 1px solid #1f1f25;
+          z-index: 2;
+          pointer-events: none;
+        }
+
+        .top {
+          padding: 18px 16px 12px;
+        }
+
+        .stage {
+          padding: 10px 12px 12px;
+        }
+
+        .panel {
+          grid-template-columns: minmax(360px, 430px) minmax(0, 1fr);
+          align-items: stretch;
+          gap: 12px;
+          min-height: min(520px, 76vh);
+        }
+
+        .pad {
+          align-self: center;
+          grid-template-columns: repeat(3, 106px);
+          grid-template-rows: repeat(3, 106px);
+          gap: 9px;
+        }
+
+        .ctrl {
+          border-radius: 24px;
+          font-size: 28px;
+        }
+
+        .ctrl.aux {
+          font-size: 22px;
+        }
+
+        .ai {
+          margin-top: 0;
+          height: 100%;
+          display: grid;
+          grid-template-rows: auto minmax(0, 1fr) auto;
+        }
+
+        .panel .ai-log {
+          max-height: none;
+          min-height: 0;
+        }
+      }
+
+      body.desktop-landscape {
+        padding: 24px;
+      }
+
+      body.desktop-landscape .app {
+        width: min(980px, 94vw);
+        border-radius: 40px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      body.desktop-landscape .app::before {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 180px;
+        height: 18px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #101015, #070709);
+        border: 1px solid #1f1f25;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      body.desktop-landscape .top {
+        padding: 18px 16px 12px;
+      }
+
+      body.desktop-landscape .stage {
+        padding: 10px 12px 12px;
+      }
+
+      body.desktop-landscape .panel {
+        grid-template-columns: minmax(360px, 430px) minmax(0, 1fr);
+        align-items: stretch;
+        gap: 12px;
+        min-height: min(520px, 76vh);
+      }
+
+      body.desktop-landscape .pad {
+        align-self: center;
+        grid-template-columns: repeat(3, 106px);
+        grid-template-rows: repeat(3, 106px);
+        gap: 9px;
+      }
+
+      body.desktop-landscape .ctrl {
+        border-radius: 24px;
+        font-size: 28px;
+      }
+
+      body.desktop-landscape .ctrl.aux {
+        font-size: 22px;
+      }
+
+      body.desktop-landscape .ai {
+        margin-top: 0;
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+      }
+
+      body.desktop-landscape .panel .ai-log {
+        max-height: none;
+        min-height: 0;
+      }
+
+      body.desktop-landscape .docx-grid {
+        grid-template-columns: 1fr 1.4fr;
+      }
+
+      body.app-mode-vision .panel {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="top">
+        <div class="url-row">
+          <input id="targetIp" class="url-input" type="text" value="192.168.4.1" placeholder="输入小车网址/IP，例如 192.168.8.5" />
+          <button id="applyIpBtn" class="btn">切换网址</button>
+        </div>
+        <div class="chips">
+          <button class="chip" data-ip="192.168.4.1">192.168.4.1</button>
+          <button class="chip" data-ip="192.168.8.5">192.168.8.5</button>
+        </div>
+      </section>
+
+      <section class="stage">
+        <article id="controlPanel" class="panel">
+          <div class="pad">
+            <button class="ctrl aux" data-cmd="grab" aria-label="抓取">抓</button>
+            <button class="ctrl" data-cmd="up" aria-label="前进">▲</button>
+            <button class="ctrl aux" data-cmd="release" aria-label="释放">放</button>
+
+            <button class="ctrl" data-cmd="left" aria-label="左转">◀</button>
+            <button class="ctrl stop" data-cmd="stop" aria-label="停止">停</button>
+            <button class="ctrl" data-cmd="right" aria-label="右转">▶</button>
+
+            <div class="ghost"></div>
+            <button class="ctrl" data-cmd="down" aria-label="后退">▼</button>
+            <div class="ghost"></div>
+          </div>
+          <div id="status" class="status">就绪</div>
+          <section class="ai" aria-label="智谱语音聊天">
+            <div class="ai-top">
+              <div>智谱语音控制</div>
+              <div id="llmRuntimeBadge" class="ai-badge">检查中</div>
+            </div>
+            <div id="aiLog" class="ai-log">
+              <div class="msg assistant">你好，我已准备好。点击开始录音，说“前进/后退/左转/右转/停止”即可直接控制。</div>
+            </div>
+            <div class="ai-controls">
+              <input id="aiInput" class="ai-input" type="text" placeholder="说话或输入，比如：前进两秒后停止" />
+              <div class="ai-row">
+                <button id="voiceBtn" class="ai-btn">语音输入</button>
+                <button id="voiceNativeBtn" class="ai-btn">系统听写</button>
+                <button id="voiceFileBtn" class="ai-btn">上传音频</button>
+                <button id="askBtn" class="ai-btn">发送</button>
+                <div id="aiHint" class="ai-hint">点击语音输入开始识别，再点一次可停止</div>
+              </div>
+              <input id="nativeSpeechInput" class="ai-input" type="text" x-webkit-speech webkitSpeech aria-label="系统听写输入" style="display:none" />
+              <input id="voiceFileInput" class="ai-input" type="file" accept="audio/*,.wav,.mp3,.m4a,.webm,.ogg" aria-label="上传音频文件" style="display:none" />
+            </div>
+          </section>
+        </article>
+
+        <section id="visionPage" class="vision-page" aria-label="docx第2板块 视觉" hidden>
+          <div class="docx-head">
+            <div class="docx-title">第2板块：视觉</div>
+            <div class="docx-sub">已切换到视觉页（微信式整页切换）</div>
+          </div>
+          <input id="visionUrl" class="vision-url" type="text" readonly placeholder="点击“查看视角”加载小车视觉" />
+          <div class="vision-actions">
+            <button id="visionLoadBtn" class="vision-btn" type="button">查看视角</button>
+            <button id="visionNextBtn" class="vision-btn" type="button">切换源</button>
+            <button id="visionOpenBtn" class="vision-btn" type="button">新窗口打开</button>
+            <button id="visionAnalyzeBtn" class="vision-btn" type="button">识别画面</button>
+          </div>
+          <img id="visionFrame" class="vision-frame" alt="小车前置摄像头画面" referrerpolicy="no-referrer" />
+          <div id="visionHint" class="vision-hint">当前为前置摄像头实时画面（/api/camera/stream）。</div>
+          <div id="visionAnalysisResult" class="vision-result">视觉大模型待命：点击“识别画面”即可识别当前事物。</div>
+          <section class="vision-chat" aria-label="智谱智能语音模型聊天">
+            <div class="vision-chat-top">
+              <div>智谱智能语音模型聊天</div>
+              <div class="ai-badge">glm-5.2</div>
+            </div>
+            <div id="visionAiLog" class="ai-log">
+              <div class="msg assistant">你好，我在视觉板块。你可以语音或文字提问，我会结合当前画面与上下文回答。</div>
+            </div>
+            <div class="ai-controls">
+              <input id="visionAiInput" class="ai-input" type="text" placeholder="例如：前方有什么？是否有障碍物？" />
+              <div class="vision-ai-row">
+                <button id="visionVoiceBtn" class="ai-btn" type="button">语音输入</button>
+                <button id="visionAskBtn" class="ai-btn" type="button">发送</button>
+                <div id="visionAiHint" class="ai-hint">点击语音输入开始识别，再点一次停止并发送</div>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section class="docx-bar" aria-label="docx栏">
+          <div class="docx-head">
+            <div class="docx-title">docx栏</div>
+            <div id="docxModeHint" class="docx-sub">当前：操控页</div>
+          </div>
+          <div class="docx-tabs">
+            <button id="docxTabDoc" class="docx-tab-btn active" type="button">操控</button>
+            <button id="docxTabVision" class="docx-tab-btn" type="button">视觉</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      (function applyDesktopLandscapeMode() {
+        const ua = String(navigator.userAgent || '');
+        const isMobileUa = /Android|iPhone|iPad|iPod|Mobile|HarmonyOS/i.test(ua);
+        if (!isMobileUa) {
+          document.body.classList.add('desktop-landscape');
+        }
+      })();
+
+      const MOVE_SPEED = 42;
+      const TURN_SPEED = 20;
+      const TURN_TAP_SPEED = 24;
+      const TURN_TAP_SECONDS = 0.045;
+      const MICRO_TURN_SECONDS = 0.02;
+      const MICRO_TURN_SPEED = 18;
+      const CREEP_MOVE_SECONDS = 0.12;
+      const CREEP_MOVE_SPEED = 28;
+      const GRAB_SPEED = 72;
+      const STOP_SPEED = 0;
+
+      const PULSE_SECONDS = {
+        up: 0.14,
+        down: 0.14,
+        left: TURN_TAP_SECONDS,
+        right: TURN_TAP_SECONDS,
+        grab: 0.65,
+        release: 0.65,
+        stop: 0.12,
+      };
+
+      const movementCommands = new Set(['up', 'down', 'left', 'right']);
+      const carControl = {
+        ip: localStorage.getItem('robot.control.ip') || '192.168.4.1',
+      };
+
+      const targetIpEl = document.getElementById('targetIp');
+      const applyIpBtn = document.getElementById('applyIpBtn');
+      const statusEl = document.getElementById('status');
+      const aiInputEl = document.getElementById('aiInput');
+      const aiLogEl = document.getElementById('aiLog');
+      const voiceBtnEl = document.getElementById('voiceBtn');
+      const voiceNativeBtnEl = document.getElementById('voiceNativeBtn');
+      const voiceFileBtnEl = document.getElementById('voiceFileBtn');
+      const askBtnEl = document.getElementById('askBtn');
+      const aiHintEl = document.getElementById('aiHint');
+      const llmRuntimeBadgeEl = document.getElementById('llmRuntimeBadge');
+      const nativeSpeechInputEl = document.getElementById('nativeSpeechInput');
+      const voiceFileInputEl = document.getElementById('voiceFileInput');
+      const controlPanelEl = document.getElementById('controlPanel');
+      const visionPageEl = document.getElementById('visionPage');
+      const docxTabDocEl = document.getElementById('docxTabDoc');
+      const docxTabVisionEl = document.getElementById('docxTabVision');
+      const docxModeHintEl = document.getElementById('docxModeHint');
+      const visionUrlEl = document.getElementById('visionUrl');
+      const visionLoadBtnEl = document.getElementById('visionLoadBtn');
+      const visionNextBtnEl = document.getElementById('visionNextBtn');
+      const visionOpenBtnEl = document.getElementById('visionOpenBtn');
+      const visionAnalyzeBtnEl = document.getElementById('visionAnalyzeBtn');
+      const visionFrameEl = document.getElementById('visionFrame');
+      const visionHintEl = document.getElementById('visionHint');
+      const visionAnalysisResultEl = document.getElementById('visionAnalysisResult');
+      const visionAiLogEl = document.getElementById('visionAiLog');
+      const visionAiInputEl = document.getElementById('visionAiInput');
+      const visionVoiceBtnEl = document.getElementById('visionVoiceBtn');
+      const visionAskBtnEl = document.getElementById('visionAskBtn');
+      const visionAiHintEl = document.getElementById('visionAiHint');
+      const commandBtns = Array.from(document.querySelectorAll('[data-cmd]'));
+      const quickIpBtns = Array.from(document.querySelectorAll('[data-ip]'));
+
+      const llmApiBase =
+        localStorage.getItem('robot.llm.apiBase') ||
+        (location.protocol === 'http:' || location.protocol === 'https:' ? location.origin : 'http://localhost:3402');
+
+      const activeHoldCommands = new Map();
+      const directionalPointerDown = new Map();
+      let activeMovementCmd = null;
+      let holdRepeatTimer = null;
+      const HOLD_REPEAT_MS = 95;
+      const ignoreNextClickCommands = new Set();
+      const pressed = new Set();
+      let pulseStopTimer = null;
+      let visionCandidates = [];
+      let visionIndex = 0;
+      let docxMode = 'control';
+      let visionLoadWatchdog = null;
+      let visionAutoSwitchInProgress = false;
+      let visionVoiceRecording = false;
+      let visionVoiceMediaRecorder = null;
+      let visionVoiceStream = null;
+      let visionVoiceChunks = [];
+      let visionVoiceBackend = 'none';
+      let visionAudioContext = null;
+      let visionAudioSourceNode = null;
+      let visionAudioProcessorNode = null;
+      let visionAudioMuteNode = null;
+      let visionPcmChunks = [];
+      let visionPcmSampleRate = 16000;
+      let visionAutoLoopToken = 0;
+
+      targetIpEl.value = carControl.ip;
+
+      const getLabel = (cmd) => {
+        switch (cmd) {
+          case 'up':
+            return '前进';
+          case 'down':
+            return '后退';
+          case 'left':
+            return '左转';
+          case 'right':
+            return '右转';
+          case 'grab':
+            return '抓取';
+          case 'release':
+            return '释放';
+          default:
+            return '停止';
+        }
+      };
+
+      const sanitizeIp = (raw) => {
+        const input = String(raw || '').trim();
+        if (!input) return '';
+        return input.replace(/^https?:\/\//i, '').replace(/\/$/, '');
+      };
+
+      const uniqueList = (arr) => {
+        const out = [];
+        const seen = new Set();
+        for (const item of arr) {
+          const v = String(item || '').trim();
+          if (!v || seen.has(v)) continue;
+          seen.add(v);
+          out.push(v);
+        }
+        return out;
+      };
+
+      const buildVisionCandidates = (ip) => {
+        const host = sanitizeIp(ip);
+        if (!host) return [];
+        return uniqueList([
+          `${llmApiBase}/api/robot/vision-proxy?target=${encodeURIComponent(host)}&path=${encodeURIComponent('/api/camera/stream?fps=20')}`,
+          `http://${host}/api/camera/stream?fps=20`,
+          `${llmApiBase}/api/robot/vision-proxy?target=${encodeURIComponent(host)}&path=${encodeURIComponent('/api/camera/stream')}`,
+          `http://${host}/api/camera/stream`,
+        ]);
+      };
+
+      const wakeupRobotCamera = async () => {
+        try {
+          const target = sanitizeIp(carControl.ip);
+          if (!target) return;
+          await fetch(`${llmApiBase}/api/robot/camera/open`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ target }),
+          });
+        } catch {
+          // Ignore failures here; stream load handles fallback/retry.
+        }
+      };
+
+      const refreshVisionSources = () => {
+        visionCandidates = buildVisionCandidates(carControl.ip);
+        visionIndex = 0;
+        if (visionUrlEl) {
+          visionUrlEl.value = visionCandidates[0] || '';
+        }
+      };
+
+      const loadVisionByIndex = (index, fromAction) => {
+        if (!visionCandidates.length) {
+          if (visionHintEl) visionHintEl.textContent = '请先设置有效小车网址/IP';
+          return;
+        }
+        visionIndex = ((index % visionCandidates.length) + visionCandidates.length) % visionCandidates.length;
+        const url = visionCandidates[visionIndex];
+        if (visionUrlEl) visionUrlEl.value = url;
+        if (visionFrameEl) {
+          if (visionLoadWatchdog) {
+            clearTimeout(visionLoadWatchdog);
+            visionLoadWatchdog = null;
+          }
+
+          visionFrameEl.onload = () => {
+            visionAutoSwitchInProgress = false;
+            if (visionLoadWatchdog) {
+              clearTimeout(visionLoadWatchdog);
+              visionLoadWatchdog = null;
+            }
+            if (visionHintEl) {
+              visionHintEl.textContent = `已加载视角源 ${visionIndex + 1}/${visionCandidates.length}（实时画面）`;
+            }
+          };
+
+          visionFrameEl.onerror = () => {
+            if (visionLoadWatchdog) {
+              clearTimeout(visionLoadWatchdog);
+              visionLoadWatchdog = null;
+            }
+            if (visionHintEl) {
+              visionHintEl.textContent = `视角源 ${visionIndex + 1}/${visionCandidates.length} 加载失败，正在尝试其他源...`;
+            }
+            if (!visionAutoSwitchInProgress && visionCandidates.length > 1) {
+              visionAutoSwitchInProgress = true;
+              loadVisionByIndex(visionIndex + 1, '自动切源恢复');
+            }
+          };
+
+          visionFrameEl.src = `${url}${url.includes('?') ? '&' : '?'}_t=${Date.now()}`;
+          visionLoadWatchdog = setTimeout(() => {
+            const notReady = !visionFrameEl.complete || !visionFrameEl.naturalWidth;
+            if (!notReady) return;
+            if (visionHintEl) {
+              visionHintEl.textContent = `当前视角连接超时（${sanitizeIp(carControl.ip)}），请检查小车网络后重试`;
+            }
+            if (!visionAutoSwitchInProgress && visionCandidates.length > 1) {
+              visionAutoSwitchInProgress = true;
+              loadVisionByIndex(visionIndex + 1, '超时自动切源');
+            }
+          }, 4500);
+        }
+        if (visionHintEl) {
+          const actionText = fromAction ? `（${fromAction}）` : '';
+          visionHintEl.textContent = `已加载视角源 ${visionIndex + 1}/${visionCandidates.length}${actionText}`;
+        }
+      };
+
+      const setDocxMode = (nextMode) => {
+        docxMode = nextMode === 'vision' ? 'vision' : 'control';
+        const isVision = docxMode === 'vision';
+
+        if (controlPanelEl) controlPanelEl.hidden = isVision;
+        if (visionPageEl) visionPageEl.hidden = !isVision;
+
+        if (docxTabDocEl) docxTabDocEl.classList.toggle('active', !isVision);
+        if (docxTabVisionEl) docxTabVisionEl.classList.toggle('active', isVision);
+
+        document.body.classList.toggle('app-mode-vision', isVision);
+        if (docxModeHintEl) docxModeHintEl.textContent = isVision ? '当前：视觉页' : '当前：操控页';
+      };
+
+      const setVisionAnalysisResult = (text) => {
+        if (!visionAnalysisResultEl) return;
+        visionAnalysisResultEl.textContent = String(text || '').trim() || '未返回识别结果';
+      };
+
+      const appendVisionMessage = (role, text) => {
+        if (!visionAiLogEl) return;
+        const node = document.createElement('div');
+        node.className = `msg ${role}`;
+        node.textContent = text;
+        visionAiLogEl.appendChild(node);
+        visionAiLogEl.scrollTop = visionAiLogEl.scrollHeight;
+      };
+
+      const setVisionAiHint = (text) => {
+        if (!visionAiHintEl) return;
+        visionAiHintEl.textContent = String(text || '');
+      };
+
+      const startVisionSpeechRecognitionFallback = () => {
+        const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognitionCtor) {
+          setVisionAiHint('当前浏览器不支持录音，请改用文字输入');
+          return;
+        }
+
+        let finalText = '';
+        const recognition = new SpeechRecognitionCtor();
+        recognition.lang = 'zh-CN';
+        recognition.interimResults = true;
+        recognition.continuous = false;
+
+        setVisionVoiceUi(true, '正在语音识别，请直接说话...');
+
+        recognition.onresult = (event) => {
+          let interim = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const item = event.results[i];
+            if (!item || !item[0]) continue;
+            const piece = String(item[0].transcript || '').trim();
+            if (!piece) continue;
+            if (item.isFinal) {
+              finalText = [finalText, piece].filter(Boolean).join(' ').trim();
+            } else {
+              interim = [interim, piece].filter(Boolean).join(' ').trim();
+            }
+          }
+
+          const merged = [finalText, interim].filter(Boolean).join(' ').trim();
+          if (visionAiInputEl && merged) {
+            visionAiInputEl.value = merged;
+          }
+          if (interim) {
+            setVisionAiHint(`识别中：${interim}`);
+          }
+        };
+
+        recognition.onerror = (event) => {
+          const err = event && event.error ? String(event.error) : 'unknown';
+          setVisionVoiceUi(false, `语音识别失败：${err}`);
+        };
+
+        recognition.onend = async () => {
+          setVisionVoiceUi(false, '语音识别结束');
+          const text = String(finalText || (visionAiInputEl && visionAiInputEl.value) || '').trim();
+          if (!text) {
+            setVisionAiHint('未识别到有效语音，请改用文字或重试');
+            return;
+          }
+          appendVisionMessage('assistant', `语音识别：${text}`);
+          await askZhipuVision(text, 'voice');
+        };
+
+        try {
+          recognition.start();
+        } catch (error) {
+          setVisionVoiceUi(false, `语音识别启动失败：${error && error.message ? error.message : 'unknown'}`);
+        }
+      };
+
+      const askZhipuVision = async (text, trigger = 'text') => {
+        const userText = String(text || '').trim();
+        if (!userText) return;
+        if (!visionAskBtnEl || !visionAiInputEl) return;
+
+        const waitMs = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        const normalizeVisionStepSeconds = (value) => {
+          if (!Number.isFinite(value)) return null;
+          return Math.max(0.02, Math.min(8, value));
+        };
+        const normalizeVisionCommandList = (commands) => {
+          if (!Array.isArray(commands)) return [];
+          return commands
+            .map((item) => {
+              if (!item) return null;
+              if (typeof item === 'string') return { cmd: item };
+              if (item && item.cmd) return item;
+              return null;
+            })
+            .filter(Boolean);
+        };
+        const seqToText = (commands) => commands
+          .map((c) => {
+            const sec = normalizeVisionStepSeconds(Number(c.seconds));
+            return `${getLabel(c.cmd)}${sec ? `${sec}秒` : ''}`;
+          })
+          .join(' -> ');
+        const extractVisionFacts = (rawText) => {
+          const text = String(rawText || '');
+          const getLine = (label) => {
+            const m = text.match(new RegExp(`${label}\\s*[:：]\\s*([^\\n]+)`, 'i'));
+            return m && m[1] ? String(m[1]).trim() : '';
+          };
+          return {
+            scene: getLine('场景'),
+            object: getLine('物体'),
+            position: getLine('方位'),
+            distance: getLine('距离'),
+            risk: getLine('风险'),
+          };
+        };
+        const buildSmartVisionPlan = (rawUser, rawVisual) => {
+          const req = String(rawUser || '').trim();
+          const visual = String(rawVisual || '').trim();
+          if (!req) return null;
+
+          const facts = extractVisionFacts(visual);
+          const allText = `${req}\n${facts.scene}\n${facts.object}\n${facts.risk}`;
+          const wantsGrab = /(抓|抓取|夹取|拿起|拾取|捡起)/.test(req);
+          const wantsAlign = /(调整位置|对准|瞄准|靠近|接近|挪动|挪一下|移过去)/.test(req);
+          const wantsBypass = /(绕开|绕过|避开|躲开|从旁边过)/.test(req);
+          const hasObstacleRisk = /(碰撞|障碍|阻挡|危险|风险)/.test(allText);
+          const frontTarget = /(前方|前面|面前)/.test(allText);
+          const obstacleLike = /(瓶|水瓶|矿泉水瓶|杯|罐|箱|障碍|路障|物体)/.test(`${facts.object}\n${visual}`);
+          const obstacleCentered = /(中|中央|中间|正前|居中)/.test(`${facts.position}\n${visual}`);
+
+          if (wantsBypass && obstacleLike && (obstacleCentered || frontTarget)) {
+            const bypassDir = /(偏左|左侧|左边|向左)/.test(`${facts.position}\n${visual}`) ? 'right' : 'left';
+            const recoverDir = bypassDir === 'left' ? 'right' : 'left';
+            const bypassSeq = [
+              { cmd: 'stop', seconds: 0.08 },
+              { cmd: bypassDir, seconds: 0.06, speed: 12 },
+              { cmd: 'up', seconds: 0.18, speed: 20 },
+              { cmd: recoverDir, seconds: 0.05, speed: 12 },
+              { cmd: 'up', seconds: 0.16, speed: 20 },
+              { cmd: 'stop', seconds: 0.08 },
+            ];
+            return {
+              reason: `检测到前方障碍物，已规划绕后路径：先${bypassDir === 'left' ? '左' : '右'}绕再回正，尽量从瓶子后方通过。`,
+              commands: bypassSeq,
+            };
+          }
+
+          if (!(wantsGrab || wantsAlign || wantsBypass)) {
+            return null;
+          }
+
+          let lateralCmd = '';
+          if (/(左侧|偏左|往左|向左|左边)/.test(allText)) lateralCmd = 'left';
+          if (/(右侧|偏右|往右|向右|右边)/.test(allText)) lateralCmd = 'right';
+
+          const commands = [];
+          commands.push({ cmd: 'stop', seconds: 0.18 });
+
+          if (lateralCmd) {
+            commands.push({ cmd: lateralCmd, seconds: hasObstacleRisk ? 0.42 : 0.32 });
+          }
+
+          const forwardSecBase = frontTarget ? 0.56 : 0.72;
+          const forwardSec = hasObstacleRisk ? Math.max(0.35, forwardSecBase - 0.14) : forwardSecBase;
+          commands.push({ cmd: 'up', seconds: forwardSec });
+          commands.push({ cmd: 'stop', seconds: 0.12 });
+
+          if (/(再靠近|靠近一点|再向前|向前一点|微调)/.test(req)) {
+            commands.push({ cmd: 'up', seconds: hasObstacleRisk ? 0.24 : 0.32 });
+            commands.push({ cmd: 'stop', seconds: 0.1 });
+          }
+
+          if (wantsGrab) {
+            commands.push({ cmd: 'grab', seconds: 0.45 });
+            commands.push({ cmd: 'stop', seconds: 0.16 });
+          }
+
+          const targetName = String(facts.object || '').trim() || '目标物体';
+          const reason = hasObstacleRisk
+            ? `已按风险优先策略规划：先减速对位，再短距前进，最后执行抓取（目标：${targetName}）。`
+            : `已按目标策略规划：先对位，再前进接近，最后执行抓取（目标：${targetName}）。`;
+
+          return {
+            reason,
+            commands,
+          };
+        };
+        const executeVisionCommandSequence = async (commands, source = 'vision') => {
+          const list = normalizeVisionCommandList(commands);
+          if (!list.length) return false;
+
+          for (let i = 0; i < list.length; i++) {
+            const cmd = list[i].cmd;
+            const sec = normalizeVisionStepSeconds(Number(list[i].seconds));
+            const speed = Number(list[i].speed);
+            setVisionAiHint(`视觉口令 ${i + 1}/${list.length}：${getLabel(cmd)}${sec ? ` ${sec}秒` : ''}`);
+            await runPulseCommand(cmd, {
+              ...(sec ? { seconds: sec } : {}),
+              ...(Number.isFinite(speed) ? { speed } : {}),
+            });
+            appendVisionMessage('assistant', `已执行：${getLabel(cmd)}${sec ? ` ${sec}秒` : ''} (${i + 1}/${list.length})`);
+            if (i < list.length - 1) {
+              await waitMs(sec ? Math.max(120, Math.round(sec * 1000)) : (sequenceStepMs[cmd] || 500));
+            }
+          }
+
+          setVisionAiHint(source === 'voice' ? '语音口令已执行完成' : '口令已执行完成');
+          return true;
+        };
+        const runVisionClosedLoopBypass = async (rawUser, initVisual, loopToken) => {
+          const req = String(rawUser || '').trim();
+          const wantsBypass = /(绕开|绕过|避开|躲开|从旁边过)/.test(req);
+          if (!wantsBypass) return false;
+
+          appendVisionMessage('assistant', '已进入绕障闭环模式：持续执行“识别瓶子 -> 微转绕行 -> 复检”，直到瓶子不再挡在正前方。');
+
+          let latestVisual = String(initVisual || '').trim();
+          let bypassDirMemory = '';
+
+          const isBottleLike = (facts, visualText) => {
+            const all = `${String((facts && facts.object) || '')}\n${String(visualText || '')}`;
+            const positive = /(瓶|水瓶|矿泉水瓶|塑料瓶|饮料瓶|杯|罐)/.test(all);
+            const negative = /(瓶盖|瓶身图案|背景装饰)/.test(all);
+            const miss = /(未发现|未检测到|没有(?:检测到)?)(?:瓶|障碍|物体)?/.test(all);
+            return positive && !negative && !miss;
+          };
+
+          const obstacleLateral = (facts, visualText) => {
+            const pos = `${String((facts && facts.position) || '')}\n${String(visualText || '')}`;
+            if (/(偏左|左侧|左边|向左|画面左)/.test(pos)) return 'left';
+            if (/(偏右|右侧|右边|向右|画面右)/.test(pos)) return 'right';
+            return '';
+          };
+
+          const obstacleCenterState = (facts, visualText) => {
+            const pos = `${String((facts && facts.position) || '')}\n${String(visualText || '')}`;
+            if (/(正前方|正前|中间|中央|居中|中线)/.test(pos)) return 'center';
+            if (/(略偏|轻微偏|稍偏|接近中间|近中线)/.test(pos)) return 'near-center';
+            return 'off-center';
+          };
+
+          const isObstacleNear = (facts, visualText) => {
+            const d = `${String((facts && facts.distance) || '')}\n${String(visualText || '')}`;
+            return /(很近|较近|近|贴近|正前方近距)/.test(d);
+          };
+
+          for (let round = 1; round <= 16 && loopToken === visionAutoLoopToken; round++) {
+            setVisionAiHint(`绕障闭环第 ${round} 轮识别中`);
+            const analysis = await analyzeVisionFrame({ silent: true, keepHint: true, timeoutMs: 12000 });
+            if (analysis && analysis.ok && analysis.summary) {
+              latestVisual = `识别结果:\n${analysis.summary}`;
+            }
+
+            const facts = extractVisionFacts(latestVisual);
+            const hasBottle = isBottleLike(facts, latestVisual);
+            const lateral = obstacleLateral(facts, latestVisual);
+            const centerState = obstacleCenterState(facts, latestVisual);
+            const nearObstacle = isObstacleNear(facts, latestVisual);
+
+            if (!hasBottle || (centerState === 'off-center' && !nearObstacle)) {
+              const passSeq = [
+                { cmd: 'stop', seconds: 0.08 },
+                { cmd: 'up', seconds: 0.14, speed: 20 },
+                { cmd: 'stop', seconds: 0.08 },
+              ];
+              appendVisionMessage('assistant', `绕障第${round}轮 看到: 瓶子已不在正前方，执行通过动作：${seqToText(passSeq)}`);
+              await executeVisionCommandSequence(passSeq, 'vision');
+              setVisionAiHint('绕障闭环完成（已通过瓶子）');
+              return true;
+            }
+
+            const bypassDir = lateral === 'left'
+              ? 'right'
+              : (lateral === 'right' ? 'left' : (bypassDirMemory || 'left'));
+            bypassDirMemory = bypassDir;
+            const recoverDir = bypassDir === 'left' ? 'right' : 'left';
+
+            const bypassSeq = centerState === 'center' || centerState === 'near-center'
+              ? [
+                  { cmd: 'stop', seconds: 0.08 },
+                  { cmd: bypassDir, seconds: 0.055, speed: 10 },
+                  { cmd: 'up', seconds: nearObstacle ? 0.14 : 0.18, speed: 20 },
+                  { cmd: recoverDir, seconds: 0.045, speed: 10 },
+                  { cmd: 'up', seconds: 0.14, speed: 20 },
+                  { cmd: 'stop', seconds: 0.08 },
+                ]
+              : [
+                  { cmd: 'stop', seconds: 0.08 },
+                  { cmd: 'up', seconds: 0.16, speed: 20 },
+                  { cmd: 'stop', seconds: 0.08 },
+                ];
+
+            appendVisionMessage('assistant', `绕障第${round}轮 行动: ${centerState === 'off-center' ? '保持通过' : '绕到瓶子后方'}，执行：${seqToText(bypassSeq)}`);
+            await executeVisionCommandSequence(bypassSeq, 'vision');
+            await waitMs(160);
+          }
+
+          appendVisionMessage('assistant', '绕障闭环达到轮次上限，已停止自动绕行，请重新识别后继续。');
+          return true;
+        };
+        const runVisionClosedLoopGrab = async (rawUser, initVisual, loopToken) => {
+          const req = String(rawUser || '').trim();
+          const wantsGrab = /(抓|抓取|夹取|拿起|拾取|捡起)/.test(req);
+          if (!wantsGrab) return false;
+
+          appendVisionMessage('assistant', '已进入持续闭环模式：执行“识别 -> 搜索/微调 -> 复检 -> 抓取”。未抓到将继续搜索，不会自动停止。');
+
+          let latestVisual = String(initVisual || '').trim();
+          const targetHint = /(网球|小球|球)/.test(req) ? '网球' : '目标物体';
+          const llmTargetMatchCache = new Map();
+          const extractTargetFromRequest = async (requestText) => {
+            const raw = String(requestText || '').trim();
+            if (!raw) return { name: '目标物体', aliases: ['目标物体'] };
+            try {
+              const resp = await fetch(`${llmApiBase}/api/llm-proxy`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  system: '你是目标提取器。请从用户控制句中提取要跟随抓取的物体，输出严格JSON：{"name":"目标名","aliases":["别名1","别名2"]}。仅输出JSON。',
+                  userText: raw,
+                  maxTokens: 120,
+                }),
+              });
+              const data = await resp.json().catch(() => ({}));
+              if (!resp.ok) throw new Error('target_extract_failed');
+              const json = extractFirstJsonObject(String(data.text || '')) || {};
+              const name = String(json.name || '').trim() || '目标物体';
+              const aliases = Array.isArray(json.aliases)
+                ? json.aliases.map((s) => String(s || '').trim()).filter(Boolean).slice(0, 6)
+                : [];
+              const merged = [name, ...aliases];
+              if (/(球|网球|小球|乒乓球)/.test(raw) && !merged.some((x) => /(球)/.test(x))) {
+                merged.push('小球', '网球');
+              }
+              return { name, aliases: Array.from(new Set(merged)).slice(0, 8) };
+            } catch {
+              return /(球|网球|小球|乒乓球)/.test(raw)
+                ? { name: '网球', aliases: ['网球', '小球', '球体'] }
+                : { name: '目标物体', aliases: ['目标物体'] };
+            }
+          };
+          const targetProfile = await extractTargetFromRequest(req);
+          const BALL_POSITIVE_RE = /(网球|小球|球体|乒乓球|高尔夫球|羽毛球|台球|篮球|足球|排球)/;
+          const BALL_NEGATIVE_RE = /(球拍|地球|眼球|球鞋|球衣|球门|气球|球杆|球网|球场|球桌|球框)/;
+          const parseBallConfidence = (text) => {
+            const s = String(text || '');
+            const mPct = s.match(/(置信|概率|可信度)\s*[:：]?\s*([0-9]{1,3})\s*%/);
+            if (mPct) {
+              const p = Number(mPct[2]);
+              if (Number.isFinite(p)) return Math.max(0, Math.min(1, p / 100));
+            }
+            const mScore = s.match(/(置信|概率|可信度)\s*[:：]?\s*([0-1](?:\.[0-9]+)?)/);
+            if (mScore) {
+              const p = Number(mScore[2]);
+              if (Number.isFinite(p)) return Math.max(0, Math.min(1, p));
+            }
+            return null;
+          };
+          const hasTargetInVisual = async (facts, visualText) => {
+            const obj = String((facts && facts.object) || '').trim();
+            const all = `${obj}\n${String(visualText || '')}`;
+
+            // Generic alias matching first; keep ball-specific suppression for common confusions.
+            const aliasHit = targetProfile.aliases.some((alias) => {
+              const a = String(alias || '').trim();
+              return a && all.includes(a);
+            });
+
+            const objectHit = BALL_POSITIVE_RE.test(obj) && !BALL_NEGATIVE_RE.test(obj);
+            const globalHit = /(发现|检测到|识别到).{0,16}(网球|小球|球体|乒乓球|高尔夫球|目标)/.test(all);
+            if (!(aliasHit || objectHit || globalHit)) {
+              if (!obj) return false;
+            }
+
+            // Avoid false negatives like "风险: 无明显障碍物"; only treat explicit target-miss cues as negative.
+            const negativeCue = /(?:未发现|未检测到|没有(?:检测到)?)(?:目标|网球|小球|球体)?|仅地面|仅墙面|地面,?墙面|空旷|空白|疑似噪点|误检/.test(all);
+            if (negativeCue) return false;
+
+            const conf = parseBallConfidence(obj) ?? parseBallConfidence(all);
+            if (conf !== null && conf < 0.45) return false;
+
+            if (aliasHit || objectHit || globalHit) return true;
+
+            // Semantic fallback: use LLM to decide object-target match.
+            const cacheKey = `${targetProfile.name}|${obj}`;
+            if (llmTargetMatchCache.has(cacheKey)) {
+              return !!llmTargetMatchCache.get(cacheKey);
+            }
+            try {
+              const resp = await fetch(`${llmApiBase}/api/llm-proxy`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  system: '你是目标匹配器。判断候选物体是否与目标物体匹配。输出严格JSON：{"match":true|false,"confidence":0-1}。仅输出JSON。',
+                  userText: `目标:${targetProfile.name}\n别名:${targetProfile.aliases.join(',')}\n候选:${obj}`,
+                  maxTokens: 80,
+                }),
+              });
+              const data = await resp.json().catch(() => ({}));
+              if (!resp.ok) throw new Error('target_match_failed');
+              const json = extractFirstJsonObject(String(data.text || '')) || {};
+              const match = !!json.match;
+              const conf2 = Number(json.confidence);
+              const ok = match && (!Number.isFinite(conf2) || conf2 >= 0.5);
+              llmTargetMatchCache.set(cacheKey, ok);
+              return ok;
+            } catch {
+              return false;
+            }
+          };
+          const verifyGrabByReleaseDrop = async (visualAfterGrabText) => {
+            const beforeFacts = extractVisionFacts(visualAfterGrabText);
+            const beforeHasBall = await hasTargetInVisual(beforeFacts, visualAfterGrabText);
+
+            // Strict success gate requested by user: release must show ball drop/reappearance.
+            const releaseSeq = [{ cmd: 'release', seconds: 0.9 }, { cmd: 'stop', seconds: 0.14 }];
+            appendVisionMessage('assistant', `抓取验证：执行释放测试，观察小球是否掉下：${seqToText(releaseSeq)}`);
+            await executeVisionCommandSequence(releaseSeq, 'vision');
+            await waitMs(220);
+
+            const afterRelease = await analyzeVisionFrame({ silent: true, keepHint: true });
+            const afterReleaseText = afterRelease && afterRelease.ok && afterRelease.summary
+              ? `识别结果:\n${afterRelease.summary}`
+              : '';
+            const afterFacts = extractVisionFacts(afterReleaseText);
+            const afterHasBall = await hasTargetInVisual(afterFacts, afterReleaseText);
+            const dropCue = /(掉|下落|滚落|滚动|滑落|坠落)/.test(afterReleaseText);
+
+            const successByDrop = !beforeHasBall && afterHasBall;
+            const successByStrongCue = afterHasBall && dropCue;
+            const success = successByDrop || successByStrongCue;
+
+            if (success) {
+              appendVisionMessage('assistant', '抓取后复检：释放后检测到小球掉下，判定抓取成功。');
+              return true;
+            }
+
+            appendVisionMessage('assistant', '抓取后复检：释放后未确认小球掉下，本次抓取不算成功，继续搜索抓取。');
+            return false;
+          };
+          const inferLateralCue = (facts, visualText) => {
+            const all = `${String((facts && facts.position) || '')}\n${String((facts && facts.object) || '')}\n${String((facts && facts.risk) || '')}\n${String(visualText || '')}`;
+            if (/(偏左|左侧|左边|向左|画面左)/.test(all)) return 'left';
+            if (/(偏右|右侧|右边|向右|画面右)/.test(all)) return 'right';
+            return '';
+          };
+          const parseDistanceState = (facts, visualText) => {
+            const all = `${String((facts && facts.distance) || '')}\n${String(visualText || '')}`;
+            const meterMatch = all.match(/([0-9]+(?:\.[0-9]+)?)\s*米/);
+            let score = 0.45;
+            let label = '中距';
+
+            if (meterMatch) {
+              const m = Number(meterMatch[1]);
+              if (Number.isFinite(m) && m > 0) {
+                if (m <= 0.18) {
+                  score = 0.95;
+                  label = '极近';
+                } else if (m <= 0.35) {
+                  score = 0.86;
+                  label = '较近';
+                } else if (m <= 0.7) {
+                  score = 0.62;
+                  label = '中距';
+                } else {
+                  score = 0.3;
+                  label = '较远';
+                }
+              }
+            } else if (/(很近|贴近|可抓|抓取窗口|近在眼前)/.test(all)) {
+              score = 0.9;
+              label = '较近';
+            } else if (/(较近|靠近|近)/.test(all)) {
+              score = 0.76;
+              label = '较近';
+            } else if (/(中等|适中|中距离|中距)/.test(all)) {
+              score = 0.56;
+              label = '中距';
+            } else if (/(较远|很远|远)/.test(all)) {
+              score = 0.28;
+              label = '较远';
+            }
+
+            const nearEnough = score >= 0.75;
+            const approachSec = score >= 0.83 ? 0.03 : (score >= 0.6 ? 0.04 : 0.05);
+            return { score, label, nearEnough, approachSec };
+          };
+          const appendVisionDistanceCard = (round, distanceState, lateral, centered) => {
+            if (!visionAiLogEl) return;
+            const filled = Math.max(1, Math.min(10, Math.round(distanceState.score * 10)));
+            const empty = 10 - filled;
+            const bar = `${'█'.repeat(filled)}${'░'.repeat(empty)}`;
+            const pos = centered ? '正前方' : (lateral === 'left' ? '偏左' : (lateral === 'right' ? '偏右' : '待确认'));
+
+            const node = document.createElement('div');
+            node.className = 'msg assistant';
+            node.textContent = `闭环第${round}轮 判断:\n方位=${pos}\n距离图=[${bar}] ${distanceState.label}`;
+            visionAiLogEl.appendChild(node);
+            visionAiLogEl.scrollTop = visionAiLogEl.scrollHeight;
+          };
+          const decideAdaptiveMicroAdjust = (round, facts, visualText, hasObstacleRisk) => {
+            const all = `${String((facts && facts.position) || '')}\n${String((facts && facts.distance) || '')}\n${String(visualText || '')}`;
+
+            let dir = inferLateralCue(facts, visualText);
+            if (!dir) {
+              dir = lastKnownLateralDir || (round % 2 === 1 ? 'right' : 'left');
+            }
+
+            // Keep search/alignment at tiny turn amplitudes.
+            let turnSec = 0.008;
+            if (/(略偏|轻微偏|稍偏)/.test(all)) turnSec = 0.006;
+            else if (/(明显偏|偏得多|大幅偏)/.test(all)) turnSec = 0.01;
+            else if (round >= 4) turnSec = 0.008;
+            turnSec = Math.max(0.004, Math.min(0.012, turnSec * adaptiveTurnScale));
+
+            let moveSec = CREEP_MOVE_SECONDS;
+            if (hasObstacleRisk) moveSec = Math.max(0.04, CREEP_MOVE_SECONDS - 0.04);
+            if (/(远|较远)/.test(all)) moveSec = Math.min(0.08, moveSec + 0.01);
+            if (/(近|很近|贴近)/.test(all)) moveSec = Math.max(0.04, moveSec - 0.01);
+
+            const turnSpeed = hasObstacleRisk ? 12 : 10;
+            const moveSpeed = hasObstacleRisk ? 18 : 16;
+
+            return {
+              dir,
+              turnSec,
+              turnSpeed,
+              moveSec,
+              moveSpeed,
+            };
+          };
+          const isTargetCentered = (facts, visualText) => {
+            const pos = `${String((facts && facts.position) || '')}\n${String(visualText || '')}`;
+            if (/(明显偏左|大幅偏左|明显偏右|大幅偏右|远离中线|离中间较远)/.test(pos)) return false;
+            if (/(正前方|正前|正中|中央|居中|中间)/.test(pos)) return true;
+            return false;
+          };
+          const isTargetNearCenter = (facts, visualText) => {
+            if (isTargetCentered(facts, visualText)) return true;
+            const pos = `${String((facts && facts.position) || '')}\n${String(visualText || '')}`;
+            return /(略偏左|轻微偏左|稍偏左|略偏右|轻微偏右|稍偏右|接近中间|接近中线|基本居中|近中线)/.test(pos);
+          };
+          const isTargetNearEnough = (facts, visualText) => {
+            const d = `${String((facts && facts.distance) || '')}\n${String(visualText || '')}`;
+            return /(很近|较近|近|可抓|抓取窗口|贴近|差不多可以抓)/.test(d);
+          };
+          const buildSearchSeq = (round) => {
+            const sweepSec = [0.004, 0.006, 0.008, 0.01][Math.min(3, Math.max(0, round - 1))];
+            const dir = 'right';
+            return [
+              { cmd: 'stop', seconds: 0.08 },
+              { cmd: dir, seconds: sweepSec },
+              { cmd: 'stop', seconds: 0.08 },
+            ];
+          };
+
+          let lastKnownLateralDir = '';
+          let adaptiveTurnScale = 1;
+
+          let round = 0;
+          while (loopToken === visionAutoLoopToken) {
+            round += 1;
+            setVisionAiHint(`闭环识别第 ${round} 轮（持续搜索中）`);
+            const analysis = await analyzeVisionFrame({ silent: true, keepHint: true });
+            if (analysis && analysis.ok && analysis.summary) {
+              latestVisual = `识别结果:\n${analysis.summary}`;
+            }
+
+            const facts = extractVisionFacts(latestVisual);
+            const riskText = `${facts.risk}\n${latestVisual}`;
+            const hasObstacleRisk = /(碰撞|障碍|阻挡|危险|风险|绊倒)/.test(riskText);
+            const hasTarget = await hasTargetInVisual(facts, latestVisual);
+
+            if (!hasTarget) {
+              const searchSeq = buildSearchSeq(round);
+              appendVisionMessage('assistant', `闭环第${round}轮 看到: 未发现${targetHint}，执行小幅搜索：${seqToText(searchSeq)}`);
+              await executeVisionCommandSequence(searchSeq, 'vision');
+              await waitMs(180);
+              continue;
+            }
+
+            appendVisionMessage('assistant', `闭环第${round}轮 看到: 已检测到${targetHint}，开始判断并跟随。`);
+            const currentFacts = extractVisionFacts(latestVisual);
+
+            const lateral = inferLateralCue(currentFacts, latestVisual);
+            if (lateral === 'left' || lateral === 'right') {
+              lastKnownLateralDir = lateral;
+            }
+            const centered = isTargetCentered(currentFacts, latestVisual);
+            const distanceState = parseDistanceState(currentFacts, latestVisual);
+            appendVisionDistanceCard(round, distanceState, lateral, centered);
+
+            if (!centered || lateral === 'left' || lateral === 'right') {
+              const adaptive = decideAdaptiveMicroAdjust(round, currentFacts, latestVisual, hasObstacleRisk);
+              const preTurnLateral = lateral;
+              const orientSeq = [
+                { cmd: 'stop', seconds: 0.08 },
+                { cmd: adaptive.dir, seconds: adaptive.turnSec, speed: adaptive.turnSpeed },
+                { cmd: 'stop', seconds: 0.07 },
+              ];
+              appendVisionMessage('assistant', `闭环第${round}轮 行动: 小幅${adaptive.dir === 'left' ? '左' : '右'}转对位：${seqToText(orientSeq)}`);
+              await executeVisionCommandSequence(orientSeq, 'vision');
+
+              const postTurn = await analyzeVisionFrame({ silent: true, keepHint: true, timeoutMs: 12000 });
+              const postTurnText = postTurn && postTurn.ok && postTurn.summary
+                ? `识别结果:\n${postTurn.summary}`
+                : latestVisual;
+              const postTurnFacts = extractVisionFacts(postTurnText);
+              const stillHasTargetAfterTurn = await hasTargetInVisual(postTurnFacts, postTurnText);
+
+              if (!stillHasTargetAfterTurn) {
+                const rollbackDir = adaptive.dir === 'left' ? 'right' : 'left';
+                const rollbackSec = Math.max(0.006, adaptive.turnSec * 0.9);
+                const rollbackSeq = [
+                  { cmd: 'stop', seconds: 0.08 },
+                  { cmd: rollbackDir, seconds: rollbackSec, speed: adaptive.turnSpeed },
+                  { cmd: 'stop', seconds: 0.08 },
+                ];
+                adaptiveTurnScale = Math.max(0.55, adaptiveTurnScale * 0.82);
+                appendVisionMessage('assistant', `闭环第${round}轮 复检: 转向后目标消失，回到原位并缩小幅度跟随：${seqToText(rollbackSeq)}`);
+                await executeVisionCommandSequence(rollbackSeq, 'vision');
+                await waitMs(180);
+                continue;
+              }
+
+              latestVisual = postTurnText;
+              const postLateral = inferLateralCue(postTurnFacts, postTurnText);
+              const postCentered = isTargetCentered(postTurnFacts, postTurnText);
+              const postNearCenter = isTargetNearCenter(postTurnFacts, postTurnText);
+              const postDistance = parseDistanceState(postTurnFacts, postTurnText);
+
+              const improvedCentering = postNearCenter
+                || (preTurnLateral && postLateral && preTurnLateral !== postLateral)
+                || (preTurnLateral && !postLateral);
+
+              if (!improvedCentering) {
+                adaptiveTurnScale = Math.max(0.5, adaptiveTurnScale * 0.8);
+                appendVisionMessage('assistant', `闭环第${round}轮 复检: 转向后仍未更接近居中，继续更小幅度修正，不前进。`);
+                await waitMs(160);
+                continue;
+              }
+
+              if (!postDistance.nearEnough && postNearCenter) {
+                const followMoveSeq = [
+                  { cmd: 'up', seconds: Math.max(0.03, postDistance.approachSec * 0.7), speed: adaptive.moveSpeed },
+                  { cmd: 'stop', seconds: 0.08 },
+                ];
+                appendVisionMessage('assistant', `闭环第${round}轮 行动: 按目标方向缓慢跟随：${seqToText(followMoveSeq)}`);
+                await executeVisionCommandSequence(followMoveSeq, 'vision');
+              }
+
+              if (postDistance.nearEnough && postNearCenter) {
+                const preGrabSeq = [
+                  { cmd: 'stop', seconds: 0.08 },
+                ];
+                appendVisionMessage('assistant', `闭环第${round}轮 判断: 已接近中线且距离可抓，直接执行抓取。`);
+                await executeVisionCommandSequence(preGrabSeq, 'vision');
+
+                const grabSeq = [{ cmd: 'grab', seconds: 0.9 }, { cmd: 'stop', seconds: 0.14 }];
+                appendVisionMessage('assistant', `闭环判断目标已进入扩展抓取窗口（${targetHint}），执行抓取：${seqToText(grabSeq)}`);
+                await executeVisionCommandSequence(grabSeq, 'vision');
+
+                const verify = await analyzeVisionFrame({ silent: true, keepHint: true });
+                const verifyText = verify && verify.ok && verify.summary ? `识别结果:\n${verify.summary}` : latestVisual;
+                const verifyFacts = extractVisionFacts(verifyText);
+                const stillHasTarget = await hasTargetInVisual(verifyFacts, verifyText);
+                const passReleaseDrop = await verifyGrabByReleaseDrop(verifyText);
+                if (passReleaseDrop) {
+                  setVisionAiHint('闭环抓取流程完成（释放验证通过）');
+                  return true;
+                }
+                appendVisionMessage('assistant', stillHasTarget
+                  ? `抓取后复检：仍检测到${targetHint}，本次未成功，继续下一轮精调。`
+                  : '抓取后复检：未通过释放掉落验证，继续下一轮精调。');
+              }
+
+              adaptiveTurnScale = Math.min(1, adaptiveTurnScale + 0.04);
+              await waitMs(180);
+              continue;
+            }
+
+            const approachSeq = [
+              { cmd: 'stop', seconds: 0.08 },
+              { cmd: 'up', seconds: hasObstacleRisk ? Math.max(0.08, distanceState.approachSec - 0.02) : distanceState.approachSec },
+              { cmd: 'stop', seconds: 0.08 },
+            ];
+            const nearEnough = isTargetNearEnough(currentFacts, latestVisual) || distanceState.nearEnough;
+            if (!nearEnough) {
+              appendVisionMessage('assistant', `闭环第${round}轮 行动: 已在正前方，先按距离继续接近：${seqToText(approachSeq)}`);
+              await executeVisionCommandSequence(approachSeq, 'vision');
+              await waitMs(180);
+              continue;
+            }
+
+            const preGrabSeq = [
+              { cmd: 'stop', seconds: 0.08 },
+            ];
+            appendVisionMessage('assistant', `闭环第${round}轮 判断: 目标正前方且距离很近，执行抓取。`);
+            await executeVisionCommandSequence(preGrabSeq, 'vision');
+
+            const grabSeq = [{ cmd: 'grab', seconds: 0.9 }, { cmd: 'stop', seconds: 0.14 }];
+            appendVisionMessage('assistant', `闭环判断目标已进入抓取窗口（${targetHint}），执行抓取：${seqToText(grabSeq)}`);
+            await executeVisionCommandSequence(grabSeq, 'vision');
+
+            const verify = await analyzeVisionFrame({ silent: true, keepHint: true });
+            const verifyText = verify && verify.ok && verify.summary ? `识别结果:\n${verify.summary}` : latestVisual;
+            const verifyFacts = extractVisionFacts(verifyText);
+            const stillHasTarget = await hasTargetInVisual(verifyFacts, verifyText);
+
+            // Strict criterion: always validate by release-drop signal.
+            const passReleaseDrop = await verifyGrabByReleaseDrop(verifyText);
+            if (passReleaseDrop) {
+              setVisionAiHint('闭环抓取流程完成（释放验证通过）');
+              return true;
+            }
+
+            appendVisionMessage('assistant', stillHasTarget
+              ? `抓取后复检：仍检测到${targetHint}，本次未成功，继续下一轮精调。`
+              : '抓取后复检：未通过释放掉落验证，继续下一轮精调。');
+            await waitMs(180);
+          }
+
+          appendVisionMessage('assistant', '已收到新指令，上一轮持续闭环已切换。');
+          return true;
+        };
+
+        appendVisionMessage('user', userText);
+        visionAiInputEl.value = '';
+        visionAskBtnEl.disabled = true;
+        visionAutoLoopToken += 1;
+        const activeLoopToken = visionAutoLoopToken;
+
+        const visualContext = visionAnalysisResultEl ? String(visionAnalysisResultEl.textContent || '').trim() : '';
+
+        const closedLoopWanted = /(抓|抓取|夹取|拿起|拾取|捡起)/.test(userText);
+        if (closedLoopWanted) {
+          visionAskBtnEl.disabled = false;
+          runVisionClosedLoopGrab(userText, visualContext, activeLoopToken).catch((error) => {
+            appendVisionMessage('assistant', `闭环执行异常：${error && error.message ? error.message : 'unknown'}`);
+            setVisionAiHint('闭环异常，请重试');
+          });
+          return;
+        }
+
+        const bypassLoopWanted = /(绕开|绕过|避开|躲开|从旁边过)/.test(userText);
+        if (bypassLoopWanted) {
+          visionAskBtnEl.disabled = false;
+          runVisionClosedLoopBypass(userText, visualContext, activeLoopToken).catch((error) => {
+            appendVisionMessage('assistant', `绕障闭环异常：${error && error.message ? error.message : 'unknown'}`);
+            setVisionAiHint('绕障闭环异常，请重试');
+          });
+          return;
+        }
+
+        const smartPlan = buildSmartVisionPlan(userText, visualContext);
+        if (smartPlan && Array.isArray(smartPlan.commands) && smartPlan.commands.length) {
+          appendVisionMessage('assistant', smartPlan.reason);
+          appendVisionMessage('assistant', `智能规划序列：${seqToText(smartPlan.commands)}`);
+          await executeVisionCommandSequence(smartPlan.commands, trigger === 'voice' ? 'voice' : 'text');
+          visionAskBtnEl.disabled = false;
+          return;
+        }
+
+        const parsedDirect = await parseCommandSequenceSmart(userText, 'vision');
+        const directSeq = parsedDirect.commands || [];
+        if (directSeq.length >= 1) {
+          if (VERBOSE_SEMANTIC_EXPLAIN && parsedDirect.source === 'llm' && parsedDirect.reason) {
+            appendVisionMessage('assistant', `语义拆解：${parsedDirect.reason}`);
+          }
+          if (parsedDirect.preview) {
+            appendTrajectoryPreviewCard(visionAiLogEl, parsedDirect.preview, parsedDirect.previewShape || 'square', parsedDirect.previewSubtitle || '轨迹预演', parsedDirect.previewPathD || '');
+            await waitMs(Math.max(260, Number(parsedDirect.previewDelayMs) || 520));
+          }
+          appendVisionMessage('assistant', `收到口令序列：${seqToText(directSeq)}`);
+          await executeVisionCommandSequence(directSeq, trigger === 'voice' ? 'voice' : 'text');
+          visionAskBtnEl.disabled = false;
+          return;
+        }
+
+        try {
+          const mergedText = visualContext
+            ? `当前画面识别结果:\n${visualContext}\n\n用户问题:\n${userText}`
+            : userText;
+
+          const resp = await fetch(`${llmApiBase}/api/llm-proxy`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system: '你是小车视觉控制助手。先用1-2句中文简答。若能执行动作，最后一行必须输出 [SEQ:cmd@秒,cmd@秒]，cmd 仅限 up|down|left|right|stop|grab|release；若无需秒可省略 @秒。若无法执行输出 [CMD:none]。',
+              userText: mergedText,
+              maxTokens: 420,
+            }),
+          });
+
+          const data = await resp.json().catch(() => ({}));
+          if (!resp.ok) {
+            throw new Error(data.detail || data.error || 'llm请求失败');
+          }
+
+          const answer = String(data.text || '').trim();
+          const seqMatch = answer.match(/\[SEQ:([^\]]+)\]/i);
+          const cmdMatch = answer.match(/\[CMD:(up|down|left|right|stop|grab|release|none)\]/i);
+          const parsedBySeqTag = seqMatch ? parseSequenceTag(seqMatch[1]) : [];
+          const parsedLoose = parseLooseCommandSyntax(answer);
+          const parsedByLlm = parsedBySeqTag.length
+            ? parsedBySeqTag
+            : (cmdMatch ? [{ cmd: cmdMatch[1].toLowerCase() }] : (parsedLoose.length ? parsedLoose : parseCommandSequenceFromText(answer)));
+          const cleanAnswer = answer.replace(/\[(CMD|SEQ):[^\]]+\]/gi, '').trim() || '已收到。';
+
+          if (!(parsedByLlm.length && parsedByLlm[0].cmd !== 'none')) {
+            appendVisionMessage('assistant', cleanAnswer);
+          } else {
+            appendVisionMessage('assistant', '已生成动作，开始执行。');
+          }
+          if (parsedByLlm.length && parsedByLlm[0].cmd !== 'none') {
+            appendVisionMessage('assistant', `模型口令：${seqToText(parsedByLlm)}`);
+            await executeVisionCommandSequence(parsedByLlm, trigger === 'voice' ? 'voice' : 'text');
+          }
+
+          if (trigger === 'voice') {
+            setVisionAiHint('语音已识别并处理');
+          }
+        } catch (error) {
+          appendVisionMessage('assistant', `模型调用失败：${error && error.message ? error.message : 'unknown'}`);
+          setVisionAiHint('模型调用失败，请稍后重试');
+        } finally {
+          visionAskBtnEl.disabled = false;
+        }
+      };
+
+      const stopVisionVoiceTracks = () => {
+        if (!visionVoiceStream) return;
+        visionVoiceStream.getTracks().forEach((t) => t.stop());
+        visionVoiceStream = null;
+      };
+
+      const cleanupVisionAudioNodes = async () => {
+        try {
+          if (visionAudioSourceNode) visionAudioSourceNode.disconnect();
+        } catch {}
+        try {
+          if (visionAudioProcessorNode) visionAudioProcessorNode.disconnect();
+        } catch {}
+        try {
+          if (visionAudioMuteNode) visionAudioMuteNode.disconnect();
+        } catch {}
+
+        visionAudioSourceNode = null;
+        visionAudioProcessorNode = null;
+        visionAudioMuteNode = null;
+
+        if (visionAudioContext) {
+          try {
+            await visionAudioContext.close();
+          } catch {}
+        }
+        visionAudioContext = null;
+      };
+
+      const transcribeBlobForVision = async (blob) => {
+        if (!blob || blob.size <= 0) {
+          throw new Error('录音为空');
+        }
+
+        if (blob.size < 1200) {
+          throw new Error('录音太短，请多说1-2秒再停止');
+        }
+
+        const form = new FormData();
+        let ext = 'wav';
+        if (blob.type && blob.type.includes('mp4')) ext = 'm4a';
+        else if (blob.type && blob.type.includes('webm')) ext = 'webm';
+        else if (blob.type && blob.type.includes('ogg')) ext = 'ogg';
+        form.append('file', blob, `vision-voice.${ext}`);
+        form.append('model', 'glm-asr-2512');
+
+        const resp = await fetch(`${llmApiBase}/api/asr-zhipu`, {
+          method: 'POST',
+          body: form,
+        });
+        const data = await resp.json().catch(() => ({}));
+        if (!resp.ok || !data.ok) {
+          const detail = data && (data.detail || data.error) ? String(data.detail || data.error) : '语音转写失败';
+          const unsupportedFormat = /不支持当前文件格式|unsupported|1214/i.test(detail);
+          if (unsupportedFormat && blob.type !== 'audio/wav') {
+            const wavBlob = await convertBlobToWav(blob);
+            if (wavBlob && wavBlob.size > 0) {
+              appendVisionMessage('assistant', '检测到音频格式不兼容，已自动转WAV重试。');
+              return transcribeBlobForVision(wavBlob);
+            }
+          }
+          throw new Error(detail);
+        }
+        return String(data.text || '').trim();
+      };
+
+      const setVisionVoiceUi = (isOn, hint) => {
+        visionVoiceRecording = isOn;
+        if (visionVoiceBtnEl) {
+          visionVoiceBtnEl.classList.toggle('listening', isOn);
+          visionVoiceBtnEl.textContent = isOn ? '停止录音' : '语音输入';
+        }
+        if (hint) setVisionAiHint(hint);
+      };
+
+      const startVisionVoiceRecording = async () => {
+        if (!visionVoiceBtnEl) return;
+        const canUseRecorder = !!(
+          navigator.mediaDevices
+          && typeof navigator.mediaDevices.getUserMedia === 'function'
+          && (window.MediaRecorder || AudioContextCtor)
+        );
+        if (!canUseRecorder) {
+          setVisionAiHint('当前链接录音受限，已切换到浏览器语音识别模式');
+          startVisionSpeechRecognitionFallback();
+          return;
+        }
+
+        setVisionVoiceUi(true, '正在申请麦克风权限...');
+
+        try {
+          visionVoiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          visionVoiceChunks = [];
+
+          if (AudioContextCtor) {
+            visionAudioContext = new AudioContextCtor({ sampleRate: 16000 });
+            visionPcmSampleRate = visionAudioContext.sampleRate || 16000;
+            visionPcmChunks = [];
+
+            visionAudioSourceNode = visionAudioContext.createMediaStreamSource(visionVoiceStream);
+            visionAudioProcessorNode = visionAudioContext.createScriptProcessor(4096, 1, 1);
+            visionAudioMuteNode = visionAudioContext.createGain();
+            visionAudioMuteNode.gain.value = 0;
+
+            visionAudioProcessorNode.onaudioprocess = (event) => {
+              const input = event && event.inputBuffer ? event.inputBuffer.getChannelData(0) : null;
+              if (!input || !input.length) return;
+              visionPcmChunks.push(new Float32Array(input));
+            };
+
+            visionAudioSourceNode.connect(visionAudioProcessorNode);
+            visionAudioProcessorNode.connect(visionAudioMuteNode);
+            visionAudioMuteNode.connect(visionAudioContext.destination);
+
+            visionVoiceBackend = 'pcm';
+            setVisionVoiceUi(true, '录音中，再点一次停止并发送');
+            return;
+          }
+
+          const mimeType = pickRecorderMimeType();
+          visionVoiceMediaRecorder = mimeType
+            ? new MediaRecorder(visionVoiceStream, { mimeType })
+            : new MediaRecorder(visionVoiceStream);
+          visionVoiceBackend = 'media';
+
+          visionVoiceMediaRecorder.ondataavailable = (event) => {
+            if (event.data && event.data.size > 0) {
+              visionVoiceChunks.push(event.data);
+            }
+          };
+
+          visionVoiceMediaRecorder.onstop = async () => {
+            const outputType = visionVoiceMediaRecorder && visionVoiceMediaRecorder.mimeType
+              ? visionVoiceMediaRecorder.mimeType
+              : 'audio/webm';
+            const blob = new Blob(visionVoiceChunks, { type: outputType });
+            visionVoiceChunks = [];
+            stopVisionVoiceTracks();
+            visionVoiceBackend = 'none';
+            setVisionVoiceUi(false, '录音结束，正在转写...');
+
+            try {
+              const text = await transcribeBlobForVision(blob);
+              if (!text) {
+                setVisionAiHint('未识别到有效语音，请重试');
+                return;
+              }
+              if (visionAiInputEl) {
+                visionAiInputEl.value = text;
+              }
+              appendVisionMessage('assistant', `语音识别：${text}`);
+              await askZhipuVision(text, 'voice');
+            } catch (error) {
+              setVisionAiHint(`语音转写失败：${error && error.message ? error.message : 'unknown'}`);
+            }
+          };
+
+          visionVoiceMediaRecorder.onerror = (event) => {
+            const msg = event && event.error && event.error.message ? event.error.message : 'recorder_error';
+            stopVisionVoiceTracks();
+            visionVoiceBackend = 'none';
+            setVisionVoiceUi(false, `录音异常：${msg}`);
+          };
+
+          visionVoiceMediaRecorder.start(250);
+          setVisionVoiceUi(true, '录音中，再点一次停止并发送');
+        } catch (error) {
+          stopVisionVoiceTracks();
+          setVisionVoiceUi(false, `麦克风权限失败：${error && error.message ? error.message : 'unknown'}`);
+        }
+      };
+
+      const stopVisionVoiceRecording = () => {
+        if (visionVoiceBackend === 'pcm') {
+          const localChunks = visionPcmChunks;
+          const sampleRate = visionPcmSampleRate;
+          visionPcmChunks = [];
+          visionVoiceBackend = 'none';
+
+          setVisionVoiceUi(false, '录音结束，正在转写...');
+          cleanupVisionAudioNodes()
+            .catch(() => {})
+            .finally(async () => {
+              stopVisionVoiceTracks();
+              try {
+                const wavBlob = encodeWavFromPcm(localChunks, sampleRate);
+                const text = await transcribeBlobForVision(wavBlob);
+                if (!text) {
+                  setVisionAiHint('未识别到有效语音，请重试');
+                  return;
+                }
+                if (visionAiInputEl) {
+                  visionAiInputEl.value = text;
+                }
+                appendVisionMessage('assistant', `语音识别：${text}`);
+                await askZhipuVision(text, 'voice');
+              } catch (error) {
+                setVisionAiHint(`语音转写失败：${error && error.message ? error.message : 'unknown'}`);
+              }
+            });
+          return;
+        }
+
+        if (!visionVoiceMediaRecorder) {
+          setVisionVoiceUi(false, '录音未启动');
+          return;
+        }
+
+        try {
+          visionVoiceMediaRecorder.stop();
+        } catch {
+          stopVisionVoiceTracks();
+          visionVoiceBackend = 'none';
+          setVisionVoiceUi(false, '录音结束');
+        }
+      };
+
+      const analyzeVisionFrame = async (options = {}) => {
+        const silent = !!(options && options.silent);
+        const keepHint = !!(options && options.keepHint);
+        if (!visionAnalyzeBtnEl) return { ok: false, error: 'vision_button_missing' };
+        const oldText = visionAnalyzeBtnEl.textContent;
+        if (!silent) {
+          visionAnalyzeBtnEl.disabled = true;
+          visionAnalyzeBtnEl.textContent = '识别中...';
+        }
+        if (!silent && !keepHint) {
+          setVisionAnalysisResult('视觉大模型分析中，请稍候...');
+        }
+
+        try {
+          const target = sanitizeIp(carControl.ip);
+          const timeoutMs = Number(options && options.timeoutMs) > 0
+            ? Number(options.timeoutMs)
+            : (silent ? 18000 : 26000);
+          const maxAttempts = 3;
+          const streamCandidates = ['/api/camera/stream?fps=20', '/api/camera/stream', '/api/camera/stream?fps=15'];
+          let response = null;
+          let lastReqError = null;
+
+          for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            const streamPath = streamCandidates[Math.min(streamCandidates.length - 1, attempt - 1)];
+            try {
+              response = await fetch(`${llmApiBase}/api/vision/analyze`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                signal: controller.signal,
+                body: JSON.stringify({
+                  target,
+                  streamPath,
+                }),
+              });
+              clearTimeout(timer);
+
+              const dataCheck = await response.clone().json().catch(() => ({}));
+              if (response.ok && dataCheck && dataCheck.ok) {
+                lastReqError = null;
+                break;
+              }
+
+              const detail = dataCheck && (dataCheck.error || dataCheck.detail)
+                ? String(dataCheck.error || dataCheck.detail)
+                : `HTTP_${response.status}`;
+              const retriable = /vision_upstream_http_error|vision_upstream_connect_error|camera_frame_unavailable|HTTP_5|HTTP_429/i.test(detail);
+              if (!retriable || attempt >= maxAttempts) {
+                break;
+              }
+              if (!silent) {
+                appendVisionMessage('assistant', `视觉识别上游波动，自动重试(${attempt}/${maxAttempts})...`);
+              }
+              await sleepMs(260);
+            } catch (reqError) {
+              clearTimeout(timer);
+              lastReqError = reqError;
+              const msg = reqError && reqError.message ? String(reqError.message) : '';
+              const isAbort = (reqError && reqError.name === 'AbortError') || /aborted|timeout/i.test(msg);
+              if (!isAbort || attempt >= maxAttempts) {
+                throw reqError;
+              }
+              if (!silent) {
+                appendVisionMessage('assistant', '视觉识别请求超时，正在自动重试一次...');
+              }
+            }
+          }
+
+          if (!response) {
+            throw (lastReqError || new Error('vision_request_failed'));
+          }
+
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.ok) {
+            const detail = data && (data.error || data.detail) ? String(data.error || data.detail) : `HTTP_${response.status}`;
+            throw new Error(detail);
+          }
+
+          const summary = String(data.summary || '').trim();
+          const used = String(data.upstream || '').trim();
+          const finalText = summary
+            ? `识别结果:\n${summary}${used ? `\n\n来源: ${used}` : ''}`
+            : '识别完成，但未返回有效文本';
+
+          setVisionAnalysisResult(finalText);
+          if (!silent) {
+            appendVisionMessage('assistant', `视觉识别：${summary || '已完成识别'}`);
+          }
+          return { ok: true, summary, upstream: used };
+        } catch (error) {
+          const rawMsg = error && error.message ? String(error.message) : 'unknown';
+          const msg = /aborted|timeout/i.test(rawMsg)
+            ? '视觉识别超时，请检查小车网络或稍后重试'
+            : rawMsg;
+          setVisionAnalysisResult(`识别失败：${msg}`);
+          if (!silent) {
+            appendVisionMessage('assistant', `视觉识别失败：${msg}`);
+          }
+          return { ok: false, error: msg };
+        } finally {
+          if (!silent) {
+            visionAnalyzeBtnEl.disabled = false;
+            visionAnalyzeBtnEl.textContent = oldText || '识别画面';
+          }
+        }
+      };
+
+      const setStatus = (msg, isError = false) => {
+        if (!statusEl) return;
+        statusEl.textContent = msg;
+        statusEl.style.color = isError ? '#fca5a5' : '#a1a1aa';
+      };
+
+      const appendMessage = (role, text) => {
+        const node = document.createElement('div');
+        node.className = `msg ${role}`;
+        node.textContent = text;
+        aiLogEl.appendChild(node);
+        aiLogEl.scrollTop = aiLogEl.scrollHeight;
+      };
+
+      const getTrajectoryPathD = (shape, customPathD = '') => {
+        if (customPathD) return String(customPathD);
+        const kind = String(shape || '').toLowerCase();
+        if (kind === 'square') return 'M18 68 L18 18 L68 18 L68 68 Z';
+        if (kind === 'triangle') return 'M43 14 L74 72 L12 72 Z';
+        if (kind === 'circle') return 'M43 12 C61 12 74 25 74 43 C74 61 61 74 43 74 C25 74 12 61 12 43 C12 25 25 12 43 12 Z';
+        if (kind === 'figure8') return 'M14 43 C14 22 31 14 43 30 C55 14 72 22 72 43 C72 64 55 72 43 56 C31 72 14 64 14 43 Z';
+        return 'M18 68 L18 18 L68 18 L68 68 Z';
+      };
+
+      const shapeLabel = (shape) => {
+        const kind = String(shape || '').toLowerCase();
+        if (kind === 'square') return '正方形';
+        if (kind === 'triangle') return '三角形';
+        if (kind === 'circle') return '圆形';
+        if (kind === 'figure8') return '8字形';
+        if (kind === 'rectangle') return '矩形';
+        if (kind === 'diamond') return '菱形';
+        if (kind === 'star') return '星形';
+        if (kind === 'pentagon') return '五边形';
+        if (kind === 'hexagon') return '六边形';
+        if (kind === 'custom') return '自定义图形';
+        const poly = kind.match(/^polygon-(\d{1,2})$/);
+        if (poly) return `${poly[1]}边形`;
+        return '轨迹';
+      };
+
+      const appendTrajectoryPreviewCard = (logEl, title, shape, subtitle = '', customPathD = '') => {
+        if (!logEl) return;
+        const node = document.createElement('div');
+        node.className = 'msg assistant';
+
+        const card = document.createElement('div');
+        card.className = 'traj-card';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'traj-title';
+        titleEl.textContent = title || `轨迹预演：${shapeLabel(shape)}`;
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 86 86');
+        svg.setAttribute('class', 'traj-svg');
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', getTrajectoryPathD(shape, customPathD));
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', '#f3f4f6');
+        path.setAttribute('stroke-width', '3.2');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        path.setAttribute('stroke-dasharray', '260');
+        path.setAttribute('stroke-dashoffset', '260');
+
+        const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        anim.setAttribute('attributeName', 'stroke-dashoffset');
+        anim.setAttribute('from', '260');
+        anim.setAttribute('to', '0');
+        anim.setAttribute('dur', '1.2s');
+        anim.setAttribute('fill', 'freeze');
+        path.appendChild(anim);
+        svg.appendChild(path);
+
+        card.appendChild(titleEl);
+        card.appendChild(svg);
+
+        if (subtitle) {
+          const subEl = document.createElement('div');
+          subEl.className = 'traj-sub';
+          subEl.textContent = subtitle;
+          card.appendChild(subEl);
+        }
+
+        node.appendChild(card);
+        logEl.appendChild(node);
+        logEl.scrollTop = logEl.scrollHeight;
+      };
+
+      const setLlmBadge = (text, isError = false) => {
+        llmRuntimeBadgeEl.textContent = text;
+        llmRuntimeBadgeEl.style.color = isError ? '#fecaca' : '#f5f5f7';
+        llmRuntimeBadgeEl.style.borderColor = isError ? '#7f1d1d' : '#33333a';
+      };
+
+      const speedForCommand = (cmd) => {
+        if (cmd === 'stop') return STOP_SPEED;
+        if (cmd === 'grab' || cmd === 'release') return GRAB_SPEED;
+        if (cmd === 'left' || cmd === 'right') return TURN_SPEED;
+        return MOVE_SPEED;
+      };
+
+      const LOW_LATENCY_LOCAL_DISPATCH = true;
+      const LOCAL_BURST_COUNT = 3;
+      const LOCAL_BURST_GAP_MS = 45;
+      const controlActionMap = {
+        up: 'forward',
+        down: 'backward',
+        left: 'left',
+        right: 'right',
+        stop: 'stop',
+        grab: 'grab',
+        release: 'release',
+      };
+
+      const fireLocalRobotGet = (path, action, speed, seconds) => {
+        const params = new URLSearchParams();
+        params.set('action', action);
+        params.set('speed', String(speed));
+        if (Number.isFinite(seconds) && seconds > 0) {
+          params.set('time', String(seconds));
+        }
+        params.set('_t', String(Date.now()));
+
+        // GET image beacon can trigger quickly without waiting for CORS preflight.
+        const img = new Image();
+        img.referrerPolicy = 'no-referrer';
+        img.src = `http://${carControl.ip}${path}?${params.toString()}`;
+        setTimeout(() => {
+          img.src = '';
+        }, 1200);
+      };
+
+      const dispatchRobotLocalFast = (command, speed, seconds) => {
+        if (!LOW_LATENCY_LOCAL_DISPATCH) return;
+        const controlAction = controlActionMap[command] || command;
+        const isTurnTap = command === 'left' || command === 'right';
+        const isMoveTap = command === 'up' || command === 'down';
+        const fastSpeed = movementCommandSet.has(command)
+          ? (isTurnTap
+            ? Math.max(8, Math.min(28, Number(speed) || 0))
+            : (isMoveTap ? Math.max(16, Math.min(56, Number(speed) || 0)) : (Number(speed) || 0)))
+          : Number(speed) || 0;
+        const sec = Number.isFinite(seconds) ? seconds : 0;
+        const burstCount = (isTurnTap || isMoveTap) ? 1 : LOCAL_BURST_COUNT;
+
+        const runOnce = () => {
+          fireLocalRobotGet('/control', controlAction, fastSpeed, sec);
+          fireLocalRobotGet('/api/control', command, Number(speed) || 0, sec);
+        };
+
+        runOnce();
+        if (movementCommandSet.has(command) && burstCount > 1) {
+          for (let i = 1; i < burstCount; i++) {
+            setTimeout(runOnce, i * LOCAL_BURST_GAP_MS);
+          }
+        }
+      };
+
+      const warmupRobotLocalLinks = () => {
+        if (!LOW_LATENCY_LOCAL_DISPATCH) return;
+        // Warm up ARP/router path to reduce first-command startup lag.
+        fireLocalRobotGet('/control', 'stop', 0, 0);
+        fireLocalRobotGet('/api/control', 'stop', 0, 0);
+      };
+
+      const sendRobotCommand = async (command, speed, seconds, options = {}) => {
+        const fireAndForget = !!(options && options.fireAndForget);
+        try {
+          if (LOW_LATENCY_LOCAL_DISPATCH && (movementCommands.has(command) || command === 'stop')) {
+            dispatchRobotLocalFast(command, speed, seconds);
+          }
+
+          const params = new URLSearchParams();
+          params.set('target', carControl.ip);
+          params.set('action', command);
+          params.set('speed', String(speed));
+          if (seconds) {
+            params.set('time', String(seconds));
+          }
+
+          if (fireAndForget) {
+            fetch(`${llmApiBase}/api/robot/control?${params.toString()}`, {
+              method: 'GET',
+              cache: 'no-store',
+            })
+              .then(async (response) => {
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok || !data.ok) {
+                  const detail = data && (data.error || data.detail || data.fallbackError)
+                    ? (data.error || data.detail || data.fallbackError)
+                    : `HTTP_${response.status}`;
+                  console.error('Robot control proxy failed:', detail);
+                }
+              })
+              .catch((error) => {
+                console.error('Robot control error:', error);
+              });
+            return true;
+          }
+
+          const response = await fetch(`${llmApiBase}/api/robot/control?${params.toString()}`, {
+            method: 'GET',
+            cache: 'no-store',
+          });
+
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.ok) {
+            const detail = data && (data.error || data.detail || data.fallbackError)
+              ? (data.error || data.detail || data.fallbackError)
+              : `HTTP_${response.status}`;
+            console.error('Robot control proxy failed:', detail);
+            return false;
+          }
+          return true;
+        } catch (error) {
+          console.error('Robot control error:', error);
+          return false;
+        }
+      };
+
+      const movementCommandSet = new Set(['up', 'down', 'left', 'right']);
+      const isVerticalCommand = (cmd) => cmd === 'up' || cmd === 'down';
+      const isHorizontalCommand = (cmd) => cmd === 'left' || cmd === 'right';
+      const RELEASE_STOP_GUARD_MS = 70;
+      let releaseStopGuardTimer = null;
+
+      const clearPulseStopTimer = () => {
+        if (!pulseStopTimer) return;
+        clearTimeout(pulseStopTimer);
+        pulseStopTimer = null;
+      };
+
+      const clearHoldRepeatTimer = () => {
+        if (!holdRepeatTimer) return;
+        clearTimeout(holdRepeatTimer);
+        holdRepeatTimer = null;
+      };
+
+      const scheduleHoldRepeat = () => {
+        clearHoldRepeatTimer();
+        if (!activeMovementCmd) return;
+        holdRepeatTimer = setTimeout(() => {
+          holdRepeatTimer = null;
+          if (!activeMovementCmd) return;
+          const speed = speedForCommand(activeMovementCmd);
+          sendRobotCommand(activeMovementCmd, speed, 0, { fireAndForget: true }).catch((error) => {
+            console.error(error);
+          });
+          scheduleHoldRepeat();
+        }, HOLD_REPEAT_MS);
+      };
+
+      const clearReleaseStopGuard = () => {
+        if (!releaseStopGuardTimer) return;
+        clearTimeout(releaseStopGuardTimer);
+        releaseStopGuardTimer = null;
+      };
+
+      const forceImmediateStop = (reason = 'release') => {
+        clearPulseStopTimer();
+        clearReleaseStopGuard();
+        clearHoldRepeatTimer();
+        activeMovementCmd = null;
+
+        sendRobotCommand('stop', STOP_SPEED, 0, { fireAndForget: true });
+        releaseStopGuardTimer = setTimeout(() => {
+          releaseStopGuardTimer = null;
+          sendRobotCommand('stop', STOP_SPEED, 0, { fireAndForget: true });
+        }, RELEASE_STOP_GUARD_MS);
+
+        if (reason) {
+          setStatus(`已停止（${reason}）`);
+        }
+      };
+
+      const schedulePulseStop = (seconds) => {
+        clearPulseStopTimer();
+        const ms = Math.max(80, Math.round(Number(seconds || 0.35) * 1000));
+        pulseStopTimer = setTimeout(async () => {
+          pulseStopTimer = null;
+          await sendRobotCommand('stop', STOP_SPEED, 0);
+        }, ms);
+      };
+
+      const runPulseCommand = async (cmd, options = {}) => {
+        const overrideSeconds = Number(options && options.seconds);
+        const overrideSpeed = Number(options && options.speed);
+        const isTurnCmd = cmd === 'left' || cmd === 'right';
+        const speed = Number.isFinite(overrideSpeed) && overrideSpeed >= 0
+          ? Math.max(0, Math.min(100, Math.round(overrideSpeed)))
+          : (isTurnCmd ? TURN_TAP_SPEED : speedForCommand(cmd));
+        const rawSeconds = Number.isFinite(overrideSeconds) && overrideSeconds > 0
+          ? overrideSeconds
+          : (PULSE_SECONDS[cmd] ?? 0.35);
+        const seconds = isTurnCmd
+          ? Math.max(MICRO_TURN_SECONDS, Math.min(TURN_TAP_SECONDS, rawSeconds))
+          : rawSeconds;
+        setStatus(`发送：${getLabel(cmd)}`);
+
+        if (cmd === 'stop') {
+          clearPulseStopTimer();
+        }
+
+        if (movementCommandSet.has(cmd) || cmd === 'stop') {
+          // Zero-wait trigger: dispatch immediately without waiting for network response.
+          sendRobotCommand(cmd, speed, 0, { fireAndForget: true });
+        } else {
+          const actuatorSeconds = (cmd === 'grab' || cmd === 'release')
+            ? Math.max(0.85, seconds || 0)
+            : 0;
+          const ok = await sendRobotCommand(cmd, speed, actuatorSeconds);
+          if (!ok) {
+            setStatus(`失败：${getLabel(cmd)}，请检查网址/IP`, true);
+            return;
+          }
+        }
+
+        if (movementCommandSet.has(cmd)) {
+          schedulePulseStop(seconds);
+        }
+      };
+
+      const parseCommandFromText = (text) => {
+        const v = String(text || '').toLowerCase();
+        // Safety first: any stop-like token takes precedence.
+        if (/\bstop\b|停止|刹车|停下|停住|停/.test(v)) return 'stop';
+        if (/\bup\b|前进|向前|往前/.test(v)) return 'up';
+        if (/\bdown\b|后退|向后|往后/.test(v)) return 'down';
+        if (/\bleft\b|左转|向左|往左|左拐|左弯/.test(v)) return 'left';
+        if (/\bright\b|右转|向右|往右|右拐|右弯/.test(v)) return 'right';
+        if (/\bgrab\b|抓起|抓取/.test(v)) return 'grab';
+        if (/\brelease\b|放下|释放/.test(v)) return 'release';
+        return '';
+      };
+
+      const parseDurationTokenToSeconds = (rawToken) => {
+        const token = String(rawToken || '').trim();
+        if (!token) return null;
+
+        if (/^半$/.test(token)) return 0.5;
+
+        const numeric = Number(token);
+        if (Number.isFinite(numeric) && numeric > 0) return numeric;
+
+        const simpleMap = {
+          零: 0,
+          一: 1,
+          二: 2,
+          两: 2,
+          三: 3,
+          四: 4,
+          五: 5,
+          六: 6,
+          七: 7,
+          八: 8,
+          九: 9,
+          十: 10,
+        };
+
+        if (token in simpleMap) {
+          return simpleMap[token];
+        }
+
+        const mixed = token.match(/^(十)([一二两三四五六七八九])$/);
+        if (mixed) {
+          return 10 + simpleMap[mixed[2]];
+        }
+
+        const tens = token.match(/^([一二两三四五六七八九])十([一二两三四五六七八九])?$/);
+        if (tens) {
+          const high = simpleMap[tens[1]];
+          const low = tens[2] ? simpleMap[tens[2]] : 0;
+          return high * 10 + low;
+        }
+
+        return null;
+      };
+
+      const normalizeDurationSeconds = (value) => {
+        if (!Number.isFinite(value)) return null;
+        return Math.max(0.08, Math.min(8, value));
+      };
+
+      const parseDurationForCommandSegment = (segmentText) => {
+        const s = String(segmentText || '');
+        const m = s.match(/([0-9]+(?:\.[0-9]+)?|半|[一二两三四五六七八九十]{1,3})\s*秒/i);
+        if (!m) return null;
+        const sec = parseDurationTokenToSeconds(m[1]);
+        return normalizeDurationSeconds(sec);
+      };
+
+      const parseSmallCountToken = (rawToken) => {
+        const n = parseDurationTokenToSeconds(rawToken);
+        if (!Number.isFinite(n)) return null;
+        return Math.max(1, Math.min(6, Math.round(n)));
+      };
+
+      const extractRepeatCountBeforeKeyword = (rawText, keywordPattern) => {
+        const raw = String(rawText || '');
+        const re = new RegExp(`([0-9]+|[一二两三四五六])\\s*(?:个|次|遍|轮|圈)?\\s*(?:${keywordPattern})`, 'i');
+        const m = raw.match(re);
+        if (!m) return 1;
+        const c = parseSmallCountToken(m[1]);
+        return c || 1;
+      };
+
+      const buildPolygonSequence = (sides, loops, edgeSeconds, turnSeconds) => {
+        const out = [];
+        const edge = normalizeDurationSeconds(edgeSeconds) || 1.2;
+        const turn = normalizeDurationSeconds(turnSeconds) || 0.34;
+        for (let loop = 0; loop < loops; loop++) {
+          for (let i = 0; i < sides; i++) {
+            out.push({ cmd: 'up', seconds: edge });
+            if (i < sides - 1) {
+              out.push({ cmd: 'right', seconds: turn });
+            }
+          }
+        }
+        out.push({ cmd: 'stop', seconds: 0.2 });
+        return out;
+      };
+
+      const parseMacroIntentSequence = (text) => {
+        const raw = String(text || '').trim();
+        if (!raw) return [];
+
+        const edgeSeconds = parseDurationForCommandSegment(raw) || normalizeDurationSeconds(randomInRange(0.9, 1.8)) || 1.2;
+
+        if (/正方形|方形|square/i.test(raw)) {
+          const loops = extractRepeatCountBeforeKeyword(raw, '正方形|方形|square');
+          return buildPolygonSequence(4, loops, edgeSeconds, 0.34);
+        }
+
+        if (/8字|八字|∞|figure\s*8|figure-eight|eight/i.test(raw)) {
+          const loops = extractRepeatCountBeforeKeyword(raw, '8字|八字|figure\\s*8|figure-eight|eight');
+          const moveSec = edgeSeconds;
+          const turnSec = normalizeDurationSeconds((moveSec || 1.2) * 0.62) || 0.74;
+          const out = [];
+          for (let i = 0; i < loops; i++) {
+            out.push({ cmd: 'up', seconds: moveSec });
+            out.push({ cmd: 'left', seconds: turnSec });
+            out.push({ cmd: 'up', seconds: moveSec });
+            out.push({ cmd: 'right', seconds: turnSec });
+          }
+          out.push({ cmd: 'stop', seconds: 0.2 });
+          return out;
+        }
+
+        if (/三角形|triangle/i.test(raw)) {
+          const loops = extractRepeatCountBeforeKeyword(raw, '三角形|triangle');
+          return buildPolygonSequence(3, loops, edgeSeconds, 0.48);
+        }
+
+        if (/圆圈|转圈|画圈|circle/i.test(raw)) {
+          const loops = extractRepeatCountBeforeKeyword(raw, '圆圈|转圈|画圈|circle');
+          const turnSeconds = normalizeDurationSeconds((parseDurationForCommandSegment(raw) || 1.6) * loops);
+          return [{ cmd: 'right', seconds: turnSeconds || 1.6 }, { cmd: 'stop', seconds: 0.2 }];
+        }
+
+        if (/来回|往返|折返/i.test(raw)) {
+          const loops = extractRepeatCountBeforeKeyword(raw, '来回|往返|折返');
+          const sec = normalizeDurationSeconds(parseDurationForCommandSegment(raw) || 1.0) || 1.0;
+          const out = [];
+          for (let i = 0; i < loops; i++) {
+            out.push({ cmd: 'up', seconds: sec });
+            out.push({ cmd: 'down', seconds: sec });
+          }
+          out.push({ cmd: 'stop', seconds: 0.2 });
+          return out;
+        }
+
+        return [];
+      };
+
+      const parseSequenceTag = (rawTag) => {
+        const raw = String(rawTag || '').trim();
+        if (!raw) return [];
+        const parts = raw.split(/[;,|\-\->\s]+/).map((s) => s.trim()).filter(Boolean);
+        const out = [];
+        for (const p of parts) {
+          const m = p.match(/^(up|down|left|right|stop|grab|release)(?:@([0-9]+(?:\.[0-9]+)?))?$/i);
+          if (!m) continue;
+          const cmd = String(m[1]).toLowerCase();
+          const sec = normalizeDurationSeconds(Number(m[2]));
+          out.push(sec ? { cmd, seconds: sec } : { cmd });
+        }
+        return out;
+      };
+
+      const parseLooseCommandSyntax = (rawText) => {
+        const text = String(rawText || '');
+        if (!text.trim()) return [];
+
+        const out = [];
+        const re = /(up|down|left|right|stop|grab|release)\s*(?:@|：|:|\(|（|\s)?\s*([0-9]+(?:\.[0-9]+)?)?\s*(?:秒|s|sec|\)|）)?/ig;
+        let m = null;
+        while ((m = re.exec(text)) !== null) {
+          const cmd = String(m[1] || '').toLowerCase();
+          if (!cmd) continue;
+          const sec = normalizeDurationSeconds(Number(m[2]));
+          out.push(sec ? { cmd, seconds: sec } : { cmd });
+        }
+
+        const dedup = [];
+        for (const step of out) {
+          if (!step || !step.cmd) continue;
+          const prev = dedup[dedup.length - 1];
+          if (prev && prev.cmd === step.cmd && !step.seconds) continue;
+          dedup.push(step);
+        }
+        return dedup;
+      };
+
+      const METER_TO_SECONDS = 1.2;
+      const randomInRange = (min, max) => min + Math.random() * (max - min);
+      const VERBOSE_SEMANTIC_EXPLAIN = false;
+      const TURN_SECONDS_PER_90_DEG = 0.34;
+
+      const detectTrajectoryShapeFromText = (text) => {
+        const raw = String(text || '').toLowerCase();
+        const polygonMatch = raw.match(/([0-9]{1,2})\s*边形|([三四五六七八九十])\s*边形/);
+        if (polygonMatch) {
+          const cnNumMap = { 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9, 十: 10 };
+          const sideNum = polygonMatch[1] ? Number(polygonMatch[1]) : (cnNumMap[polygonMatch[2]] || 0);
+          if (sideNum >= 3 && sideNum <= 12) return `polygon-${sideNum}`;
+        }
+        if (/8字|八字|figure\s*8|figure-eight|\beight\b|∞/.test(raw)) return 'figure8';
+        if (/正方形|方形|\bsquare\b/.test(raw)) return 'square';
+        if (/矩形|长方形|rectangle/.test(raw)) return 'rectangle';
+        if (/菱形|diamond/.test(raw)) return 'diamond';
+        if (/星形|五角星|star/.test(raw)) return 'star';
+        if (/五边形|pentagon/.test(raw)) return 'pentagon';
+        if (/六边形|hexagon/.test(raw)) return 'hexagon';
+        if (/三角形|\btriangle\b/.test(raw)) return 'triangle';
+        if (/圆圈|转圈|画圈|\bcircle\b/.test(raw)) return 'circle';
+        return '';
+      };
+
+      const normalizeDegreeDelta = (deg) => {
+        let v = Number(deg) || 0;
+        while (v > 180) v -= 360;
+        while (v < -180) v += 360;
+        return v;
+      };
+
+      const makeRegularPolygonPoints = (sides, radius = 34, cx = 50, cy = 50, rotateDeg = -90) => {
+        const out = [];
+        const n = Math.max(3, Math.min(24, Math.round(Number(sides) || 3)));
+        for (let i = 0; i < n; i++) {
+          const a = ((rotateDeg + (360 * i) / n) * Math.PI) / 180;
+          out.push({ x: cx + radius * Math.cos(a), y: cy + radius * Math.sin(a) });
+        }
+        return out;
+      };
+
+      const buildShapePoints = (shapeKey) => {
+        const shape = String(shapeKey || '').toLowerCase();
+        if (shape === 'square') return makeRegularPolygonPoints(4, 32, 50, 50, 45);
+        if (shape === 'triangle') return makeRegularPolygonPoints(3, 34, 50, 52, -90);
+        if (shape === 'pentagon') return makeRegularPolygonPoints(5, 33, 50, 50, -90);
+        if (shape === 'hexagon') return makeRegularPolygonPoints(6, 33, 50, 50, -90);
+        if (shape === 'rectangle') return [{ x: 20, y: 28 }, { x: 80, y: 28 }, { x: 80, y: 72 }, { x: 20, y: 72 }];
+        if (shape === 'diamond') return [{ x: 50, y: 16 }, { x: 78, y: 50 }, { x: 50, y: 84 }, { x: 22, y: 50 }];
+        if (shape === 'star') {
+          const out = [];
+          const outer = 34;
+          const inner = 15;
+          for (let i = 0; i < 10; i++) {
+            const r = i % 2 === 0 ? outer : inner;
+            const a = ((-90 + i * 36) * Math.PI) / 180;
+            out.push({ x: 50 + r * Math.cos(a), y: 50 + r * Math.sin(a) });
+          }
+          return out;
+        }
+        if (shape === 'figure8') {
+          const out = [];
+          for (let i = 0; i <= 28; i++) {
+            const t = (Math.PI * 2 * i) / 28;
+            const x = 50 + 28 * Math.sin(t);
+            const y = 50 + 18 * Math.sin(t) * Math.cos(t);
+            out.push({ x, y });
+          }
+          return out;
+        }
+        if (shape === 'circle') {
+          const out = [];
+          for (let i = 0; i <= 24; i++) {
+            const t = (Math.PI * 2 * i) / 24;
+            out.push({ x: 50 + 30 * Math.cos(t), y: 50 + 30 * Math.sin(t) });
+          }
+          return out;
+        }
+        const polygonMatch = shape.match(/^polygon-(\d{1,2})$/);
+        if (polygonMatch) {
+          return makeRegularPolygonPoints(Number(polygonMatch[1]), 33, 50, 50, -90);
+        }
+        return null;
+      };
+
+      const normalizeTrajectoryPoints = (points) => {
+        const raw = Array.isArray(points) ? points : [];
+        const pairs = raw
+          .map((p) => {
+            if (Array.isArray(p) && p.length >= 2) {
+              const x = Number(p[0]);
+              const y = Number(p[1]);
+              return Number.isFinite(x) && Number.isFinite(y) ? { x, y } : null;
+            }
+            if (p && typeof p === 'object') {
+              const x = Number(p.x);
+              const y = Number(p.y);
+              return Number.isFinite(x) && Number.isFinite(y) ? { x, y } : null;
+            }
+            return null;
+          })
+          .filter(Boolean);
+        if (pairs.length < 2) return null;
+
+        const xs = pairs.map((p) => p.x);
+        const ys = pairs.map((p) => p.y);
+        const minX = Math.min(...xs);
+        const maxX = Math.max(...xs);
+        const minY = Math.min(...ys);
+        const maxY = Math.max(...ys);
+        const spanX = Math.max(1e-6, maxX - minX);
+        const spanY = Math.max(1e-6, maxY - minY);
+
+        return pairs.map((p) => ({
+          x: 14 + ((p.x - minX) / spanX) * 72,
+          y: 14 + ((p.y - minY) / spanY) * 72,
+        }));
+      };
+
+      const buildSvgPathFromPoints = (points, closeLoop = true) => {
+        const pts = Array.isArray(points) ? points : [];
+        if (pts.length < 2) return '';
+        const head = `M${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
+        const body = pts.slice(1).map((p) => `L${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ');
+        return `${head} ${body}${closeLoop ? ' Z' : ''}`;
+      };
+
+      const buildTrajectoryCommandsFromPoints = (points, options = {}) => {
+        const pts = Array.isArray(points) ? points : [];
+        if (pts.length < 2) return [];
+
+        const loops = Math.max(1, Math.min(4, Math.round(Number(options.loops) || 1)));
+        const edgeSeconds = normalizeDurationSeconds(Number(options.edgeSeconds)) || normalizeDurationSeconds(randomInRange(0.9, 1.8)) || 1.2;
+        const closeLoop = options.closeLoop !== false;
+
+        const segments = [];
+        for (let i = 0; i < pts.length - 1; i++) {
+          segments.push([pts[i], pts[i + 1]]);
+        }
+        if (closeLoop) {
+          segments.push([pts[pts.length - 1], pts[0]]);
+        }
+
+        let headingDeg = 0;
+        const out = [];
+        for (let loop = 0; loop < loops; loop++) {
+          for (const seg of segments) {
+            const dx = seg[1].x - seg[0].x;
+            const dy = seg[1].y - seg[0].y;
+            const length = Math.hypot(dx, dy);
+            if (length < 1e-3) continue;
+
+            const desiredDeg = (Math.atan2(dy, dx) * 180) / Math.PI;
+            const delta = normalizeDegreeDelta(desiredDeg - headingDeg);
+            headingDeg = desiredDeg;
+
+            if (Math.abs(delta) > 8) {
+              const turnSec = normalizeDurationSeconds((Math.abs(delta) / 90) * TURN_SECONDS_PER_90_DEG) || 0.1;
+              out.push({ cmd: delta > 0 ? 'right' : 'left', seconds: turnSec });
+            }
+
+            const moveSec = normalizeDurationSeconds(edgeSeconds * (length / 44)) || 0.2;
+            out.push({ cmd: 'up', seconds: moveSec });
+          }
+        }
+
+        out.push({ cmd: 'stop', seconds: 0.2 });
+        return out.slice(0, 64);
+      };
+
+      const buildGeneralTrajectoryPlan = ({ shapeKey = '', points = null, loops = 1, edgeSeconds = null, closeLoop = true } = {}) => {
+        const shape = shapeKey || 'custom';
+        const normalized = normalizeTrajectoryPoints(points) || buildShapePoints(shape);
+        if (!normalized || normalized.length < 2) return null;
+
+        const cmds = buildTrajectoryCommandsFromPoints(normalized, { loops, edgeSeconds, closeLoop });
+        if (!cmds.length) return null;
+        const sec = normalizeDurationSeconds(Number(edgeSeconds)) || null;
+        const previewPathD = buildSvgPathFromPoints(normalized, closeLoop);
+        const loopsNum = Math.max(1, Math.min(4, Math.round(Number(loops) || 1)));
+        return {
+          commands: cmds,
+          previewShape: shape,
+          previewPathD,
+          previewDelayMs: 520,
+          previewSubtitle: `${shapeLabel(shape)}轨迹预演`,
+          preview: `已生成${shapeLabel(shape)}路径：${loopsNum}轮${sec ? `，基准边长${sec}秒` : '，参数自动生成'}，开始执行。`,
+        };
+      };
+
+      const extractFirstJsonObject = (rawText) => {
+        const text = String(rawText || '').trim();
+        if (!text) return null;
+        const start = text.indexOf('{');
+        const end = text.lastIndexOf('}');
+        if (start < 0 || end <= start) return null;
+        const slice = text.slice(start, end + 1);
+        try {
+          return JSON.parse(slice);
+        } catch {
+          return null;
+        }
+      };
+
+      const mapAnyCmdToRobotCmd = (rawCmd) => {
+        const t = String(rawCmd || '').trim().toLowerCase();
+        if (!t) return '';
+        if (['up', 'forward', 'go_forward', 'front', 'ahead', '前进', '向前', '往前'].includes(t)) return 'up';
+        if (['down', 'backward', 'go_backward', 'back', '后退', '向后', '往后'].includes(t)) return 'down';
+        if (['left', 'turn_left', '左转', '向左', '往左'].includes(t)) return 'left';
+        if (['right', 'turn_right', '右转', '向右', '往右'].includes(t)) return 'right';
+        if (['grab', '抓取', '抓起', '夹取'].includes(t)) return 'grab';
+        if (['release', '放下', '释放'].includes(t)) return 'release';
+        if (['stop', '停止', '停下', '停住'].includes(t)) return 'stop';
+        return '';
+      };
+
+      const normalizeLlmActionList = (actions) => {
+        const list = Array.isArray(actions) ? actions : [];
+        const out = [];
+        for (const item of list) {
+          if (!item) continue;
+          const cmd = mapAnyCmdToRobotCmd(item.cmd || item.action || item.core || item.verb);
+          if (!cmd) continue;
+
+          const secondsRaw = Number(item.durationSec ?? item.seconds ?? item.timeSec);
+          const distanceM = Number(item.distanceM ?? item.meters ?? item.distance);
+          const distanceCm = Number(item.distanceCm);
+          let seconds = normalizeDurationSeconds(secondsRaw);
+          if (!seconds) {
+            const meters = Number.isFinite(distanceM) && distanceM > 0
+              ? distanceM
+              : (Number.isFinite(distanceCm) && distanceCm > 0 ? distanceCm / 100 : null);
+            if (meters) {
+              seconds = normalizeDurationSeconds(meters * METER_TO_SECONDS);
+            }
+          }
+
+          const countRaw = Number(item.count ?? item.repeat ?? 1);
+          const repeat = Math.max(1, Math.min(8, Number.isFinite(countRaw) ? Math.round(countRaw) : 1));
+          for (let i = 0; i < repeat; i++) {
+            out.push(seconds ? { cmd, seconds } : { cmd });
+          }
+        }
+        return out;
+      };
+
+      const collectActionsFromLlmJson = (json) => {
+        const payload = json && typeof json === 'object' ? json : {};
+        const rootActions = normalizeLlmActionList(payload.actions);
+        const clauseActions = Array.isArray(payload.clauses)
+          ? payload.clauses.flatMap((clause) => normalizeLlmActionList(clause && clause.actions))
+          : [];
+        return clauseActions.length ? clauseActions : rootActions;
+      };
+
+      const estimateExpectedActionCount = (text) => {
+        const raw = String(text || '').trim();
+        if (!raw) return 0;
+
+        const actionCueRe = /(前进|向前|往前|后退|向后|往后|左转|向左|往左|右转|向右|往右|停止|停下|停住|刹车|抓取|抓起|释放|放下|up|down|left|right|stop|grab|release)/gi;
+        const cues = raw.match(actionCueRe);
+        const cueCount = cues ? cues.length : 0;
+
+        const clauses = raw
+          .split(/[，,。；;！!？?]|然后|再|接着|并且|并/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const clauseCount = clauses.length;
+
+        return Math.max(1, Math.min(12, Math.max(cueCount, clauseCount)));
+      };
+
+      const parseDistanceMetersForCommandSegment = (segmentText) => {
+        const s = String(segmentText || '');
+        const m = s.match(/([0-9]+(?:\.[0-9]+)?|半|[一二两三四五六七八九十]{1,3})\s*米/i);
+        if (!m) return null;
+        const meters = parseDurationTokenToSeconds(m[1]);
+        if (!Number.isFinite(meters) || meters <= 0) return null;
+        return normalizeDurationSeconds(meters * METER_TO_SECONDS);
+      };
+
+      const buildShapePlanFromLlm = (json, fallbackText = '') => {
+        const payload = json && typeof json === 'object' ? json : {};
+        const path = payload.path && typeof payload.path === 'object' ? payload.path : {};
+        const shapeKey = detectTrajectoryShapeFromText(path.shape ?? payload.shape ?? payload.planType ?? payload.intent ?? fallbackText);
+        const loops = Number(path.loops ?? payload.loops ?? 1);
+        const edgeRaw = Number(path.edgeSeconds ?? payload.edgeSeconds ?? payload.durationSec);
+        const edgeSeconds = normalizeDurationSeconds(edgeRaw);
+        const points = normalizeTrajectoryPoints(path.points ?? payload.points);
+        const closeLoop = path.closeLoop !== false;
+
+        return buildGeneralTrajectoryPlan({
+          shapeKey: shapeKey || 'custom',
+          points,
+          loops,
+          edgeSeconds,
+          closeLoop,
+        });
+      };
+
+      const applyDistanceHeuristic = (seq, text) => {
+        const list = Array.isArray(seq) ? [...seq] : [];
+        const raw = String(text || '');
+        if (!list.length) return list;
+        const m = raw.match(/([0-9]+(?:\.[0-9]+)?)\s*米/);
+        if (!m) return list;
+        const meters = Number(m[1]);
+        if (!Number.isFinite(meters) || meters <= 0) return list;
+        const sec = normalizeDurationSeconds(meters * METER_TO_SECONDS);
+        if (!sec) return list;
+
+        return list.map((step) => {
+          if (!step || !step.cmd) return step;
+          if (step.cmd === 'up' || step.cmd === 'down') {
+            return step.seconds ? step : { ...step, seconds: sec };
+          }
+          return step;
+        });
+      };
+
+      const parseCommandSequenceByLlm = async (text, mode = 'control') => {
+        const userText = String(text || '').trim();
+        if (!userText) return { commands: [], source: 'empty' };
+
+        const systemPrompt = mode === 'vision'
+          ? '你是小车命令语义拆解器。必须逐句剖析整段话，不允许漏句。输出严格JSON：{"intent":"...","clauses":[{"text":"原句分句","actions":[{"cmd":"up|down|left|right|stop|grab|release","distanceM":number|null,"durationSec":number|null,"count":number}]}],"path":{"shape":"任意图形名或null","points":[{"x":0-100,"y":0-100}],"closeLoop":true,"loops":number|null,"edgeSeconds":number|null},"actions":[{"cmd":"up|down|left|right|stop|grab|release","distanceM":number|null,"durationSec":number|null,"count":number}],"reason":"..."}。图形相关命令优先填path；可用shape，也可直接给points。未给长度时edgeSeconds写null。仅输出JSON。'
+          : '你是小车控制命令语义拆解器。必须逐句剖析整段话，不允许漏句，不要关键词匹配。输出严格JSON：{"intent":"...","clauses":[{"text":"原句分句","actions":[{"cmd":"up|down|left|right|stop|grab|release","distanceM":number|null,"durationSec":number|null,"count":number}]}],"path":{"shape":"任意图形名或null","points":[{"x":0-100,"y":0-100}],"closeLoop":true,"loops":number|null,"edgeSeconds":number|null},"actions":[{"cmd":"up|down|left|right|stop|grab|release","distanceM":number|null,"durationSec":number|null,"count":number}],"reason":"..."}。图形命令优先给path；非图形命令给clauses/actions。例如“前进3米，再左拐继续前进2米”必须拆成至少三步。仅输出JSON。';
+
+        try {
+          const resp = await fetch(`${llmApiBase}/api/llm-proxy`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system: systemPrompt,
+              userText,
+              maxTokens: 260,
+            }),
+          });
+          const data = await resp.json().catch(() => ({}));
+          if (!resp.ok) {
+            throw new Error(data.detail || data.error || 'semantic_parse_failed');
+          }
+
+          const answer = String(data.text || '').trim();
+          const json = extractFirstJsonObject(answer);
+          if (!json) return { commands: [], source: 'llm-empty' };
+
+          const shapePlan = buildShapePlanFromLlm(json, userText);
+          if (shapePlan && shapePlan.commands.length) {
+            const reason = String(json.reason || '').trim();
+            return {
+              commands: shapePlan.commands,
+              source: 'llm',
+              reason,
+              preview: shapePlan.preview,
+              previewDelayMs: shapePlan.previewDelayMs,
+              previewShape: shapePlan.previewShape,
+              previewSubtitle: shapePlan.previewSubtitle,
+              previewPathD: shapePlan.previewPathD,
+            };
+          }
+
+          let commands = collectActionsFromLlmJson(json);
+          const expectedCount = estimateExpectedActionCount(userText);
+          if (commands.length && commands.length < expectedCount) {
+            const regexSeq = applyDistanceHeuristic(parseCommandSequenceFromText(userText), userText);
+            if (regexSeq.length > commands.length) {
+              commands = regexSeq;
+            }
+          }
+          const reason = String(json.reason || '').trim();
+          return { commands, source: 'llm', reason };
+        } catch {
+          return { commands: [], source: 'llm-error' };
+        }
+      };
+
+      const parseCommandSequenceSmart = async (text, mode = 'control') => {
+        const llmResult = await parseCommandSequenceByLlm(text, mode);
+        if (llmResult.commands && llmResult.commands.length) {
+          return llmResult;
+        }
+
+        const fallbackShape = detectTrajectoryShapeFromText(text);
+        if (fallbackShape) {
+          const shapePlan = buildGeneralTrajectoryPlan({
+            shapeKey: fallbackShape,
+            points: null,
+            loops: extractRepeatCountBeforeKeyword(text, '次|遍|轮|圈|个'),
+            edgeSeconds: parseDurationForCommandSegment(text),
+            closeLoop: true,
+          });
+          if (shapePlan && shapePlan.commands.length) {
+            return {
+              commands: shapePlan.commands,
+              source: 'shape-fallback',
+              preview: shapePlan.preview,
+              previewDelayMs: shapePlan.previewDelayMs,
+              previewShape: shapePlan.previewShape,
+              previewSubtitle: shapePlan.previewSubtitle,
+              previewPathD: shapePlan.previewPathD,
+            };
+          }
+        }
+
+        const regexSeq = parseCommandSequenceFromText(text);
+        if (!regexSeq.length) return { commands: [], source: 'none' };
+        const shape = detectTrajectoryShapeFromText(text);
+        return {
+          commands: applyDistanceHeuristic(regexSeq, text),
+          source: 'regex',
+          ...(shape ? {
+            previewShape: shape,
+            preview: `已生成${shapeLabel(shape)}路径，开始执行。`,
+            previewDelayMs: 420,
+            previewSubtitle: `${shapeLabel(shape)}轨迹预演`,
+            previewPathD: '',
+          } : {}),
+        };
+      };
+
+      const parseCommandSequenceFromText = (text) => {
+        const raw = String(text || '');
+        if (!raw.trim()) return [];
+
+        const macroSeq = parseMacroIntentSequence(raw);
+        if (macroSeq.length) return macroSeq;
+
+        const tokenRe = /(前进|向前|往前|\bup\b|后退|向后|往后|\bdown\b|左转|向左|往左|左拐|左弯|\bleft\b|右转|向右|往右|右拐|右弯|\bright\b|抓起|抓取|\bgrab\b|放下|释放|\brelease\b|停止|刹车|停下|停住|\bstop\b|\b停\b)/gi;
+        const out = [];
+        const matches = [];
+        let match = null;
+        while ((match = tokenRe.exec(raw)) !== null) {
+          matches.push({
+            token: String(match[0] || ''),
+            index: Number(match.index || 0),
+            end: Number(match.index || 0) + String(match[0] || '').length,
+          });
+        }
+
+        for (let i = 0; i < matches.length; i++) {
+          const t = matches[i].token.toLowerCase();
+          let cmd = '';
+          if (/^(前进|向前|往前|up)$/.test(t)) cmd = 'up';
+          else if (/^(后退|向后|往后|down)$/.test(t)) cmd = 'down';
+          else if (/^(左转|向左|往左|左拐|左弯|left)$/.test(t)) cmd = 'left';
+          else if (/^(右转|向右|往右|右拐|右弯|right)$/.test(t)) cmd = 'right';
+          else if (/^(抓起|抓取|grab)$/.test(t)) cmd = 'grab';
+          else if (/^(放下|释放|release)$/.test(t)) cmd = 'release';
+          else if (/^(停止|刹车|停下|停住|stop|停)$/.test(t)) cmd = 'stop';
+          if (!cmd) continue;
+
+          const start = matches[i].index;
+          const end = i + 1 < matches.length ? matches[i + 1].index : raw.length;
+          const segment = raw.slice(start, end);
+          const seconds = parseDurationForCommandSegment(segment) || parseDistanceMetersForCommandSegment(segment);
+          const item = seconds ? { cmd, seconds } : { cmd };
+
+          // Compress consecutive duplicates to avoid jitter.
+          if (out.length && out[out.length - 1].cmd === cmd && !seconds) continue;
+          out.push(item);
+        }
+
+        if (out.length) return out;
+        const single = parseCommandFromText(raw);
+        return single ? [{ cmd: single }] : [];
+      };
+
+      const sleepMs = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      const sequenceStepMs = {
+        up: 900,
+        down: 900,
+        left: 420,
+        right: 420,
+        grab: 550,
+        release: 550,
+        stop: 260,
+      };
+
+      const executeCommandSequence = async (commands, source = 'manual') => {
+        const list = Array.isArray(commands)
+          ? commands
+              .map((item) => {
+                if (!item) return null;
+                if (typeof item === 'string') return { cmd: item };
+                if (item && item.cmd) return item;
+                return null;
+              })
+              .filter(Boolean)
+          : [];
+        if (!list.length) return false;
+
+        for (let i = 0; i < list.length; i++) {
+          const cmd = list[i].cmd;
+          const stepSeconds = normalizeDurationSeconds(Number(list[i].seconds));
+          const prefix = source === 'voice' ? '语音' : '文本';
+          aiHintEl.textContent = `${prefix}序列 ${i + 1}/${list.length}：${getLabel(cmd)}${stepSeconds ? ` ${stepSeconds}秒` : ''}`;
+
+          if (source === 'voice') {
+            await runVoiceDirectCommand(cmd, stepSeconds || undefined);
+          } else {
+            await runPulseCommand(cmd, stepSeconds ? { seconds: stepSeconds } : undefined);
+            appendMessage('assistant', `已执行：${getLabel(cmd)}${stepSeconds ? ` ${stepSeconds}秒` : ''} (${i + 1}/${list.length})`);
+          }
+
+          if (i < list.length - 1) {
+            await sleepMs((stepSeconds ? Math.max(120, Math.round(stepSeconds * 1000)) : (sequenceStepMs[cmd] || 500)));
+          }
+        }
+
+        aiHintEl.textContent = '多口令已顺序执行完成';
+        return true;
+      };
+
+      const runVoiceDirectCommand = async (cmd, overrideSeconds) => {
+        if (!cmd) return false;
+        const voiceSecondsMap = {
+          up: 0.85,
+          down: 0.85,
+          left: 0.12,
+          right: 0.12,
+          grab: 0.9,
+          release: 0.9,
+          stop: 0.2,
+        };
+        const speed = speedForCommand(cmd);
+        const seconds = normalizeDurationSeconds(Number(overrideSeconds)) || (voiceSecondsMap[cmd] ?? 0.5);
+        setStatus(`语音执行：${getLabel(cmd)}`);
+        if (cmd === 'stop') {
+          clearPulseStopTimer();
+        }
+
+        if (movementCommandSet.has(cmd) || cmd === 'stop') {
+          sendRobotCommand(cmd, speed, 0, { fireAndForget: true });
+        } else {
+          const actuatorSeconds = (cmd === 'grab' || cmd === 'release')
+            ? Math.max(0.85, seconds || 0)
+            : 0;
+          const ok = await sendRobotCommand(cmd, speed, actuatorSeconds);
+          if (!ok) {
+            setStatus(`语音执行失败：${getLabel(cmd)}，请检查网址/IP`, true);
+            appendMessage('assistant', `语音已识别，但执行失败：${getLabel(cmd)}`);
+            return false;
+          }
+        }
+        if (movementCommandSet.has(cmd)) {
+          schedulePulseStop(seconds);
+        }
+        appendMessage('assistant', `已按语音执行：${getLabel(cmd)}`);
+        return true;
+      };
+
+      const handleVoiceCommandText = async (text) => {
+        const parsed = await parseCommandSequenceSmart(text, 'voice');
+        const commandSeq = parsed.commands || [];
+        if (!commandSeq.length) {
+          aiHintEl.textContent = '已转文字，未匹配到控制口令，请说“前进/后退/左转/右转/停止”';
+          return false;
+        }
+        if (VERBOSE_SEMANTIC_EXPLAIN && parsed.source === 'llm' && parsed.reason) {
+          appendMessage('assistant', `语义拆解：${parsed.reason}`);
+        }
+        if (parsed.preview) {
+          appendTrajectoryPreviewCard(aiLogEl, parsed.preview, parsed.previewShape || 'square', parsed.previewSubtitle || '轨迹预演', parsed.previewPathD || '');
+          await sleepMs(Math.max(260, Number(parsed.previewDelayMs) || 520));
+        }
+        if (commandSeq.length === 1) {
+          const one = commandSeq[0];
+          const cmd = one.cmd;
+          const sec = normalizeDurationSeconds(Number(one.seconds));
+          aiHintEl.textContent = `识别到口令：${getLabel(cmd)}${sec ? ` ${sec}秒` : ''}，正在执行`;
+          await runVoiceDirectCommand(cmd, sec || undefined);
+          return true;
+        }
+
+        appendMessage('assistant', `识别到多口令：${commandSeq.map((c) => `${getLabel(c.cmd)}${c.seconds ? `${normalizeDurationSeconds(Number(c.seconds))}秒` : ''}`).join(' -> ')}`);
+        return executeCommandSequence(commandSeq, 'voice');
+      };
+
+      const executeLlmCommand = async (cmd) => {
+        if (!cmd) return;
+        await runPulseCommand(cmd);
+        appendMessage('assistant', `已执行：${getLabel(cmd)}`);
+      };
+
+      const askZhipu = async (text, trigger) => {
+        const userText = String(text || '').trim();
+        if (!userText) return;
+
+        appendMessage('user', userText);
+        aiInputEl.value = '';
+        askBtnEl.disabled = true;
+
+        const parsedDirect = await parseCommandSequenceSmart(userText, 'control');
+        const directSeq = parsedDirect.commands || [];
+        if (directSeq.length >= 1) {
+          if (VERBOSE_SEMANTIC_EXPLAIN && parsedDirect.source === 'llm' && parsedDirect.reason) {
+            appendMessage('assistant', `语义拆解：${parsedDirect.reason}`);
+          }
+          if (parsedDirect.preview) {
+            appendTrajectoryPreviewCard(aiLogEl, parsedDirect.preview, parsedDirect.previewShape || 'square', parsedDirect.previewSubtitle || '轨迹预演', parsedDirect.previewPathD || '');
+            await sleepMs(Math.max(260, Number(parsedDirect.previewDelayMs) || 520));
+          }
+          appendMessage('assistant', `收到口令序列：${directSeq.map((c) => `${getLabel(c.cmd)}${c.seconds ? `${normalizeDurationSeconds(Number(c.seconds))}秒` : ''}`).join(' -> ')}`);
+          await executeCommandSequence(directSeq, 'manual');
+          askBtnEl.disabled = false;
+          return;
+        }
+
+        try {
+          const resp = await fetch(`${llmApiBase}/api/llm-proxy`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system:
+                '你是小车控制助手。先给简短中文回复。若可执行控制，请在最后一行输出 [SEQ:cmd@秒,cmd@秒]，cmd 仅可为 up|down|left|right|stop|grab|release；不需要秒可省略 @秒。若无法执行输出 [CMD:none]。',
+              userText,
+              maxTokens: 300,
+            }),
+          });
+
+          const data = await resp.json().catch(() => ({}));
+          if (!resp.ok) {
+            throw new Error(data.detail || data.error || 'llm请求失败');
+          }
+
+          const answer = String(data.text || '').trim();
+          const seqMatch = answer.match(/\[SEQ:([^\]]+)\]/i);
+          const cmdMatch = answer.match(/\[CMD:(up|down|left|right|stop|grab|release|none)\]/i);
+          const parsedBySeqTag = seqMatch ? parseSequenceTag(seqMatch[1]) : [];
+          const parsedLoose = parseLooseCommandSyntax(answer);
+          const parsedByLlm = parsedBySeqTag.length
+            ? parsedBySeqTag
+            : (cmdMatch ? [{ cmd: cmdMatch[1].toLowerCase() }] : (parsedLoose.length ? parsedLoose : parseCommandSequenceFromText(answer)));
+          const cleanAnswer = answer.replace(/\[(CMD|SEQ):[^\]]+\]/gi, '').trim() || '已收到。';
+
+          if (!(parsedByLlm.length && parsedByLlm[0].cmd !== 'none')) {
+            appendMessage('assistant', cleanAnswer);
+          } else {
+            appendMessage('assistant', '已生成动作，开始执行。');
+          }
+          if (parsedByLlm.length && parsedByLlm[0].cmd !== 'none') {
+            if (parsedByLlm.length === 1) {
+              await executeLlmCommand(parsedByLlm[0].cmd);
+            } else {
+              await executeCommandSequence(parsedByLlm, 'manual');
+            }
+          }
+
+          if (trigger === 'voice') {
+            setStatus('语音文本已发送');
+          }
+        } catch (error) {
+          appendMessage('assistant', `模型调用失败：${error.message}`);
+          setStatus('模型调用失败，请检查服务与密钥', true);
+        } finally {
+          askBtnEl.disabled = false;
+        }
+      };
+
+      const runContinuousCommand = (cmd) => {
+        clearPulseStopTimer();
+        clearHoldRepeatTimer();
+        const speed = speedForCommand(cmd);
+        setStatus(`持续：${getLabel(cmd)}`);
+        sendRobotCommand(cmd, speed, 0, { fireAndForget: true }).catch((error) => {
+          console.error(error);
+        });
+        scheduleHoldRepeat();
+      };
+
+      const computeNextContinuousCmd = () => {
+        const remaining = Array.from(activeHoldCommands.values());
+        if (!remaining.length) return null;
+
+        const hasVertical = remaining.some((c) => isVerticalCommand(c));
+        const hasHorizontal = remaining.some((c) => isHorizontalCommand(c));
+
+        // Combo rule: when vertical + horizontal are both held, prioritize horizontal for in-place spinning.
+        if (hasVertical && hasHorizontal) {
+          for (let i = remaining.length - 1; i >= 0; i--) {
+            if (isHorizontalCommand(remaining[i])) return remaining[i];
+          }
+        }
+
+        return remaining[remaining.length - 1];
+      };
+
+      const syncContinuousMovement = () => {
+        const nextCmd = computeNextContinuousCmd();
+        if (!nextCmd) {
+          clearHoldRepeatTimer();
+          if (activeMovementCmd) {
+            activeMovementCmd = null;
+            runPulseCommand('stop');
+          }
+          return;
+        }
+
+        if (nextCmd !== activeMovementCmd) {
+          activeMovementCmd = nextCmd;
+          runContinuousCommand(nextCmd);
+        }
+      };
+
+      const startHoldCommand = (cmd, key) => {
+        if (!movementCommands.has(cmd)) return;
+        if (activeHoldCommands.has(key)) return;
+
+        activeHoldCommands.set(key, cmd);
+        syncContinuousMovement();
+      };
+
+      const stopHoldCommand = (key, shouldSendStop = false) => {
+        const releasedCmd = activeHoldCommands.get(key);
+        if (!releasedCmd) {
+          if (shouldSendStop) {
+            forceImmediateStop('释放兜底');
+          }
+          return;
+        }
+
+        activeHoldCommands.delete(key);
+        if (!shouldSendStop) return;
+
+        if (!activeHoldCommands.size) {
+          clearHoldRepeatTimer();
+          forceImmediateStop('松开按键');
+          return;
+        }
+
+        syncContinuousMovement();
+      };
+
+      const forceStopAllHolds = () => {
+        const keys = Array.from(activeHoldCommands.keys());
+        for (const key of keys) {
+          stopHoldCommand(key, true);
+        }
+        if (!keys.length) {
+          forceImmediateStop('全局释放');
+          return;
+        }
+        if (activeMovementCmd) {
+          forceImmediateStop('全局释放');
+        }
+      };
+
+      applyIpBtn.addEventListener('click', () => {
+        const ip = sanitizeIp(targetIpEl.value);
+        if (!ip) {
+          setStatus('网址/IP 不能为空', true);
+          return;
+        }
+        carControl.ip = ip;
+        targetIpEl.value = ip;
+        localStorage.setItem('robot.control.ip', ip);
+        setStatus(`已切换到 ${ip}`);
+        warmupRobotLocalLinks();
+        refreshVisionSources();
+      });
+
+      quickIpBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          targetIpEl.value = btn.dataset.ip;
+          applyIpBtn.click();
+        });
+      });
+
+      warmupRobotLocalLinks();
+      refreshVisionSources();
+      setDocxMode('control');
+
+      if (docxTabDocEl) {
+        docxTabDocEl.addEventListener('click', () => {
+          setDocxMode('control');
+        });
+      }
+
+      if (docxTabVisionEl) {
+        docxTabVisionEl.addEventListener('click', async () => {
+          setDocxMode('vision');
+          await wakeupRobotCamera();
+          loadVisionByIndex(0, '实时画面');
+        });
+      }
+
+      if (visionLoadBtnEl) {
+        visionLoadBtnEl.addEventListener('click', async () => {
+          await wakeupRobotCamera();
+          loadVisionByIndex(visionIndex, '手动加载');
+        });
+      }
+
+      if (visionNextBtnEl) {
+        visionNextBtnEl.addEventListener('click', async () => {
+          await wakeupRobotCamera();
+          loadVisionByIndex(visionIndex + 1, '切换源');
+        });
+      }
+
+      if (visionOpenBtnEl) {
+        visionOpenBtnEl.addEventListener('click', () => {
+          if (!visionCandidates.length) {
+            if (visionHintEl) visionHintEl.textContent = '请先设置有效小车网址/IP';
+            return;
+          }
+          const url = visionCandidates[visionIndex] || visionCandidates[0];
+          window.open(url, '_blank', 'noopener,noreferrer');
+          if (visionHintEl) visionHintEl.textContent = '已在新窗口打开当前视角源';
+        });
+      }
+
+      if (visionAnalyzeBtnEl) {
+        visionAnalyzeBtnEl.addEventListener('click', () => {
+          analyzeVisionFrame();
+        });
+      }
+
+      if (visionAskBtnEl && visionAiInputEl) {
+        visionAskBtnEl.addEventListener('click', () => {
+          askZhipuVision(visionAiInputEl.value, 'text');
+        });
+
+        visionAiInputEl.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter') return;
+          event.preventDefault();
+          askZhipuVision(visionAiInputEl.value, 'text');
+        });
+      }
+
+      if (visionVoiceBtnEl) {
+        visionVoiceBtnEl.addEventListener('click', () => {
+          if (visionVoiceRecording) {
+            stopVisionVoiceRecording();
+          } else {
+            startVisionVoiceRecording();
+          }
+        });
+      }
+
+      commandBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const cmd = btn.dataset.cmd;
+          if (movementCommands.has(cmd)) {
+            // Movement buttons are controlled only by pointer hold/release.
+            return;
+          }
+          if (ignoreNextClickCommands.has(cmd)) {
+            ignoreNextClickCommands.delete(cmd);
+            return;
+          }
+          runPulseCommand(cmd);
+        });
+
+        btn.addEventListener('pointerdown', (event) => {
+          const cmd = btn.dataset.cmd;
+          if (!movementCommands.has(cmd)) return;
+          event.preventDefault();
+          btn.classList.add('active');
+          btn.setPointerCapture(event.pointerId);
+          const key = `ptr-${event.pointerId}`;
+          directionalPointerDown.set(key, cmd);
+
+          startHoldCommand(cmd, key);
+        });
+
+        btn.addEventListener('pointerup', (event) => {
+          const cmd = btn.dataset.cmd;
+          const key = `ptr-${event.pointerId}`;
+          const wasHold = activeHoldCommands.has(key);
+          btn.classList.remove('active');
+          directionalPointerDown.delete(key);
+          if (movementCommands.has(cmd) && wasHold) {
+            ignoreNextClickCommands.add(cmd);
+          }
+          stopHoldCommand(key, true);
+        });
+
+        btn.addEventListener('pointercancel', (event) => {
+          btn.classList.remove('active');
+          const key = `ptr-${event.pointerId}`;
+          directionalPointerDown.delete(key);
+          stopHoldCommand(key, true);
+        });
+
+        btn.addEventListener('lostpointercapture', (event) => {
+          btn.classList.remove('active');
+          const key = `ptr-${event.pointerId}`;
+          directionalPointerDown.delete(key);
+          stopHoldCommand(key, true);
+        });
+      });
+
+      const keyboardMap = {
+        ArrowUp: 'up',
+        ArrowDown: 'down',
+        ArrowLeft: 'left',
+        ArrowRight: 'right',
+        KeyW: 'up',
+        KeyS: 'down',
+        KeyA: 'left',
+        KeyD: 'right',
+        KeyG: 'grab',
+        KeyR: 'release',
+        Space: 'stop',
+      };
+
+      const isEditableTarget = (el) => {
+        if (!el) return false;
+        const tag = String(el.tagName || '').toUpperCase();
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
+        return !!el.isContentEditable;
+      };
+
+      window.addEventListener('keydown', (event) => {
+        // While typing in chat/IP fields, never dispatch robot keyboard commands.
+        if (isEditableTarget(event.target)) {
+          return;
+        }
+
+        const cmd = keyboardMap[event.code];
+        if (!cmd) return;
+        event.preventDefault();
+        if (pressed.has(event.code)) return;
+        pressed.add(event.code);
+
+        if (movementCommands.has(cmd)) {
+          const key = `key-${event.code}`;
+          startHoldCommand(cmd, key);
+          return;
+        }
+
+        runPulseCommand(cmd);
+      });
+
+      window.addEventListener('keyup', (event) => {
+        if (isEditableTarget(event.target)) {
+          return;
+        }
+
+        const releasedCmd = keyboardMap[event.code];
+        pressed.delete(event.code);
+        stopHoldCommand(`key-${event.code}`, movementCommands.has(releasedCmd));
+      });
+
+      window.addEventListener('blur', () => {
+        activeHoldCommands.clear();
+        activeMovementCmd = null;
+        pressed.clear();
+        forceImmediateStop('窗口失焦');
+      });
+
+      window.addEventListener('pointerup', () => {
+        forceStopAllHolds();
+      });
+
+      window.addEventListener('pointercancel', () => {
+        forceStopAllHolds();
+      });
+
+      window.addEventListener('pointerleave', () => {
+        forceStopAllHolds();
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          forceStopAllHolds();
+        }
+      });
+
+      askBtnEl.addEventListener('click', () => {
+        askZhipu(aiInputEl.value, 'text');
+      });
+
+      aiInputEl.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+        event.preventDefault();
+        askZhipu(aiInputEl.value, 'text');
+      });
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+      const FORCE_REALTIME_RECORDING = true;
+      const supportsRecorder = !!(
+        navigator.mediaDevices &&
+        navigator.mediaDevices.getUserMedia &&
+        (window.MediaRecorder || AudioContextCtor)
+      );
+      let recognition = null;
+      let listening = false;
+      let liveSpeechText = '';
+      let voiceMode = 'idle';
+      let shouldFallbackToRecorder = false;
+      let recorderBackend = 'none';
+      let mediaRecorder = null;
+      let mediaStream = null;
+      let recorderChunks = [];
+      let audioContext = null;
+      let audioSourceNode = null;
+      let audioProcessorNode = null;
+      let audioMuteNode = null;
+      let pcmChunks = [];
+      let pcmSampleRate = 16000;
+      let srStartTimer = null;
+      let recorderAutoStopTimer = null;
+      let srNoTextFallbackTried = false;
+
+      const setVoiceUiListening = (isOn, hint) => {
+        listening = isOn;
+        if (isOn) {
+          voiceBtnEl.classList.add('listening');
+          voiceBtnEl.textContent = '停止录音';
+        } else {
+          voiceBtnEl.classList.remove('listening');
+          voiceBtnEl.textContent = '开始录音';
+        }
+        if (hint) {
+          aiHintEl.textContent = hint;
+        }
+      };
+
+      if (FORCE_REALTIME_RECORDING) {
+        if (voiceNativeBtnEl) voiceNativeBtnEl.style.display = 'none';
+        if (voiceFileBtnEl) voiceFileBtnEl.style.display = 'none';
+        voiceBtnEl.textContent = '开始录音';
+        aiHintEl.textContent = '实时录音模式：点击“开始录音”，说话后点“停止录音”自动转文字';
+      }
+
+      const pickRecorderMimeType = () => {
+        const candidates = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
+        for (const type of candidates) {
+          if (window.MediaRecorder && window.MediaRecorder.isTypeSupported && window.MediaRecorder.isTypeSupported(type)) {
+            return type;
+          }
+        }
+        return '';
+      };
+
+      const encodeWavFromPcm = (buffers, sampleRate) => {
+        const chunks = Array.isArray(buffers) ? buffers : [];
+        const totalSamples = chunks.reduce((sum, arr) => sum + (arr ? arr.length : 0), 0);
+        const wavBuffer = new ArrayBuffer(44 + totalSamples * 2);
+        const view = new DataView(wavBuffer);
+
+        const writeString = (offset, value) => {
+          for (let i = 0; i < value.length; i++) {
+            view.setUint8(offset + i, value.charCodeAt(i));
+          }
+        };
+
+        writeString(0, 'RIFF');
+        view.setUint32(4, 36 + totalSamples * 2, true);
+        writeString(8, 'WAVE');
+        writeString(12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, 1, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * 2, true);
+        view.setUint16(32, 2, true);
+        view.setUint16(34, 16, true);
+        writeString(36, 'data');
+        view.setUint32(40, totalSamples * 2, true);
+
+        let offset = 44;
+        for (const chunk of chunks) {
+          if (!chunk) continue;
+          for (let i = 0; i < chunk.length; i++) {
+            const sample = Math.max(-1, Math.min(1, chunk[i]));
+            const int16 = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
+            view.setInt16(offset, int16, true);
+            offset += 2;
+          }
+        }
+
+        return new Blob([view], { type: 'audio/wav' });
+      };
+
+      const transcribeBlobByServer = async (blob) => {
+        if (!blob || blob.size <= 0) {
+          aiHintEl.textContent = '录音为空，请重试';
+          return;
+        }
+
+        if (blob.size < 1200) {
+          aiHintEl.textContent = '录音太短，请多说1-2秒再停止';
+          return;
+        }
+
+        aiHintEl.textContent = `正在转写语音(${blob.type || 'unknown'}, ${(blob.size / 1024).toFixed(1)}KB)...`;
+        try {
+          const form = new FormData();
+          let ext = 'wav';
+          if (blob.type && blob.type.includes('mp4')) ext = 'm4a';
+          else if (blob.type && blob.type.includes('webm')) ext = 'webm';
+          else if (blob.type && blob.type.includes('ogg')) ext = 'ogg';
+          form.append('file', blob, `voice.${ext}`);
+          form.append('model', 'glm-asr-2512');
+
+          const resp = await fetch(`${llmApiBase}/api/asr-zhipu`, {
+            method: 'POST',
+            body: form,
+          });
+          const data = await resp.json().catch(() => ({}));
+          if (!resp.ok || !data.ok) {
+            const detail = data && (data.detail || data.error) ? String(data.detail || data.error) : '语音转写失败';
+            const unsupportedFormat = /不支持当前文件格式|unsupported|1214/i.test(detail);
+            if (unsupportedFormat && blob.type !== 'audio/wav') {
+              const wavBlob = await convertBlobToWav(blob);
+              if (wavBlob && wavBlob.size > 0) {
+                appendMessage('assistant', '检测到音频格式不兼容，已自动转WAV重试。');
+                await transcribeBlobByServer(wavBlob);
+                return;
+              }
+            }
+            throw new Error(detail);
+          }
+
+          const text = String(data.text || '').trim();
+          if (!text) {
+            aiHintEl.textContent = '未识别到有效语音，请重试';
+            appendMessage('assistant', '语音转写完成，但未识别到有效文本。');
+            return;
+          }
+
+          aiInputEl.value = text;
+          appendMessage('assistant', `语音识别：${text}`);
+          const executed = await handleVoiceCommandText(text);
+          if (!executed) {
+            aiHintEl.textContent = '语音已转文字，点击发送可走智能助手';
+          }
+        } catch (error) {
+          aiHintEl.textContent = `语音转写异常：${error && error.message ? error.message : 'unknown'}，请重试录音`;
+          appendMessage('assistant', `语音转写异常：${error && error.message ? error.message : 'unknown'}。请检查麦克风权限后重试录音。`);
+        }
+      };
+
+      const convertBlobToWav = async (blob) => {
+        if (!blob || !blob.size || !AudioContextCtor) return null;
+        try {
+          const tmpCtx = new AudioContextCtor();
+          const arr = await blob.arrayBuffer();
+          const decoded = await tmpCtx.decodeAudioData(arr.slice(0));
+          const channel = decoded.numberOfChannels > 0 ? decoded.getChannelData(0) : null;
+          if (!channel) {
+            await tmpCtx.close();
+            return null;
+          }
+
+          const targetRate = 16000;
+          const ratio = decoded.sampleRate / targetRate;
+          const outLen = Math.max(1, Math.floor(channel.length / ratio));
+          const out = new Float32Array(outLen);
+          for (let i = 0; i < outLen; i++) {
+            const srcIndex = Math.min(channel.length - 1, Math.floor(i * ratio));
+            out[i] = channel[srcIndex];
+          }
+          await tmpCtx.close();
+          return encodeWavFromPcm([out], targetRate);
+        } catch {
+          return null;
+        }
+      };
+
+      const stopRecorderTracks = () => {
+        if (mediaStream) {
+          mediaStream.getTracks().forEach((t) => t.stop());
+        }
+        mediaStream = null;
+      };
+
+      const cleanupAudioNodes = async () => {
+        try {
+          if (audioSourceNode) audioSourceNode.disconnect();
+        } catch {}
+        try {
+          if (audioProcessorNode) audioProcessorNode.disconnect();
+        } catch {}
+        try {
+          if (audioMuteNode) audioMuteNode.disconnect();
+        } catch {}
+        audioSourceNode = null;
+        audioProcessorNode = null;
+        audioMuteNode = null;
+
+        if (audioContext) {
+          try {
+            await audioContext.close();
+          } catch {}
+        }
+        audioContext = null;
+      };
+
+      const finalizePcmRecording = async () => {
+        const localChunks = pcmChunks;
+        const sampleRate = pcmSampleRate;
+        pcmChunks = [];
+
+        await cleanupAudioNodes();
+        stopRecorderTracks();
+        recorderBackend = 'none';
+        voiceMode = 'idle';
+        setVoiceUiListening(false, '录音已结束，正在转写');
+
+        const blob = encodeWavFromPcm(localChunks, sampleRate);
+        await transcribeBlobByServer(blob);
+      };
+
+      const startRecorderFallback = async (reason) => {
+        if (!supportsRecorder || listening) return;
+
+        const getUserMediaWithTimeout = async (ms = 10000) => {
+          if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+            throw new Error('browser_no_getUserMedia');
+          }
+          const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('mic_permission_timeout')), ms);
+          });
+          return Promise.race([navigator.mediaDevices.getUserMedia({ audio: true }), timeoutPromise]);
+        };
+
+        const startMediaRecorderFallback = async () => {
+          mediaStream = await getUserMediaWithTimeout(10000);
+          recorderChunks = [];
+          const mimeType = pickRecorderMimeType();
+          mediaRecorder = mimeType ? new MediaRecorder(mediaStream, { mimeType }) : new MediaRecorder(mediaStream);
+
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data && event.data.size > 0) {
+              recorderChunks.push(event.data);
+            }
+          };
+
+          mediaRecorder.onstop = async () => {
+            const outputType = mediaRecorder && mediaRecorder.mimeType ? mediaRecorder.mimeType : 'audio/webm';
+            const blob = new Blob(recorderChunks, { type: outputType });
+            recorderChunks = [];
+            stopRecorderTracks();
+            recorderBackend = 'none';
+            voiceMode = 'idle';
+            setVoiceUiListening(false, '录音已结束，正在转写');
+            await transcribeBlobByServer(blob);
+          };
+
+          mediaRecorder.onerror = (event) => {
+            const msg = event && event.error && event.error.message ? event.error.message : 'recorder_error';
+            recorderBackend = 'none';
+            voiceMode = 'idle';
+            setVoiceUiListening(false, `录音异常：${msg}`);
+            appendMessage('assistant', `录音异常：${msg}`);
+            stopRecorderTracks();
+          };
+
+          recorderBackend = 'media';
+          voiceMode = 'recorder';
+          mediaRecorder.start(250);
+          setVoiceUiListening(true, reason || '录音中，再点一次停止并转写');
+          recorderAutoStopTimer = setTimeout(() => {
+            if (voiceMode === 'recorder') {
+              stopRecorderFallback();
+            }
+          }, 15000);
+        };
+
+        try {
+          setVoiceUiListening(true, '正在申请麦克风权限，请点击浏览器地址栏“允许”');
+          mediaStream = await getUserMediaWithTimeout(10000);
+
+          if (AudioContextCtor) {
+            audioContext = new AudioContextCtor({ sampleRate: 16000 });
+            pcmSampleRate = audioContext.sampleRate || 16000;
+            pcmChunks = [];
+
+            audioSourceNode = audioContext.createMediaStreamSource(mediaStream);
+            audioProcessorNode = audioContext.createScriptProcessor(4096, 1, 1);
+            audioMuteNode = audioContext.createGain();
+            audioMuteNode.gain.value = 0;
+
+            audioProcessorNode.onaudioprocess = (event) => {
+              const input = event && event.inputBuffer ? event.inputBuffer.getChannelData(0) : null;
+              if (!input || !input.length) return;
+              pcmChunks.push(new Float32Array(input));
+            };
+
+            audioSourceNode.connect(audioProcessorNode);
+            audioProcessorNode.connect(audioMuteNode);
+            audioMuteNode.connect(audioContext.destination);
+
+            recorderBackend = 'pcm';
+            voiceMode = 'recorder';
+            setVoiceUiListening(true, reason || '录音中，再点一次停止并转写');
+            recorderAutoStopTimer = setTimeout(() => {
+              if (voiceMode === 'recorder') {
+                stopRecorderFallback();
+              }
+            }, 15000);
+            return;
+          }
+
+          stopRecorderTracks();
+          await startMediaRecorderFallback();
+        } catch (error) {
+          try {
+            await cleanupAudioNodes();
+            stopRecorderTracks();
+            await startMediaRecorderFallback();
+          } catch {
+            const msg = error && error.message ? error.message : 'unknown';
+            if (msg === 'mic_permission_timeout') {
+              setVoiceUiListening(false, '麦克风权限等待超时，请点击地址栏相机/麦克风图标选择“允许”后重试');
+              appendMessage('assistant', '语音未启动：麦克风权限等待超时，请允许麦克风后重试。');
+              return;
+            }
+            setVoiceUiListening(false, `麦克风权限失败：${msg}`);
+            appendMessage('assistant', '语音未启动：请在浏览器地址栏开启麦克风权限后重试。');
+          }
+        }
+      };
+
+      const stopRecorderFallback = () => {
+        if (voiceMode !== 'recorder') return;
+
+        if (recorderAutoStopTimer) {
+          clearTimeout(recorderAutoStopTimer);
+          recorderAutoStopTimer = null;
+        }
+
+        if (recorderBackend === 'pcm') {
+          finalizePcmRecording().catch((error) => {
+            recorderBackend = 'none';
+            voiceMode = 'idle';
+            setVoiceUiListening(false, `录音结束异常：${error && error.message ? error.message : 'unknown'}`);
+          });
+          return;
+        }
+
+        if (mediaRecorder) {
+          try {
+            mediaRecorder.stop();
+            return;
+          } catch {}
+        }
+
+        recorderBackend = 'none';
+        stopRecorderTracks();
+        voiceMode = 'idle';
+        setVoiceUiListening(false, '录音已结束');
+      };
+
+      const startVoiceRecognition = () => {
+        if (!recognition || listening) return;
+
+        const startCore = () => {
+          try {
+            shouldFallbackToRecorder = false;
+            voiceMode = 'sr';
+            recognition.start();
+            if (srStartTimer) clearTimeout(srStartTimer);
+            srStartTimer = setTimeout(() => {
+              if (voiceMode === 'sr' && !listening && supportsRecorder) {
+                try {
+                  recognition.abort();
+                } catch {}
+                voiceMode = 'idle';
+                startRecorderFallback('语音识别启动超时，已切换录音转写');
+              }
+            }, 2500);
+          } catch (error) {
+            voiceMode = 'idle';
+            aiHintEl.textContent = `语音启动失败：${error && error.message ? error.message : 'unknown'}`;
+            if (supportsRecorder) {
+              startRecorderFallback('浏览器语音不可用，已切换录音转写');
+            }
+          }
+        };
+
+        if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+          navigator.mediaDevices
+            .getUserMedia({ audio: true })
+            .then((stream) => {
+              stream.getTracks().forEach((t) => t.stop());
+              startCore();
+            })
+            .catch((error) => {
+              aiHintEl.textContent = `麦克风权限失败：${error && error.message ? error.message : '请检查浏览器权限'}`;
+              appendMessage('assistant', '语音未启动：请在浏览器地址栏开启麦克风权限后重试，或点击“上传音频”。');
+            });
+          return;
+        }
+
+        startCore();
+      };
+
+      const stopVoiceRecognition = () => {
+        if (!recognition || voiceMode !== 'sr') return;
+        try {
+          recognition.stop();
+        } catch {
+          voiceMode = 'idle';
+        }
+      };
+
+      if (SpeechRecognition && !FORCE_REALTIME_RECORDING) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'zh-CN';
+        recognition.interimResults = true;
+        recognition.continuous = true;
+
+        recognition.onstart = () => {
+          if (srStartTimer) {
+            clearTimeout(srStartTimer);
+            srStartTimer = null;
+          }
+          srNoTextFallbackTried = false;
+          liveSpeechText = '';
+          setVoiceUiListening(true, '正在听你说话...');
+        };
+
+        recognition.onend = () => {
+          if (srStartTimer) {
+            clearTimeout(srStartTimer);
+            srStartTimer = null;
+          }
+          if (voiceMode === 'recorder') return;
+
+          const needFallback = shouldFallbackToRecorder;
+          shouldFallbackToRecorder = false;
+          voiceMode = 'idle';
+          setVoiceUiListening(false);
+
+          if (needFallback && supportsRecorder) {
+            startRecorderFallback('浏览器识别异常，已切换录音转写');
+            return;
+          }
+
+          if (liveSpeechText && !String(aiInputEl.value || '').trim()) {
+            aiInputEl.value = liveSpeechText;
+          }
+          if (String(aiInputEl.value || '').trim()) {
+            aiHintEl.textContent = '语音已转文字，点击发送即可';
+          } else {
+            if (supportsRecorder && !srNoTextFallbackTried) {
+              srNoTextFallbackTried = true;
+              startRecorderFallback('未识别到文本，已自动切换录音转写');
+              return;
+            }
+            aiHintEl.textContent = '未识别到语音，请更靠近麦克风后重试';
+          }
+        };
+
+        recognition.onerror = (event) => {
+          if (srStartTimer) {
+            clearTimeout(srStartTimer);
+            srStartTimer = null;
+          }
+          const err = event && event.error ? String(event.error) : 'unknown';
+          appendMessage('assistant', `语音识别异常：${err}`);
+
+          // Browser SR fails often with network/service-not-allowed/audio-capture on some devices.
+          if (supportsRecorder && ['network', 'service-not-allowed', 'audio-capture', 'not-allowed', 'aborted'].includes(err)) {
+            shouldFallbackToRecorder = false;
+            voiceMode = 'idle';
+            setVoiceUiListening(false, `语音识别异常(${err})，切换录音转写...`);
+            try {
+              recognition.abort();
+            } catch {}
+            startRecorderFallback('浏览器识别异常，已切换录音转写');
+            return;
+          }
+
+          aiHintEl.textContent = `语音识别异常：${err}`;
+        };
+
+        recognition.onresult = (event) => {
+          let finalText = '';
+          let interimText = '';
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const item = event.results[i];
+            if (!item || !item[0]) continue;
+            const piece = String(item[0].transcript || '').trim();
+            if (!piece) continue;
+            if (item.isFinal) {
+              finalText += `${piece} `;
+            } else {
+              interimText += `${piece} `;
+            }
+          }
+
+          const finalValue = finalText.trim();
+          const interimValue = interimText.trim();
+
+          const mergedLive = [liveSpeechText, finalValue, interimValue].filter(Boolean).join(' ').trim();
+          if (mergedLive) {
+            aiInputEl.value = mergedLive;
+          }
+
+          if (interimValue) {
+            aiHintEl.textContent = `识别中：${interimValue}`;
+          }
+
+          if (!finalValue) return;
+
+          liveSpeechText = [liveSpeechText, finalValue].filter(Boolean).join(' ').trim();
+          aiInputEl.value = liveSpeechText;
+          appendMessage('assistant', `语音识别：${finalValue}`);
+          aiHintEl.textContent = '语音已转文字，点击发送即可';
+        };
+      }
+
+      voiceNativeBtnEl.addEventListener('click', () => {
+        nativeSpeechInputEl.value = '';
+        aiHintEl.textContent = '系统听写已打开，请说话';
+        setTimeout(() => {
+          if (!String(nativeSpeechInputEl.value || '').trim()) {
+            aiHintEl.textContent = '系统听写未返回文本，请改用“语音输入”或检查浏览器麦克风权限';
+          }
+        }, 8000);
+        nativeSpeechInputEl.click();
+      });
+
+      const adoptNativeSpeechText = () => {
+        const t = String(nativeSpeechInputEl.value || '').trim();
+        if (!t) return;
+        aiInputEl.value = t;
+        appendMessage('assistant', `系统听写：${t}`);
+        aiHintEl.textContent = '系统听写已转文字，点击发送即可';
+      };
+      nativeSpeechInputEl.addEventListener('change', adoptNativeSpeechText);
+      nativeSpeechInputEl.addEventListener('input', adoptNativeSpeechText);
+
+      voiceFileBtnEl.addEventListener('click', () => {
+        voiceFileInputEl.value = '';
+        voiceFileInputEl.click();
+      });
+
+      voiceFileInputEl.addEventListener('change', async () => {
+        const file = voiceFileInputEl.files && voiceFileInputEl.files[0] ? voiceFileInputEl.files[0] : null;
+        if (!file) return;
+        appendMessage('assistant', `已选择音频：${file.name} (${(file.size / 1024).toFixed(1)}KB, ${file.type || 'unknown'})`);
+        await transcribeBlobByServer(file);
+      });
+
+      voiceBtnEl.addEventListener('click', () => {
+        if (voiceMode === 'recorder') {
+          stopRecorderFallback();
+          return;
+        }
+
+        if (!supportsRecorder) {
+          voiceBtnEl.disabled = true;
+          aiHintEl.textContent = '当前浏览器不支持实时录音，请更换浏览器';
+          return;
+        }
+
+        startRecorderFallback('实时录音中，请说话；再点一次停止并转写');
+      });
+
+      const checkLlmRuntime = async () => {
+        try {
+          const resp = await fetch(`${llmApiBase}/api/llm/runtime`, { cache: 'no-store' });
+          const data = await resp.json();
+          if (!resp.ok || !data.ok) throw new Error('runtime读取失败');
+
+          const provider = String(data.provider || '').toLowerCase();
+          const model = String(data.model || 'unknown');
+          if (provider === 'zhipu') {
+            setLlmBadge(`智谱 ${model}`);
+          } else {
+            setLlmBadge(`当前:${provider || 'unknown'}`, true);
+            appendMessage('assistant', '提示：后端当前不是 zhipu。若要切到智谱，请设置 LLM_PROVIDER=zhipu 与 ZHIPU_API_KEY 后重启服务。');
+          }
+        } catch {
+          setLlmBadge('未连接', true);
+          appendMessage('assistant', `提示：无法连接 ${llmApiBase}/api/llm/runtime，请先启动本地服务。`);
+        }
+      };
+
+      checkLlmRuntime();
+    </script>
+  </body>
+</html>

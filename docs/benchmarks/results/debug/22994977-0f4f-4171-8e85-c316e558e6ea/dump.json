@@ -1,0 +1,355 @@
+{
+  "requestId": "22994977-0f4f-4171-8e85-c316e558e6ea",
+  "topic": "质量守恒定律",
+  "deckPlan": {
+    "topic": "质量守恒定律",
+    "scenario": "teaching",
+    "audience": "通用受众",
+    "tone": "清晰、可执行",
+    "pageCount": 8,
+    "narrative": "质量守恒定律从背景到行动的单线叙事",
+    "structure": [
+      {
+        "sectionTitle": "问题背景",
+        "pages": 2
+      },
+      {
+        "sectionTitle": "核心分析",
+        "pages": 3
+      },
+      {
+        "sectionTitle": "方案与行动",
+        "pages": 2
+      }
+    ]
+  },
+  "inputSlideCount": 8,
+  "outputSlideCount": 8,
+  "slides": [
+    {
+      "index": 1,
+      "type": "cover",
+      "title": "导入：质量守恒定律为什么重要",
+      "isHidden": false,
+      "texts": [
+        "导入：质量守恒定律为什么重要",
+        "导入：质量守恒定律为什么重要"
+      ],
+      "boxes": [
+        {
+          "text": "导入：质量守恒定律为什么重要",
+          "x": 6781800,
+          "y": 1935853,
+          "w": 3675382,
+          "h": 584775
+        },
+        {
+          "text": "导入：质量守恒定律为什么重要",
+          "x": 2701472,
+          "y": 2481345,
+          "w": 7890783,
+          "h": 2123658
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "type": "content",
+      "title": "学习目标与标准",
+      "isHidden": false,
+      "texts": [
+        "学习目标与标准",
+        "01",
+        "02",
+        "03",
+        "04",
+        "图示：结构示意图 内容由 AI 生成",
+        "核心观点"
+      ],
+      "boxes": [
+        {
+          "text": "学习目标与标准",
+          "x": 1219200,
+          "y": 548640,
+          "w": 9753600,
+          "h": 369332
+        },
+        {
+          "text": "01",
+          "x": 1709980,
+          "y": 2871454,
+          "w": 952500,
+          "h": 584775
+        },
+        {
+          "text": "02",
+          "x": 6878880,
+          "y": 2871454,
+          "w": 952500,
+          "h": 584775
+        },
+        {
+          "text": "03",
+          "x": 1709980,
+          "y": 4284772,
+          "w": 952500,
+          "h": 584775
+        },
+        {
+          "text": "04",
+          "x": 6878880,
+          "y": 4284772,
+          "w": 952500,
+          "h": 584775
+        },
+        {
+          "text": "图示：结构示意图 内容由 AI 生成",
+          "x": 2741583,
+          "y": 4639814,
+          "w": 2159566,
+          "h": 348942
+        },
+        {
+          "text": "核心观点",
+          "x": 7910483,
+          "y": 4639814,
+          "w": 2159566,
+          "h": 348942
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "type": "content",
+      "title": "核心概念",
+      "isHidden": false,
+      "texts": [
+        "核心概念"
+      ],
+      "boxes": [
+        {
+          "text": "核心概念",
+          "x": 4339245,
+          "y": 2036873,
+          "w": 3391592,
+          "h": 338554
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "type": "content",
+      "title": "关键规律",
+      "isHidden": false,
+      "texts": [
+        "关键规律",
+        "图示：结构示意图 内容由 AI 生成",
+        "核心观点"
+      ],
+      "boxes": [
+        {
+          "text": "关键规律",
+          "x": 420007,
+          "y": 402681,
+          "w": 2352221,
+          "h": 400110
+        },
+        {
+          "text": "图示：结构示意图 内容由 AI 生成",
+          "x": 905079,
+          "y": 4661974,
+          "w": 2938722,
+          "h": 703719
+        },
+        {
+          "text": "核心观点",
+          "x": 4626636,
+          "y": 4661974,
+          "w": 2938722,
+          "h": 703719
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "type": "content",
+      "title": "方法步骤",
+      "isHidden": false,
+      "texts": [
+        "方法步骤",
+        "核心观点",
+        "本页提供可直接用于汇 报的业务说明， 覆盖场景现状、 关键判断与执行动作， 确保读者能据此理解问 题并推进下一步决策 ..."
+      ],
+      "boxes": [
+        {
+          "text": "方法步骤",
+          "x": 1327833,
+          "y": 1706312,
+          "w": 3600759,
+          "h": 377411
+        },
+        {
+          "text": "核心观点",
+          "x": 883610,
+          "y": 3818119,
+          "w": 1890383,
+          "h": 1996316
+        },
+        {
+          "text": "本页提供可直接用于汇 报的业务说明， 覆盖场景现状、 关键判断与执行动作， 确保读者能据此理解问 题并推进下一步决策 ...",
+          "x": 3851398,
+          "y": 3818119,
+          "w": 1890383,
+          "h": 1996316
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "type": "content",
+      "title": "例题精讲",
+      "isHidden": false,
+      "texts": [
+        "例题精讲",
+        "图示：结构示意图 内容由 AI 生成",
+        "本页提供可直接用于汇 报的业务说明， 覆盖场景现状、 关键判断与执行动作， 确保读者能据此理解问 ...",
+        "核心观点"
+      ],
+      "boxes": [
+        {
+          "text": "例题精讲",
+          "x": 420007,
+          "y": 402681,
+          "w": 2352221,
+          "h": 400110
+        },
+        {
+          "text": "图示：结构示意图 内容由 AI 生成",
+          "x": 5263415,
+          "y": 2005123,
+          "w": 1863375,
+          "h": 1634448
+        },
+        {
+          "text": "本页提供可直接用于汇 报的业务说明， 覆盖场景现状、 关键判断与执行动作， 确保读者能据此理解问 ...",
+          "x": 3225210,
+          "y": 3714785,
+          "w": 1863375,
+          "h": 1634448
+        },
+        {
+          "text": "核心观点",
+          "x": 7301620,
+          "y": 3714785,
+          "w": 1863375,
+          "h": 1634448
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "type": "content",
+      "title": "实验或应用",
+      "isHidden": false,
+      "texts": [
+        "实验或应用"
+      ],
+      "boxes": [
+        {
+          "text": "实验或应用",
+          "x": 4339245,
+          "y": 2036873,
+          "w": 3391592,
+          "h": 338554
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "type": "content",
+      "title": "总结与作业",
+      "isHidden": false,
+      "texts": [
+        "总结与作业"
+      ],
+      "boxes": [
+        {
+          "text": "总结与作业",
+          "x": 420007,
+          "y": 402681,
+          "w": 2352221,
+          "h": 400110
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "ok": false,
+    "errors": [
+      {
+        "slideIndex": 3,
+        "type": "blankOrHalfFilled",
+        "text": "核心概念"
+      },
+      {
+        "slideIndex": 7,
+        "type": "blankOrHalfFilled",
+        "text": "实验或应用"
+      },
+      {
+        "slideIndex": 8,
+        "type": "blankOrHalfFilled",
+        "text": "总结与作业"
+      },
+      {
+        "slideIndex": 2,
+        "type": "minimumEffectiveSlide",
+        "text": "content_text_body_chars_54"
+      },
+      {
+        "slideIndex": 3,
+        "type": "minimumEffectiveSlide",
+        "text": "content_text_body_chars_54"
+      },
+      {
+        "slideIndex": 4,
+        "type": "minimumEffectiveSlide",
+        "text": "content_text_body_chars_54"
+      },
+      {
+        "slideIndex": 5,
+        "type": "minimumEffectiveSlide",
+        "text": "content_text_body_chars_54"
+      },
+      {
+        "slideIndex": 6,
+        "type": "minimumEffectiveSlide",
+        "text": "content_text_body_chars_54"
+      },
+      {
+        "slideIndex": 7,
+        "type": "minimumEffectiveSlide",
+        "text": "content_text_body_chars_54"
+      },
+      {
+        "slideIndex": 8,
+        "type": "minimumEffectiveSlide",
+        "text": "content_text_body_chars_54"
+      }
+    ]
+  },
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 72,
+    "contentSpecificity": 95,
+    "narrativeFlow": 68,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 87,
+    "cleanliness": 72,
+    "structure": 68,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

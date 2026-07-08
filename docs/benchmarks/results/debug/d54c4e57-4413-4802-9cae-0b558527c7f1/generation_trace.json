@@ -1,0 +1,215 @@
+{
+  "timestamp": "2026-07-08T04:51:01.743Z",
+  "requestId": "d54c4e57-4413-4802-9cae-0b558527c7f1",
+  "version": "d54c4e57-4413-4802-9cae-0b558527c7f1",
+  "promptVersion": "v1_observable_baseline",
+  "promptHash": "1750a69e718a979b1b627b7b69ea160f531fca8546a0230ec190abfeef795571",
+  "input": {
+    "theme": "压强与浮力",
+    "targetSlides": 10,
+    "styleGuide": "结构清晰",
+    "scenario": "教务",
+    "templateFileName": "演示文稿4.pptx"
+  },
+  "llmProvider": {
+    "aipptProvider": "generic",
+    "endpoint": "",
+    "model": ""
+  },
+  "llmCalls": [
+    {
+      "slideIndex": 1,
+      "prompt": "生成第1页内容：压强与浮力 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：压强与浮力第3页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：压强与浮力第8页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "压强与浮力",
+        "subtitle": "teaching 场景汇报",
+        "bullets": [],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 2,
+      "prompt": "生成第2页内容：章节02 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：压强与浮力第3页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：压强与浮力第8页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "章节02",
+        "subtitle": "章节说明",
+        "bullets": [],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 3,
+      "prompt": "生成第3页内容：压强与浮力第3页 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：压强与浮力第3页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：压强与浮力第8页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "压强与浮力第3页",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "blankOrHalfFilled:压强与浮力第3页",
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    },
+    {
+      "slideIndex": 4,
+      "prompt": "生成第4页内容：压强与浮力第4页 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：压强与浮力第3页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：压强与浮力第8页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "压强与浮力第4页",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    },
+    {
+      "slideIndex": 5,
+      "prompt": "生成第5页内容：章节05 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：压强与浮力第3页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：压强与浮力第8页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "章节05",
+        "subtitle": "章节说明",
+        "bullets": [],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 6,
+      "prompt": "生成第6页内容：压强与浮力第6页 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：压强与浮力第3页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：压强与浮力第8页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "压强与浮力第6页",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    },
+    {
+      "slideIndex": 7,
+      "prompt": "生成第7页内容：压强与浮力第7页 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：压强与浮力第3页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：压强与浮力第8页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "压强与浮力第7页",
+        "subtitle": "核心要点",
+        "bullets": [
+          "先定义问题边界与目标",
+          "再明确关键动作与责任",
+          "最后确认指标与复盘机制"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 8,
+      "prompt": "生成第8页内容：压强与浮力第8页 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：压强与浮力第3页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：压强与浮力第8页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "压强与浮力第8页",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "blankOrHalfFilled:压强与浮力第8页",
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    },
+    {
+      "slideIndex": 9,
+      "prompt": "生成第9页内容：压强与浮力第9页 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：压强与浮力第3页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：压强与浮力第8页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "压强与浮力第9页",
+        "subtitle": "核心要点",
+        "bullets": [
+          "先定义问题边界与目标",
+          "再明确关键动作与责任",
+          "最后确认指标与复盘机制"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 10,
+      "prompt": "生成第10页内容：感谢 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：压强与浮力第3页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：压强与浮力第8页\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "感谢",
+        "subtitle": "Q&A",
+        "bullets": [
+          "Q&A"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    }
+  ],
+  "output": {
+    "filePath": "",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "failedChecks": [
+      "blankOrHalfFilled",
+      "blankOrHalfFilled",
+      "minimumEffectiveSlide",
+      "minimumEffectiveSlide",
+      "minimumEffectiveSlide",
+      "minimumEffectiveSlide"
+    ],
+    "elapsedMs": 13386
+  }
+}

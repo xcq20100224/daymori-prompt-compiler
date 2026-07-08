@@ -1,0 +1,204 @@
+[
+  {
+    "id": "s1",
+    "type": "cover",
+    "title": "多租户权限模型重构",
+    "footer": "内容由AI生成",
+    "subtitle": "business_report 场景汇报",
+    "speaker": "汇报人",
+    "date": "2026-07-08",
+    "content": {
+      "title": "多租户权限模型重构",
+      "subtitle": "business_report 场景汇报",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s2",
+    "type": "section",
+    "title": "章节02",
+    "footer": "内容由AI生成",
+    "sectionNo": "02",
+    "subtitle": "章节说明",
+    "content": {
+      "title": "章节02",
+      "subtitle": "章节说明",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s3",
+    "type": "content_text",
+    "title": "多租户权限模型重构第3页",
+    "footer": "内容由AI生成",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "多租户权限模型重构第3页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s4",
+    "type": "content_text",
+    "title": "多租户权限模型重构第4页",
+    "footer": "内容由AI生成",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "多租户权限模型重构第4页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s5",
+    "type": "section",
+    "title": "章节05",
+    "footer": "内容由AI生成",
+    "sectionNo": "05",
+    "subtitle": "章节说明",
+    "content": {
+      "title": "章节05",
+      "subtitle": "章节说明",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s6",
+    "type": "content_text",
+    "title": "多租户权限模型重构第6页",
+    "footer": "内容由AI生成",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "多租户权限模型重构第6页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s7",
+    "type": "content_bullets",
+    "title": "多租户权限模型重构第7页",
+    "footer": "内容由AI生成",
+    "label": "核心要点",
+    "bullets": [
+      "先定义问题边界与目标",
+      "再明确关键动作与责任",
+      "最后确认指标与复盘机制"
+    ],
+    "visualHint": "执行要点图",
+    "content": {
+      "title": "多租户权限模型重构第7页",
+      "subtitle": "核心要点",
+      "body": [
+        "先定义问题边界与目标",
+        "再明确关键动作与责任",
+        "最后确认指标与复盘机制"
+      ]
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s8",
+    "type": "content_text",
+    "title": "多租户权限模型重构第8页",
+    "footer": "内容由AI生成",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "多租户权限模型重构第8页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s9",
+    "type": "content_bullets",
+    "title": "多租户权限模型重构第9页",
+    "footer": "内容由AI生成",
+    "label": "核心要点",
+    "bullets": [
+      "先定义问题边界与目标",
+      "再明确关键动作与责任",
+      "最后确认指标与复盘机制"
+    ],
+    "visualHint": "执行要点图",
+    "content": {
+      "title": "多租户权限模型重构第9页",
+      "subtitle": "核心要点",
+      "body": [
+        "先定义问题边界与目标",
+        "再明确关键动作与责任",
+        "最后确认指标与复盘机制"
+      ]
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s10",
+    "type": "thanks",
+    "title": "感谢",
+    "footer": "内容由AI生成",
+    "subtitle": "Q&A",
+    "content": {
+      "title": "感谢",
+      "subtitle": "Q&A",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  }
+]

@@ -1,0 +1,66 @@
+{
+  "requestId": "e2a99ac6-267e-4ee6-be52-ed0b8a14405e",
+  "inputSlideCount": 8,
+  "outputSlideCount": 8,
+  "physicalSlideCount": 8,
+  "visibleSlideCount": 8,
+  "hiddenSlideCount": 0,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "导入：酸碱中和反应为什么重要",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 2,
+      "slideType": "content_text",
+      "slideTitle": "学习目标与标准",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 3,
+      "slideType": "content_text",
+      "slideTitle": "核心概念",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 4,
+      "slideType": "content_text",
+      "slideTitle": "关键规律",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 5,
+      "slideType": "content_text",
+      "slideTitle": "方法步骤",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 6,
+      "slideType": "content_text",
+      "slideTitle": "例题精讲",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 7,
+      "slideType": "content_text",
+      "slideTitle": "实验或应用",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 8,
+      "slideType": "content_text",
+      "slideTitle": "总结与作业",
+      "slotWrites": []
+    }
+  ]
+}

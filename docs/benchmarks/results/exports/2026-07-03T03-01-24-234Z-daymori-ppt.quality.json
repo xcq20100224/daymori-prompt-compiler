@@ -1,0 +1,599 @@
+{
+  "generatedAt": "2026-07-03T03:01:24.235Z",
+  "topic": "初二牛顿第二定律讲解",
+  "templateSource": "officeplus",
+  "templateFileName": "3.pptx",
+  "engine": "local-pptxgenjs",
+  "fallbackReason": "codegen_only_clean_layout",
+  "layoutPolicy": {
+    "mode": "strict-layout",
+    "minScore": 92,
+    "mappingVersion": "semantic-slot-v1",
+    "overflowPolicy": "layout-first"
+  },
+  "layoutQuality": {
+    "pass": true,
+    "strictLeakSafe": false,
+    "score": 94,
+    "minScore": 92,
+    "mode": "strict-layout",
+    "mappingVersion": "semantic-slot-v1",
+    "visibleIssueSlides": 19,
+    "structuralMissSlides": 0,
+    "expectedMissCount": 0,
+    "estimatedManualFixes": 13,
+    "issues": [
+      "content_out_of_body_band",
+      "potential_overlap_detected"
+    ],
+    "slideStats": [
+      {
+        "index": 1,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 1,
+        "bodySlots": 2,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 2,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 0,
+        "titleSlots": 13,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 3,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 4,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 5,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 0,
+        "titleSlots": 9,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 6,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 0,
+        "titleSlots": 9,
+        "bodySlots": 12,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 7,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 8,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 9,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 13,
+        "bodySlots": 12,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 10,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 11,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 12,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 12,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 12,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 13,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 14,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 15,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 12,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 16,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 2,
+        "bodySlots": 11,
+        "outOfBand": 2,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 22
+      },
+      {
+        "index": 17,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 12,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 18,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 12,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 19,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 20,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 9,
+        "bodySlots": 12,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      }
+    ]
+  },
+  "contentQuality": {
+    "pass": true,
+    "contentCoverage": 1,
+    "emptySlides": [],
+    "placeholderOnlySlides": [],
+    "reasons": [],
+    "slideStats": [
+      {
+        "index": 1,
+        "slotCount": 5,
+        "nonMetaCount": 4,
+        "placeholderCount": 0,
+        "contentCount": 4,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 2,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 2,
+        "contentCount": 15,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 3,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 0,
+        "contentCount": 17,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 4,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 0,
+        "contentCount": 17,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 5,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 0,
+        "contentCount": 17,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 6,
+        "slotCount": 22,
+        "nonMetaCount": 18,
+        "placeholderCount": 0,
+        "contentCount": 18,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 7,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 0,
+        "contentCount": 17,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 8,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 0,
+        "contentCount": 17,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 9,
+        "slotCount": 22,
+        "nonMetaCount": 18,
+        "placeholderCount": 0,
+        "contentCount": 18,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 10,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 0,
+        "contentCount": 17,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 11,
+        "slotCount": 22,
+        "nonMetaCount": 18,
+        "placeholderCount": 0,
+        "contentCount": 18,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 12,
+        "slotCount": 22,
+        "nonMetaCount": 18,
+        "placeholderCount": 0,
+        "contentCount": 18,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 13,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 0,
+        "contentCount": 17,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 14,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 0,
+        "contentCount": 17,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 15,
+        "slotCount": 22,
+        "nonMetaCount": 18,
+        "placeholderCount": 0,
+        "contentCount": 18,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 16,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 1,
+        "contentCount": 16,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 17,
+        "slotCount": 22,
+        "nonMetaCount": 18,
+        "placeholderCount": 0,
+        "contentCount": 18,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 18,
+        "slotCount": 22,
+        "nonMetaCount": 18,
+        "placeholderCount": 0,
+        "contentCount": 18,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 19,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 0,
+        "contentCount": 17,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 20,
+        "slotCount": 22,
+        "nonMetaCount": 18,
+        "placeholderCount": 0,
+        "contentCount": 18,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      }
+    ]
+  },
+  "teachingQuality": {
+    "pass": true,
+    "enabled": false,
+    "avgCharsPerSlide": 0,
+    "formulaSlideRatio": 0,
+    "genericSlideRatio": 0,
+    "actionTimeCoverage": 0,
+    "titleViolationSlides": [],
+    "reasons": []
+  },
+  "diagnostics": {
+    "failedSlideCount": 19,
+    "failedSlides": [
+      {
+        "index": 2,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 3,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 4,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 5,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 6,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 7,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 8,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 9,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 10,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 11,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 12,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 13,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 14,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 15,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 16,
+        "reasons": [
+          "content_out_of_band",
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 17,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 18,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 19,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 20,
+        "reasons": [
+          "potential_overlap"
+        ]
+      }
+    ],
+    "summary": {
+      "layoutPass": true,
+      "strictLeakSafe": false,
+      "contentPass": true,
+      "contentCoverage": 1,
+      "emptySlides": [],
+      "placeholderOnlySlides": []
+    }
+  }
+}

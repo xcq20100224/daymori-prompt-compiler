@@ -1,0 +1,226 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:duplicateTitleInSlide_slide_1",
+    "requestId": "df7c6513-c44e-439e-bc78-df6cad0e6714",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 1,
+          "type": "duplicateTitleInSlide",
+          "text": "AI客服方案汇报"
+        }
+      ],
+      "issues": [
+        "duplicateTitleInSlide_slide_1"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:duplicateTitleInSlide_slide_1",
+    "requestId": "00641020-ae8b-4425-a83f-7c6939c77c38",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 1,
+          "type": "duplicateTitleInSlide",
+          "text": "AI客服方案汇报"
+        }
+      ],
+      "issues": [
+        "duplicateTitleInSlide_slide_1"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 2,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:duplicateTitleInSlide_slide_1",
+    "requestId": "9daca7a1-5c8d-4d77-8f36-bd91f22a55e5",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 1,
+          "type": "duplicateTitleInSlide",
+          "text": "AI客服方案汇报"
+        }
+      ],
+      "issues": [
+        "duplicateTitleInSlide_slide_1"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 3,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:duplicateTitleInSlide_slide_1",
+    "requestId": "779497f3-8389-45f4-b14e-2a309fa7c1d2",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 1,
+          "type": "duplicateTitleInSlide",
+          "text": "AI客服方案汇报"
+        }
+      ],
+      "issues": [
+        "duplicateTitleInSlide_slide_1"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 4,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:duplicateTitleInSlide_slide_1",
+    "requestId": "f4d1fa88-da62-4f68-b80c-40e1f0c69ade",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 1,
+          "type": "duplicateTitleInSlide",
+          "text": "AI客服方案汇报"
+        }
+      ],
+      "issues": [
+        "duplicateTitleInSlide_slide_1"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 5,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:duplicateTitleInSlide_slide_1",
+    "requestId": "ec824850-9a9b-41b0-a7f2-64efb04928c1",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 1,
+          "type": "duplicateTitleInSlide",
+          "text": "AI客服方案汇报"
+        }
+      ],
+      "issues": [
+        "duplicateTitleInSlide_slide_1"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 6,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:duplicateTitleInSlide_slide_1",
+    "requestId": "b93d7b61-5b6e-4f31-bd3f-e382bc413a43",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 1,
+          "type": "duplicateTitleInSlide",
+          "text": "AI客服方案汇报"
+        }
+      ],
+      "issues": [
+        "duplicateTitleInSlide_slide_1"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 7,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:duplicateTitleInSlide_slide_1",
+    "requestId": "202e0b65-6c56-45c4-a622-c51826ca5b19",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 1,
+          "type": "duplicateTitleInSlide",
+          "text": "AI客服方案汇报"
+        }
+      ],
+      "issues": [
+        "duplicateTitleInSlide_slide_1"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]

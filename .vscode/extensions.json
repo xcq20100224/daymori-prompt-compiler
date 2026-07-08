@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "ms-vscode.vscode-json-languageservice",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens",
+        "aaron-bond.better-comments"
+    ]
+}

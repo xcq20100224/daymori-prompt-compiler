@@ -1,0 +1,214 @@
+[
+  {
+    "id": "s1",
+    "type": "cover",
+    "title": "牛顿第二定律",
+    "footer": "内容由AI生成",
+    "subtitle": "teaching 场景汇报",
+    "speaker": "汇报人",
+    "date": "2026-07-08",
+    "content": {
+      "title": "牛顿第二定律",
+      "subtitle": "teaching 场景汇报",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第1页内容：牛顿第二定律\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s2",
+    "type": "section",
+    "title": "章节02",
+    "footer": "内容由AI生成",
+    "sectionNo": "02",
+    "subtitle": "章节说明",
+    "content": {
+      "title": "章节02",
+      "subtitle": "章节说明",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第2页内容：章节02\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s3",
+    "type": "content_text",
+    "title": "牛顿第二定律第3页",
+    "footer": "内容由AI生成",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "牛顿第二定律第3页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第3页内容：牛顿第二定律第3页\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s4",
+    "type": "content_text",
+    "title": "牛顿第二定律第4页",
+    "footer": "内容由AI生成",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "牛顿第二定律第4页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第4页内容：牛顿第二定律第4页\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s5",
+    "type": "section",
+    "title": "章节05",
+    "footer": "内容由AI生成",
+    "sectionNo": "05",
+    "subtitle": "章节说明",
+    "content": {
+      "title": "章节05",
+      "subtitle": "章节说明",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第5页内容：章节05\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s6",
+    "type": "content_text",
+    "title": "牛顿第二定律第6页",
+    "footer": "内容由AI生成",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "牛顿第二定律第6页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第6页内容：牛顿第二定律第6页\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s7",
+    "type": "content_bullets",
+    "title": "牛顿第二定律第7页",
+    "footer": "内容由AI生成",
+    "label": "核心要点",
+    "bullets": [
+      "先定义问题边界与目标",
+      "再明确关键动作与责任",
+      "最后确认指标与复盘机制"
+    ],
+    "visualHint": "执行要点图",
+    "content": {
+      "title": "牛顿第二定律第7页",
+      "subtitle": "核心要点",
+      "body": [
+        "先定义问题边界与目标",
+        "再明确关键动作与责任",
+        "最后确认指标与复盘机制"
+      ]
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第7页内容：牛顿第二定律第7页\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s8",
+    "type": "content_text",
+    "title": "牛顿第二定律第8页",
+    "footer": "内容由AI生成",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "牛顿第二定律第8页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第8页内容：牛顿第二定律第8页\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s9",
+    "type": "content_bullets",
+    "title": "牛顿第二定律第9页",
+    "footer": "内容由AI生成",
+    "label": "核心要点",
+    "bullets": [
+      "先定义问题边界与目标",
+      "再明确关键动作与责任",
+      "最后确认指标与复盘机制"
+    ],
+    "visualHint": "执行要点图",
+    "content": {
+      "title": "牛顿第二定律第9页",
+      "subtitle": "核心要点",
+      "body": [
+        "先定义问题边界与目标",
+        "再明确关键动作与责任",
+        "最后确认指标与复盘机制"
+      ]
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第9页内容：牛顿第二定律第9页\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s10",
+    "type": "thanks",
+    "title": "感谢",
+    "footer": "内容由AI生成",
+    "subtitle": "Q&A",
+    "content": {
+      "title": "感谢",
+      "subtitle": "Q&A",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第10页内容：感谢\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=76|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  }
+]

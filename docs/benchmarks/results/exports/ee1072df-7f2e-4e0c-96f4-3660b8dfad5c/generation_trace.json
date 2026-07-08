@@ -1,0 +1,217 @@
+{
+  "timestamp": "2026-07-08T14:09:02.191Z",
+  "requestId": "ee1072df-7f2e-4e0c-96f4-3660b8dfad5c",
+  "version": "ee1072df-7f2e-4e0c-96f4-3660b8dfad5c",
+  "promptVersion": "v1_observable_baseline",
+  "promptHash": "fcc037912105a6178d6c689588ecbc8a0209940741fa8a26ce7200ab0cc7c455",
+  "input": {
+    "theme": "ABTest2_1783519662126",
+    "targetSlides": 10,
+    "styleGuide": "信息密度均衡",
+    "scenario": "企业",
+    "templateFileName": "演示文稿4.pptx"
+  },
+  "llmProvider": {
+    "aipptProvider": "generic",
+    "endpoint": "",
+    "model": ""
+  },
+  "llmCalls": [
+    {
+      "slideIndex": 1,
+      "prompt": "生成第1页内容：ABTest2_1783519662126 以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "ABTest2_1783519662126",
+        "subtitle": "ABTest2_1783519662126提案汇报",
+        "bullets": [],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 2,
+      "prompt": "生成第2页内容：现状与问题 以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "现状与问题",
+        "subtitle": "ABTest2_1783519662126的核心约束与机会",
+        "bullets": [],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 3,
+      "prompt": "生成第3页内容：现状评估 以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "现状评估",
+        "subtitle": "现状背景",
+        "bullets": [
+          "ABTest2_1783519662126当前在"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 4,
+      "prompt": "生成第4页内容：关键问题拆解 以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "关键问题拆解",
+        "subtitle": "问题拆解",
+        "bullets": [
+          "围绕ABTest2_1783519662126可"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 5,
+      "prompt": "生成第5页内容：方案设计 以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "方案设计",
+        "subtitle": "ABTest2_1783519662126的分阶段落地方案",
+        "bullets": [],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 6,
+      "prompt": "生成第6页内容：方案架构 以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "方案架构",
+        "subtitle": "方案设计",
+        "bullets": [
+          "ABTest2_1783519662126方案建"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 7,
+      "prompt": "生成第7页内容：三阶段推进试点落地 以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "三阶段推进试点落地",
+        "subtitle": "实施路径",
+        "bullets": [
+          "第1阶段：明确ABTest2_178351966",
+          "第2阶段：完成ABTest2_178351966",
+          "第3阶段：复盘优化后推进规模化"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 8,
+      "prompt": "生成第8页内容：用关键指标验证收益 以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "用关键指标验证收益",
+        "subtitle": "价值评估",
+        "bullets": [
+          "建议围绕ABTest2_178351966212"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 9,
+      "prompt": "请从范围、预算、系统接入、责任人这4个不同维度，各生成一条决策事项。每条由4-6字短标题+12-20字说明组成，互不重复，不要合并。 以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "下一步决策事项",
+        "subtitle": "管理决策",
+        "bullets": [
+          "试点范围：明确首批渠道与服务场景边界",
+          "预算边界：锁定试点投入上限与审批口径",
+          "系统接入：确认客服系统接口与联调计划",
+          "责任人：指定业务与技术双负责人机制",
+          "明确首批渠道与服务场景边界"
+        ],
+        "items": [
+          {
+            "title": "试点范围",
+            "desc": "明确首批渠道与服务场景边界"
+          },
+          {
+            "title": "预算边界",
+            "desc": "锁定试点投入上限与审批口径"
+          },
+          {
+            "title": "系统接入",
+            "desc": "确认客服系统接口与联调计划"
+          },
+          {
+            "title": "责任人",
+            "desc": "指定业务与技术双负责人机制"
+          }
+        ]
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 10,
+      "prompt": "生成第10页内容：谢谢观看 以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=64|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "谢谢观看",
+        "subtitle": "Q&A",
+        "bullets": [
+          "Q&A"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    }
+  ],
+  "output": {
+    "filePath": "docs/benchmarks/results/exports/ee1072df-7f2e-4e0c-96f4-3660b8dfad5c/deck.pptx",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "failedChecks": [],
+    "elapsedMs": 15905
+  }
+}

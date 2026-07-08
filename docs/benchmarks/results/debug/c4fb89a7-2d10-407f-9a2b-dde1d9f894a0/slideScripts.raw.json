@@ -1,0 +1,112 @@
+[
+  {
+    "id": "s1",
+    "type": "cover",
+    "title": "新能源汽车市场分析报告",
+    "footer": "内容由AI生成",
+    "subtitle": "business_report 场景演示",
+    "speaker": "汇报人",
+    "date": "2026-07-06"
+  },
+  {
+    "id": "s2",
+    "type": "agenda",
+    "title": "目录",
+    "footer": "内容由AI生成",
+    "bullets": [
+      "背景",
+      "分析",
+      "行动"
+    ],
+    "visualHint": "目录结构图"
+  },
+  {
+    "id": "s3",
+    "type": "section",
+    "title": "章节03",
+    "footer": "内容由AI生成",
+    "sectionNo": "03",
+    "subtitle": "章节说明"
+  },
+  {
+    "id": "s4",
+    "type": "data_insight",
+    "title": "新能源汽车市场分析报告关键议题4",
+    "footer": "内容由AI生成",
+    "metric": "关键指标",
+    "insight": "通过对成本、效率和满意度数据的联合分析，可以识别最具价值的优化环节并优先投入资源。",
+    "chartHint": "柱状图",
+    "visualHint": "数据图"
+  },
+  {
+    "id": "s5",
+    "type": "compare",
+    "title": "新能源汽车市场分析报告关键议题5",
+    "footer": "内容由AI生成",
+    "leftTitle": "方案A",
+    "leftPoints": [
+      "投入更低，适合快速试点",
+      "上线周期短，风险可控",
+      "适合先验证关键指标"
+    ],
+    "rightTitle": "方案B",
+    "rightPoints": [
+      "能力更完整，覆盖面更广",
+      "实施复杂度更高",
+      "适合中长期规模化"
+    ],
+    "conclusion": "按目标阶段选择最优解",
+    "visualHint": "对比图"
+  },
+  {
+    "id": "s6",
+    "type": "section",
+    "title": "章节06",
+    "footer": "内容由AI生成",
+    "sectionNo": "06",
+    "subtitle": "章节说明"
+  },
+  {
+    "id": "s7",
+    "type": "process",
+    "title": "新能源汽车市场分析报告关键议题7",
+    "footer": "内容由AI生成",
+    "steps": [
+      "完成现状诊断并锁定优先场景",
+      "按里程碑推进实施并跟踪数据",
+      "复盘问题后持续优化与扩展"
+    ],
+    "conclusion": "形成可复制的执行闭环",
+    "visualHint": "流程图"
+  },
+  {
+    "id": "s8",
+    "type": "data_insight",
+    "title": "新能源汽车市场分析报告关键议题8",
+    "footer": "内容由AI生成",
+    "metric": "关键指标",
+    "insight": "通过对成本、效率和满意度数据的联合分析，可以识别最具价值的优化环节并优先投入资源。",
+    "chartHint": "柱状图",
+    "visualHint": "数据图"
+  },
+  {
+    "id": "s9",
+    "type": "next_steps",
+    "title": "下一步行动",
+    "footer": "内容由AI生成",
+    "actions": [
+      "明确里程碑与负责人",
+      "完成试点并跟踪指标",
+      "复盘优化后规模化推广"
+    ],
+    "ownerHint": "责任人",
+    "visualHint": "行动清单"
+  },
+  {
+    "id": "s10",
+    "type": "thanks",
+    "title": "感谢",
+    "footer": "内容由AI生成",
+    "subtitle": "Q&A"
+  }
+]

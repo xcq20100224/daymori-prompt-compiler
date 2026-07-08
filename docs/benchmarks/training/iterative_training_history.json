@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-07-08T13:16:03.312Z",
+  "config": {
+    "iterations": 5,
+    "samplesPerIteration": 10,
+    "targetScore": 95,
+    "targetRate": 0.7
+  },
+  "history": [
+    {
+      "iteration": 1,
+      "lazymanRate": 0,
+      "avgScore": 56,
+      "commonIssues": {
+        "watermark": 0,
+        "pageNumber": 10,
+        "halfFilled": 10
+      },
+      "shouldContinue": true
+    },
+    {
+      "iteration": 2,
+      "lazymanRate": 0,
+      "avgScore": 56,
+      "commonIssues": {
+        "watermark": 0,
+        "pageNumber": 10,
+        "halfFilled": 10
+      },
+      "shouldContinue": true
+    },
+    {
+      "iteration": 3,
+      "lazymanRate": 0,
+      "avgScore": 56,
+      "commonIssues": {
+        "watermark": 0,
+        "pageNumber": 10,
+        "halfFilled": 10
+      },
+      "shouldContinue": true
+    },
+    {
+      "iteration": 4,
+      "lazymanRate": 0,
+      "avgScore": 56,
+      "commonIssues": {
+        "watermark": 0,
+        "pageNumber": 10,
+        "halfFilled": 10
+      },
+      "shouldContinue": true
+    },
+    {
+      "iteration": 5,
+      "lazymanRate": 0,
+      "avgScore": 56,
+      "commonIssues": {
+        "watermark": 0,
+        "pageNumber": 10,
+        "halfFilled": 10
+      },
+      "shouldContinue": true
+    }
+  ]
+}

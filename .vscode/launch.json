@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug 稳定性测试",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/tools/test-stability.mjs"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug 质检工具",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/tools/lazyman-quality-gate.mjs",
+      "args": [
+        "docs/benchmarks/results/variants/20260708-181546-用户增长策略/summary.json"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Day 1计划生成",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/tools/generate-day1-plan.mjs"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug 主题多样性验证",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/tools/verify-topic-diversity.mjs"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug 共同问题分析",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/tools/analyze-common-issues.mjs"
+    }
+  ]
+}

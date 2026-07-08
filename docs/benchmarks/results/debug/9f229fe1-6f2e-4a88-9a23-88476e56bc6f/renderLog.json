@@ -1,0 +1,52 @@
+{
+  "requestId": "9f229fe1-6f2e-4a88-9a23-88476e56bc6f",
+  "inputSlideCount": 6,
+  "outputSlideCount": 6,
+  "physicalSlideCount": 6,
+  "visibleSlideCount": 6,
+  "hiddenSlideCount": 0,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "AI客服降本增效方案（新版）",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 2,
+      "slideType": "content_text",
+      "slideTitle": "现状痛点",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 3,
+      "slideType": "content_text",
+      "slideTitle": "方案总览",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 4,
+      "slideType": "content_bullets",
+      "slideTitle": "分阶段推进",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 5,
+      "slideType": "content_text",
+      "slideTitle": "预期收益",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 4,
+      "outputSlideIndex": 6,
+      "slideType": "thanks",
+      "slideTitle": "谢谢观看",
+      "slotWrites": []
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "topic": "AI客服方案汇报（新版）",
+  "tone": "professional",
+  "templateId": "default-business-template",
+  "sceneType": "proposal",
+  "pageCount": 10,
+  "scenario": "proposal",
+  "lockToTemplate": true,
+  "narrativeMode": "standard"
+}

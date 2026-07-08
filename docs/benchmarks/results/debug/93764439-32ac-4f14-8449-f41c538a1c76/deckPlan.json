@@ -1,0 +1,22 @@
+{
+  "topic": "光合作用",
+  "scenario": "teaching",
+  "audience": "通用受众",
+  "tone": "简洁有力",
+  "pageCount": 10,
+  "narrative": "光合作用从背景到行动的单线叙事",
+  "structure": [
+    {
+      "sectionTitle": "问题背景",
+      "pages": 2
+    },
+    {
+      "sectionTitle": "核心分析",
+      "pages": 4
+    },
+    {
+      "sectionTitle": "方案与行动",
+      "pages": 3
+    }
+  ]
+}

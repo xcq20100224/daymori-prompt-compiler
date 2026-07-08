@@ -1,0 +1,371 @@
+{
+  "generatedAt": "2026-07-06T01:02:36.346Z",
+  "topic": "牛顿第二定律课堂讲解",
+  "templateSource": "internal",
+  "templateFileName": "",
+  "engine": "local-pptxgenjs",
+  "fallbackReason": "upstream_unavailable",
+  "layoutPolicy": {
+    "mode": "strict-layout",
+    "minScore": 80,
+    "mappingVersion": "semantic-slot-v1",
+    "overflowPolicy": "layout-first"
+  },
+  "layoutQuality": {
+    "pass": true,
+    "strictLeakSafe": false,
+    "score": 99,
+    "minScore": 80,
+    "mode": "strict-layout",
+    "mappingVersion": "semantic-slot-v1",
+    "visibleIssueSlides": 1,
+    "structuralMissSlides": 0,
+    "expectedMissCount": 0,
+    "estimatedManualFixes": 1,
+    "issues": [
+      "content_out_of_body_band"
+    ],
+    "slideStats": [
+      {
+        "index": 1,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 1,
+        "bodySlots": 3,
+        "outOfBand": 1,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 8
+      },
+      {
+        "index": 2,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 1,
+        "bodySlots": 1,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 3,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 8,
+        "bodySlots": 7,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 4,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 8,
+        "bodySlots": 7,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 5,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 1,
+        "bodySlots": 1,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 6,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 8,
+        "bodySlots": 7,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 7,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 8,
+        "bodySlots": 6,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 8,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 8,
+        "bodySlots": 10,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 9,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 8,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 10,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 8,
+        "bodySlots": 7,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      }
+    ]
+  },
+  "contentQuality": {
+    "pass": true,
+    "contentCoverage": 1,
+    "emptySlides": [],
+    "placeholderOnlySlides": [],
+    "reasons": [],
+    "slideStats": [
+      {
+        "index": 1,
+        "slotCount": 6,
+        "nonMetaCount": 5,
+        "placeholderCount": 0,
+        "contentCount": 5,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 2,
+        "slotCount": 5,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 3,
+        "slotCount": 15,
+        "nonMetaCount": 13,
+        "placeholderCount": 0,
+        "contentCount": 13,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 4,
+        "slotCount": 15,
+        "nonMetaCount": 13,
+        "placeholderCount": 0,
+        "contentCount": 13,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 5,
+        "slotCount": 5,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 6,
+        "slotCount": 15,
+        "nonMetaCount": 13,
+        "placeholderCount": 0,
+        "contentCount": 13,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 7,
+        "slotCount": 14,
+        "nonMetaCount": 12,
+        "placeholderCount": 0,
+        "contentCount": 12,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 8,
+        "slotCount": 20,
+        "nonMetaCount": 16,
+        "placeholderCount": 0,
+        "contentCount": 16,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 9,
+        "slotCount": 21,
+        "nonMetaCount": 17,
+        "placeholderCount": 2,
+        "contentCount": 15,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 10,
+        "slotCount": 15,
+        "nonMetaCount": 13,
+        "placeholderCount": 0,
+        "contentCount": 13,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      }
+    ]
+  },
+  "teachingQuality": {
+    "pass": true,
+    "enabled": true,
+    "avgCharsPerSlide": 164.8,
+    "formulaSlideRatio": 1,
+    "genericSlideRatio": 0,
+    "actionTimeCoverage": 0,
+    "titleViolationSlides": [],
+    "reasons": [],
+    "slideStats": [
+      {
+        "index": 1,
+        "title": "牛顿第二定律课堂讲解",
+        "chars": 49,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 2,
+        "title": "章节02",
+        "chars": 18,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 3,
+        "title": "牛顿第二定律课堂讲解关键议题3",
+        "chars": 284,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 4,
+        "title": "牛顿第二定律课堂讲解关键议题4",
+        "chars": 294,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 5,
+        "title": "章节05",
+        "chars": 18,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 6,
+        "title": "牛顿第二定律课堂讲解关键议题6",
+        "chars": 294,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 7,
+        "title": "牛顿第二定律课堂讲解关键议题7",
+        "chars": 173,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 8,
+        "title": "牛顿第二定律课堂讲解关键议题8",
+        "chars": 188,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 9,
+        "title": "总结",
+        "chars": 201,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      },
+      {
+        "index": 10,
+        "title": "感谢",
+        "chars": 129,
+        "hasFormula": true,
+        "hasGeneric": false,
+        "hasAction": false,
+        "titleBad": false
+      }
+    ]
+  },
+  "diagnostics": {
+    "failedSlideCount": 1,
+    "failedSlides": [
+      {
+        "index": 1,
+        "reasons": [
+          "content_out_of_band"
+        ]
+      }
+    ],
+    "summary": {
+      "layoutPass": true,
+      "strictLeakSafe": false,
+      "contentPass": true,
+      "contentCoverage": 1,
+      "emptySlides": [],
+      "placeholderOnlySlides": []
+    }
+  }
+}

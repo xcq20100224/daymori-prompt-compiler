@@ -1,0 +1,67 @@
+{
+  "requestId": "7d446da8-fefb-4237-b837-a59a5594815d",
+  "inputSlideCount": 10,
+  "outputSlideCount": 10,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "新员工安全培训"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 2,
+      "slideType": "agenda",
+      "slideTitle": "目录"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 3,
+      "slideType": "section",
+      "slideTitle": "章节03"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 4,
+      "slideType": "content_bullets",
+      "slideTitle": "新员工安全培训关键议题4"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 5,
+      "slideType": "example",
+      "slideTitle": "新员工安全培训关键议题5"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 6,
+      "slideType": "section",
+      "slideTitle": "章节06"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 7,
+      "slideType": "exercise",
+      "slideTitle": "新员工安全培训关键议题7"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 8,
+      "slideType": "summary",
+      "slideTitle": "总结"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 9,
+      "slideType": "next_steps",
+      "slideTitle": "下一步行动"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 10,
+      "slideType": "thanks",
+      "slideTitle": "感谢"
+    }
+  ]
+}

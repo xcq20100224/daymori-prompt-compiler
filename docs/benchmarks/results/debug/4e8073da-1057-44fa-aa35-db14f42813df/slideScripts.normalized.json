@@ -1,0 +1,235 @@
+[
+  {
+    "id": "s1",
+    "type": "cover",
+    "title": "咖啡店选址方案",
+    "footer": "内容由AI生成",
+    "subtitle": "咖啡店选址方案提案汇报",
+    "speaker": "项目负责人",
+    "date": "2026-07-08",
+    "content": {
+      "title": "咖啡店选址方案",
+      "subtitle": "咖啡店选址方案提案汇报",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第1页内容：咖啡店选址方案\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s2",
+    "type": "section",
+    "title": "现状与问题",
+    "footer": "内容由AI生成",
+    "sectionNo": "01",
+    "subtitle": "咖啡店选址方案的核心约束与机会",
+    "content": {
+      "title": "现状与问题",
+      "subtitle": "咖啡店选址方案的核心约束与机会",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第2页内容：现状与问题\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s3",
+    "type": "content_text",
+    "title": "现状评估",
+    "footer": "内容由AI生成",
+    "label": "现状背景",
+    "body": "咖啡店选址方案当前在目标达成、资源配置与执行路径上存在明显瓶颈。若继续沿用现有方式，成本、效率与可持续性将同步承压，需要先完成问题分层与优先级重排。",
+    "visualHint": "咖啡店选址方案现状结构图",
+    "content": {
+      "title": "现状评估",
+      "subtitle": "现状背景",
+      "body": "咖啡店选址方案当前在目标达成、资源配置与执行路径上存在明显瓶颈。若继续沿用现有方式，成本、效率与可持续性将同步承压，需要先完成问题分层与优先级重排。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第3页内容：现状评估\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s4",
+    "type": "content_text",
+    "title": "关键问题拆解",
+    "footer": "内容由AI生成",
+    "label": "问题拆解",
+    "body": "围绕咖啡店选址方案可将问题拆为目标定义、流程协同、执行能力与反馈闭环四个层面。先聚焦高频高影响环节，再逐步覆盖复杂场景，可显著降低试点风险。",
+    "visualHint": "咖啡店选址方案问题分层卡片",
+    "content": {
+      "title": "关键问题拆解",
+      "subtitle": "问题拆解",
+      "body": "围绕咖啡店选址方案可将问题拆为目标定义、流程协同、执行能力与反馈闭环四个层面。先聚焦高频高影响环节，再逐步覆盖复杂场景，可显著降低试点风险。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第4页内容：关键问题拆解\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s5",
+    "type": "section",
+    "title": "方案设计",
+    "footer": "内容由AI生成",
+    "sectionNo": "02",
+    "subtitle": "咖啡店选址方案的分阶段落地方案",
+    "content": {
+      "title": "方案设计",
+      "subtitle": "咖啡店选址方案的分阶段落地方案",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第5页内容：方案设计\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s6",
+    "type": "content_text",
+    "title": "方案架构",
+    "footer": "内容由AI生成",
+    "label": "方案设计",
+    "body": "咖啡店选址方案方案建议采用“目标对齐-能力建设-效果验证”三层架构，先完成基线与关键能力建设，再通过迭代机制优化质量，形成可复制的执行闭环。",
+    "visualHint": "咖啡店选址方案方案架构图",
+    "content": {
+      "title": "方案架构",
+      "subtitle": "方案设计",
+      "body": "咖啡店选址方案方案建议采用“目标对齐-能力建设-效果验证”三层架构，先完成基线与关键能力建设，再通过迭代机制优化质量，形成可复制的执行闭环。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第6页内容：方案架构\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s7",
+    "type": "content_bullets",
+    "title": "三阶段推进试点落地",
+    "footer": "内容由AI生成",
+    "label": "实施路径",
+    "bullets": [
+      "第1阶段：明确咖啡店选址方案目标与边界",
+      "第2阶段：完成咖啡店选址方案试点并跟踪关键指标",
+      "第3阶段：复盘优化后推进规模化"
+    ],
+    "visualHint": "阶段里程碑流程图",
+    "content": {
+      "title": "三阶段推进试点落地",
+      "subtitle": "实施路径",
+      "body": [
+        "第1阶段：明确咖啡店选址方案目标与边界",
+        "第2阶段：完成咖啡店选址方案试点并跟踪关键指标",
+        "第3阶段：复盘优化后推进规模化"
+      ]
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第7页内容：三阶段推进试点落地\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s8",
+    "type": "content_text",
+    "title": "用关键指标验证收益",
+    "footer": "内容由AI生成",
+    "label": "价值评估",
+    "body": "建议围绕咖啡店选址方案建立统一指标集，至少覆盖效率、质量、成本与稳定性四类指标。只有当关键指标持续改善，才进入下一阶段投入。",
+    "visualHint": "试点指标仪表盘",
+    "content": {
+      "title": "用关键指标验证收益",
+      "subtitle": "价值评估",
+      "body": "建议围绕咖啡店选址方案建立统一指标集，至少覆盖效率、质量、成本与稳定性四类指标。只有当关键指标持续改善，才进入下一阶段投入。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第8页内容：用关键指标验证收益\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  },
+  {
+    "id": "s9",
+    "type": "content_bullets",
+    "title": "下一步决策事项",
+    "footer": "内容由AI生成",
+    "layoutId": "four_points",
+    "generationPrompt": "请从范围、预算、系统接入、责任人这4个不同维度，各生成一条决策事项。每条由4-6字短标题+12-20字说明组成，互不重复，不要合并。\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+    "label": "管理决策",
+    "items": [
+      {
+        "title": "试点范围",
+        "desc": "明确首批渠道与服务场景边界"
+      },
+      {
+        "title": "预算边界",
+        "desc": "锁定试点投入上限与审批口径"
+      },
+      {
+        "title": "系统接入",
+        "desc": "确认客服系统接口与联调计划"
+      },
+      {
+        "title": "责任人",
+        "desc": "指定业务与技术双负责人机制"
+      }
+    ],
+    "bullets": [
+      "明确首批渠道与服务场景边界",
+      "锁定试点投入上限与审批口径",
+      "确认客服系统接口与联调计划",
+      "指定业务与技术双负责人机制"
+    ],
+    "visualHint": "决策事项清单",
+    "content": {
+      "title": "下一步决策事项",
+      "subtitle": "管理决策",
+      "body": [
+        "试点范围：明确首批渠道与服务场景边界",
+        "预算边界：锁定试点投入上限与审批口径",
+        "系统接入：确认客服系统接口与联调计划",
+        "责任人：指定业务与技术双负责人机制"
+      ]
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s10",
+    "type": "thanks",
+    "title": "谢谢观看",
+    "footer": "内容由AI生成",
+    "subtitle": "Q&A",
+    "content": {
+      "title": "谢谢观看",
+      "subtitle": "Q&A",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "内容由AI生成",
+      "pageNumber": ""
+    },
+    "generationPrompt": "生成第10页内容：谢谢观看\n\n以下是必须避免的错误示例：\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_strict|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_creative|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n❌ 错误(variant_batch_low_score)：v4_concise|score=94|blockers=0\n✅ 正确：优先选择自动评分更高且BLOCKER更少的版本\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。"
+  }
+]

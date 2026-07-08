@@ -133,8 +133,13 @@ The app now supports a direct adapter from `aippt.v1` contract JSON to `.pptx` o
 
 - Windows PowerPoint COM export (optional, OfficePLUS high-fidelity local path):
 
-    - `POWERPOINT_COM_ENABLED=true` (default on Windows)
+   - `POWERPOINT_COM_EXPLICIT_ALLOW=true` (mandatory explicit opt-in)
+   - `POWERPOINT_STRICT_NO_POPUP=true` (default; hard-disable COM to prevent popup windows)
+   - `POWERPOINT_COM_ENABLED=true` (effective only when both `POWERPOINT_COM_EXPLICIT_ALLOW=true` and `POWERPOINT_STRICT_NO_POPUP=false`)
+      - `POWERPOINT_COM_PROBE_ENABLED=false` (default; avoid COM runtime probe popup side effects)
     - `POWERPOINT_COM_TIMEOUT_MS=120000`
+      - `POWERPOINT_COM_VISIBLE=false` (default hidden, no popup window during export)
+         - Set `POWERPOINT_COM_VISIBLE=true` only when you need visual debugging
     - When OfficePLUS template file is present and upstream AIPPT is unavailable,
        backend will try local PowerPoint COM automation first, then fallback to
        local `pptxgenjs` for stability.
@@ -226,9 +231,78 @@ Teacher benchmark now supports an execution loop upgrade:
 
    npm run bench:layout
 
+  - Now includes content gate metrics for each exported file:
+    - blank slides
+    - placeholder-only slides
+    - content coverage
+
 - Production SLA benchmark (20 real topics, one-pass/strict leak/speed/manual adjust):
 
    npm run bench:production
+
+  - Target pass now also requires:
+    - blank slides total = 0
+    - placeholder-only slides total = 0
+    - avg content coverage >= 98%
+
+- Direct PPT quality gate check on any exported files:
+
+   npm run bench:ppt:quality -- <file1.pptx> <file2.pptx>
+
+- Daymori vs Lazyman dashboard (daily board + top2 failure types):
+
+    npm run bench:vs:lazyman
+
+- Lazyman production SLA baseline (same 20 topics, same metric schema):
+
+   npm run bench:production:lazyman
+
+- One-click daily quality cycle (Daymori production SLA + Lazyman SLA + dashboard + Top2 fix list):
+
+   npm run bench:daily
+
+   - API endpoint override:
+      - `BENCH_API_BASE=http://localhost:3000 npm run bench:daily`
+   - If `localhost:3000` is unreachable and no `BENCH_API_BASE` is provided, script auto boots a temporary local server on `BENCH_SERVER_PORT` (default `3301`).
+
+   - Writes Daymori baseline to:
+      - `docs/benchmarks/results/daymori-production-sla-latest.json`
+   - Writes Lazyman baseline to:
+      - `docs/benchmarks/results/lazyman-production-sla-latest.json`
+
+- Release publish gate (hard block if any SLA gate is false):
+
+   npm run gate:publish
+
+   - API endpoint override:
+      - `BENCH_API_BASE=http://localhost:3000 npm run gate:publish`
+
+## Delivery Gate (Dual Gate)
+
+- Any delivery export now requires BOTH gates to pass:
+   - Layout gate pass
+   - Content gate pass (`blank=0`, `placeholder-only=0`, `coverage>=98%`)
+- If any gate fails, API rejects delivery (`409`) with quality diagnostics.
+- For publish blocking in operations, run `npm run gate:publish`:
+   - Checks `sla.contentGatePass`, `sla.blankSlidesZero`, `sla.placeholderOnlyZero`, `sla.strictLeakSafe`, and other release flags
+   - Exits non-zero immediately when any check fails
+
+## Failed-slide Minimal Repair Loop
+
+- On `/api/ppt/export-save`, when first export fails dual gate:
+   - Read the generated `.quality.json`
+   - Extract `failedSlides`
+   - Re-export by rewriting only those pages (`repairSlideIndexes`)
+   - Keep passed slides untouched to reduce style drift
+
+## Training Pair Data
+
+- Repair before/after pairs are appended to:
+   - `docs/benchmarks/results/training-pairs/YYYY-MM-DD.jsonl`
+- Each row stores:
+   - failed slide indexes
+   - before quality + diagnostics
+   - after quality + diagnostics
 
 - Same run with visible browser (debug):
 

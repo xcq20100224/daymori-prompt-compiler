@@ -1,0 +1,165 @@
+{
+  "requestId": "e372f8f2-dd5a-46aa-a1dc-6bd2ff3dc515",
+  "topic": "AI客服降本增效方案",
+  "deckPlan": {
+    "topic": "AI客服降本增效方案",
+    "scenario": "proposal",
+    "audience": "通用受众",
+    "tone": "自然表达、可直接讲解",
+    "pageCount": 10,
+    "narrative": "AI客服降本增效方案从背景到行动的单线叙事",
+    "structure": [
+      {
+        "sectionTitle": "问题背景",
+        "pages": 2
+      },
+      {
+        "sectionTitle": "核心分析",
+        "pages": 4
+      },
+      {
+        "sectionTitle": "方案与行动",
+        "pages": 3
+      }
+    ]
+  },
+  "inputSlideCount": 10,
+  "outputSlideCount": 10,
+  "slides": [
+    {
+      "index": 1,
+      "type": "cover",
+      "title": "AI客服降本增效方案",
+      "texts": [
+        "AI 客服降本增效方案",
+        "时间： /05/01"
+      ]
+    },
+    {
+      "index": 2,
+      "type": "section",
+      "title": "现状与问题",
+      "texts": [
+        "01",
+        "03",
+        "02",
+        "04",
+        "现状与问题",
+        "先明确压力来源 先明确压力来源 先明确压力来源"
+      ]
+    },
+    {
+      "index": 3,
+      "type": "content",
+      "title": "客服成本压力正在上升",
+      "texts": [
+        "现状背景 随着咨询量、售后问题和服务渠道持续增加，人工客服长期承担重复问答、 订单查询与进度解释工作。排班、培训与质检成本持续抬升，但高峰时段的响应速度 ...",
+        "客服成本压力正在上升",
+        "PART 01"
+      ]
+    },
+    {
+      "index": 4,
+      "type": "content",
+      "title": "高频问题适合优先自动化",
+      "texts": [
+        "高频问题适合优先自动化",
+        "问题拆解 问题拆解 售前咨询、订单状态、退换货政策与基础售后进度通常具备标准答案，适合由 AI 客服优先承接。 人工团队应聚焦投诉处理、复杂异常与高价值客户沟通，以提升整体服务质量。"
+      ]
+    },
+    {
+      "index": 5,
+      "type": "section",
+      "title": "方案设计",
+      "texts": [
+        "方案设计",
+        "能力与实施并行 能力与实施并行 能力与实施并行"
+      ]
+    },
+    {
+      "index": 6,
+      "type": "content",
+      "title": "AI客服能力分层建设",
+      "texts": [
+        "AI 客服能力分层建设"
+      ]
+    },
+    {
+      "index": 7,
+      "type": "content",
+      "title": "三阶段推进试点落地",
+      "texts": [
+        "实施路径 • 第 1 阶段梳理高频问题并建设知识库 • 第 2 阶段接入客服系统并 灰度上线 • 第 3 阶段根据命中率持续优化运营",
+        "三阶段推进试点落地",
+        "PART 02"
+      ]
+    },
+    {
+      "index": 8,
+      "type": "content",
+      "title": "用关键指标验证收益",
+      "texts": [
+        "用关键指标验证收益"
+      ]
+    },
+    {
+      "index": 9,
+      "type": "content",
+      "title": "下一步决策事项",
+      "texts": [
+        "下一步决策事项",
+        "您的文字内容或者到此处，您的文字内容",
+        "1",
+        "您的文字内容或者到此处，您的文字内容",
+        "3",
+        "您的文字内容或者到此处，您的文字内容",
+        "2",
+        "您的文字内容或者到此处，您的文字内容",
+        "4",
+        "管理决策 管理决策 • 确认试点范围与预算边界"
+      ]
+    },
+    {
+      "index": 10,
+      "type": "qa",
+      "title": "谢谢观看",
+      "texts": [
+        "谢谢观看",
+        "01",
+        "02",
+        "03",
+        "04",
+        "Q&A Q&A Q&A"
+      ]
+    }
+  ],
+  "validation": {
+    "ok": false,
+    "errors": [
+      {
+        "slideIndex": 6,
+        "type": "blankOrHalfFilled",
+        "text": "AI客服能力分层建设"
+      },
+      {
+        "slideIndex": 8,
+        "type": "blankOrHalfFilled",
+        "text": "用关键指标验证收益"
+      }
+    ]
+  },
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 72,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 91,
+    "cleanliness": 72,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

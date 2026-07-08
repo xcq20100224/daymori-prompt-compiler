@@ -1,0 +1,17 @@
+{
+  "runAt": "2026-07-02T08:40:26.094Z",
+  "runDate": "2026-07-02",
+  "daymori": {
+    "ok": false,
+    "status": 1
+  },
+  "lazyman": {
+    "ok": false,
+    "status": 1
+  },
+  "dashboard": {
+    "ok": true,
+    "status": 0
+  },
+  "top2": []
+}

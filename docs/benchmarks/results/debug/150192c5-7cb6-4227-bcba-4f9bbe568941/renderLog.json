@@ -1,0 +1,67 @@
+{
+  "requestId": "150192c5-7cb6-4227-bcba-4f9bbe568941",
+  "inputSlideCount": 10,
+  "outputSlideCount": 10,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "AI客服降本增效方案"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 2,
+      "slideType": "section",
+      "slideTitle": "章节02"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 3,
+      "slideType": "content_text",
+      "slideTitle": "AI客服降本增效方案关键议题3"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 4,
+      "slideType": "data_insight",
+      "slideTitle": "AI客服降本增效方案关键议题4"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 5,
+      "slideType": "compare",
+      "slideTitle": "AI客服降本增效方案关键议题5"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 6,
+      "slideType": "section",
+      "slideTitle": "章节06"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 7,
+      "slideType": "process",
+      "slideTitle": "AI客服降本增效方案关键议题7"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 8,
+      "slideType": "case_study",
+      "slideTitle": "AI客服降本增效方案关键议题8"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 9,
+      "slideType": "next_steps",
+      "slideTitle": "下一步行动"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 10,
+      "slideType": "thanks",
+      "slideTitle": "感谢"
+    }
+  ]
+}

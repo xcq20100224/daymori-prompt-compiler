@@ -1,0 +1,16 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 409,
+    "error": "ppt_export_unavailable",
+    "detail": "template_render_failed:powerpoint_com_disabled",
+    "requestId": "",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": ""
+  }
+]

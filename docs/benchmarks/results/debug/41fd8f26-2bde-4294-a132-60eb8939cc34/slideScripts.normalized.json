@@ -1,0 +1,109 @@
+[
+  {
+    "id": "s1",
+    "type": "cover",
+    "title": "AI客服降本增效方案",
+    "footer": "内容由AI生成",
+    "subtitle": "proposal 场景演示",
+    "speaker": "汇报人",
+    "date": "2026-07-06"
+  },
+  {
+    "id": "s2",
+    "type": "section",
+    "title": "章节02",
+    "footer": "内容由AI生成",
+    "sectionNo": "02",
+    "subtitle": "章节说明"
+  },
+  {
+    "id": "s3",
+    "type": "content_text",
+    "title": "AI客服降本增效方案关键议题3",
+    "footer": "内容由AI生成",
+    "label": "核心观点",
+    "body": "AI客服降本增效方案关键议题3围绕当前主题给出完整说明，先描述现状与问题，再解释关键依据，最后明确可执行动作，确保这一页的信息能够直接支持决策或讲解。",
+    "visualHint": "图示建议"
+  },
+  {
+    "id": "s4",
+    "type": "data_insight",
+    "title": "AI客服降本增效方案关键议题4",
+    "footer": "内容由AI生成",
+    "metric": "关键指标",
+    "insight": "通过对成本、效率和满意度数据的联合分析，可以识别最具价值的优化环节并优先投入资源。",
+    "chartHint": "柱状图",
+    "visualHint": "数据图"
+  },
+  {
+    "id": "s5",
+    "type": "compare",
+    "title": "AI客服降本增效方案关键议题5",
+    "footer": "内容由AI生成",
+    "leftTitle": "方案A",
+    "leftPoints": [
+      "投入更低，适合快速试点",
+      "上线周期短，风险可控",
+      "适合先验证关键指标"
+    ],
+    "rightTitle": "方案B",
+    "rightPoints": [
+      "能力更完整，覆盖面更广",
+      "实施复杂度更高",
+      "适合中长期规模化"
+    ],
+    "conclusion": "按目标阶段选择最优解",
+    "visualHint": "对比图"
+  },
+  {
+    "id": "s6",
+    "type": "section",
+    "title": "章节06",
+    "footer": "内容由AI生成",
+    "sectionNo": "06",
+    "subtitle": "章节说明"
+  },
+  {
+    "id": "s7",
+    "type": "process",
+    "title": "AI客服降本增效方案关键议题7",
+    "footer": "内容由AI生成",
+    "steps": [
+      "完成现状诊断并锁定优先场景",
+      "按里程碑推进实施并跟踪数据",
+      "复盘问题后持续优化与扩展"
+    ],
+    "conclusion": "形成可复制的执行闭环",
+    "visualHint": "流程图"
+  },
+  {
+    "id": "s8",
+    "type": "case_study",
+    "title": "AI客服降本增效方案关键议题8",
+    "footer": "内容由AI生成",
+    "background": "某团队在高峰期出现响应延迟和人力压力。",
+    "action": "先聚焦高频问题场景上线自动化能力，再逐步接入复杂问题转人工链路。",
+    "result": "响应时效与处理效率显著提升，人工压力下降。",
+    "visualHint": "案例卡片"
+  },
+  {
+    "id": "s9",
+    "type": "next_steps",
+    "title": "下一步行动",
+    "footer": "内容由AI生成",
+    "actions": [
+      "明确里程碑与负责人",
+      "完成试点并跟踪指标",
+      "复盘优化后规模化推广"
+    ],
+    "ownerHint": "责任人",
+    "visualHint": "行动清单"
+  },
+  {
+    "id": "s10",
+    "type": "thanks",
+    "title": "感谢",
+    "footer": "内容由AI生成",
+    "subtitle": "Q&A"
+  }
+]

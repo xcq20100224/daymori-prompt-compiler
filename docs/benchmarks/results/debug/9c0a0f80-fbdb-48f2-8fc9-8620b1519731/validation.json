@@ -1,0 +1,13 @@
+{
+  "requestId": "9c0a0f80-fbdb-48f2-8fc9-8620b1519731",
+  "ok": true,
+  "errors": [],
+  "qualityScore": {
+    "cleanliness": 100,
+    "structure": 100,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 98,
+    "overall": 97
+  }
+}

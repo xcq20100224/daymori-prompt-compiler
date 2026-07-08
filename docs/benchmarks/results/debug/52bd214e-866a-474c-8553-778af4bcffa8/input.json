@@ -1,0 +1,32 @@
+{
+  "contractVersion": "aippt.v1",
+  "engineType": "generic-aippt",
+  "sceneType": "proposal",
+  "templateId": "default-business-template",
+  "templateSource": "internal",
+  "pageCount": 10,
+  "visualStyle": "business clean",
+  "tone": "专业可信",
+  "fontTheme": "business-cn",
+  "chartStyle": "calm",
+  "narrativeMode": "standard",
+  "topic": "AI客服方案汇报（新版）",
+  "slides": [],
+  "scenario": "proposal",
+  "lockToTemplate": true,
+  "layoutPolicy": {
+    "minScore": 84,
+    "mode": "strict-layout",
+    "mappingVersion": "semantic-slot-v1"
+  },
+  "qualityGate": {
+    "pass": true,
+    "issues": []
+  },
+  "requiredFields": [
+    "sceneType",
+    "pageCount",
+    "slides[].type",
+    "slides[].title"
+  ]
+}

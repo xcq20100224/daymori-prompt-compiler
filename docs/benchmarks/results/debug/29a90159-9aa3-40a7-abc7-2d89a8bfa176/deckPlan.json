@@ -1,0 +1,22 @@
+{
+  "topic": "RAG系统性能优化",
+  "scenario": "business_report",
+  "audience": "通用受众",
+  "tone": "清晰可执行",
+  "pageCount": 10,
+  "narrative": "RAG系统性能优化从背景到行动的单线叙事",
+  "structure": [
+    {
+      "sectionTitle": "问题背景",
+      "pages": 2
+    },
+    {
+      "sectionTitle": "核心分析",
+      "pages": 4
+    },
+    {
+      "sectionTitle": "方案与行动",
+      "pages": 3
+    }
+  ]
+}

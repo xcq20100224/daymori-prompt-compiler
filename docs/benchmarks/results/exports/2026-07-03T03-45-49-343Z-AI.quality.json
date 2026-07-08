@@ -1,0 +1,285 @@
+{
+  "generatedAt": "2026-07-03T03:45:49.345Z",
+  "topic": "AI客服降本增效方案",
+  "templateSource": "officeplus",
+  "templateFileName": "3.pptx",
+  "engine": "local-powerpoint-com",
+  "fallbackReason": "officeplus_template_first:local_powerpoint_com",
+  "layoutPolicy": {
+    "mode": "strict-layout",
+    "minScore": 80,
+    "mappingVersion": "semantic-slot-v1",
+    "overflowPolicy": "layout-first"
+  },
+  "layoutQuality": {
+    "pass": true,
+    "strictLeakSafe": false,
+    "score": 98,
+    "minScore": 80,
+    "mode": "strict-layout",
+    "mappingVersion": "semantic-slot-v1",
+    "visibleIssueSlides": 2,
+    "structuralMissSlides": 0,
+    "expectedMissCount": 0,
+    "estimatedManualFixes": 2,
+    "issues": [
+      "potential_overlap_detected"
+    ],
+    "slideStats": [
+      {
+        "index": 1,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 3,
+        "bodySlots": 3,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 2,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 0,
+        "titleSlots": 3,
+        "bodySlots": 3,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 3,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 2,
+        "bodySlots": 2,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 4,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 2,
+        "bodySlots": 1,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 5,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 0,
+        "titleSlots": 3,
+        "bodySlots": 1,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 6,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 0,
+        "titleSlots": 4,
+        "bodySlots": 2,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 7,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 3,
+        "bodySlots": 3,
+        "outOfBand": 0,
+        "overlapRisk": 1,
+        "expectedMiss": 0,
+        "penalty": 6
+      },
+      {
+        "index": 8,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 3,
+        "bodySlots": 2,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      },
+      {
+        "index": 9,
+        "expectedTitleMin": 1,
+        "expectedBodyMin": 1,
+        "titleSlots": 12,
+        "bodySlots": 11,
+        "outOfBand": 0,
+        "overlapRisk": 13,
+        "expectedMiss": 0,
+        "penalty": 18
+      },
+      {
+        "index": 10,
+        "expectedTitleMin": 0,
+        "expectedBodyMin": 1,
+        "titleSlots": 2,
+        "bodySlots": 1,
+        "outOfBand": 0,
+        "overlapRisk": 0,
+        "expectedMiss": 0,
+        "penalty": 0
+      }
+    ]
+  },
+  "contentQuality": {
+    "pass": true,
+    "contentCoverage": 1,
+    "emptySlides": [],
+    "placeholderOnlySlides": [],
+    "reasons": [],
+    "slideStats": [
+      {
+        "index": 1,
+        "slotCount": 7,
+        "nonMetaCount": 5,
+        "placeholderCount": 0,
+        "contentCount": 5,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 2,
+        "slotCount": 7,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 3,
+        "slotCount": 4,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 4,
+        "slotCount": 3,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 5,
+        "slotCount": 3,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 6,
+        "slotCount": 4,
+        "nonMetaCount": 4,
+        "placeholderCount": 0,
+        "contentCount": 4,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 7,
+        "slotCount": 5,
+        "nonMetaCount": 4,
+        "placeholderCount": 0,
+        "contentCount": 4,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 8,
+        "slotCount": 4,
+        "nonMetaCount": 4,
+        "placeholderCount": 0,
+        "contentCount": 4,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 9,
+        "slotCount": 16,
+        "nonMetaCount": 12,
+        "placeholderCount": 4,
+        "contentCount": 8,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      },
+      {
+        "index": 10,
+        "slotCount": 7,
+        "nonMetaCount": 3,
+        "placeholderCount": 0,
+        "contentCount": 3,
+        "empty": false,
+        "placeholderOnly": false,
+        "hasContent": true
+      }
+    ]
+  },
+  "teachingQuality": {
+    "pass": true,
+    "enabled": false,
+    "avgCharsPerSlide": 0,
+    "formulaSlideRatio": 0,
+    "genericSlideRatio": 0,
+    "actionTimeCoverage": 0,
+    "titleViolationSlides": [],
+    "reasons": []
+  },
+  "diagnostics": {
+    "failedSlideCount": 2,
+    "failedSlides": [
+      {
+        "index": 7,
+        "reasons": [
+          "potential_overlap"
+        ]
+      },
+      {
+        "index": 9,
+        "reasons": [
+          "potential_overlap"
+        ]
+      }
+    ],
+    "summary": {
+      "layoutPass": true,
+      "strictLeakSafe": false,
+      "contentPass": true,
+      "contentCoverage": 1,
+      "emptySlides": [],
+      "placeholderOnlySlides": []
+    }
+  }
+}

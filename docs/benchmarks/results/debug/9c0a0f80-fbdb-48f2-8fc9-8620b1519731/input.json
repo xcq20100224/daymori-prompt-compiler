@@ -1,0 +1,22 @@
+{
+  "topic": "AI客服降本增效方案",
+  "tone": "自然表达、可直接讲解",
+  "templateId": "default-safe",
+  "sceneType": "企业",
+  "templateSource": "internal",
+  "chartStyle": "calm",
+  "layoutPolicy": {
+    "minScore": 80,
+    "mode": "strict-layout",
+    "mappingVersion": "semantic-slot-v1"
+  },
+  "pageCount": 10,
+  "slides": [],
+  "scenario": "proposal",
+  "fontTheme": "business-cn",
+  "lockToTemplate": true,
+  "engineType": "generic-aippt",
+  "contractVersion": "aippt.v1",
+  "narrativeMode": "standard",
+  "visualStyle": "结构清晰、信息密度均衡"
+}

@@ -1,0 +1,26 @@
+﻿{
+  "passed": true,
+  "score": 100,
+  "lazymanLevel": "LazyMan",
+  "checks": {
+    "autoScore": true,
+    "systemScore": true,
+    "noBlockers": true,
+    "noPageNumbers": true,
+    "noMetadata": true,
+    "lowRepetition": true,
+    "titleVarianceOK": true,
+    "lowHalfFilled": true
+  },
+  "failedChecks": [],
+  "details": {
+    "autoScore": 94,
+    "systemScore": 94,
+    "blockerCount": 0,
+    "pageNumbersFound": false,
+    "metadataFound": false,
+    "maxRepetition": 3,
+    "titleVariance": 4,
+    "halfFilledRatio": "0.50"
+  }
+}

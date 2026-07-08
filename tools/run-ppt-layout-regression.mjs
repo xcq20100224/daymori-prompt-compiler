@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { analyzePptxFile } from "./ppt-quality-metrics.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -104,6 +105,35 @@ async function postExportSave(contract) {
 
 function summarizeOne(caseId, mode, result) {
   const q = result && result.data && result.data.layoutQuality ? result.data.layoutQuality : null;
+  const rel = result && result.data ? String(result.data.relativePath || "") : "";
+  let qualityGate = {
+    pass: false,
+    reasons: ["missing_export_file"],
+    emptySlides: [],
+    placeholderOnlySlides: [],
+    contentCoverage: 0
+  };
+  if (rel) {
+    try {
+      const abs = path.join(repoRoot, rel);
+      const metrics = analyzePptxFile(abs);
+      qualityGate = {
+        pass: !!(metrics && metrics.gate && metrics.gate.pass),
+        reasons: metrics && metrics.gate ? metrics.gate.reasons : ["gate_eval_failed"],
+        emptySlides: metrics.emptySlides || [],
+        placeholderOnlySlides: metrics.placeholderOnlySlides || [],
+        contentCoverage: Number(metrics.contentCoverage || 0)
+      };
+    } catch {
+      qualityGate = {
+        pass: false,
+        reasons: ["quality_eval_failed"],
+        emptySlides: [],
+        placeholderOnlySlides: [],
+        contentCoverage: 0
+      };
+    }
+  }
   return {
     caseId,
     mode,
@@ -113,8 +143,9 @@ function summarizeOne(caseId, mode, result) {
     minScore: q ? Number(q.minScore || 0) : 0,
     pass: q ? !!q.pass : false,
     engine: result && result.data ? String(result.data.engine || "") : "",
-    file: result && result.data ? String(result.data.relativePath || "") : "",
-    error: result && result.data && result.data.detail ? String(result.data.detail) : ""
+    file: rel,
+    error: result && result.data && result.data.detail ? String(result.data.detail) : "",
+    qualityGate
   };
 }
 
@@ -126,12 +157,16 @@ function buildReport(payload) {
   lines.push(`- Template Applied: ${payload.templateApplied ? "YES" : "NO"}`);
   lines.push(`- Total Runs: ${payload.totalRuns}`);
   lines.push(`- Passed Quality Gate: ${payload.passed}`);
+  lines.push(`- Passed Content Gate: ${payload.gatePassed}`);
   lines.push(`- Avg Score: ${payload.avgScore.toFixed(1)}`);
+  lines.push(`- Blank Slides Total: ${payload.blankSlidesTotal}`);
+  lines.push(`- Placeholder-only Slides Total: ${payload.placeholderOnlyTotal}`);
+  lines.push(`- Avg Content Coverage: ${(payload.avgContentCoverage * 100).toFixed(1)}%`);
   lines.push("");
   lines.push("## Results");
   lines.push("");
   for (const r of payload.results) {
-    lines.push(`- ${r.caseId} | ${r.mode} | ok=${r.ok} | score=${r.score}/${r.minScore} | pass=${r.pass} | engine=${r.engine} | file=${r.file || "-"} | ${r.error || ""}`);
+    lines.push(`- ${r.caseId} | ${r.mode} | ok=${r.ok} | score=${r.score}/${r.minScore} | pass=${r.pass} | gate=${r.qualityGate && r.qualityGate.pass ? "pass" : "fail"} | coverage=${((r.qualityGate && r.qualityGate.contentCoverage) || 0).toFixed(2)} | engine=${r.engine} | file=${r.file || "-"} | ${(r.qualityGate && r.qualityGate.reasons || []).join(",") || ""} | ${r.error || ""}`);
   }
   return lines.join("\n");
 }
@@ -157,6 +192,12 @@ async function run() {
   const scored = results.filter((r) => Number.isFinite(r.score));
   const avgScore = scored.length ? scored.reduce((acc, x) => acc + x.score, 0) / scored.length : 0;
   const passed = results.filter((r) => r.pass).length;
+  const gatePassed = results.filter((r) => r.qualityGate && r.qualityGate.pass).length;
+  const blankSlidesTotal = results.reduce((acc, r) => acc + (r.qualityGate ? r.qualityGate.emptySlides.length : 0), 0);
+  const placeholderOnlyTotal = results.reduce((acc, r) => acc + (r.qualityGate ? r.qualityGate.placeholderOnlySlides.length : 0), 0);
+  const avgContentCoverage = results.length
+    ? results.reduce((acc, r) => acc + Number((r.qualityGate && r.qualityGate.contentCoverage) || 0), 0) / results.length
+    : 0;
 
   const payload = {
     runAt: nowIso(),
@@ -164,6 +205,10 @@ async function run() {
     templateApplied: !!templatePack,
     totalRuns: results.length,
     passed,
+    gatePassed,
+    blankSlidesTotal,
+    placeholderOnlyTotal,
+    avgContentCoverage,
     avgScore,
     results
   };
@@ -185,9 +230,13 @@ async function run() {
   await fs.writeFile(datedMdPath, reportMd);
 
   console.log(`Layout regression done: ${passed}/${results.length} passed`);
+  console.log(`Content gate passed: ${gatePassed}/${results.length}`);
+  console.log(`Blank slides total: ${blankSlidesTotal}`);
   console.log(`Avg score: ${avgScore.toFixed(1)}`);
   console.log("Report: docs/benchmarks/reports/layout-regression-latest.md");
   console.log("Result: docs/benchmarks/results/layout-regression-latest.json");
+
+  if (gatePassed !== results.length) process.exitCode = 1;
 }
 
 run().catch((error) => {

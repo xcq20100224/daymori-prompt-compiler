@@ -1,0 +1,22 @@
+{
+  "topic": "酸碱中和反应",
+  "scenario": "teaching",
+  "audience": "通用受众",
+  "tone": "清晰可执行",
+  "pageCount": 10,
+  "narrative": "酸碱中和反应从背景到行动的单线叙事",
+  "structure": [
+    {
+      "sectionTitle": "问题背景",
+      "pages": 2
+    },
+    {
+      "sectionTitle": "核心分析",
+      "pages": 4
+    },
+    {
+      "sectionTitle": "方案与行动",
+      "pages": 3
+    }
+  ]
+}

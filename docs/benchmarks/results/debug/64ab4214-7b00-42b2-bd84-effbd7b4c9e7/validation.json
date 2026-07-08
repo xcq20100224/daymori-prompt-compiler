@@ -1,0 +1,30 @@
+{
+  "requestId": "64ab4214-7b00-42b2-bd84-effbd7b4c9e7",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 6,
+      "type": "blankOrHalfFilled",
+      "text": "AI客服能力分层建设"
+    },
+    {
+      "slideIndex": 8,
+      "type": "blankOrHalfFilled",
+      "text": "用关键指标验证收益"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 72,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 91,
+    "cleanliness": 72,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

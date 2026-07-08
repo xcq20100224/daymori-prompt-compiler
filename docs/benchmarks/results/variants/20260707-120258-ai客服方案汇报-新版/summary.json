@@ -1,0 +1,13 @@
+{
+  "topic": "AI客服方案汇报（新版）",
+  "scenario": "proposal",
+  "sceneType": "企业",
+  "total": 8,
+  "success": 0,
+  "failed": 8,
+  "templateFileName": "演示文稿4.pptx",
+  "topCount": 0,
+  "uncertainCount": 0,
+  "best": null,
+  "timestamp": "2026-07-07T04:02:58.491Z"
+}

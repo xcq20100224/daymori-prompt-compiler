@@ -1,0 +1,73 @@
+{
+  "timestamp": "2026-07-08T14:12:48.464Z",
+  "sampleCount": 5,
+  "avgScore": 56,
+  "lazymanRate": 0,
+  "results": [
+    {
+      "variantDir": "20260708-221246-abtest2-1783519662126",
+      "pptxPath": "docs/benchmarks/results/exports/50a2ce3c-158a-4d56-9c43-83f9bc95998f/deck.pptx",
+      "score": 60,
+      "level": "Needs-Work\\n",
+      "watermarkPages": 0,
+      "pageNumberPages": 4,
+      "halfFilledPages": 3,
+      "totalPages": 10,
+      "topic": "ABTest2_1783519662126",
+      "autoScore": 94,
+      "systemScore": 94
+    },
+    {
+      "variantDir": "20260708-220737-abtest1-1783519531809",
+      "pptxPath": "docs/benchmarks/results/exports/3b769e17-9619-46d7-9aeb-1744591b9c4b/deck.pptx",
+      "score": 60,
+      "level": "Needs-Work\\n",
+      "watermarkPages": 0,
+      "pageNumberPages": 4,
+      "halfFilledPages": 3,
+      "totalPages": 10,
+      "topic": "ABTest1_1783519531809",
+      "autoScore": 94,
+      "systemScore": 94
+    },
+    {
+      "variantDir": "20260708-220655-abtest2-1783519446982",
+      "pptxPath": "docs/benchmarks/results/exports/e22cb730-6cec-4255-ae5a-9d531199c4b1/deck.pptx",
+      "score": 60,
+      "level": "Needs-Work\\n",
+      "watermarkPages": 0,
+      "pageNumberPages": 4,
+      "halfFilledPages": 3,
+      "totalPages": 10,
+      "topic": "ABTest2_1783519446982",
+      "autoScore": 94,
+      "systemScore": 94
+    },
+    {
+      "variantDir": "20260708-220552-ai客服降本增效方案",
+      "pptxPath": "docs/benchmarks/results/exports/0405516d-5a2b-4f61-9b71-9f28eed863ef/deck.pptx",
+      "score": 60,
+      "level": "Needs-Work\\n",
+      "watermarkPages": 0,
+      "pageNumberPages": 4,
+      "halfFilledPages": 3,
+      "totalPages": 10,
+      "topic": "AI客服降本增效方案",
+      "autoScore": 66,
+      "systemScore": 94
+    },
+    {
+      "variantDir": "20260708-220756-企业数字化转型",
+      "pptxPath": "docs/benchmarks/results/exports/91fb879a-66f5-446f-bbb8-369de43e11aa/deck.pptx",
+      "score": 40,
+      "level": "Needs-Work\\n",
+      "watermarkPages": 0,
+      "pageNumberPages": 4,
+      "halfFilledPages": 4,
+      "totalPages": 10,
+      "topic": "企业数字化转型",
+      "autoScore": 64,
+      "systemScore": 94
+    }
+  ]
+}

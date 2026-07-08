@@ -1,0 +1,192 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,blankOrHalfFilled_slide_8,slotOrder_slide_9,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffect...[truncated]",
+    "requestId": "c218f834-2cc1-4c04-8621-f3f6bf78466e",
+    "generationTracePath": "docs/benchmarks/results/debug/c218f834-2cc1-4c04-8621-f3f6bf78466e/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第3页"
+        },
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第8页"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "blankOrHalfFilled_slide_8",
+        "slotOrder_slide_9",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,blankOrHalfFilled_slide_8,slotOrder_slide_9,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffect...[truncated]",
+    "requestId": "9beb3497-6284-4a77-ae67-3cc65c6a532d",
+    "generationTracePath": "docs/benchmarks/results/debug/9beb3497-6284-4a77-ae67-3cc65c6a532d/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第3页"
+        },
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第8页"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "blankOrHalfFilled_slide_8",
+        "slotOrder_slide_9",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]

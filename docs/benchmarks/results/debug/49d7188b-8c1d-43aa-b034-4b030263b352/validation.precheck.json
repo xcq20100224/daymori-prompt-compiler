@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "pass": false,
+  "errors": [
+    {
+      "slideIndex": 9,
+      "type": "textBudgetExceeded",
+      "text": "8/102"
+    }
+  ],
+  "issues": [
+    "textBudgetExceeded_slide_9"
+  ],
+  "warnings": []
+}

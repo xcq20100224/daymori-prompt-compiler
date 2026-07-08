@@ -1,0 +1,50 @@
+{
+  "timestamp": "2026-07-08T14:12:51.514Z",
+  "benchApiBase": "http://127.0.0.1:3402",
+  "best": {
+    "config": "ConfigA-空白模板",
+    "template": "docs/benchmarks/templates/inbox/blank-clean.pptx",
+    "enhancedLevel": 1,
+    "relaxedGate": false,
+    "lazymanRate": 0,
+    "avgScore": 64,
+    "watermarkIssues": 0,
+    "pageNumberIssues": 5,
+    "sampleCount": 5
+  },
+  "results": [
+    {
+      "config": "ConfigA-空白模板",
+      "template": "docs/benchmarks/templates/inbox/blank-clean.pptx",
+      "enhancedLevel": 1,
+      "relaxedGate": false,
+      "lazymanRate": 0,
+      "avgScore": 64,
+      "watermarkIssues": 0,
+      "pageNumberIssues": 5,
+      "sampleCount": 5
+    },
+    {
+      "config": "ConfigB-超强prompt",
+      "template": "docs/benchmarks/templates/inbox/演示文稿4.pptx",
+      "enhancedLevel": 3,
+      "relaxedGate": false,
+      "lazymanRate": 0,
+      "avgScore": 60,
+      "watermarkIssues": 0,
+      "pageNumberIssues": 5,
+      "sampleCount": 5
+    },
+    {
+      "config": "ConfigC-核心检查",
+      "template": "docs/benchmarks/templates/inbox/演示文稿4.pptx",
+      "enhancedLevel": 1,
+      "relaxedGate": true,
+      "lazymanRate": 0,
+      "avgScore": 56,
+      "watermarkIssues": 0,
+      "pageNumberIssues": 5,
+      "sampleCount": 5
+    }
+  ]
+}

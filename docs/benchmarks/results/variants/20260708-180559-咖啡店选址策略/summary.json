@@ -1,0 +1,13 @@
+{
+  "topic": "咖啡店选址策略",
+  "scenario": "proposal",
+  "sceneType": "企业",
+  "total": 1,
+  "success": 0,
+  "failed": 1,
+  "templateFileName": "演示文稿4.pptx",
+  "topCount": 0,
+  "uncertainCount": 0,
+  "best": null,
+  "timestamp": "2026-07-08T10:05:59.749Z"
+}

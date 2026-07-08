@@ -1,0 +1,27 @@
+{
+  "ok": false,
+  "pass": false,
+  "errors": [
+    {
+      "slideIndex": 3,
+      "type": "staleMockData",
+      "text": "AI客服降本增效方案关键议题3聚焦一个中心观点，"
+    },
+    {
+      "slideIndex": 3,
+      "type": "blankOrHalfFilled",
+      "text": "AI客服降本增效方案关键议题3"
+    },
+    {
+      "slideIndex": 4,
+      "type": "blankOrHalfFilled",
+      "text": "AI客服降本增效方案关键议题4"
+    }
+  ],
+  "issues": [
+    "staleMockData_slide_3",
+    "blankOrHalfFilled_slide_3",
+    "blankOrHalfFilled_slide_4"
+  ],
+  "warnings": []
+}

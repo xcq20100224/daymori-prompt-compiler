@@ -1,0 +1,39 @@
+{
+  "ok": false,
+  "pass": false,
+  "errors": [
+    {
+      "slideIndex": 3,
+      "type": "blankOrHalfFilled",
+      "text": "客服成本压力正在上升"
+    },
+    {
+      "slideIndex": 4,
+      "type": "blankOrHalfFilled",
+      "text": "高频问题适合优先自动化"
+    },
+    {
+      "slideIndex": 6,
+      "type": "blankOrHalfFilled",
+      "text": "AI客服能力分层建设"
+    },
+    {
+      "slideIndex": 8,
+      "type": "blankOrHalfFilled",
+      "text": "用关键指标验证收益"
+    },
+    {
+      "slideIndex": 10,
+      "type": "textBudgetExceeded",
+      "text": "4/17"
+    }
+  ],
+  "issues": [
+    "blankOrHalfFilled_slide_3",
+    "blankOrHalfFilled_slide_4",
+    "blankOrHalfFilled_slide_6",
+    "blankOrHalfFilled_slide_8",
+    "textBudgetExceeded_slide_10"
+  ],
+  "warnings": []
+}

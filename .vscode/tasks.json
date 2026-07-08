@@ -1,0 +1,2990 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "bench daily hidden com",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"bench:daily"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "gate publish hidden com",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"gate:publish"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "bench daily forced api hidden com",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$env:BENCH_API_BASE='http://localhost:3000'; $env:POWERPOINT_COM_VISIBLE='false'; npm.cmd run bench:daily"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "bench daily after port-fix",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"bench:daily"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "bench daily after port-probe-fix",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"bench:daily"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "gate publish after api-fix",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"gate:publish"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "bench lazyman production refresh",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"bench:production:lazyman"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "bench daymori production refresh",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"bench:production"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "bench daily on controlled api3401",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$env:BENCH_API_BASE=\"http://localhost:3401\"; $env:POWERPOINT_COM_VISIBLE=\"false\"; npm.cmd run bench:daily"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "bench daily on api3401 via cmd",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://localhost:3401& set POWERPOINT_COM_VISIBLE=false& npm.cmd run bench:daily"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "gate publish on api3401 via cmd",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://localhost:3401& set POWERPOINT_COM_VISIBLE=false& npm.cmd run gate:publish"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "gate publish on api3402 no-com-default",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://localhost:3402& npm.cmd run gate:publish"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "list latest quality files",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.quality.json | Sort-Object LastWriteTime -Descending | Select-Object -First 8 Name,LastWriteTime | Format-Table -AutoSize"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "gate publish verify no-com-path",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://localhost:3402& npm.cmd run gate:publish"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest quality filename for verify",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.quality.json | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "gate publish verify explicit-optin-off",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://localhost:3402& npm.cmd run gate:publish"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest quality filename after optin-off",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.quality.json | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify serverjs processes",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'server\\.js' } | Select-Object ProcessId,CommandLine | Format-Table -AutoSize"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify serverjs processes via wmic",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"wmic process where \"name='node.exe' and commandline like '%server.js%'\" get ProcessId,CommandLine"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "kill all node processes",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "gate publish on 3402 verify engine",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://localhost:3402& npm.cmd run gate:publish"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest quality after 3402 verify",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.quality.json | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "kill visible powerpoint windows",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM POWERPNT.EXE /F"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "check inbox template sizes",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem \"docs/benchmarks/templates/inbox\" -Filter *.pptx | Select-Object Name,Length,LastWriteTime | Format-Table -AutoSize"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "com exp daymori production",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://localhost:3403& set LAYOUT_TEMPLATE_PATH=C:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori\\docs\\benchmarks\\templates\\inbox\\abc.pptx& npm.cmd run bench:production"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "com exp lazyman production",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://localhost:3403& set LAYOUT_TEMPLATE_PATH=C:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori\\docs\\benchmarks\\templates\\inbox\\abc.pptx& npm.cmd run bench:production:lazyman"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest quality engine sample com exp",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.quality.json | Sort-Object LastWriteTime -Descending | Select-Object -First 6 Name | Format-Table -AutoSize"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "com-visible gate quick test",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://localhost:3404& set LAYOUT_TEMPLATE_PATH=C:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori\\docs\\benchmarks\\templates\\inbox\\abc.pptx& npm.cmd run gate:publish"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest quality after com-visible",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.quality.json | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "check latest exported ppt",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 5 Name,LastWriteTime | Format-Table -AutoSize"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest quality for random export",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.quality.json | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest export ppt check",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 3 Name,LastWriteTime | Format-Table -AutoSize"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest quality name check",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.quality.json | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "llm newton contract probe",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$topicPrompt = '请输出初二牛顿第二定律讲解PPT契约JSON，要求10页并覆盖导入、定律表述、公式变形、受力分析、控制变量实验、数据图像解读、基础例题、综合例题、易错点、分层练习与作业。只输出JSON，不要解释。JSON字段：contractVersion,engineType,sceneType,templateId,pageCount,visualStyle,tone,fontTheme,chartStyle,narrativeMode,topic,slides,qualityGate,requiredFields。slides每页字段：index,title,goal,layoutType,keyPoints(3条且前缀为结论：证据：行动：),assetPlaceholders,speakerNotes。'; $req = @{ system = '你是Lazyman级教学PPT总监，只输出有效JSON。'; userText = $topicPrompt; maxTokens = 3800; model = 'deepseek-reasoner' } | ConvertTo-Json -Depth 8; $resp = Invoke-RestMethod -Uri 'http://localhost:3402/api/llm-proxy' -Method Post -ContentType 'application/json' -Body $req; $text = [string]$resp.text; $json = [regex]::Match($text, '\\{[\\s\\S]*\\}$').Value; if (-not $json) { throw 'model_output_no_json' }; $contract = $json | ConvertFrom-Json; [PSCustomObject]@{ topic = $contract.topic; pageCount = $contract.pageCount; slideCount = ($contract.slides | Measure-Object).Count; firstTitle = $contract.slides[0].title } | ConvertTo-Json -Depth 5"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run fixed newton export",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest ppt after fixed export",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 3 Name,LastWriteTime | Format-Table -AutoSize"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest quality after fixed export",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.quality.json | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "find user ppt attachments",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem -Recurse -File | Where-Object { $_.Extension -eq '.pptx' -and ($_.Name -like '*牛顿*' -or $_.Name -eq '1.pptx' -or $_.Name -like '*PPT*') } | Select-Object -First 40 FullName,Length | Format-Table -AutoSize"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "find ppt by rg",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"rg --files -g \"*.pptx\" | findstr /I /R \"牛顿 1\\.pptx PPT_\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "find ppt by dir",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"dir /s /b *.pptx | findstr /I \"牛顿 1.pptx PPT_\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze daymori vs lazyman content",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-13-32-346Z-daymori-ppt.pptx",
+				"docs/benchmarks/results/exports/2026-06-28T10-43-05-613Z-Lazyman.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "rerun fixed newton export after prompt tuning",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest ppt after tuning",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze latest tuned content",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-21-46-000Z-daymori-ppt.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "rerun fixed newton after com cleanup",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest ppt path now",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze newest ppt content",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"for /f \"delims=\" %F in ('powershell -NoProfile -Command \"(Get-ChildItem docs/benchmarks/results/exports -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName)\"') do node tools/analyze-ppt-content.mjs \"%F\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze newest explicit ppt content",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-25-35-799Z-daymori-ppt.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "newton export after final cleanup",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest ppt path final",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze final newest ppt",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-29-10-656Z-daymori-ppt.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze latest 01-31 ppt",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-31-56-454Z-daymori-ppt.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "check attachments in Downloads",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"dir /b \"C:\\Users\\J1896\\Downloads\\1.pptx\" \"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "locate file1 globally",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"dir /s /b \"C:\\Users\\J1896\\*1.pptx\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze file1 vs lazyman file2",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/1.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server for new patches",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run newton export after server restart",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest ppt after restart",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze 01-36 newest",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-36-50-467Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "rerun fixed newton 20 slides",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "find newest export after 20 run",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze newest 20 vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-40-00-490Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare file1 with lazyman2",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/1.pptx",
+				"docs/benchmarks/results/exports/2.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "rerun fixed export after whitelist cleanup",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "find newest export after whitelist",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze newest vs lazyman download",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-40-00-490Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after whitelist patch",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "rerun export on new server",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "find newest export post-restart",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze newest export post-restart",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$f=(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name); node tools/analyze-ppt-content.mjs (\"docs/benchmarks/results/exports/\"+$f) \"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run fixed export now after restart confirm",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest export name post confirm",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze explicit newest vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-57-28-093Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze actual latest 01-54 vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-54-15-739Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server final whitelist",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "export after final whitelist",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest file final round",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze final latest vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-59-51-966Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze actual latest 01-58 vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T01-58-00-071Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after hard noise patch",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "export hard noise patch round",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "get latest after hard noise export",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze 02-01 latest vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-01-26-896Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze actual latest 02-01-16",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-01-16-059Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server with zip sanitizer",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "export with zip sanitizer",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest after sanitizer export",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze latest 02-03 vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-03-49-591Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze actual latest 02-06 vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-06-03-774Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "scan forbidden terms in latest pptx xml",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-e",
+				"const AdmZip=require('adm-zip');const fs=require('fs');const p='docs/benchmarks/results/exports/2026-07-03T02-06-03-774Z-daymori-ppt.pptx';const terms=['LOGO','CONTENT','目录','阶段工作概述','工作完成进度','项目成果展示','未来工作规划','添加标题','感谢聆听'];const zip=new AdmZip(p);const hits=[];for(const e of zip.getEntries()){const n=e.entryName;if(!/^ppt\\/slides\\/slide\\d+\\.xml$/i.test(n))continue;const x=e.getData().toString('utf8');for(const t of terms){if(x.includes(t))hits.push({slide:n,term:t});}}console.log(JSON.stringify({file:p,hitCount:hits.length,hits:hits.slice(0,40)},null,2));"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "baseline compare file1(3) vs file2(lazyman)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/3.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after full optimization",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "export optimized round",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest optimized export name",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare optimized vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-15-33-318Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare optimized vs your file1",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-15-33-318Z-daymori-ppt.pptx",
+				"docs/benchmarks/results/exports/3.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare latest optimized vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-13-57-457Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare latest optimized vs file1",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-13-57-457Z-daymori-ppt.pptx",
+				"docs/benchmarks/results/exports/3.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server with payload normalizer",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "export after payload normalizer",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "latest export after payload normalizer",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$f=Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1; \"{0}|{1}\" -f $f.Name,$f.LastWriteTime.ToString(\"yyyy-MM-dd HH:mm:ss\")"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare newest vs file1",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$new=(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1).Name; node tools/analyze-ppt-content.mjs (\"docs/benchmarks/results/exports/\"+$new) \"docs/benchmarks/results/exports/3.pptx\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare newest vs lazyman",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$new=(Get-ChildItem \"docs/benchmarks/results/exports\" -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1).Name; node tools/analyze-ppt-content.mjs (\"docs/benchmarks/results/exports/\"+$new) \"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "list newest exports",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"dir /b /o-d docs\\benchmarks\\results\\exports\\*.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare 02-17 export vs file1",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-17-57-455Z-daymori-ppt.pptx",
+				"docs/benchmarks/results/exports/3.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare 02-17 export vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-17-57-455Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server with first-principles gates",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "export with new hard gates",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-fixed-newton-export.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "list top 3 newest exports after hard gate",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"for /f \"delims=\" %i in ('dir /b /o-d docs\\benchmarks\\results\\exports\\*.pptx ^| findstr /n \".\"') do @echo %i"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare newest vs file1 post hard gate",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-24-59-299Z-daymori-ppt.pptx",
+				"docs/benchmarks/results/exports/3.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare newest vs lazyman post hard gate",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-24-59-299Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare 02-27-44 vs file1",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-27-44-714Z-daymori-ppt.pptx",
+				"docs/benchmarks/results/exports/3.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare 02-27-44 vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-27-44-714Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "check latest quality sidecars",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"dir /b /o-d docs\\benchmarks\\results\\exports\\*.quality.json"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run file1 locked export",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run file1 locked export via npm.cmd",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "list latest locked exports",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"dir /b /o-d docs\\benchmarks\\results\\exports\\*.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after file1 lock tuning",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run file1 lock export after tuning",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "list latest exports after successful lock run",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"dir /b /o-d docs\\benchmarks\\results\\exports\\*.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare locked latest vs file1",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-39-08-220Z-daymori-ppt.pptx",
+				"docs/benchmarks/results/exports/3.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare locked latest vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-39-08-220Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare latest lock export vs file1 baseline",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-41-00-360Z-daymori-ppt.pptx",
+				"docs/benchmarks/results/exports/3.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "compare latest lock export vs lazyman",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/analyze-ppt-content.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T02-41-00-360Z-daymori-ppt.pptx",
+				"C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run visual-first file lock export",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "list newest export files",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"dir /b /o-d docs\\benchmarks\\results\\exports\\*.pptx | more +0"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze latest export vs lazyman reference",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$f=(Get-ChildItem 'docs/benchmarks/results/exports' -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName); node tools/analyze-ppt-content.mjs $f 'C:\\Users\\J1896\\Downloads\\PPT_牛顿第二定律.pptx'"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after lightweight lock mode",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run lock export with lighter visual pack",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after lock visual gate alignment",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "rerun visual lock export after gate alignment",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "smoke export-save after clean codegen refactor",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "rerun export after blank-slide fix",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after sanitize refactor",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export after server restart",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after teaching gate adjustment",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export lock after gate adjustment",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "list latest exported pptx files",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"dir /b /o-d docs\\benchmarks\\results\\exports\\*.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "scan latest export placeholders and watermark words",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$f=(Get-ChildItem docs/benchmarks/results/exports/*.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName; Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[IO.Compression.ZipFile]::OpenRead($f); $patterns='OfficePLUS|请在此输入您的文字内容或者粘贴复制的文本到此处|请您单击此处输入文本内容加以解释说明|输入标题|20XX|时间：202X/05/01|CONTENT|LOGO'; $hits=@(); foreach($e in $z.Entries){ if($e.FullName -like 'ppt/slides/*.xml'){ $sr=New-Object IO.StreamReader($e.Open()); $txt=$sr.ReadToEnd(); $sr.Dispose(); if($txt -match $patterns){ $hits += $e.FullName } } }; $z.Dispose(); [pscustomobject]@{file=[IO.Path]::GetFileName($f); hitCount=$hits.Count; hitSlides=($hits -join ',')} | ConvertTo-Json -Depth 4"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze latest export metrics",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$f=(Get-ChildItem docs/benchmarks/results/exports/*.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName; node tools/analyze-ppt-content.mjs $f docs/benchmarks/results/exports/3.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "scan latest pptx for placeholder residue",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-e",
+				"const AdmZip=require('adm-zip'); const f='docs/benchmarks/results/exports/2026-07-03T03-01-24-234Z-daymori-ppt.pptx'; const zip=new AdmZip(f); const re=/OfficePLUS|CONTENT|LOGO|输入标题|请在此输入|请您单击此处输入文本内容加以解释说明|20XX|时间：202X\\/05\\/01/i; const hits=[]; for(const e of zip.getEntries()){ if(/^ppt\\/slides\\/slide\\d+\\.xml$/i.test(e.entryName)){ const t=e.getData().toString('utf8'); if(re.test(t)) hits.push(e.entryName);} } console.log(JSON.stringify({file:f,hitCount:hits.length,hits},null,2));"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "scan latest pptx placeholders via powershell here-string",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$code = @'\nconst AdmZip=require(\"adm-zip\");\nconst f=\"docs/benchmarks/results/exports/2026-07-03T03-01-24-234Z-daymori-ppt.pptx\";\nconst zip=new AdmZip(f);\nconst re=/OfficePLUS|CONTENT|LOGO|输入标题|请在此输入|请您单击此处输入文本内容加以解释说明|20XX|时间：202X\\/05\\/01/i;\nconst hits=[];\nfor(const e of zip.getEntries()){\n  if(/^ppt\\/slides\\/slide\\d+\\.xml$/i.test(e.entryName)){\n    const t=e.getData().toString(\"utf8\");\n    if(re.test(t)) hits.push(e.entryName);\n  }\n}\nconsole.log(JSON.stringify({file:f,hitCount:hits.length,hits}, null, 2));\n'@; node -e $code"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run placeholder scan script on latest export",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/scan-ppt-placeholders.mjs",
+				"docs/benchmarks/results/exports/2026-07-03T03-01-24-234Z-daymori-ppt.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after wording cleanup",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "export after wording cleanup",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "get newest export filename",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"for /f %i in ('dir /b /o-d docs\\benchmarks\\results\\exports\\*.pptx') do @echo %i & goto :eof"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "analyze newest export vs file1",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$f=(Get-ChildItem docs/benchmarks/results/exports/*.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName; node tools/analyze-ppt-content.mjs $f docs/benchmarks/results/exports/3.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "scan newest export placeholder tokens",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$f=(Get-ChildItem docs/benchmarks/results/exports/*.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName; node tools/scan-ppt-placeholders.mjs $f"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server template-first",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "export template-first verification",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:file1:lock"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server for template qa gate",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export:newton:template",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:newton:template"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run validate:ppt",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after syntax fix",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export:newton:template after fix",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:newton:template"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run validate:ppt after fix",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after validateDeck fix",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export:newton:template final",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:newton:template"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run validate:ppt final",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server triad cleanup",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "rerun export:newton:template",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:newton:template"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "rerun validate:ppt",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after teaching gate tune",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "export:newton:template pass check",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:newton:template"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "validate:ppt pass check",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after pipeline refactor",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export test multi-topic",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run validate latest dump",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after gate fix",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "rerun export test multi-topic",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "rerun validate latest dump",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after pipeline input relax",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export:test after pipeline fixes",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run validate:ppt after export:test",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after placeholder adjustments",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "rerun export:test full",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "rerun validate:ppt full",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after section fix",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "final export:test run",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "final validate:ppt run",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after duplicate-threshold tune",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export:test final verify",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run validate:ppt final verify",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after section duplicate allowance",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export:test final-final",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run validate:ppt after export:test success",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "final validate:ppt after section rule sync",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server for stop-bleed validation",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export:test stop-bleed",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run validate:ppt stop-bleed",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after content cleanup",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "rerun export:test after cleanup",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "rerun validate:ppt after cleanup",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after rich-goal mapping",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export:test after rich-goal mapping",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run validate:ppt after rich-goal mapping",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "restart server after gate tuning",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"taskkill /IM node.exe /F >nul 2>nul & set PORT=3402& set POWERPOINT_COM_EXPLICIT_ALLOW=true& set POWERPOINT_STRICT_NO_POPUP=false& set POWERPOINT_COM_ENABLED=true& set POWERPOINT_COM_PROBE_ENABLED=false& set POWERPOINT_COM_VISIBLE=true& set PPT_FORCE_CODEGEN_ONLY=false& node server.js"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run export:test after gate tuning",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run export:test"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run validate:ppt after gate tuning",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm.cmd run validate:ppt"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "variant batch smoke after title gate fix",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--count=8",
+				"--concurrency=4",
+				"--top=5",
+				"--topic=AI客服方案汇报（新版）"
+			]
+		},
+		{
+			"label": "variant batch smoke stable topic",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--count=8",
+				"--concurrency=4",
+				"--top=5",
+				"--topic=AI客服降本增效方案"
+			]
+		},
+		{
+			"label": "run 20 variant optimization batch",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--count=20",
+				"--concurrency=5",
+				"--top=10",
+				"--topic=AI客服降本增效方案"
+			]
+		},
+		{
+			"label": "run daymori production benchmark now",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"bench:production"
+			]
+		},
+		{
+			"label": "run daymori production benchmark with repo template",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set LAYOUT_TEMPLATE_PATH=docs\\benchmarks\\templates\\inbox\\演示文稿4.pptx&& set BENCH_API_BASE=http://localhost:3402&& npm.cmd run bench:production"
+			]
+		},
+		{
+			"label": "run lazyman production benchmark with repo template",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set LAYOUT_TEMPLATE_PATH=docs\\benchmarks\\templates\\inbox\\演示文稿4.pptx&& set BENCH_API_BASE=http://localhost:3402&& npm.cmd run bench:production:lazyman"
+			]
+		},
+		{
+			"label": "run 20 variant optimization batch ascii topic",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--count=20",
+				"--concurrency=5",
+				"--top=10",
+				"--topic=AI Customer Service Cost Reduction Plan"
+			]
+		},
+		{
+			"label": "run 20 variant batch after server verification",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--count=20",
+				"--concurrency=5",
+				"--top=10",
+				"--topic=AI客服降本增效方案"
+			]
+		},
+		{
+			"label": "run 20 variants on 3403",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://localhost:3403&& node tools/run-variant-batch.mjs --count=20 --concurrency=4 --top=10 --topic=AI客服降本增效方案"
+			]
+		},
+		{
+			"label": "probe 3403 via curl",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"curl -I http://localhost:3403/"
+			]
+		},
+		{
+			"label": "run 20 variants timeout-enabled on 3403",
+			"type": "shell",
+			"command": "$env:BENCH_API_BASE='http://localhost:3403'; $env:VARIANT_FETCH_TIMEOUT_MS='15000'; node tools/run-variant-batch.mjs --count=20 --concurrency=4 --top=10 --topic='AI客服降本增效方案'"
+		},
+		{
+			"label": "run 20 variants on 3402 com-enabled",
+			"type": "shell",
+			"command": "$env:BENCH_API_BASE='http://localhost:3402'; $env:VARIANT_FETCH_TIMEOUT_MS='90000'; node tools/run-variant-batch.mjs --count=20 --concurrency=4 --top=10 --topic='AI客服降本增效方案'"
+		},
+		{
+			"label": "bench production 3402 abc",
+			"type": "shell",
+			"command": "cmd.exe /c \"set BENCH_API_BASE=http://localhost:3402& set LAYOUT_TEMPLATE_PATH=C:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori\\docs\\benchmarks\\templates\\inbox\\abc.pptx& npm.cmd run bench:production\""
+		},
+		{
+			"label": "bench production 3402 abc ps",
+			"type": "shell",
+			"command": "$env:BENCH_API_BASE='http://localhost:3402'; $env:LAYOUT_TEMPLATE_PATH='C:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori\\docs\\benchmarks\\templates\\inbox\\abc.pptx'; npm.cmd run bench:production"
+		},
+		{
+			"label": "run 20 variants with log file",
+			"type": "shell",
+			"command": "$env:BENCH_API_BASE='http://localhost:3402'; $env:VARIANT_FETCH_TIMEOUT_MS='90000'; node tools/run-variant-batch.mjs --count=20 --concurrency=4 --top=10 --topic='AI客服降本增效方案' | Tee-Object -FilePath tools/_tmp_variant20.log"
+		},
+		{
+			"label": "regen vs lazyman dashboard",
+			"type": "shell",
+			"command": "npm.cmd run bench:vs:lazyman"
+		},
+		{
+			"label": "run 20 variants c1 on 3402",
+			"type": "shell",
+			"command": "$env:BENCH_API_BASE='http://localhost:3402'; $env:VARIANT_FETCH_TIMEOUT_MS='90000'; node tools/run-variant-batch.mjs --count=20 --concurrency=1 --top=10 --topic='AI客服降本增效方案'"
+		},
+		{
+			"label": "phase1 verify count5 concurrency1",
+			"type": "shell",
+			"command": "$env:BENCH_API_BASE='http://localhost:3402'; node scripts/run-variant-batch.mjs --topic='AI客服降本增效方案' --count=5 --concurrency=1 --top=3"
+		},
+		{
+			"label": "phase2 reevaluate scores explicit node",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\node.exe' tools/reevaluate-variant-results.mjs --reportDir=docs/benchmarks/results/variants/20260708-122905-ai客服降本增效方案"
+		},
+		{
+			"label": "phase3 multi-topic smoke explicit node",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\node.exe' scripts/run-training-topics-batch.mjs --topics=2 --count=2 --concurrency=1 --top=2"
+		},
+		{
+			"label": "phase5 iteration smoke explicit node",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\node.exe' scripts/run-iteration-loop.mjs --iterations=1 --batchSize=5 --topicsPerIteration=2 --concurrency=1 --top=2"
+		},
+		{
+			"label": "syntax check updated tools via task",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\node.exe' --check tools/run-training-topics-batch.mjs; & 'C:\\Program Files\\nodejs\\node.exe' --check tools/run-iteration-loop.mjs"
+		},
+		{
+			"label": "phase3 multi-topic smoke rerun after parser fix",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\node.exe' scripts/run-training-topics-batch.mjs --topics=2 --count=2 --concurrency=1 --top=2"
+		},
+		{
+			"label": "phase3 full multi-topic 20x5",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\node.exe' scripts/run-training-topics-batch.mjs --topics=20 --count=5 --concurrency=1 --top=2"
+		},
+		{
+			"label": "phase4 learn-rules full rerun",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\node.exe' scripts/learn-rules-from-samples.mjs"
+		},
+		{
+			"label": "phase5 full 10-iteration loop",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\node.exe' scripts/run-iteration-loop.mjs --iterations=10 --batchSize=20 --topicsPerIteration=5 --concurrency=1 --top=2"
+		},
+		{
+			"label": "phase3 full with exit marker",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\node.exe' scripts/run-training-topics-batch.mjs --topics=20 --count=5 --concurrency=1 --top=2; \"$LASTEXITCODE\" | Set-Content docs/benchmarks/training/phase3_exit_code.txt"
+		},
+		{
+			"label": "check running node processes for batch",
+			"type": "shell",
+			"command": "Get-CimInstance Win32_Process -Filter \"name = 'node.exe'\" | Select-Object ProcessId, CommandLine | Format-Table -AutoSize"
+		},
+		{
+			"label": "check node process simple",
+			"type": "shell",
+			"command": "Get-Process node -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, CPU | Format-Table -AutoSize"
+		},
+		{
+			"label": "check node commandlines",
+			"type": "shell",
+			"command": "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' } | Select-Object ProcessId, CommandLine | Format-Table -AutoSize"
+		},
+		{
+			"label": "kill duplicate phase runners",
+			"type": "shell",
+			"command": "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and ($_.CommandLine -match 'run-training-topics-batch.mjs|run-iteration-loop.mjs') } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }; 'killed' | Write-Output"
+		},
+		{
+			"label": "phase3 clean full run",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\node.exe' scripts/run-training-topics-batch.mjs --topics=20 --count=5 --concurrency=1 --top=2"
+		},
+		{
+			"label": "check phase3 alive",
+			"type": "shell",
+			"command": "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-training-topics-batch.mjs' } | Select-Object ProcessId, CommandLine | Format-Table -AutoSize"
+		},
+		{
+			"label": "kill all phase3 runners",
+			"type": "shell",
+			"command": "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-training-topics-batch.mjs' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }; 'phase3 runners killed' | Write-Output"
+		},
+		{
+			"label": "phase3 full via cmd direct",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe /d /c \"\\\"C:\\Program Files\\nodejs\\node.exe\\\" scripts\\run-training-topics-batch.mjs --topics=20 --count=5 --concurrency=1 --top=2\""
+		},
+		{
+			"label": "check phase3 process after cmd run",
+			"type": "shell",
+			"command": "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-training-topics-batch.mjs' } | Select-Object ProcessId, CommandLine | Format-Table -AutoSize"
+		},
+		{
+			"label": "check phase3 process state 2",
+			"type": "shell",
+			"command": "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-training-topics-batch.mjs' } | Measure-Object | Select-Object -ExpandProperty Count"
+		},
+		{
+			"label": "check phase3 process state 3",
+			"type": "shell",
+			"command": "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-training-topics-batch.mjs' } | Measure-Object | Select-Object -ExpandProperty Count"
+		},
+		{
+			"label": "check phase3 process state 4",
+			"type": "shell",
+			"command": "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-training-topics-batch.mjs' } | Measure-Object | Select-Object -ExpandProperty Count"
+		},
+		{
+			"label": "inspect phase3 runner cpu",
+			"type": "shell",
+			"command": "Get-Process node | Where-Object { $_.Id -eq (Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-training-topics-batch.mjs' } | Select-Object -ExpandProperty ProcessId) } | Select-Object Id, CPU, StartTime | Format-Table -AutoSize"
+		},
+		{
+			"label": "check variant runner process",
+			"type": "shell",
+			"command": "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-variant-batch.mjs' } | Select-Object ProcessId, CommandLine | Format-Table -AutoSize"
+		},
+		{
+			"label": "inspect variant runner cpu",
+			"type": "shell",
+			"command": "Get-Process node | Where-Object { $_.Id -eq 3384 } | Select-Object Id, CPU, StartTime | Format-Table -AutoSize"
+		},
+		{
+			"label": "check phase3 and variant counts",
+			"type": "shell",
+			"command": "$a=(Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-training-topics-batch.mjs' } | Measure-Object).Count; $b=(Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-variant-batch.mjs' } | Measure-Object).Count; Write-Output \"phase3=$a variant=$b\""
+		},
+		{
+			"label": "check phase3 and variant counts again",
+			"type": "shell",
+			"command": "$a=(Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-training-topics-batch.mjs' } | Measure-Object).Count; $b=(Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-variant-batch.mjs' } | Measure-Object).Count; Write-Output \"phase3=$a variant=$b\""
+		},
+		{
+			"label": "check api health now",
+			"type": "shell",
+			"command": "try { $resp = Invoke-WebRequest -UseBasicParsing http://localhost:3402/api/health -TimeoutSec 8; Write-Output (\"status=\" + [int]$resp.StatusCode) } catch { Write-Output (\"health_error=\" + $_.Exception.Message) }"
+		},
+		{
+			"label": "phase3 full run now",
+			"type": "shell",
+			"command": "C:\\Progra~1\\nodejs\\node.exe",
+			"args": [
+				"tools/run-training-topics-batch.mjs",
+				"--count=5",
+				"--concurrency=1",
+				"--top=2",
+				"--topics=20"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "Day0: 稳定性测试",
+			"type": "shell",
+			"command": "node tools/test-stability.mjs",
+			"group": "test",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Day0: 质量检查",
+			"type": "shell",
+			"command": "node tools/lazyman-quality-gate.mjs docs/benchmarks/results/variants/20260708-181546-用户增长策略/summary.json",
+			"group": "test"
+		},
+		{
+			"label": "Day0: 生成报告",
+			"type": "shell",
+			"command": "node tools/generate-day0-report.mjs",
+			"group": "build"
+		},
+		{
+			"label": "Day0: 分析共同问题",
+			"type": "shell",
+			"command": "node tools/analyze-common-issues.mjs",
+			"group": "test"
+		},
+		{
+			"label": "Day0: 生成Day1计划",
+			"type": "shell",
+			"command": "node tools/generate-day1-plan.mjs",
+			"group": "build"
+		},
+		{
+			"label": "Day0: 验证主题多样性",
+			"type": "shell",
+			"command": "node tools/verify-topic-diversity.mjs",
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Day0: 完整流程（一键执行）",
+			"type": "shell",
+			"command": "node tools/test-stability.mjs; node tools/analyze-common-issues.mjs; node tools/generate-day1-plan.mjs; node tools/verify-topic-diversity.mjs",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Day0: 完整状态检查",
+			"type": "shell",
+			"command": "node tools/day0-status-check.mjs",
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"clear": true
+			}
+		},
+		{
+			"label": "Day1: 快速修复（路径A）",
+			"type": "shell",
+			"command": "echo '修改 lazyman-quality-gate.mjs 第73行阈值 0.15 → 0.50'",
+			"group": "build"
+		},
+		{
+			"label": "Day1: 自动应用路径A修复",
+			"type": "shell",
+			"command": "node tools/day1-quick-fix.mjs",
+			"group": "build"
+		},
+		{
+			"label": "day1 analyze fresh",
+			"type": "shell",
+			"command": "node tools/analyze-common-issues.mjs",
+			"isBackground": false
+		},
+		{
+			"label": "day1 complete report generate",
+			"type": "shell",
+			"command": "node tools/generate-day1-complete-report.mjs",
+			"isBackground": false
+		},
+		{
+			"label": "day1 final status check",
+			"type": "shell",
+			"command": "node tools/day0-status-check.mjs",
+			"isBackground": false
+		},
+		{
+			"label": "day1 step4 batch 3 topics",
+			"type": "shell",
+			"command": "node tools/run-variant-batch.mjs --topic=\"区块链技术架构\" --count=3 --concurrency=1; node tools/run-variant-batch.mjs --topic=\"咖啡店选址方案\" --count=3 --concurrency=1; node tools/run-variant-batch.mjs --topic=\"产品经理职业规划\" --count=3 --concurrency=1",
+			"isBackground": false
+		},
+		{
+			"label": "day1 api health probe",
+			"type": "shell",
+			"command": "powershell -NoProfile -Command \"try { $r=Invoke-WebRequest -UseBasicParsing http://localhost:3000/api/health -TimeoutSec 8; Write-Output ('status=' + [int]$r.StatusCode); Write-Output $r.Content } catch { Write-Output ('health_error=' + $_.Exception.Message) }\"",
+			"isBackground": false
+		},
+		{
+			"label": "day1 api health probe 2",
+			"type": "shell",
+			"command": "try { $r=Invoke-WebRequest -UseBasicParsing http://localhost:3000/api/health -TimeoutSec 8; Write-Output ('status=' + [int]$r.StatusCode); Write-Output $r.Content } catch { Write-Output ('health_error=' + $_.Exception.Message) }",
+			"isBackground": false
+		},
+		{
+			"label": "show newest variant dir",
+			"type": "shell",
+			"command": "powershell.exe -NoProfile -Command \"$d=Get-ChildItem 'docs/benchmarks/results/variants' | Sort-Object LastWriteTime -Descending | Select-Object -First 1; $d.Name\"",
+			"isBackground": false
+		},
+		{
+			"label": "newest variant by node",
+			"type": "shell",
+			"command": "node -e \"const fs=require('fs');const p='docs/benchmarks/results/variants';const dirs=fs.readdirSync(p).map(n=>({n,t:fs.statSync(p+'/'+n).mtimeMs})).sort((a,b)=>b.t-a.t);console.log(dirs[0]?.n||'');\"",
+			"isBackground": false
+		},
+		{
+			"label": "newest variant via ps",
+			"type": "shell",
+			"command": "Get-ChildItem docs/benchmarks/results/variants | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty Name",
+			"isBackground": false
+		},
+		{
+			"label": "run one ppt sample now",
+			"type": "shell",
+			"command": "node tools/run-variant-batch.mjs --topic=\"AI客服降本增效方案\" --count=1 --concurrency=1 --top=1 --template=\"docs/benchmarks/templates/inbox/演示文稿4.pptx\"",
+			"isBackground": false
+		},
+		{
+			"label": "newest variant via ps 2",
+			"type": "shell",
+			"command": "Get-ChildItem docs/benchmarks/results/variants | Sort-Object LastWriteTime -Descending | Select-Object -First 3 Name,LastWriteTime | Format-Table -AutoSize",
+			"isBackground": false
+		},
+		{
+			"label": "score latest sample",
+			"type": "shell",
+			"command": "node tools/lazyman-quality-gate.mjs docs/benchmarks/results/variants/20260708-193240-ai客服降本增效方案/summary.json",
+			"isBackground": false
+		},
+		{
+			"label": "LazyMan: 诊断PPT",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"ppt:diagnose",
+				"--",
+				"${input:lazymanPptPath}"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "LazyMan: 清理模板水印",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"ppt:clean-templates"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "LazyMan: 生成增强PPT",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"ppt:lazyman",
+				"--",
+				"${input:lazymanTopic}"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "LazyMan: 完整流程（清理→生成→诊断）",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"LazyMan: 清理模板水印",
+				"LazyMan: 生成增强PPT"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "lazy-run-ppt-lazyman-now",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"ppt:lazyman",
+				"--",
+				"AI客服降本增效方案"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "lazy-run-ppt-lazyman-now-2",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"ppt:lazyman",
+				"--",
+				"AI客服降本增效方案"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "lazy-direct-variant-run",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--topic=AI客服降本增效方案",
+				"--count=1",
+				"--concurrency=1",
+				"--top=1",
+				"--enhanced",
+				"--template=docs/benchmarks/templates/inbox/演示文稿4.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "diag-template-yan",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/diagnose-ppt-lazyman.mjs",
+				"docs/benchmarks/templates/inbox/演示文稿4.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "lazy-run-ppt-lazyman-now-3",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"ppt:lazyman",
+				"--",
+				"AI客服降本增效方案"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "diag-new-export-5ee",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/diagnose-ppt-lazyman.mjs",
+				"docs/benchmarks/results/exports/5ee1f1fe-8c34-4481-afac-cd8669ea13bc/deck.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "Day3: 批量诊断最新20个变体",
+			"type": "shell",
+			"command": "node tools/batch-diagnose-variants.mjs 20",
+			"group": "test"
+		},
+		{
+			"label": "Day3: 迭代训练（3轮快速）",
+			"type": "shell",
+			"command": "npm.cmd run train:quick",
+			"group": "build"
+		},
+		{
+			"label": "Day3: 迭代训练（5轮完整）",
+			"type": "shell",
+			"command": "npm.cmd run train:iterative",
+			"group": "build"
+		},
+		{
+			"label": "day3-step1-diagnose-5ee",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/diagnose-ppt-lazyman.mjs",
+				"docs/benchmarks/results/exports/5ee1f1fe-8c34-4481-afac-cd8669ea13bc/deck.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-step2-batch20",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/batch-diagnose-variants.mjs",
+				"20"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-step3-train-quick",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"train:quick"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-step3-train-quick-cmd",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"train:quick"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-step3-train-quick-after-server",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"train:quick"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-step3-train-quick-stable",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"train:quick"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-smoke-variant-api",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$env:BENCH_API_BASE='http://127.0.0.1:3402'; node tools/run-variant-batch.mjs --topic=\"Day3连通性冒烟\" --count=1 --concurrency=1 --enhanced --fetchTimeoutMs=240000 --maxRetries=1"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-smoke-variant-api-cmd",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402& node tools/run-variant-batch.mjs --topic=Day3连通性冒烟 --count=1 --concurrency=1 --enhanced --fetchTimeoutMs=240000 --maxRetries=1"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-smoke-variant-api-cmd-2",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402& node tools/run-variant-batch.mjs --topic=Day3连通性冒烟 --count=1 --concurrency=1 --enhanced --fetchTimeoutMs=240000 --maxRetries=1"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-step3-train-quick-final",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402& npm.cmd run train:quick"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-step4-train-full-final",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402& npm.cmd run train:iterative"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "day3-step4-train-full-direct5",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402& node tools/run-iterative-training.mjs 5"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "Day3+: A/B快速测试",
+			"type": "shell",
+			"command": "node tools/run-parallel-ab-test.mjs",
+			"group": "test"
+		},
+		{
+			"label": "Day3+: 海量生成100样本",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402& node tools/run-massive-generation.mjs"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Day3+: 创建零水印模板",
+			"type": "shell",
+			"command": "node tools/create-clean-template.mjs",
+			"group": "build"
+		},
+		{
+			"label": "Day3+: 持续优化循环",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402& node tools/run-continuous-optimization.mjs"
+			],
+			"group": "build",
+			"isBackground": true
+		},
+		{
+			"label": "tmp node version check",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-v"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp massive generation 100 logged",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402& node tools/run-massive-generation.mjs 100 > docs\\benchmarks\\training\\massive_generation.log 2>&1"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp check node process massive",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'run-massive-generation.mjs|run-variant-batch.mjs' } | Select-Object ProcessId,CommandLine | Format-List"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp check node process massive2",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and ($_.CommandLine -like '*run-massive-generation.mjs*' -or $_.CommandLine -like '*run-variant-batch.mjs*') } | Select-Object ProcessId,CommandLine | Format-List"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp check node process wmic",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"wmic process where \"name='node.exe' and (commandline like '%run-massive-generation.mjs%' or commandline like '%run-variant-batch.mjs%')\" get ProcessId,CommandLine"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp stat massive log",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-Item docs/benchmarks/training/massive_generation.log | Select-Object Length,LastWriteTime | Format-List"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp list latest variant dirs",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem docs/benchmarks/results/variants -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 8 Name,LastWriteTime | Format-Table -AutoSize"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp stat massive log 2",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-Item docs/benchmarks/training/massive_generation.log | Select-Object Length,LastWriteTime | Format-List"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp stat massive log 3",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-Item docs/benchmarks/training/massive_generation.log | Select-Object Length,LastWriteTime | Format-List"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp git precheck",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && where git && git status --short && git branch --show-current && git remote -v"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp git add all",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && git add -A && git status --short | head"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp git commit all",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && git diff --cached --name-only | find /c /v \"\" && git commit -m \"chore: add day3 benchmark pipeline updates and artifacts\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp git commit all retry",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && git commit -m \"chore: add day3 benchmark pipeline updates and artifacts\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp git commit all retry2",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && git commit -m chore-day3-benchmark-pipeline-updates-artifacts"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp git clear stale lock",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && if exist .git\\index.lock del /f /q .git\\index.lock && echo lock_cleared && git status -sb"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp git add commit push powershell",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Set-Location 'c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori'; if (Test-Path '.git/index.lock') { Remove-Item '.git/index.lock' -Force }; git add -A; $n=(git diff --cached --name-only | Measure-Object -Line).Lines; Write-Output ('staged_count=' + $n); git commit -m chore-day3-benchmark-pipeline-updates-artifacts; git push origin main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp git kill hanging processes",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"tasklist | findstr /I git"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp check git lock file",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && if exist .git\\index.lock (echo lock_exists & dir .git\\index.lock) else (echo no_lock)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp git add all final",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && git add -A"
+			],
+			"isBackground": false
+		}
+	],
+	"inputs": [
+		{
+			"id": "lazymanTopic",
+			"type": "promptString",
+			"description": "LazyMan生成主题",
+			"default": "AI客服降本增效方案"
+		},
+		{
+			"id": "lazymanPptPath",
+			"type": "promptString",
+			"description": "待诊断PPT路径（相对仓库根目录）",
+			"default": "docs/benchmarks/results/exports/17.pptx"
+		}
+	]
+}

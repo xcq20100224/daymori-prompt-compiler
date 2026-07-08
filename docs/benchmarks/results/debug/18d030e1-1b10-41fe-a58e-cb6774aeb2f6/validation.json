@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "pass": false,
+  "errors": [
+    {
+      "slideIndex": 1,
+      "type": "duplicateTitleInSlide",
+      "text": "AI客服方案汇报"
+    }
+  ],
+  "issues": [
+    "duplicateTitleInSlide_slide_1"
+  ],
+  "warnings": []
+}

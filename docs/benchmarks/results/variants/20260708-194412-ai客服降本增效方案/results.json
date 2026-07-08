@@ -1,0 +1,43 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:repeatedTextInSlide_slide_9",
+    "requestId": "c4c4021f-adfe-4b96-976f-55a828bbf2c7",
+    "generationTracePath": "docs/benchmarks/results/debug/c4c4021f-adfe-4b96-976f-55a828bbf2c7/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 9,
+          "type": "repeatedTextInSlide",
+          "text": "或者到此处，"
+        }
+      ],
+      "issues": [
+        "repeatedTextInSlide_slide_9"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "ok": false,
+  "pass": false,
+  "errors": [
+    {
+      "slideIndex": 4,
+      "type": "missingRequiredSlots",
+      "text": "bullets"
+    },
+    {
+      "slideIndex": 4,
+      "type": "textBudgetExceeded",
+      "text": "6/48"
+    },
+    {
+      "slideIndex": 6,
+      "type": "missingRequiredSlots",
+      "text": "bullets"
+    },
+    {
+      "slideIndex": 6,
+      "type": "textBudgetExceeded",
+      "text": "6/50"
+    },
+    {
+      "slideIndex": 8,
+      "type": "missingRequiredSlots",
+      "text": "bullets"
+    },
+    {
+      "slideIndex": 8,
+      "type": "textBudgetExceeded",
+      "text": "6/50"
+    },
+    {
+      "slideIndex": 9,
+      "type": "missingRequiredSlots",
+      "text": "bullets"
+    }
+  ],
+  "issues": [
+    "missingRequiredSlots_slide_4",
+    "textBudgetExceeded_slide_4",
+    "missingRequiredSlots_slide_6",
+    "textBudgetExceeded_slide_6",
+    "missingRequiredSlots_slide_8",
+    "textBudgetExceeded_slide_8",
+    "missingRequiredSlots_slide_9"
+  ],
+  "warnings": []
+}

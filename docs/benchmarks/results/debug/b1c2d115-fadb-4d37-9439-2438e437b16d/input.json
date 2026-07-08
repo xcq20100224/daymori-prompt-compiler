@@ -1,0 +1,22 @@
+{
+  "contractVersion": "aippt.v1",
+  "engineType": "generic-aippt",
+  "sceneType": "教务",
+  "scenario": "teaching",
+  "templateId": "default-safe",
+  "templateSource": "internal",
+  "pageCount": 10,
+  "visualStyle": "结构清晰、信息密度均衡",
+  "tone": "自然表达、可直接讲解",
+  "fontTheme": "business-cn",
+  "chartStyle": "calm",
+  "narrativeMode": "standard",
+  "topic": "牛顿第二定律课堂讲解",
+  "lockToTemplate": true,
+  "layoutPolicy": {
+    "mode": "strict-layout",
+    "minScore": 80,
+    "mappingVersion": "semantic-slot-v1"
+  },
+  "slides": []
+}

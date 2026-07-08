@@ -1,0 +1,477 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,blankOrHalfFilled_slide_8,slotOrder_slide_9,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffect...[truncated]",
+    "requestId": "4061c7ce-a6c2-4f37-af7a-befce741c6c7",
+    "generationTracePath": "docs/benchmarks/results/debug/4061c7ce-a6c2-4f37-af7a-befce741c6c7/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第3页"
+        },
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第8页"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "blankOrHalfFilled_slide_8",
+        "slotOrder_slide_9",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,blankOrHalfFilled_slide_8,slotOrder_slide_9,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffect...[truncated]",
+    "requestId": "1901c5a9-2633-4ef6-bf94-e4fe92d32c95",
+    "generationTracePath": "docs/benchmarks/results/debug/1901c5a9-2633-4ef6-bf94-e4fe92d32c95/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第3页"
+        },
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第8页"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "blankOrHalfFilled_slide_8",
+        "slotOrder_slide_9",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 2,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,blankOrHalfFilled_slide_8,slotOrder_slide_9,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffect...[truncated]",
+    "requestId": "6b3c4cb8-201a-498e-8725-950fb0191c68",
+    "generationTracePath": "docs/benchmarks/results/debug/6b3c4cb8-201a-498e-8725-950fb0191c68/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第3页"
+        },
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第8页"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "blankOrHalfFilled_slide_8",
+        "slotOrder_slide_9",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 3,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,blankOrHalfFilled_slide_8,slotOrder_slide_9,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffect...[truncated]",
+    "requestId": "ff1a64a4-51e4-4160-b6e3-80f3c6ef3f81",
+    "generationTracePath": "docs/benchmarks/results/debug/ff1a64a4-51e4-4160-b6e3-80f3c6ef3f81/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第3页"
+        },
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第8页"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "blankOrHalfFilled_slide_8",
+        "slotOrder_slide_9",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 4,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,blankOrHalfFilled_slide_8,slotOrder_slide_9,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffect...[truncated]",
+    "requestId": "739822c3-5492-4dac-8612-004c4293a828",
+    "generationTracePath": "docs/benchmarks/results/debug/739822c3-5492-4dac-8612-004c4293a828/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第3页"
+        },
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "多租户权限模型重构第8页"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "blankOrHalfFilled_slide_8",
+        "slotOrder_slide_9",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]

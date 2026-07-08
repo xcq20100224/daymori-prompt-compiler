@@ -1,0 +1,67 @@
+{
+  "requestId": "b1c2d115-fadb-4d37-9439-2438e437b16d",
+  "inputSlideCount": 10,
+  "outputSlideCount": 10,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "牛顿第二定律课堂讲解"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 2,
+      "slideType": "section",
+      "slideTitle": "章节02"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 3,
+      "slideType": "content_text",
+      "slideTitle": "牛顿第二定律课堂讲解关键议题3"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 4,
+      "slideType": "content_text",
+      "slideTitle": "牛顿第二定律课堂讲解关键议题4"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 5,
+      "slideType": "section",
+      "slideTitle": "章节05"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 6,
+      "slideType": "content_text",
+      "slideTitle": "牛顿第二定律课堂讲解关键议题6"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 7,
+      "slideType": "example",
+      "slideTitle": "牛顿第二定律课堂讲解关键议题7"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 8,
+      "slideType": "exercise",
+      "slideTitle": "牛顿第二定律课堂讲解关键议题8"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 9,
+      "slideType": "summary",
+      "slideTitle": "总结"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 10,
+      "slideType": "thanks",
+      "slideTitle": "感谢"
+    }
+  ]
+}

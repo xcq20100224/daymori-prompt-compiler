@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "pass": false,
+  "errors": [
+    {
+      "slideIndex": 1,
+      "type": "overlongText",
+      "text": "title:AI Customer Service Co…"
+    }
+  ],
+  "issues": [
+    "overlongText_slide_1"
+  ],
+  "warnings": []
+}

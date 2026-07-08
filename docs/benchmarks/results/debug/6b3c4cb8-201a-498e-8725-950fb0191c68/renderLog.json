@@ -1,0 +1,80 @@
+{
+  "requestId": "6b3c4cb8-201a-498e-8725-950fb0191c68",
+  "inputSlideCount": 10,
+  "outputSlideCount": 10,
+  "physicalSlideCount": 10,
+  "visibleSlideCount": 10,
+  "hiddenSlideCount": 0,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "多租户权限模型重构",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 2,
+      "slideType": "section",
+      "slideTitle": "章节02",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 3,
+      "slideType": "content_text",
+      "slideTitle": "多租户权限模型重构第3页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 4,
+      "slideType": "content_text",
+      "slideTitle": "多租户权限模型重构第4页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 5,
+      "slideType": "section",
+      "slideTitle": "章节05",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 6,
+      "slideType": "content_text",
+      "slideTitle": "多租户权限模型重构第6页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 7,
+      "slideType": "content_bullets",
+      "slideTitle": "多租户权限模型重构第7页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 8,
+      "slideType": "content_text",
+      "slideTitle": "多租户权限模型重构第8页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 9,
+      "slideType": "content_bullets",
+      "slideTitle": "多租户权限模型重构第9页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 4,
+      "outputSlideIndex": 10,
+      "slideType": "thanks",
+      "slideTitle": "感谢",
+      "slotWrites": []
+    }
+  ]
+}

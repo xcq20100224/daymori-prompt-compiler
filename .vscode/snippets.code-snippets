@@ -1,0 +1,11 @@
+{
+  "Run Single Topic Test": {
+    "prefix": "test-topic",
+    "body": [
+      "node tools/run-variant-batch.mjs \\",
+      "  --topic=\"${1:主题名称}\" \\",
+      "  --count=${2:3} \\",
+      "  --concurrency=1"
+    ]
+  }
+}

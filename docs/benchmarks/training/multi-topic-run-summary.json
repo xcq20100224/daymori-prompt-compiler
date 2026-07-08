@@ -1,0 +1,165 @@
+{
+  "generatedAt": "2026-07-08T05:23:06.513Z",
+  "runSummary": [
+    {
+      "topic": "AI客服降本增效方案",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132254-ai客服降本增效方案",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "供应链数字化转型方案",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132255-供应链数字化转型方案",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "用户增长策略",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132255-用户增长策略",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "新产品上市计划",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132256-新产品上市计划",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "客户留存提升方案",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132256-客户留存提升方案",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "RAG系统性能优化",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132257-rag系统性能优化",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "服务稳定性SLO升级",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132258-服务稳定性slo升级",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "多租户权限模型重构",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132258-多租户权限模型重构",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "Q3增长复盘",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132259-q3增长复盘",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "渠道投放ROI优化",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132300-渠道投放roi优化",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "牛顿第二定律",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132300-牛顿第二定律",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "压强与浮力",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132301-压强与浮力",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "酸碱中和反应",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132302-酸碱中和反应",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "光合作用",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132302-光合作用",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "一次函数",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132303-一次函数",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "暑期活动转化复盘",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132304-暑期活动转化复盘",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "私域留资漏斗优化",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132304-私域留资漏斗优化",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "内容营销效果分析",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132305-内容营销效果分析",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "用户画像洞察",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132305-用户画像洞察",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    },
+    {
+      "topic": "竞品对比分析",
+      "ok": true,
+      "reportDir": "docs/benchmarks/results/variants/20260708-132306-竞品对比分析",
+      "total": 5,
+      "success": 0,
+      "failed": 5
+    }
+  ]
+}

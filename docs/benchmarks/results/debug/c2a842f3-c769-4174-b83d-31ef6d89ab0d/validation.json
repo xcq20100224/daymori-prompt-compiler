@@ -1,0 +1,25 @@
+{
+  "requestId": "c2a842f3-c769-4174-b83d-31ef6d89ab0d",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 9,
+      "type": "fourPointsRenderIncomplete",
+      "text": "items_rendered_1"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 92,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 94,
+    "cleanliness": 92,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "timestamp": "2026-07-07T08:48:46.843Z",
+  "requestId": "8c9e507a-9906-449a-bf55-bed8b94116f1",
+  "version": "8c9e507a-9906-449a-bf55-bed8b94116f1",
+  "promptVersion": "v1_observable_baseline",
+  "promptHash": "cb3f3c12ab9b9fde5b06e31b5cd63c8fd8182e366a63de0299743afe2ef666bc",
+  "input": {
+    "theme": "勾股定理",
+    "targetSlides": 8,
+    "styleGuide": "高对比清晰",
+    "scenario": "初中数学课堂",
+    "templateFileName": "abc.pptx"
+  },
+  "llmProvider": {
+    "aipptProvider": "generic",
+    "endpoint": "",
+    "model": ""
+  },
+  "llmCalls": [
+    {
+      "slideIndex": 1,
+      "prompt": "生成第1页内容：导入：勾股定理为什么重要 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：核心概念\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：实验或应用\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：总结与作业\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "导入：勾股定理为什么重要",
+        "subtitle": "teaching 场景汇报",
+        "bullets": [],
+        "items": []
+      },
+      "validationResult": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "slideIndex": 2,
+      "prompt": "生成第2页内容：学习目标与标准 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：核心概念\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：实验或应用\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：总结与作业\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "学习目标与标准",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    },
+    {
+      "slideIndex": 3,
+      "prompt": "生成第3页内容：核心概念 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：核心概念\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：实验或应用\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：总结与作业\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "核心概念",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "blankOrHalfFilled:核心概念",
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    },
+    {
+      "slideIndex": 4,
+      "prompt": "生成第4页内容：关键规律 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：核心概念\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：实验或应用\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：总结与作业\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "关键规律",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    },
+    {
+      "slideIndex": 5,
+      "prompt": "生成第5页内容：方法步骤 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：核心概念\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：实验或应用\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：总结与作业\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "方法步骤",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    },
+    {
+      "slideIndex": 6,
+      "prompt": "生成第6页内容：例题精讲 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：核心概念\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：实验或应用\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：总结与作业\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "例题精讲",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    },
+    {
+      "slideIndex": 7,
+      "prompt": "生成第7页内容：实验或应用 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：核心概念\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：实验或应用\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：总结与作业\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "实验或应用",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "blankOrHalfFilled:实验或应用",
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    },
+    {
+      "slideIndex": 8,
+      "prompt": "生成第8页内容：总结与作业 以下是必须避免的错误示例：\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(blankOrHalfFilled)：核心概念\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：实验或应用\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(blankOrHalfFilled)：总结与作业\n✅ 正确：补齐正文，保证至少1条清晰业务/教学信息\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n❌ 错误(minimumEffectiveSlide)：_text_body_chars_54\n✅ 正确：按模板槽位重写并去除元数据污染\n请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。",
+      "response": {
+        "title": "总结与作业",
+        "subtitle": "核心观点",
+        "bullets": [
+          "本页提供可直接用于汇报的业务说明，覆盖场景现状、"
+        ],
+        "items": []
+      },
+      "validationResult": {
+        "passed": false,
+        "errors": [
+          "blankOrHalfFilled:总结与作业",
+          "minimumEffectiveSlide:_text_body_chars_54"
+        ]
+      }
+    }
+  ],
+  "output": {
+    "filePath": "",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 68,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 87,
+      "cleanliness": 72,
+      "structure": 68,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "failedChecks": [
+      "blankOrHalfFilled",
+      "blankOrHalfFilled",
+      "blankOrHalfFilled",
+      "minimumEffectiveSlide",
+      "minimumEffectiveSlide",
+      "minimumEffectiveSlide",
+      "minimumEffectiveSlide",
+      "minimumEffectiveSlide",
+      "minimumEffectiveSlide",
+      "minimumEffectiveSlide"
+    ],
+    "elapsedMs": 18224
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "requestId": "3fae9060-15fe-4a98-a4b4-7aaa53867f57",
+  "inputSlideCount": 10,
+  "outputSlideCount": 10,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "ABTest0_1783519138351"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 2,
+      "slideType": "section",
+      "slideTitle": "现状与问题"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 3,
+      "slideType": "content_text",
+      "slideTitle": "现状评估"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 4,
+      "slideType": "content_text",
+      "slideTitle": "关键问题拆解"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 5,
+      "slideType": "section",
+      "slideTitle": "方案设计"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 6,
+      "slideType": "content_text",
+      "slideTitle": "方案架构"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 7,
+      "slideType": "content_bullets",
+      "slideTitle": "三阶段推进试点落地"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 8,
+      "slideType": "content_text",
+      "slideTitle": "用关键指标验证收益"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 9,
+      "slideType": "content_bullets",
+      "slideTitle": "下一步决策事项"
+    },
+    {
+      "sourceTemplateIndex": 4,
+      "outputSlideIndex": 10,
+      "slideType": "thanks",
+      "slideTitle": "谢谢观看"
+    }
+  ]
+}

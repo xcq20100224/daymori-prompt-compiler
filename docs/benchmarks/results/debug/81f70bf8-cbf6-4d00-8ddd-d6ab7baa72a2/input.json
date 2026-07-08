@@ -1,0 +1,22 @@
+{
+  "topic": "AI????????(???)",
+  "tone": "??????????",
+  "templateId": "default-business-template",
+  "sceneType": "??",
+  "templateSource": "internal",
+  "chartStyle": "calm",
+  "layoutPolicy": {
+    "minScore": 84,
+    "mode": "strict-layout",
+    "mappingVersion": "semantic-slot-v1"
+  },
+  "pageCount": 10,
+  "slides": [],
+  "scenario": "proposal",
+  "fontTheme": "business-cn",
+  "lockToTemplate": true,
+  "engineType": "generic-aippt",
+  "contractVersion": "aippt.v1",
+  "narrativeMode": "standard",
+  "visualStyle": "???????????"
+}

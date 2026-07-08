@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Robot Drive</title>
+    <style>
+      :root {
+        --bg-1: #061022;
+        --bg-2: #0f1f46;
+        --line: #2a427f;
+        --panel: rgba(11, 24, 52, 0.88);
+        --surface-1: #132a5d;
+        --surface-2: #0f214a;
+        --primary: #2b64ff;
+        --primary-2: #214dcb;
+        --danger: #eb4f59;
+        --ok: #23c769;
+        --text: #f3f7ff;
+        --muted: #9fb0d6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at 15% -5%, #264d9e 0%, var(--bg-2) 40%, var(--bg-1) 100%);
+        padding: 16px;
+      }
+
+      .wrap {
+        width: min(980px, 100%);
+        margin: 0 auto;
+        background: linear-gradient(180deg, rgba(10, 22, 50, 0.92), rgba(7, 16, 36, 0.96));
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 18px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      }
+
+      .top {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+
+      .title {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      h1 {
+        font-size: 24px;
+        margin: 0;
+        letter-spacing: 0.4px;
+      }
+
+      .sub {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .ver {
+        margin-top: 2px;
+        color: #7fb0ff;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 14px;
+      }
+
+      .card {
+        background: linear-gradient(180deg, rgba(19, 41, 90, 0.6), rgba(11, 24, 52, 0.72));
+        border: 1px solid #28427f;
+        border-radius: 18px;
+        padding: 14px;
+      }
+
+      .target-row {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .target {
+        width: 100%;
+        border: 1px solid #36508f;
+        background: #0b1734;
+        color: var(--text);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+
+      .mini {
+        border: 1px solid #4060a6;
+        background: linear-gradient(180deg, #1b3268, #152954);
+        color: #dce8ff;
+        border-radius: 10px;
+        padding: 9px 10px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .mini:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .status-box {
+        margin-top: 10px;
+        border: 1px dashed #355593;
+        border-radius: 10px;
+        padding: 10px;
+        color: var(--muted);
+        font-size: 14px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+
+      .speed {
+        margin-top: 12px;
+      }
+
+      .speed-label {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 8px;
+      }
+
+      .speed-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .speed-btn {
+        border: 1px solid #31508f;
+        background: var(--surface-2);
+        color: #cfe0ff;
+        border-radius: 10px;
+        padding: 9px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .speed-btn.active {
+        background: linear-gradient(180deg, var(--primary), var(--primary-2));
+        border-color: #5b84ff;
+        color: #fff;
+      }
+
+      .pad-wrap {
+        display: grid;
+        place-items: center;
+      }
+
+      .pad {
+        margin: 4px auto;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(90px, 132px));
+        grid-template-rows: repeat(3, minmax(90px, 124px));
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 20px;
+        color: var(--text);
+        font-size: 30px;
+        font-weight: 700;
+        background: linear-gradient(180deg, var(--primary), var(--primary-2));
+        cursor: pointer;
+        box-shadow: inset 0 -6px 14px rgba(0, 0, 0, 0.25);
+      }
+
+      .btn:active,
+      .btn.active {
+        transform: translateY(1px) scale(0.985);
+        filter: brightness(1.08);
+      }
+
+      .btn.stop {
+        background: linear-gradient(180deg, #ff656d, var(--danger));
+        font-size: 26px;
+      }
+
+      .ghost {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .foot {
+        margin-top: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .status {
+        font-size: 13px;
+        color: var(--ok);
+      }
+
+      .tip {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      @media (max-width: 860px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .target-row {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .target {
+          grid-column: 1 / span 2;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .pad {
+          grid-template-columns: repeat(3, 94px);
+          grid-template-rows: repeat(3, 94px);
+          gap: 8px;
+        }
+
+        .btn {
+          font-size: 24px;
+          border-radius: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <div class="top">
+        <div class="title">
+          <h1>小车驾驶台</h1>
+          <div class="sub">更清晰状态、更大方向键、更好移动端体验</div>
+          <div class="ver">UI版本: robot-drive-2026-07-03-r2</div>
+        </div>
+      </div>
+
+      <section class="grid">
+        <article class="card">
+          <div class="target-row">
+            <input id="target" class="target" value="http://192.168.4.1" />
+            <button id="saveTargetBtn" class="mini">保存地址</button>
+            <button id="pingBtn" class="mini">连接测试</button>
+          </div>
+
+          <div id="statusBox" class="status-box">就绪</div>
+
+          <div class="speed">
+            <div class="speed-label">速度档位（决定单次指令持续时间）</div>
+            <div class="speed-tabs">
+              <button class="speed-btn" data-speed="slow">慢速</button>
+              <button class="speed-btn active" data-speed="normal">中速</button>
+              <button class="speed-btn" data-speed="fast">快速</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card pad-wrap">
+          <section class="pad">
+            <div class="ghost"></div>
+            <button class="btn" data-action="forward" aria-label="前进">▲</button>
+            <div class="ghost"></div>
+
+            <button class="btn" data-action="left" aria-label="左转">◀</button>
+            <button class="btn stop" id="stopBtn" aria-label="停止">停</button>
+            <button class="btn" data-action="right" aria-label="右转">▶</button>
+
+            <div class="ghost"></div>
+            <button class="btn" data-action="backward" aria-label="后退">▼</button>
+            <div class="ghost"></div>
+          </section>
+        </article>
+      </section>
+
+      <div class="foot">
+        <div id="status" class="status">空闲</div>
+        <div class="tip">键盘支持: W/A/S/D 与方向键，空格显示停止状态</div>
+      </div>
+    </main>
+
+    <script>
+      const targetEl = document.getElementById('target');
+      const saveTargetBtn = document.getElementById('saveTargetBtn');
+      const statusBoxEl = document.getElementById('statusBox');
+      const statusEl = document.getElementById('status');
+      const stopBtn = document.getElementById('stopBtn');
+      const pingBtn = document.getElementById('pingBtn');
+      const speedBtns = Array.from(document.querySelectorAll('[data-speed]'));
+      const actionBtns = Array.from(document.querySelectorAll('[data-action]'));
+
+      let inFlight = false;
+      const keyLock = new Set();
+      let speedMode = localStorage.getItem('robot.drive.speed') || 'normal';
+
+      const speedMap = {
+        slow: 260,
+        normal: 460,
+        fast: 760,
+      };
+
+      const rememberedTarget = localStorage.getItem('robot.drive.target');
+      if (rememberedTarget) {
+        targetEl.value = rememberedTarget;
+      }
+
+      async function applySuggestedTarget() {
+        try {
+          const resp = await fetch('/api/robot/ap-status', { cache: 'no-store' });
+          const data = await resp.json();
+          if (resp.ok && data && data.suggestedTarget) {
+            const suggested = String(data.suggestedTarget).trim();
+            const current = targetEl.value.trim();
+            const shouldOverride = !current || /^https?:\/\/192\.168\.4\.1(?::8080)?$/i.test(current);
+            if (shouldOverride) {
+              targetEl.value = suggested;
+            }
+          }
+        } catch {
+          // Keep current fallback target on network/status check failures.
+        }
+      }
+
+      applySuggestedTarget();
+
+      function renderSpeed() {
+        speedBtns.forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.speed === speedMode);
+        });
+      }
+
+      renderSpeed();
+
+      function setStatus(msg, isErr) {
+        statusBoxEl.textContent = msg;
+        statusEl.textContent = msg;
+        statusEl.style.color = isErr ? '#ff8d8d' : '#23c769';
+        statusBoxEl.style.color = isErr ? '#ff9ea3' : '#9fb0d6';
+      }
+
+      async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
+        try {
+          return await fetch(url, { ...options, signal: controller.signal });
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+
+      async function drive(action, durationMs = 420) {
+        if (inFlight) return;
+        inFlight = true;
+        actionBtns.forEach((x) => (x.disabled = true));
+        pingBtn.disabled = true;
+
+        setStatus(`执行: ${action} ...`);
+        try {
+          const resp = await fetchWithTimeout(
+            '/api/robot/drive',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action, durationMs, target: targetEl.value.trim() }),
+            },
+            25000
+          );
+          const data = await resp.json();
+          if (!resp.ok || !data.ok) {
+            throw new Error(data.error || '控制失败');
+          }
+          setStatus(`完成: ${action}（${speedMode}）`);
+        } catch (err) {
+          setStatus(`失败: ${err.message}`, true);
+        } finally {
+          inFlight = false;
+          actionBtns.forEach((x) => (x.disabled = false));
+          pingBtn.disabled = false;
+        }
+      }
+
+      async function ping() {
+        if (inFlight) return;
+        inFlight = true;
+        pingBtn.disabled = true;
+        setStatus('测试连接中...');
+        try {
+          const resp = await fetchWithTimeout(
+            '/api/robot/ping',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ target: targetEl.value.trim() }),
+            },
+            25000
+          );
+          const data = await resp.json();
+          if (!resp.ok || !data.ok) throw new Error(data.error || '连接失败');
+          targetEl.value = data.target || targetEl.value;
+          setStatus(`连接成功: ${targetEl.value}`);
+        } catch (err) {
+          setStatus(`连接失败: ${err.message}`, true);
+        } finally {
+          inFlight = false;
+          pingBtn.disabled = false;
+        }
+      }
+
+      actionBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const duration = speedMap[speedMode] || speedMap.normal;
+          drive(btn.dataset.action, duration);
+        });
+      });
+
+      speedBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          speedMode = btn.dataset.speed;
+          localStorage.setItem('robot.drive.speed', speedMode);
+          renderSpeed();
+          setStatus(`已切换速度: ${speedMode}`);
+        });
+      });
+
+      stopBtn.addEventListener('click', () => {
+        setStatus('已停止');
+      });
+
+      saveTargetBtn.addEventListener('click', () => {
+        localStorage.setItem('robot.drive.target', targetEl.value.trim());
+        setStatus(`已保存地址: ${targetEl.value.trim()}`);
+      });
+
+      pingBtn.addEventListener('click', ping);
+
+      window.addEventListener('keydown', (e) => {
+        if (keyLock.has(e.code)) return;
+        keyLock.add(e.code);
+
+        const byCode = {
+          ArrowUp: 'forward',
+          ArrowDown: 'backward',
+          ArrowLeft: 'left',
+          ArrowRight: 'right',
+          KeyW: 'forward',
+          KeyS: 'backward',
+          KeyA: 'left',
+          KeyD: 'right',
+        };
+
+        const action = byCode[e.code];
+        if (action) {
+          const duration = speedMap[speedMode] || speedMap.normal;
+          const btn = actionBtns.find((x) => x.dataset.action === action);
+          if (btn) btn.classList.add('active');
+          drive(action, duration);
+          return;
+        }
+
+        if (e.code === 'Space') {
+          setStatus('已停止');
+        }
+      });
+
+      window.addEventListener('keyup', (e) => {
+        keyLock.delete(e.code);
+
+        const byCode = {
+          ArrowUp: 'forward',
+          ArrowDown: 'backward',
+          ArrowLeft: 'left',
+          ArrowRight: 'right',
+          KeyW: 'forward',
+          KeyS: 'backward',
+          KeyA: 'left',
+          KeyD: 'right',
+        };
+
+        const action = byCode[e.code];
+        if (!action) return;
+        const btn = actionBtns.find((x) => x.dataset.action === action);
+        if (btn) btn.classList.remove('active');
+      });
+    </script>
+  </body>
+</html>

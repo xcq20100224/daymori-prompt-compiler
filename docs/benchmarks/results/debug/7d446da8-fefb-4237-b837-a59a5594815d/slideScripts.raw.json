@@ -1,0 +1,109 @@
+[
+  {
+    "id": "s1",
+    "type": "cover",
+    "title": "新员工安全培训",
+    "footer": "内容由AI生成",
+    "subtitle": "training 场景演示",
+    "speaker": "汇报人",
+    "date": "2026-07-06"
+  },
+  {
+    "id": "s2",
+    "type": "agenda",
+    "title": "目录",
+    "footer": "内容由AI生成",
+    "bullets": [
+      "背景",
+      "分析",
+      "行动"
+    ],
+    "visualHint": "目录结构图"
+  },
+  {
+    "id": "s3",
+    "type": "section",
+    "title": "章节03",
+    "footer": "内容由AI生成",
+    "sectionNo": "03",
+    "subtitle": "章节说明"
+  },
+  {
+    "id": "s4",
+    "type": "content_bullets",
+    "title": "新员工安全培训关键议题4",
+    "footer": "内容由AI生成",
+    "label": "核心要点",
+    "bullets": [
+      "核心判断",
+      "关键证据",
+      "执行动作"
+    ],
+    "visualHint": "图示建议"
+  },
+  {
+    "id": "s5",
+    "type": "example",
+    "title": "新员工安全培训关键议题5",
+    "footer": "内容由AI生成",
+    "problem": "当前流程存在重复沟通和响应延迟。",
+    "solution": "通过标准化流程与自动化分流降低无效操作。",
+    "keyTakeaway": "先抓高频场景再扩展复杂场景。",
+    "visualHint": "示例图"
+  },
+  {
+    "id": "s6",
+    "type": "section",
+    "title": "章节06",
+    "footer": "内容由AI生成",
+    "sectionNo": "06",
+    "subtitle": "章节说明"
+  },
+  {
+    "id": "s7",
+    "type": "exercise",
+    "title": "新员工安全培训关键议题7",
+    "footer": "内容由AI生成",
+    "question": "如果目标是先降本，应该优先推进哪一类场景？",
+    "options": [
+      "高频标准化问题",
+      "低频复杂问题",
+      "所有场景同时推进"
+    ],
+    "answer": "优先高频标准化问题",
+    "visualHint": "练习卡"
+  },
+  {
+    "id": "s8",
+    "type": "summary",
+    "title": "总结",
+    "footer": "内容由AI生成",
+    "keyPoints": [
+      "核心问题已被结构化识别",
+      "方案具备分阶段落地路径",
+      "收益指标可持续跟踪验证"
+    ],
+    "conclusion": "形成统一结论",
+    "visualHint": "总结图"
+  },
+  {
+    "id": "s9",
+    "type": "next_steps",
+    "title": "下一步行动",
+    "footer": "内容由AI生成",
+    "actions": [
+      "明确里程碑与负责人",
+      "完成试点并跟踪指标",
+      "复盘优化后规模化推广"
+    ],
+    "ownerHint": "责任人",
+    "visualHint": "行动清单"
+  },
+  {
+    "id": "s10",
+    "type": "thanks",
+    "title": "感谢",
+    "footer": "内容由AI生成",
+    "subtitle": "Q&A"
+  }
+]

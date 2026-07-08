@@ -1,0 +1,107 @@
+[
+  {
+    "id": "s1",
+    "type": "cover",
+    "title": "AI客服降本增效方案",
+    "footer": "内容由AI生成",
+    "subtitle": "proposal 场景演示",
+    "speaker": "汇报人",
+    "date": "2026-07-06"
+  },
+  {
+    "id": "s2",
+    "type": "section",
+    "title": "章节02",
+    "footer": "内容由AI生成",
+    "sectionNo": "02",
+    "subtitle": "章节说明"
+  },
+  {
+    "id": "s3",
+    "type": "content_text",
+    "title": "AI客服降本增效方案关键议题3",
+    "footer": "内容由AI生成",
+    "label": "核心观点",
+    "body": "AI客服降本增效方案关键议题3聚焦一个中心观点，围绕背景、判断依据与执行动作展开完整表达，确保听众在本页就能理解并采取下一步行动。",
+    "visualHint": "图示建议"
+  },
+  {
+    "id": "s4",
+    "type": "data_insight",
+    "title": "AI客服降本增效方案关键议题4",
+    "footer": "内容由AI生成",
+    "metric": "关键指标",
+    "insight": "指标变化揭示核心趋势",
+    "chartHint": "柱状图",
+    "visualHint": "数据图"
+  },
+  {
+    "id": "s5",
+    "type": "compare",
+    "title": "AI客服降本增效方案关键议题5",
+    "footer": "内容由AI生成",
+    "leftTitle": "方案A",
+    "leftPoints": [
+      "优势",
+      "成本"
+    ],
+    "rightTitle": "方案B",
+    "rightPoints": [
+      "优势",
+      "风险"
+    ],
+    "conclusion": "按目标选择最优解",
+    "visualHint": "对比图"
+  },
+  {
+    "id": "s6",
+    "type": "section",
+    "title": "章节06",
+    "footer": "内容由AI生成",
+    "sectionNo": "06",
+    "subtitle": "章节说明"
+  },
+  {
+    "id": "s7",
+    "type": "process",
+    "title": "AI客服降本增效方案关键议题7",
+    "footer": "内容由AI生成",
+    "steps": [
+      "启动",
+      "执行",
+      "复盘"
+    ],
+    "conclusion": "流程闭环",
+    "visualHint": "流程图"
+  },
+  {
+    "id": "s8",
+    "type": "case_study",
+    "title": "AI客服降本增效方案关键议题8",
+    "footer": "内容由AI生成",
+    "background": "案例背景",
+    "action": "关键动作",
+    "result": "量化结果",
+    "visualHint": "案例卡片"
+  },
+  {
+    "id": "s9",
+    "type": "next_steps",
+    "title": "下一步行动",
+    "footer": "内容由AI生成",
+    "actions": [
+      "明确里程碑与负责人",
+      "完成试点并跟踪指标",
+      "复盘优化后规模化推广"
+    ],
+    "ownerHint": "责任人",
+    "visualHint": "行动清单"
+  },
+  {
+    "id": "s10",
+    "type": "thanks",
+    "title": "感谢",
+    "footer": "内容由AI生成",
+    "subtitle": "Q&A"
+  }
+]

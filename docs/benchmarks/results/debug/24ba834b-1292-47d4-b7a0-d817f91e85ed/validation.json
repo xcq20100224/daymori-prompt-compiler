@@ -1,0 +1,25 @@
+{
+  "requestId": "24ba834b-1292-47d4-b7a0-d817f91e85ed",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 1,
+      "type": "blankSlide",
+      "text": ""
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 92,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 94,
+    "cleanliness": 92,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

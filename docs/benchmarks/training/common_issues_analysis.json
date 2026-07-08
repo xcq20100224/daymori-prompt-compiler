@@ -1,0 +1,13 @@
+{
+  "sampleCount": 3,
+  "avgLazymanScore": "100",
+  "commonIssues": [],
+  "avgDetails": {
+    "autoScore": "94.0",
+    "systemScore": "94.0",
+    "maxRepetition": "3.0",
+    "titleVariance": "4.0",
+    "halfFilledRatio": "0.50"
+  },
+  "recommendation": "所有样本已达LazyMan标准"
+}

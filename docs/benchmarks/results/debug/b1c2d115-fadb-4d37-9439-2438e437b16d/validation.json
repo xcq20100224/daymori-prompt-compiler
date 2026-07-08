@@ -1,0 +1,13 @@
+{
+  "requestId": "b1c2d115-fadb-4d37-9439-2438e437b16d",
+  "ok": true,
+  "errors": [],
+  "qualityScore": {
+    "cleanliness": 100,
+    "structure": 100,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 98,
+    "overall": 97
+  }
+}

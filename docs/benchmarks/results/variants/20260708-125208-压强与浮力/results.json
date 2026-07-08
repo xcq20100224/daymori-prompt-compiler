@@ -1,0 +1,286 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,blankOrHalfFilled_slide_8,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffectiveSlide_slide_6,minimumEffectiveSlide_slide_8",
+    "requestId": "2d15a7e8-6206-4e10-95ca-64d2dd69cb41",
+    "generationTracePath": "docs/benchmarks/results/debug/2d15a7e8-6206-4e10-95ca-64d2dd69cb41/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "压强与浮力第3页"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "压强与浮力第8页"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "blankOrHalfFilled_slide_8",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,blankOrHalfFilled_slide_8,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffectiveSlide_slide_6,minimumEffectiveSlide_slide_8",
+    "requestId": "ef6d2b85-be14-4109-a335-29b1150b5ccd",
+    "generationTracePath": "docs/benchmarks/results/debug/ef6d2b85-be14-4109-a335-29b1150b5ccd/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "压强与浮力第3页"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "压强与浮力第8页"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "blankOrHalfFilled_slide_8",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 2,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,blankOrHalfFilled_slide_8,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffectiveSlide_slide_6,minimumEffectiveSlide_slide_8",
+    "requestId": "d54c4e57-4413-4802-9cae-0b558527c7f1",
+    "generationTracePath": "docs/benchmarks/results/debug/d54c4e57-4413-4802-9cae-0b558527c7f1/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "压强与浮力第3页"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "压强与浮力第8页"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "blankOrHalfFilled_slide_8",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 3,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:blankOrHalfFilled_slide_3,blankOrHalfFilled_slide_8,minimumEffectiveSlide_slide_3,minimumEffectiveSlide_slide_4,minimumEffectiveSlide_slide_6,minimumEffectiveSlide_slide_8",
+    "requestId": "3e470d0c-8ffb-4af3-840b-5351b371fa07",
+    "generationTracePath": "docs/benchmarks/results/debug/3e470d0c-8ffb-4af3-840b-5351b371fa07/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 72,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 91,
+      "cleanliness": 72,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 3,
+          "type": "blankOrHalfFilled",
+          "text": "压强与浮力第3页"
+        },
+        {
+          "slideIndex": 8,
+          "type": "blankOrHalfFilled",
+          "text": "压强与浮力第8页"
+        },
+        {
+          "slideIndex": 3,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 4,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        },
+        {
+          "slideIndex": 8,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "blankOrHalfFilled_slide_3",
+        "blankOrHalfFilled_slide_8",
+        "minimumEffectiveSlide_slide_3",
+        "minimumEffectiveSlide_slide_4",
+        "minimumEffectiveSlide_slide_6",
+        "minimumEffectiveSlide_slide_8"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]
