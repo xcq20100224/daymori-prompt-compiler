@@ -2,42 +2,6 @@
   {
     "slideType": "deck_variant",
     "example": {
-      "topic": "新产品上市计划",
-      "score": 94,
-      "requestId": "dbf1294f-6241-4982-a146-9deaaaebb750",
-      "pptPath": "docs/benchmarks/results/exports/dbf1294f-6241-4982-a146-9deaaaebb750/deck.pptx",
-      "generationTracePath": "docs/benchmarks/results/exports/dbf1294f-6241-4982-a146-9deaaaebb750/generation_trace.json",
-      "promptVersion": "v4_strict",
-      "seed": 0,
-      "temperature": 0.7
-    },
-    "rules": [
-      "优先选择 BLOCKER=0 的版本",
-      "优先选择标题无页码、无版本词的版本",
-      "优先选择总体质量分高且自动评分高的版本"
-    ]
-  },
-  {
-    "slideType": "deck_variant",
-    "example": {
-      "topic": "新产品上市计划",
-      "score": 94,
-      "requestId": "0beb1a61-1d38-4252-936c-8d300eb1984a",
-      "pptPath": "docs/benchmarks/results/exports/0beb1a61-1d38-4252-936c-8d300eb1984a/deck.pptx",
-      "generationTracePath": "docs/benchmarks/results/exports/0beb1a61-1d38-4252-936c-8d300eb1984a/generation_trace.json",
-      "promptVersion": "v4_creative",
-      "seed": 1,
-      "temperature": 0.7999999999999999
-    },
-    "rules": [
-      "优先选择 BLOCKER=0 的版本",
-      "优先选择标题无页码、无版本词的版本",
-      "优先选择总体质量分高且自动评分高的版本"
-    ]
-  },
-  {
-    "slideType": "deck_variant",
-    "example": {
       "topic": "客户留存提升方案",
       "score": 94,
       "requestId": "7e9ae9cf-70c8-4c77-9b41-1ca60acccc56",
@@ -2149,6 +2113,42 @@
       "requestId": "ca3a6ba8-c151-4851-92fe-8966de4f6078",
       "pptPath": "docs/benchmarks/results/exports/ca3a6ba8-c151-4851-92fe-8966de4f6078/deck.pptx",
       "generationTracePath": "docs/benchmarks/results/exports/ca3a6ba8-c151-4851-92fe-8966de4f6078/generation_trace.json",
+      "promptVersion": "v4_creative",
+      "seed": 1,
+      "temperature": 0.7999999999999999
+    },
+    "rules": [
+      "优先选择 BLOCKER=0 的版本",
+      "优先选择标题无页码、无版本词的版本",
+      "优先选择总体质量分高且自动评分高的版本"
+    ]
+  },
+  {
+    "slideType": "deck_variant",
+    "example": {
+      "topic": "企业数字化转型",
+      "score": 64,
+      "requestId": "c9ebf838-0a1c-45ef-be39-2fd5d6163367",
+      "pptPath": "docs/benchmarks/results/exports/c9ebf838-0a1c-45ef-be39-2fd5d6163367/deck.pptx",
+      "generationTracePath": "docs/benchmarks/results/exports/c9ebf838-0a1c-45ef-be39-2fd5d6163367/generation_trace.json",
+      "promptVersion": "v4_strict",
+      "seed": 0,
+      "temperature": 0.7
+    },
+    "rules": [
+      "优先选择 BLOCKER=0 的版本",
+      "优先选择标题无页码、无版本词的版本",
+      "优先选择总体质量分高且自动评分高的版本"
+    ]
+  },
+  {
+    "slideType": "deck_variant",
+    "example": {
+      "topic": "企业数字化转型",
+      "score": 64,
+      "requestId": "9ee2fa18-a3e5-40f0-9c51-f8a58ef91173",
+      "pptPath": "docs/benchmarks/results/exports/9ee2fa18-a3e5-40f0-9c51-f8a58ef91173/deck.pptx",
+      "generationTracePath": "docs/benchmarks/results/exports/9ee2fa18-a3e5-40f0-9c51-f8a58ef91173/generation_trace.json",
       "promptVersion": "v4_creative",
       "seed": 1,
       "temperature": 0.7999999999999999

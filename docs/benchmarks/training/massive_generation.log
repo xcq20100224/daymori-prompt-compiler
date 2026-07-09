@@ -5121,3 +5121,6 @@
 }
 
 [Batch 2] 生成 10 个样本...
+Batch 2 失败: spawnSync C:\Windows\system32\cmd.exe ETIMEDOUT
+
+[Batch 3] 生成 10 个样本...

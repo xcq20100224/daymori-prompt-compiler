@@ -1,0 +1,3832 @@
+[
+  {
+    "ok": true,
+    "seed": 0,
+    "variant": "v4_strict",
+    "temperature": 0.7,
+    "status": 200,
+    "requestId": "c9ebf838-0a1c-45ef-be39-2fd5d6163367",
+    "engine": "local-powerpoint-com",
+    "relativePath": "docs/benchmarks/results/exports/c9ebf838-0a1c-45ef-be39-2fd5d6163367/deck.pptx",
+    "generationTracePath": "docs/benchmarks/results/exports/c9ebf838-0a1c-45ef-be39-2fd5d6163367/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "requestId": "c9ebf838-0a1c-45ef-be39-2fd5d6163367",
+      "ok": true,
+      "errors": [],
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "dump": {
+      "requestId": "c9ebf838-0a1c-45ef-be39-2fd5d6163367",
+      "generatedAt": "2026-07-08T14:22:24.144Z",
+      "topic": "企业数字化转型",
+      "deckPlan": {
+        "topic": "企业数字化转型",
+        "scenario": "proposal",
+        "audience": "通用受众",
+        "tone": "专业可信",
+        "pageCount": 10,
+        "narrative": "企业数字化转型从背景到行动的单线叙事",
+        "structure": [
+          {
+            "sectionTitle": "问题背景",
+            "pages": 2
+          },
+          {
+            "sectionTitle": "核心分析",
+            "pages": 4
+          },
+          {
+            "sectionTitle": "方案与行动",
+            "pages": 3
+          }
+        ]
+      },
+      "inputSlideCount": 10,
+      "outputSlideCount": 10,
+      "slideCount": 10,
+      "slides": [
+        {
+          "index": 1,
+          "type": "cover",
+          "title": "企业数字化转型",
+          "isHidden": false,
+          "texts": [
+            "企业数字化转型",
+            "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+            "企业数字化转型提案汇报 内容由 AI 生成 1/10"
+          ],
+          "boxes": [
+            {
+              "text": "企业数字化转型",
+              "x": 1,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            },
+            {
+              "text": "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "企业数字化转型提案汇报 内容由 AI 生成 1/10",
+              "x": 2701472,
+              "y": 2481345,
+              "w": 7890783,
+              "h": 1107996
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "type": "section",
+          "title": "现状与问题",
+          "isHidden": false,
+          "texts": [
+            "现状与问题",
+            "内容由 AI 生成 2/10"
+          ],
+          "boxes": [
+            {
+              "text": "现状与问题",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "内容由 AI 生成 2/10",
+              "x": 7910483,
+              "y": 2872602,
+              "w": 2876550,
+              "h": 461665
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "type": "content",
+          "title": "现状评估",
+          "isHidden": false,
+          "texts": [
+            "现状评估"
+          ],
+          "boxes": [
+            {
+              "text": "现状评估",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "type": "content",
+          "title": "关键问题拆解",
+          "isHidden": false,
+          "texts": [
+            "关键问题拆解",
+            "问题拆解"
+          ],
+          "boxes": [
+            {
+              "text": "关键问题拆解",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "问题拆解",
+              "x": 1157758,
+              "y": 4186133,
+              "w": 2433362,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "type": "section",
+          "title": "方案设计",
+          "isHidden": false,
+          "texts": [
+            "方案设计",
+            "内容由 AI 生成 5/10"
+          ],
+          "boxes": [
+            {
+              "text": "方案设计",
+              "x": 6244802,
+              "y": 1056903,
+              "w": 4619365,
+              "h": 343427
+            },
+            {
+              "text": "内容由 AI 生成 5/10",
+              "x": 6096000,
+              "y": 2825221,
+              "w": 4886704,
+              "h": 2748771
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "type": "content",
+          "title": "方案架构",
+          "isHidden": false,
+          "texts": [
+            "方案架构",
+            "方案设计"
+          ],
+          "boxes": [
+            {
+              "text": "方案架构",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "方案设计",
+              "x": 1187005,
+              "y": 2005123,
+              "w": 1863375,
+              "h": 1634448
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "type": "content",
+          "title": "三阶段推进试点落地",
+          "isHidden": false,
+          "texts": [
+            "三阶段推进试点落地"
+          ],
+          "boxes": [
+            {
+              "text": "三阶段推进试点落地",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "type": "content",
+          "title": "用关键指标验证收益",
+          "isHidden": false,
+          "texts": [
+            "用关键指标验证收益"
+          ],
+          "boxes": [
+            {
+              "text": "用关键指标验证收益",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "type": "content",
+          "title": "下一步决策事项",
+          "isHidden": false,
+          "texts": [
+            "下一步决策事项",
+            "试点范围：明确首批渠道与服务场景边界",
+            "预算边界：锁定试点投入上限与审批口径",
+            "系统接入：确认客服系统接口与联调计划",
+            "责任人：指定业务与技术双负责人机制"
+          ],
+          "boxes": [
+            {
+              "text": "下一步决策事项",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "试点范围：明确首批渠道与服务场景边界",
+              "x": 1463040,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "预算边界：锁定试点投入上限与审批口径",
+              "x": 6400800,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "系统接入：确认客服系统接口与联调计划",
+              "x": 1463040,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "责任人：指定业务与技术双负责人机制",
+              "x": 6400800,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "type": "qa",
+          "title": "谢谢观看",
+          "isHidden": false,
+          "texts": [
+            "谢谢观看",
+            "Q&amp;A Q&amp;A 内容由 AI 生成",
+            "Q&amp;A",
+            "内容由 AI 生成 10/10"
+          ],
+          "boxes": [
+            {
+              "text": "谢谢观看",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A Q&amp;A 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A",
+              "x": 1024896,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            },
+            {
+              "text": "内容由 AI 生成 10/10",
+              "x": 3564894,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            }
+          ]
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "errors": []
+      },
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "autoScore": 64,
+    "blockerCount": 0,
+    "scoreNotes": [
+      "half_filled_slide"
+    ]
+  },
+  {
+    "ok": true,
+    "seed": 1,
+    "variant": "v4_creative",
+    "temperature": 0.7999999999999999,
+    "status": 200,
+    "requestId": "9ee2fa18-a3e5-40f0-9c51-f8a58ef91173",
+    "engine": "local-powerpoint-com",
+    "relativePath": "docs/benchmarks/results/exports/9ee2fa18-a3e5-40f0-9c51-f8a58ef91173/deck.pptx",
+    "generationTracePath": "docs/benchmarks/results/exports/9ee2fa18-a3e5-40f0-9c51-f8a58ef91173/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "requestId": "9ee2fa18-a3e5-40f0-9c51-f8a58ef91173",
+      "ok": true,
+      "errors": [],
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "dump": {
+      "requestId": "9ee2fa18-a3e5-40f0-9c51-f8a58ef91173",
+      "generatedAt": "2026-07-08T14:22:41.092Z",
+      "topic": "企业数字化转型",
+      "deckPlan": {
+        "topic": "企业数字化转型",
+        "scenario": "proposal",
+        "audience": "通用受众",
+        "tone": "简洁有力",
+        "pageCount": 10,
+        "narrative": "企业数字化转型从背景到行动的单线叙事",
+        "structure": [
+          {
+            "sectionTitle": "问题背景",
+            "pages": 2
+          },
+          {
+            "sectionTitle": "核心分析",
+            "pages": 4
+          },
+          {
+            "sectionTitle": "方案与行动",
+            "pages": 3
+          }
+        ]
+      },
+      "inputSlideCount": 10,
+      "outputSlideCount": 10,
+      "slideCount": 10,
+      "slides": [
+        {
+          "index": 1,
+          "type": "cover",
+          "title": "企业数字化转型",
+          "isHidden": false,
+          "texts": [
+            "企业数字化转型",
+            "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+            "企业数字化转型提案汇报 内容由 AI 生成 1/10"
+          ],
+          "boxes": [
+            {
+              "text": "企业数字化转型",
+              "x": 1,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            },
+            {
+              "text": "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "企业数字化转型提案汇报 内容由 AI 生成 1/10",
+              "x": 2701472,
+              "y": 2481345,
+              "w": 7890783,
+              "h": 1107996
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "type": "section",
+          "title": "现状与问题",
+          "isHidden": false,
+          "texts": [
+            "现状与问题",
+            "内容由 AI 生成 2/10"
+          ],
+          "boxes": [
+            {
+              "text": "现状与问题",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "内容由 AI 生成 2/10",
+              "x": 7910483,
+              "y": 2872602,
+              "w": 2876550,
+              "h": 461665
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "type": "content",
+          "title": "现状评估",
+          "isHidden": false,
+          "texts": [
+            "现状评估"
+          ],
+          "boxes": [
+            {
+              "text": "现状评估",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "type": "content",
+          "title": "关键问题拆解",
+          "isHidden": false,
+          "texts": [
+            "关键问题拆解",
+            "问题拆解"
+          ],
+          "boxes": [
+            {
+              "text": "关键问题拆解",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "问题拆解",
+              "x": 1157758,
+              "y": 4186133,
+              "w": 2433362,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "type": "section",
+          "title": "方案设计",
+          "isHidden": false,
+          "texts": [
+            "方案设计",
+            "内容由 AI 生成 5/10"
+          ],
+          "boxes": [
+            {
+              "text": "方案设计",
+              "x": 6244802,
+              "y": 1056903,
+              "w": 4619365,
+              "h": 343427
+            },
+            {
+              "text": "内容由 AI 生成 5/10",
+              "x": 6096000,
+              "y": 2825221,
+              "w": 4886704,
+              "h": 2748771
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "type": "content",
+          "title": "方案架构",
+          "isHidden": false,
+          "texts": [
+            "方案架构",
+            "方案设计"
+          ],
+          "boxes": [
+            {
+              "text": "方案架构",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "方案设计",
+              "x": 1187005,
+              "y": 2005123,
+              "w": 1863375,
+              "h": 1634448
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "type": "content",
+          "title": "三阶段推进试点落地",
+          "isHidden": false,
+          "texts": [
+            "三阶段推进试点落地"
+          ],
+          "boxes": [
+            {
+              "text": "三阶段推进试点落地",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "type": "content",
+          "title": "用关键指标验证收益",
+          "isHidden": false,
+          "texts": [
+            "用关键指标验证收益"
+          ],
+          "boxes": [
+            {
+              "text": "用关键指标验证收益",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "type": "content",
+          "title": "下一步决策事项",
+          "isHidden": false,
+          "texts": [
+            "下一步决策事项",
+            "试点范围：明确首批渠道与服务场景边界",
+            "预算边界：锁定试点投入上限与审批口径",
+            "系统接入：确认客服系统接口与联调计划",
+            "责任人：指定业务与技术双负责人机制"
+          ],
+          "boxes": [
+            {
+              "text": "下一步决策事项",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "试点范围：明确首批渠道与服务场景边界",
+              "x": 1463040,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "预算边界：锁定试点投入上限与审批口径",
+              "x": 6400800,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "系统接入：确认客服系统接口与联调计划",
+              "x": 1463040,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "责任人：指定业务与技术双负责人机制",
+              "x": 6400800,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "type": "qa",
+          "title": "谢谢观看",
+          "isHidden": false,
+          "texts": [
+            "谢谢观看",
+            "Q&amp;A Q&amp;A 内容由 AI 生成",
+            "Q&amp;A",
+            "内容由 AI 生成 10/10"
+          ],
+          "boxes": [
+            {
+              "text": "谢谢观看",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A Q&amp;A 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A",
+              "x": 1024896,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            },
+            {
+              "text": "内容由 AI 生成 10/10",
+              "x": 3564894,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            }
+          ]
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "errors": []
+      },
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "autoScore": 64,
+    "blockerCount": 0,
+    "scoreNotes": [
+      "half_filled_slide"
+    ]
+  },
+  {
+    "ok": true,
+    "seed": 2,
+    "variant": "v4_concise",
+    "temperature": 0.8999999999999999,
+    "status": 200,
+    "requestId": "0eaf8e92-789f-4af5-b001-f84b2b6d3d1d",
+    "engine": "local-powerpoint-com",
+    "relativePath": "docs/benchmarks/results/exports/0eaf8e92-789f-4af5-b001-f84b2b6d3d1d/deck.pptx",
+    "generationTracePath": "docs/benchmarks/results/exports/0eaf8e92-789f-4af5-b001-f84b2b6d3d1d/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "requestId": "0eaf8e92-789f-4af5-b001-f84b2b6d3d1d",
+      "ok": true,
+      "errors": [],
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "dump": {
+      "requestId": "0eaf8e92-789f-4af5-b001-f84b2b6d3d1d",
+      "generatedAt": "2026-07-08T14:24:38.300Z",
+      "topic": "企业数字化转型",
+      "deckPlan": {
+        "topic": "企业数字化转型",
+        "scenario": "proposal",
+        "audience": "通用受众",
+        "tone": "清晰可执行",
+        "pageCount": 10,
+        "narrative": "企业数字化转型从背景到行动的单线叙事",
+        "structure": [
+          {
+            "sectionTitle": "问题背景",
+            "pages": 2
+          },
+          {
+            "sectionTitle": "核心分析",
+            "pages": 4
+          },
+          {
+            "sectionTitle": "方案与行动",
+            "pages": 3
+          }
+        ]
+      },
+      "inputSlideCount": 10,
+      "outputSlideCount": 10,
+      "slideCount": 10,
+      "slides": [
+        {
+          "index": 1,
+          "type": "cover",
+          "title": "企业数字化转型",
+          "isHidden": false,
+          "texts": [
+            "企业数字化转型",
+            "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+            "企业数字化转型提案汇报 内容由 AI 生成 1/10"
+          ],
+          "boxes": [
+            {
+              "text": "企业数字化转型",
+              "x": 1,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            },
+            {
+              "text": "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "企业数字化转型提案汇报 内容由 AI 生成 1/10",
+              "x": 2701472,
+              "y": 2481345,
+              "w": 7890783,
+              "h": 1107996
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "type": "section",
+          "title": "现状与问题",
+          "isHidden": false,
+          "texts": [
+            "现状与问题",
+            "内容由 AI 生成 2/10"
+          ],
+          "boxes": [
+            {
+              "text": "现状与问题",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "内容由 AI 生成 2/10",
+              "x": 7910483,
+              "y": 2872602,
+              "w": 2876550,
+              "h": 461665
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "type": "content",
+          "title": "现状评估",
+          "isHidden": false,
+          "texts": [
+            "现状评估"
+          ],
+          "boxes": [
+            {
+              "text": "现状评估",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "type": "content",
+          "title": "关键问题拆解",
+          "isHidden": false,
+          "texts": [
+            "关键问题拆解",
+            "问题拆解"
+          ],
+          "boxes": [
+            {
+              "text": "关键问题拆解",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "问题拆解",
+              "x": 1157758,
+              "y": 4186133,
+              "w": 2433362,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "type": "section",
+          "title": "方案设计",
+          "isHidden": false,
+          "texts": [
+            "方案设计",
+            "内容由 AI 生成 5/10"
+          ],
+          "boxes": [
+            {
+              "text": "方案设计",
+              "x": 6244802,
+              "y": 1056903,
+              "w": 4619365,
+              "h": 343427
+            },
+            {
+              "text": "内容由 AI 生成 5/10",
+              "x": 6096000,
+              "y": 2825221,
+              "w": 4886704,
+              "h": 2748771
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "type": "content",
+          "title": "方案架构",
+          "isHidden": false,
+          "texts": [
+            "方案架构",
+            "方案设计"
+          ],
+          "boxes": [
+            {
+              "text": "方案架构",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "方案设计",
+              "x": 1187005,
+              "y": 2005123,
+              "w": 1863375,
+              "h": 1634448
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "type": "content",
+          "title": "三阶段推进试点落地",
+          "isHidden": false,
+          "texts": [
+            "三阶段推进试点落地"
+          ],
+          "boxes": [
+            {
+              "text": "三阶段推进试点落地",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "type": "content",
+          "title": "用关键指标验证收益",
+          "isHidden": false,
+          "texts": [
+            "用关键指标验证收益"
+          ],
+          "boxes": [
+            {
+              "text": "用关键指标验证收益",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "type": "content",
+          "title": "下一步决策事项",
+          "isHidden": false,
+          "texts": [
+            "下一步决策事项",
+            "试点范围：明确首批渠道与服务场景边界",
+            "预算边界：锁定试点投入上限与审批口径",
+            "系统接入：确认客服系统接口与联调计划",
+            "责任人：指定业务与技术双负责人机制"
+          ],
+          "boxes": [
+            {
+              "text": "下一步决策事项",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "试点范围：明确首批渠道与服务场景边界",
+              "x": 1463040,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "预算边界：锁定试点投入上限与审批口径",
+              "x": 6400800,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "系统接入：确认客服系统接口与联调计划",
+              "x": 1463040,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "责任人：指定业务与技术双负责人机制",
+              "x": 6400800,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "type": "qa",
+          "title": "谢谢观看",
+          "isHidden": false,
+          "texts": [
+            "谢谢观看",
+            "Q&amp;A Q&amp;A 内容由 AI 生成",
+            "Q&amp;A",
+            "内容由 AI 生成 10/10"
+          ],
+          "boxes": [
+            {
+              "text": "谢谢观看",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A Q&amp;A 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A",
+              "x": 1024896,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            },
+            {
+              "text": "内容由 AI 生成 10/10",
+              "x": 3564894,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            }
+          ]
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "errors": []
+      },
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "autoScore": 64,
+    "blockerCount": 0,
+    "scoreNotes": [
+      "half_filled_slide"
+    ]
+  },
+  {
+    "ok": true,
+    "seed": 3,
+    "variant": "v4_strict",
+    "temperature": 0.7,
+    "status": 200,
+    "requestId": "0b9ba59d-9e64-42c2-8438-04ad82530347",
+    "engine": "local-powerpoint-com",
+    "relativePath": "docs/benchmarks/results/exports/0b9ba59d-9e64-42c2-8438-04ad82530347/deck.pptx",
+    "generationTracePath": "docs/benchmarks/results/exports/0b9ba59d-9e64-42c2-8438-04ad82530347/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "requestId": "0b9ba59d-9e64-42c2-8438-04ad82530347",
+      "ok": true,
+      "errors": [],
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "dump": {
+      "requestId": "0b9ba59d-9e64-42c2-8438-04ad82530347",
+      "generatedAt": "2026-07-08T14:25:02.855Z",
+      "topic": "企业数字化转型",
+      "deckPlan": {
+        "topic": "企业数字化转型",
+        "scenario": "proposal",
+        "audience": "通用受众",
+        "tone": "专业可信",
+        "pageCount": 10,
+        "narrative": "企业数字化转型从背景到行动的单线叙事",
+        "structure": [
+          {
+            "sectionTitle": "问题背景",
+            "pages": 2
+          },
+          {
+            "sectionTitle": "核心分析",
+            "pages": 4
+          },
+          {
+            "sectionTitle": "方案与行动",
+            "pages": 3
+          }
+        ]
+      },
+      "inputSlideCount": 10,
+      "outputSlideCount": 10,
+      "slideCount": 10,
+      "slides": [
+        {
+          "index": 1,
+          "type": "cover",
+          "title": "企业数字化转型",
+          "isHidden": false,
+          "texts": [
+            "企业数字化转型",
+            "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+            "企业数字化转型提案汇报 内容由 AI 生成 1/10"
+          ],
+          "boxes": [
+            {
+              "text": "企业数字化转型",
+              "x": 1,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            },
+            {
+              "text": "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "企业数字化转型提案汇报 内容由 AI 生成 1/10",
+              "x": 2701472,
+              "y": 2481345,
+              "w": 7890783,
+              "h": 1107996
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "type": "section",
+          "title": "现状与问题",
+          "isHidden": false,
+          "texts": [
+            "现状与问题",
+            "内容由 AI 生成 2/10"
+          ],
+          "boxes": [
+            {
+              "text": "现状与问题",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "内容由 AI 生成 2/10",
+              "x": 7910483,
+              "y": 2872602,
+              "w": 2876550,
+              "h": 461665
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "type": "content",
+          "title": "现状评估",
+          "isHidden": false,
+          "texts": [
+            "现状评估"
+          ],
+          "boxes": [
+            {
+              "text": "现状评估",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "type": "content",
+          "title": "关键问题拆解",
+          "isHidden": false,
+          "texts": [
+            "关键问题拆解",
+            "问题拆解"
+          ],
+          "boxes": [
+            {
+              "text": "关键问题拆解",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "问题拆解",
+              "x": 1157758,
+              "y": 4186133,
+              "w": 2433362,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "type": "section",
+          "title": "方案设计",
+          "isHidden": false,
+          "texts": [
+            "方案设计",
+            "内容由 AI 生成 5/10"
+          ],
+          "boxes": [
+            {
+              "text": "方案设计",
+              "x": 6244802,
+              "y": 1056903,
+              "w": 4619365,
+              "h": 343427
+            },
+            {
+              "text": "内容由 AI 生成 5/10",
+              "x": 6096000,
+              "y": 2825221,
+              "w": 4886704,
+              "h": 2748771
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "type": "content",
+          "title": "方案架构",
+          "isHidden": false,
+          "texts": [
+            "方案架构",
+            "方案设计"
+          ],
+          "boxes": [
+            {
+              "text": "方案架构",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "方案设计",
+              "x": 1187005,
+              "y": 2005123,
+              "w": 1863375,
+              "h": 1634448
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "type": "content",
+          "title": "三阶段推进试点落地",
+          "isHidden": false,
+          "texts": [
+            "三阶段推进试点落地"
+          ],
+          "boxes": [
+            {
+              "text": "三阶段推进试点落地",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "type": "content",
+          "title": "用关键指标验证收益",
+          "isHidden": false,
+          "texts": [
+            "用关键指标验证收益"
+          ],
+          "boxes": [
+            {
+              "text": "用关键指标验证收益",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "type": "content",
+          "title": "下一步决策事项",
+          "isHidden": false,
+          "texts": [
+            "下一步决策事项",
+            "试点范围：明确首批渠道与服务场景边界",
+            "预算边界：锁定试点投入上限与审批口径",
+            "系统接入：确认客服系统接口与联调计划",
+            "责任人：指定业务与技术双负责人机制"
+          ],
+          "boxes": [
+            {
+              "text": "下一步决策事项",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "试点范围：明确首批渠道与服务场景边界",
+              "x": 1463040,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "预算边界：锁定试点投入上限与审批口径",
+              "x": 6400800,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "系统接入：确认客服系统接口与联调计划",
+              "x": 1463040,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "责任人：指定业务与技术双负责人机制",
+              "x": 6400800,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "type": "qa",
+          "title": "谢谢观看",
+          "isHidden": false,
+          "texts": [
+            "谢谢观看",
+            "Q&amp;A Q&amp;A 内容由 AI 生成",
+            "Q&amp;A",
+            "内容由 AI 生成 10/10"
+          ],
+          "boxes": [
+            {
+              "text": "谢谢观看",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A Q&amp;A 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A",
+              "x": 1024896,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            },
+            {
+              "text": "内容由 AI 生成 10/10",
+              "x": 3564894,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            }
+          ]
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "errors": []
+      },
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "autoScore": 64,
+    "blockerCount": 0,
+    "scoreNotes": [
+      "half_filled_slide"
+    ]
+  },
+  {
+    "ok": true,
+    "seed": 4,
+    "variant": "v4_creative",
+    "temperature": 0.7999999999999999,
+    "status": 200,
+    "requestId": "25d3bbaf-b11e-4076-8d6e-808224d6b727",
+    "engine": "local-powerpoint-com",
+    "relativePath": "docs/benchmarks/results/exports/25d3bbaf-b11e-4076-8d6e-808224d6b727/deck.pptx",
+    "generationTracePath": "docs/benchmarks/results/exports/25d3bbaf-b11e-4076-8d6e-808224d6b727/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "requestId": "25d3bbaf-b11e-4076-8d6e-808224d6b727",
+      "ok": true,
+      "errors": [],
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "dump": {
+      "requestId": "25d3bbaf-b11e-4076-8d6e-808224d6b727",
+      "generatedAt": "2026-07-08T14:27:08.949Z",
+      "topic": "企业数字化转型",
+      "deckPlan": {
+        "topic": "企业数字化转型",
+        "scenario": "proposal",
+        "audience": "通用受众",
+        "tone": "简洁有力",
+        "pageCount": 10,
+        "narrative": "企业数字化转型从背景到行动的单线叙事",
+        "structure": [
+          {
+            "sectionTitle": "问题背景",
+            "pages": 2
+          },
+          {
+            "sectionTitle": "核心分析",
+            "pages": 4
+          },
+          {
+            "sectionTitle": "方案与行动",
+            "pages": 3
+          }
+        ]
+      },
+      "inputSlideCount": 10,
+      "outputSlideCount": 10,
+      "slideCount": 10,
+      "slides": [
+        {
+          "index": 1,
+          "type": "cover",
+          "title": "企业数字化转型",
+          "isHidden": false,
+          "texts": [
+            "企业数字化转型",
+            "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+            "企业数字化转型提案汇报 内容由 AI 生成 1/10"
+          ],
+          "boxes": [
+            {
+              "text": "企业数字化转型",
+              "x": 1,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            },
+            {
+              "text": "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "企业数字化转型提案汇报 内容由 AI 生成 1/10",
+              "x": 2701472,
+              "y": 2481345,
+              "w": 7890783,
+              "h": 1107996
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "type": "section",
+          "title": "现状与问题",
+          "isHidden": false,
+          "texts": [
+            "现状与问题",
+            "内容由 AI 生成 2/10"
+          ],
+          "boxes": [
+            {
+              "text": "现状与问题",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "内容由 AI 生成 2/10",
+              "x": 7910483,
+              "y": 2872602,
+              "w": 2876550,
+              "h": 461665
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "type": "content",
+          "title": "现状评估",
+          "isHidden": false,
+          "texts": [
+            "现状评估"
+          ],
+          "boxes": [
+            {
+              "text": "现状评估",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "type": "content",
+          "title": "关键问题拆解",
+          "isHidden": false,
+          "texts": [
+            "关键问题拆解",
+            "问题拆解"
+          ],
+          "boxes": [
+            {
+              "text": "关键问题拆解",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "问题拆解",
+              "x": 1157758,
+              "y": 4186133,
+              "w": 2433362,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "type": "section",
+          "title": "方案设计",
+          "isHidden": false,
+          "texts": [
+            "方案设计",
+            "内容由 AI 生成 5/10"
+          ],
+          "boxes": [
+            {
+              "text": "方案设计",
+              "x": 6244802,
+              "y": 1056903,
+              "w": 4619365,
+              "h": 343427
+            },
+            {
+              "text": "内容由 AI 生成 5/10",
+              "x": 6096000,
+              "y": 2825221,
+              "w": 4886704,
+              "h": 2748771
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "type": "content",
+          "title": "方案架构",
+          "isHidden": false,
+          "texts": [
+            "方案架构",
+            "方案设计"
+          ],
+          "boxes": [
+            {
+              "text": "方案架构",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "方案设计",
+              "x": 1187005,
+              "y": 2005123,
+              "w": 1863375,
+              "h": 1634448
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "type": "content",
+          "title": "三阶段推进试点落地",
+          "isHidden": false,
+          "texts": [
+            "三阶段推进试点落地"
+          ],
+          "boxes": [
+            {
+              "text": "三阶段推进试点落地",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "type": "content",
+          "title": "用关键指标验证收益",
+          "isHidden": false,
+          "texts": [
+            "用关键指标验证收益"
+          ],
+          "boxes": [
+            {
+              "text": "用关键指标验证收益",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "type": "content",
+          "title": "下一步决策事项",
+          "isHidden": false,
+          "texts": [
+            "下一步决策事项",
+            "试点范围：明确首批渠道与服务场景边界",
+            "预算边界：锁定试点投入上限与审批口径",
+            "系统接入：确认客服系统接口与联调计划",
+            "责任人：指定业务与技术双负责人机制"
+          ],
+          "boxes": [
+            {
+              "text": "下一步决策事项",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "试点范围：明确首批渠道与服务场景边界",
+              "x": 1463040,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "预算边界：锁定试点投入上限与审批口径",
+              "x": 6400800,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "系统接入：确认客服系统接口与联调计划",
+              "x": 1463040,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "责任人：指定业务与技术双负责人机制",
+              "x": 6400800,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "type": "qa",
+          "title": "谢谢观看",
+          "isHidden": false,
+          "texts": [
+            "谢谢观看",
+            "Q&amp;A Q&amp;A 内容由 AI 生成",
+            "Q&amp;A",
+            "内容由 AI 生成 10/10"
+          ],
+          "boxes": [
+            {
+              "text": "谢谢观看",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A Q&amp;A 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A",
+              "x": 1024896,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            },
+            {
+              "text": "内容由 AI 生成 10/10",
+              "x": 3564894,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            }
+          ]
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "errors": []
+      },
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "autoScore": 64,
+    "blockerCount": 0,
+    "scoreNotes": [
+      "half_filled_slide"
+    ]
+  },
+  {
+    "ok": true,
+    "seed": 5,
+    "variant": "v4_concise",
+    "temperature": 0.8999999999999999,
+    "status": 200,
+    "requestId": "39d345f0-7474-4e23-8596-a94a5365d93e",
+    "engine": "local-powerpoint-com",
+    "relativePath": "docs/benchmarks/results/exports/39d345f0-7474-4e23-8596-a94a5365d93e/deck.pptx",
+    "generationTracePath": "docs/benchmarks/results/exports/39d345f0-7474-4e23-8596-a94a5365d93e/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "requestId": "39d345f0-7474-4e23-8596-a94a5365d93e",
+      "ok": true,
+      "errors": [],
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "dump": {
+      "requestId": "39d345f0-7474-4e23-8596-a94a5365d93e",
+      "generatedAt": "2026-07-08T14:27:43.248Z",
+      "topic": "企业数字化转型",
+      "deckPlan": {
+        "topic": "企业数字化转型",
+        "scenario": "proposal",
+        "audience": "通用受众",
+        "tone": "清晰可执行",
+        "pageCount": 10,
+        "narrative": "企业数字化转型从背景到行动的单线叙事",
+        "structure": [
+          {
+            "sectionTitle": "问题背景",
+            "pages": 2
+          },
+          {
+            "sectionTitle": "核心分析",
+            "pages": 4
+          },
+          {
+            "sectionTitle": "方案与行动",
+            "pages": 3
+          }
+        ]
+      },
+      "inputSlideCount": 10,
+      "outputSlideCount": 10,
+      "slideCount": 10,
+      "slides": [
+        {
+          "index": 1,
+          "type": "cover",
+          "title": "企业数字化转型",
+          "isHidden": false,
+          "texts": [
+            "企业数字化转型",
+            "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+            "企业数字化转型提案汇报 内容由 AI 生成 1/10"
+          ],
+          "boxes": [
+            {
+              "text": "企业数字化转型",
+              "x": 1,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            },
+            {
+              "text": "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "企业数字化转型提案汇报 内容由 AI 生成 1/10",
+              "x": 2701472,
+              "y": 2481345,
+              "w": 7890783,
+              "h": 1107996
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "type": "section",
+          "title": "现状与问题",
+          "isHidden": false,
+          "texts": [
+            "现状与问题",
+            "内容由 AI 生成 2/10"
+          ],
+          "boxes": [
+            {
+              "text": "现状与问题",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "内容由 AI 生成 2/10",
+              "x": 7910483,
+              "y": 2872602,
+              "w": 2876550,
+              "h": 461665
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "type": "content",
+          "title": "现状评估",
+          "isHidden": false,
+          "texts": [
+            "现状评估"
+          ],
+          "boxes": [
+            {
+              "text": "现状评估",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "type": "content",
+          "title": "关键问题拆解",
+          "isHidden": false,
+          "texts": [
+            "关键问题拆解",
+            "问题拆解"
+          ],
+          "boxes": [
+            {
+              "text": "关键问题拆解",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "问题拆解",
+              "x": 1157758,
+              "y": 4186133,
+              "w": 2433362,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "type": "section",
+          "title": "方案设计",
+          "isHidden": false,
+          "texts": [
+            "方案设计",
+            "内容由 AI 生成 5/10"
+          ],
+          "boxes": [
+            {
+              "text": "方案设计",
+              "x": 6244802,
+              "y": 1056903,
+              "w": 4619365,
+              "h": 343427
+            },
+            {
+              "text": "内容由 AI 生成 5/10",
+              "x": 6096000,
+              "y": 2825221,
+              "w": 4886704,
+              "h": 2748771
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "type": "content",
+          "title": "方案架构",
+          "isHidden": false,
+          "texts": [
+            "方案架构",
+            "方案设计"
+          ],
+          "boxes": [
+            {
+              "text": "方案架构",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "方案设计",
+              "x": 1187005,
+              "y": 2005123,
+              "w": 1863375,
+              "h": 1634448
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "type": "content",
+          "title": "三阶段推进试点落地",
+          "isHidden": false,
+          "texts": [
+            "三阶段推进试点落地"
+          ],
+          "boxes": [
+            {
+              "text": "三阶段推进试点落地",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "type": "content",
+          "title": "用关键指标验证收益",
+          "isHidden": false,
+          "texts": [
+            "用关键指标验证收益"
+          ],
+          "boxes": [
+            {
+              "text": "用关键指标验证收益",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "type": "content",
+          "title": "下一步决策事项",
+          "isHidden": false,
+          "texts": [
+            "下一步决策事项",
+            "试点范围：明确首批渠道与服务场景边界",
+            "预算边界：锁定试点投入上限与审批口径",
+            "系统接入：确认客服系统接口与联调计划",
+            "责任人：指定业务与技术双负责人机制"
+          ],
+          "boxes": [
+            {
+              "text": "下一步决策事项",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "试点范围：明确首批渠道与服务场景边界",
+              "x": 1463040,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "预算边界：锁定试点投入上限与审批口径",
+              "x": 6400800,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "系统接入：确认客服系统接口与联调计划",
+              "x": 1463040,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "责任人：指定业务与技术双负责人机制",
+              "x": 6400800,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "type": "qa",
+          "title": "谢谢观看",
+          "isHidden": false,
+          "texts": [
+            "谢谢观看",
+            "Q&amp;A Q&amp;A 内容由 AI 生成",
+            "Q&amp;A",
+            "内容由 AI 生成 10/10"
+          ],
+          "boxes": [
+            {
+              "text": "谢谢观看",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A Q&amp;A 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A",
+              "x": 1024896,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            },
+            {
+              "text": "内容由 AI 生成 10/10",
+              "x": 3564894,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            }
+          ]
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "errors": []
+      },
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "autoScore": 64,
+    "blockerCount": 0,
+    "scoreNotes": [
+      "half_filled_slide"
+    ]
+  },
+  {
+    "ok": true,
+    "seed": 6,
+    "variant": "v4_strict",
+    "temperature": 0.7,
+    "status": 200,
+    "requestId": "5e2ffa42-2e28-43fb-9615-b349161d6dd1",
+    "engine": "local-powerpoint-com",
+    "relativePath": "docs/benchmarks/results/exports/5e2ffa42-2e28-43fb-9615-b349161d6dd1/deck.pptx",
+    "generationTracePath": "docs/benchmarks/results/exports/5e2ffa42-2e28-43fb-9615-b349161d6dd1/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "requestId": "5e2ffa42-2e28-43fb-9615-b349161d6dd1",
+      "ok": true,
+      "errors": [],
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "dump": {
+      "requestId": "5e2ffa42-2e28-43fb-9615-b349161d6dd1",
+      "generatedAt": "2026-07-08T14:30:16.822Z",
+      "topic": "企业数字化转型",
+      "deckPlan": {
+        "topic": "企业数字化转型",
+        "scenario": "proposal",
+        "audience": "通用受众",
+        "tone": "专业可信",
+        "pageCount": 10,
+        "narrative": "企业数字化转型从背景到行动的单线叙事",
+        "structure": [
+          {
+            "sectionTitle": "问题背景",
+            "pages": 2
+          },
+          {
+            "sectionTitle": "核心分析",
+            "pages": 4
+          },
+          {
+            "sectionTitle": "方案与行动",
+            "pages": 3
+          }
+        ]
+      },
+      "inputSlideCount": 10,
+      "outputSlideCount": 10,
+      "slideCount": 10,
+      "slides": [
+        {
+          "index": 1,
+          "type": "cover",
+          "title": "企业数字化转型",
+          "isHidden": false,
+          "texts": [
+            "企业数字化转型",
+            "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+            "企业数字化转型提案汇报 内容由 AI 生成 1/10"
+          ],
+          "boxes": [
+            {
+              "text": "企业数字化转型",
+              "x": 1,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            },
+            {
+              "text": "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "企业数字化转型提案汇报 内容由 AI 生成 1/10",
+              "x": 2701472,
+              "y": 2481345,
+              "w": 7890783,
+              "h": 1107996
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "type": "section",
+          "title": "现状与问题",
+          "isHidden": false,
+          "texts": [
+            "现状与问题",
+            "内容由 AI 生成 2/10"
+          ],
+          "boxes": [
+            {
+              "text": "现状与问题",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "内容由 AI 生成 2/10",
+              "x": 7910483,
+              "y": 2872602,
+              "w": 2876550,
+              "h": 461665
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "type": "content",
+          "title": "现状评估",
+          "isHidden": false,
+          "texts": [
+            "现状评估"
+          ],
+          "boxes": [
+            {
+              "text": "现状评估",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "type": "content",
+          "title": "关键问题拆解",
+          "isHidden": false,
+          "texts": [
+            "关键问题拆解",
+            "问题拆解"
+          ],
+          "boxes": [
+            {
+              "text": "关键问题拆解",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "问题拆解",
+              "x": 1157758,
+              "y": 4186133,
+              "w": 2433362,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "type": "section",
+          "title": "方案设计",
+          "isHidden": false,
+          "texts": [
+            "方案设计",
+            "内容由 AI 生成 5/10"
+          ],
+          "boxes": [
+            {
+              "text": "方案设计",
+              "x": 6244802,
+              "y": 1056903,
+              "w": 4619365,
+              "h": 343427
+            },
+            {
+              "text": "内容由 AI 生成 5/10",
+              "x": 6096000,
+              "y": 2825221,
+              "w": 4886704,
+              "h": 2748771
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "type": "content",
+          "title": "方案架构",
+          "isHidden": false,
+          "texts": [
+            "方案架构",
+            "方案设计"
+          ],
+          "boxes": [
+            {
+              "text": "方案架构",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "方案设计",
+              "x": 1187005,
+              "y": 2005123,
+              "w": 1863375,
+              "h": 1634448
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "type": "content",
+          "title": "三阶段推进试点落地",
+          "isHidden": false,
+          "texts": [
+            "三阶段推进试点落地"
+          ],
+          "boxes": [
+            {
+              "text": "三阶段推进试点落地",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "type": "content",
+          "title": "用关键指标验证收益",
+          "isHidden": false,
+          "texts": [
+            "用关键指标验证收益"
+          ],
+          "boxes": [
+            {
+              "text": "用关键指标验证收益",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "type": "content",
+          "title": "下一步决策事项",
+          "isHidden": false,
+          "texts": [
+            "下一步决策事项",
+            "试点范围：明确首批渠道与服务场景边界",
+            "预算边界：锁定试点投入上限与审批口径",
+            "系统接入：确认客服系统接口与联调计划",
+            "责任人：指定业务与技术双负责人机制"
+          ],
+          "boxes": [
+            {
+              "text": "下一步决策事项",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "试点范围：明确首批渠道与服务场景边界",
+              "x": 1463040,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "预算边界：锁定试点投入上限与审批口径",
+              "x": 6400800,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "系统接入：确认客服系统接口与联调计划",
+              "x": 1463040,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "责任人：指定业务与技术双负责人机制",
+              "x": 6400800,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "type": "qa",
+          "title": "谢谢观看",
+          "isHidden": false,
+          "texts": [
+            "谢谢观看",
+            "Q&amp;A Q&amp;A 内容由 AI 生成",
+            "Q&amp;A",
+            "内容由 AI 生成 10/10"
+          ],
+          "boxes": [
+            {
+              "text": "谢谢观看",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A Q&amp;A 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A",
+              "x": 1024896,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            },
+            {
+              "text": "内容由 AI 生成 10/10",
+              "x": 3564894,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            }
+          ]
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "errors": []
+      },
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "autoScore": 64,
+    "blockerCount": 0,
+    "scoreNotes": [
+      "half_filled_slide"
+    ]
+  },
+  {
+    "ok": true,
+    "seed": 7,
+    "variant": "v4_creative",
+    "temperature": 0.7999999999999999,
+    "status": 200,
+    "requestId": "fa11bbc1-c094-4058-adac-2f5bcf4f3baf",
+    "engine": "local-powerpoint-com",
+    "relativePath": "docs/benchmarks/results/exports/fa11bbc1-c094-4058-adac-2f5bcf4f3baf/deck.pptx",
+    "generationTracePath": "docs/benchmarks/results/exports/fa11bbc1-c094-4058-adac-2f5bcf4f3baf/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "requestId": "fa11bbc1-c094-4058-adac-2f5bcf4f3baf",
+      "ok": true,
+      "errors": [],
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "dump": {
+      "requestId": "fa11bbc1-c094-4058-adac-2f5bcf4f3baf",
+      "generatedAt": "2026-07-08T14:30:44.826Z",
+      "topic": "企业数字化转型",
+      "deckPlan": {
+        "topic": "企业数字化转型",
+        "scenario": "proposal",
+        "audience": "通用受众",
+        "tone": "简洁有力",
+        "pageCount": 10,
+        "narrative": "企业数字化转型从背景到行动的单线叙事",
+        "structure": [
+          {
+            "sectionTitle": "问题背景",
+            "pages": 2
+          },
+          {
+            "sectionTitle": "核心分析",
+            "pages": 4
+          },
+          {
+            "sectionTitle": "方案与行动",
+            "pages": 3
+          }
+        ]
+      },
+      "inputSlideCount": 10,
+      "outputSlideCount": 10,
+      "slideCount": 10,
+      "slides": [
+        {
+          "index": 1,
+          "type": "cover",
+          "title": "企业数字化转型",
+          "isHidden": false,
+          "texts": [
+            "企业数字化转型",
+            "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+            "企业数字化转型提案汇报 内容由 AI 生成 1/10"
+          ],
+          "boxes": [
+            {
+              "text": "企业数字化转型",
+              "x": 1,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            },
+            {
+              "text": "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "企业数字化转型提案汇报 内容由 AI 生成 1/10",
+              "x": 2701472,
+              "y": 2481345,
+              "w": 7890783,
+              "h": 1107996
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "type": "section",
+          "title": "现状与问题",
+          "isHidden": false,
+          "texts": [
+            "现状与问题",
+            "内容由 AI 生成 2/10"
+          ],
+          "boxes": [
+            {
+              "text": "现状与问题",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "内容由 AI 生成 2/10",
+              "x": 7910483,
+              "y": 2872602,
+              "w": 2876550,
+              "h": 461665
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "type": "content",
+          "title": "现状评估",
+          "isHidden": false,
+          "texts": [
+            "现状评估"
+          ],
+          "boxes": [
+            {
+              "text": "现状评估",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "type": "content",
+          "title": "关键问题拆解",
+          "isHidden": false,
+          "texts": [
+            "关键问题拆解",
+            "问题拆解"
+          ],
+          "boxes": [
+            {
+              "text": "关键问题拆解",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "问题拆解",
+              "x": 1157758,
+              "y": 4186133,
+              "w": 2433362,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "type": "section",
+          "title": "方案设计",
+          "isHidden": false,
+          "texts": [
+            "方案设计",
+            "内容由 AI 生成 5/10"
+          ],
+          "boxes": [
+            {
+              "text": "方案设计",
+              "x": 6244802,
+              "y": 1056903,
+              "w": 4619365,
+              "h": 343427
+            },
+            {
+              "text": "内容由 AI 生成 5/10",
+              "x": 6096000,
+              "y": 2825221,
+              "w": 4886704,
+              "h": 2748771
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "type": "content",
+          "title": "方案架构",
+          "isHidden": false,
+          "texts": [
+            "方案架构",
+            "方案设计"
+          ],
+          "boxes": [
+            {
+              "text": "方案架构",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "方案设计",
+              "x": 1187005,
+              "y": 2005123,
+              "w": 1863375,
+              "h": 1634448
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "type": "content",
+          "title": "三阶段推进试点落地",
+          "isHidden": false,
+          "texts": [
+            "三阶段推进试点落地"
+          ],
+          "boxes": [
+            {
+              "text": "三阶段推进试点落地",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "type": "content",
+          "title": "用关键指标验证收益",
+          "isHidden": false,
+          "texts": [
+            "用关键指标验证收益"
+          ],
+          "boxes": [
+            {
+              "text": "用关键指标验证收益",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "type": "content",
+          "title": "下一步决策事项",
+          "isHidden": false,
+          "texts": [
+            "下一步决策事项",
+            "试点范围：明确首批渠道与服务场景边界",
+            "预算边界：锁定试点投入上限与审批口径",
+            "系统接入：确认客服系统接口与联调计划",
+            "责任人：指定业务与技术双负责人机制"
+          ],
+          "boxes": [
+            {
+              "text": "下一步决策事项",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "试点范围：明确首批渠道与服务场景边界",
+              "x": 1463040,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "预算边界：锁定试点投入上限与审批口径",
+              "x": 6400800,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "系统接入：确认客服系统接口与联调计划",
+              "x": 1463040,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "责任人：指定业务与技术双负责人机制",
+              "x": 6400800,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "type": "qa",
+          "title": "谢谢观看",
+          "isHidden": false,
+          "texts": [
+            "谢谢观看",
+            "Q&amp;A Q&amp;A 内容由 AI 生成",
+            "Q&amp;A",
+            "内容由 AI 生成 10/10"
+          ],
+          "boxes": [
+            {
+              "text": "谢谢观看",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A Q&amp;A 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A",
+              "x": 1024896,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            },
+            {
+              "text": "内容由 AI 生成 10/10",
+              "x": 3564894,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            }
+          ]
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "errors": []
+      },
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "autoScore": 64,
+    "blockerCount": 0,
+    "scoreNotes": [
+      "half_filled_slide"
+    ]
+  },
+  {
+    "ok": true,
+    "seed": 8,
+    "variant": "v4_concise",
+    "temperature": 0.8999999999999999,
+    "status": 200,
+    "requestId": "eab9d46d-9808-4faf-9ab4-c659f5f4322f",
+    "engine": "local-powerpoint-com",
+    "relativePath": "docs/benchmarks/results/exports/eab9d46d-9808-4faf-9ab4-c659f5f4322f/deck.pptx",
+    "generationTracePath": "docs/benchmarks/results/exports/eab9d46d-9808-4faf-9ab4-c659f5f4322f/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "requestId": "eab9d46d-9808-4faf-9ab4-c659f5f4322f",
+      "ok": true,
+      "errors": [],
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "dump": {
+      "requestId": "eab9d46d-9808-4faf-9ab4-c659f5f4322f",
+      "generatedAt": "2026-07-08T14:32:03.836Z",
+      "topic": "企业数字化转型",
+      "deckPlan": {
+        "topic": "企业数字化转型",
+        "scenario": "proposal",
+        "audience": "通用受众",
+        "tone": "清晰可执行",
+        "pageCount": 10,
+        "narrative": "企业数字化转型从背景到行动的单线叙事",
+        "structure": [
+          {
+            "sectionTitle": "问题背景",
+            "pages": 2
+          },
+          {
+            "sectionTitle": "核心分析",
+            "pages": 4
+          },
+          {
+            "sectionTitle": "方案与行动",
+            "pages": 3
+          }
+        ]
+      },
+      "inputSlideCount": 10,
+      "outputSlideCount": 10,
+      "slideCount": 10,
+      "slides": [
+        {
+          "index": 1,
+          "type": "cover",
+          "title": "企业数字化转型",
+          "isHidden": false,
+          "texts": [
+            "企业数字化转型",
+            "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+            "企业数字化转型提案汇报 内容由 AI 生成 1/10"
+          ],
+          "boxes": [
+            {
+              "text": "企业数字化转型",
+              "x": 1,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            },
+            {
+              "text": "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "企业数字化转型提案汇报 内容由 AI 生成 1/10",
+              "x": 2701472,
+              "y": 2481345,
+              "w": 7890783,
+              "h": 1107996
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "type": "section",
+          "title": "现状与问题",
+          "isHidden": false,
+          "texts": [
+            "现状与问题",
+            "内容由 AI 生成 2/10"
+          ],
+          "boxes": [
+            {
+              "text": "现状与问题",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "内容由 AI 生成 2/10",
+              "x": 7910483,
+              "y": 2872602,
+              "w": 2876550,
+              "h": 461665
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "type": "content",
+          "title": "现状评估",
+          "isHidden": false,
+          "texts": [
+            "现状评估"
+          ],
+          "boxes": [
+            {
+              "text": "现状评估",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "type": "content",
+          "title": "关键问题拆解",
+          "isHidden": false,
+          "texts": [
+            "关键问题拆解",
+            "问题拆解"
+          ],
+          "boxes": [
+            {
+              "text": "关键问题拆解",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "问题拆解",
+              "x": 1157758,
+              "y": 4186133,
+              "w": 2433362,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "type": "section",
+          "title": "方案设计",
+          "isHidden": false,
+          "texts": [
+            "方案设计",
+            "内容由 AI 生成 5/10"
+          ],
+          "boxes": [
+            {
+              "text": "方案设计",
+              "x": 6244802,
+              "y": 1056903,
+              "w": 4619365,
+              "h": 343427
+            },
+            {
+              "text": "内容由 AI 生成 5/10",
+              "x": 6096000,
+              "y": 2825221,
+              "w": 4886704,
+              "h": 2748771
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "type": "content",
+          "title": "方案架构",
+          "isHidden": false,
+          "texts": [
+            "方案架构",
+            "方案设计"
+          ],
+          "boxes": [
+            {
+              "text": "方案架构",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "方案设计",
+              "x": 1187005,
+              "y": 2005123,
+              "w": 1863375,
+              "h": 1634448
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "type": "content",
+          "title": "三阶段推进试点落地",
+          "isHidden": false,
+          "texts": [
+            "三阶段推进试点落地"
+          ],
+          "boxes": [
+            {
+              "text": "三阶段推进试点落地",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "type": "content",
+          "title": "用关键指标验证收益",
+          "isHidden": false,
+          "texts": [
+            "用关键指标验证收益"
+          ],
+          "boxes": [
+            {
+              "text": "用关键指标验证收益",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "type": "content",
+          "title": "下一步决策事项",
+          "isHidden": false,
+          "texts": [
+            "下一步决策事项",
+            "试点范围：明确首批渠道与服务场景边界",
+            "预算边界：锁定试点投入上限与审批口径",
+            "系统接入：确认客服系统接口与联调计划",
+            "责任人：指定业务与技术双负责人机制"
+          ],
+          "boxes": [
+            {
+              "text": "下一步决策事项",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "试点范围：明确首批渠道与服务场景边界",
+              "x": 1463040,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "预算边界：锁定试点投入上限与审批口径",
+              "x": 6400800,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "系统接入：确认客服系统接口与联调计划",
+              "x": 1463040,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "责任人：指定业务与技术双负责人机制",
+              "x": 6400800,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "type": "qa",
+          "title": "谢谢观看",
+          "isHidden": false,
+          "texts": [
+            "谢谢观看",
+            "Q&amp;A Q&amp;A 内容由 AI 生成",
+            "Q&amp;A",
+            "内容由 AI 生成 10/10"
+          ],
+          "boxes": [
+            {
+              "text": "谢谢观看",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A Q&amp;A 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A",
+              "x": 1024896,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            },
+            {
+              "text": "内容由 AI 生成 10/10",
+              "x": 3564894,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            }
+          ]
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "errors": []
+      },
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "autoScore": 64,
+    "blockerCount": 0,
+    "scoreNotes": [
+      "half_filled_slide"
+    ]
+  },
+  {
+    "ok": true,
+    "seed": 9,
+    "variant": "v4_strict",
+    "temperature": 0.7,
+    "status": 200,
+    "requestId": "3c87e6ee-958d-4304-826d-c22bbf8bcb80",
+    "engine": "local-powerpoint-com",
+    "relativePath": "docs/benchmarks/results/exports/3c87e6ee-958d-4304-826d-c22bbf8bcb80/deck.pptx",
+    "generationTracePath": "docs/benchmarks/results/exports/3c87e6ee-958d-4304-826d-c22bbf8bcb80/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "requestId": "3c87e6ee-958d-4304-826d-c22bbf8bcb80",
+      "ok": true,
+      "errors": [],
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "dump": {
+      "requestId": "3c87e6ee-958d-4304-826d-c22bbf8bcb80",
+      "generatedAt": "2026-07-08T14:32:31.438Z",
+      "topic": "企业数字化转型",
+      "deckPlan": {
+        "topic": "企业数字化转型",
+        "scenario": "proposal",
+        "audience": "通用受众",
+        "tone": "专业可信",
+        "pageCount": 10,
+        "narrative": "企业数字化转型从背景到行动的单线叙事",
+        "structure": [
+          {
+            "sectionTitle": "问题背景",
+            "pages": 2
+          },
+          {
+            "sectionTitle": "核心分析",
+            "pages": 4
+          },
+          {
+            "sectionTitle": "方案与行动",
+            "pages": 3
+          }
+        ]
+      },
+      "inputSlideCount": 10,
+      "outputSlideCount": 10,
+      "slideCount": 10,
+      "slides": [
+        {
+          "index": 1,
+          "type": "cover",
+          "title": "企业数字化转型",
+          "isHidden": false,
+          "texts": [
+            "企业数字化转型",
+            "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+            "企业数字化转型提案汇报 内容由 AI 生成 1/10"
+          ],
+          "boxes": [
+            {
+              "text": "企业数字化转型",
+              "x": 1,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            },
+            {
+              "text": "企业数字化转型提案汇报 企业数字化转型提案汇报 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "企业数字化转型提案汇报 内容由 AI 生成 1/10",
+              "x": 2701472,
+              "y": 2481345,
+              "w": 7890783,
+              "h": 1107996
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "type": "section",
+          "title": "现状与问题",
+          "isHidden": false,
+          "texts": [
+            "现状与问题",
+            "内容由 AI 生成 2/10"
+          ],
+          "boxes": [
+            {
+              "text": "现状与问题",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "内容由 AI 生成 2/10",
+              "x": 7910483,
+              "y": 2872602,
+              "w": 2876550,
+              "h": 461665
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "type": "content",
+          "title": "现状评估",
+          "isHidden": false,
+          "texts": [
+            "现状评估"
+          ],
+          "boxes": [
+            {
+              "text": "现状评估",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "type": "content",
+          "title": "关键问题拆解",
+          "isHidden": false,
+          "texts": [
+            "关键问题拆解",
+            "问题拆解"
+          ],
+          "boxes": [
+            {
+              "text": "关键问题拆解",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "问题拆解",
+              "x": 1157758,
+              "y": 4186133,
+              "w": 2433362,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "type": "section",
+          "title": "方案设计",
+          "isHidden": false,
+          "texts": [
+            "方案设计",
+            "内容由 AI 生成 5/10"
+          ],
+          "boxes": [
+            {
+              "text": "方案设计",
+              "x": 6244802,
+              "y": 1056903,
+              "w": 4619365,
+              "h": 343427
+            },
+            {
+              "text": "内容由 AI 生成 5/10",
+              "x": 6096000,
+              "y": 2825221,
+              "w": 4886704,
+              "h": 2748771
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "type": "content",
+          "title": "方案架构",
+          "isHidden": false,
+          "texts": [
+            "方案架构",
+            "方案设计"
+          ],
+          "boxes": [
+            {
+              "text": "方案架构",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "方案设计",
+              "x": 1187005,
+              "y": 2005123,
+              "w": 1863375,
+              "h": 1634448
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "type": "content",
+          "title": "三阶段推进试点落地",
+          "isHidden": false,
+          "texts": [
+            "三阶段推进试点落地"
+          ],
+          "boxes": [
+            {
+              "text": "三阶段推进试点落地",
+              "x": 0,
+              "y": 0,
+              "w": 12192000,
+              "h": 333829
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "type": "content",
+          "title": "用关键指标验证收益",
+          "isHidden": false,
+          "texts": [
+            "用关键指标验证收益"
+          ],
+          "boxes": [
+            {
+              "text": "用关键指标验证收益",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "type": "content",
+          "title": "下一步决策事项",
+          "isHidden": false,
+          "texts": [
+            "下一步决策事项",
+            "试点范围：明确首批渠道与服务场景边界",
+            "预算边界：锁定试点投入上限与审批口径",
+            "系统接入：确认客服系统接口与联调计划",
+            "责任人：指定业务与技术双负责人机制"
+          ],
+          "boxes": [
+            {
+              "text": "下一步决策事项",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "试点范围：明确首批渠道与服务场景边界",
+              "x": 1463040,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "预算边界：锁定试点投入上限与审批口径",
+              "x": 6400800,
+              "y": 2194560,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "系统接入：确认客服系统接口与联调计划",
+              "x": 1463040,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            },
+            {
+              "text": "责任人：指定业务与技术双负责人机制",
+              "x": 6400800,
+              "y": 4251960,
+              "w": 4328160,
+              "h": 369332
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "type": "qa",
+          "title": "谢谢观看",
+          "isHidden": false,
+          "texts": [
+            "谢谢观看",
+            "Q&amp;A Q&amp;A 内容由 AI 生成",
+            "Q&amp;A",
+            "内容由 AI 生成 10/10"
+          ],
+          "boxes": [
+            {
+              "text": "谢谢观看",
+              "x": 1219200,
+              "y": 548640,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A Q&amp;A 内容由 AI 生成",
+              "x": 1219200,
+              "y": 1920240,
+              "w": 9753600,
+              "h": 369332
+            },
+            {
+              "text": "Q&amp;A",
+              "x": 1024896,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            },
+            {
+              "text": "内容由 AI 生成 10/10",
+              "x": 3564894,
+              "y": 4383023,
+              "w": 2433360,
+              "h": 465640
+            }
+          ]
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "errors": []
+      },
+      "qualityScore": {
+        "templateUsage": 92,
+        "visualCleanliness": 92,
+        "contentSpecificity": 95,
+        "narrativeFlow": 92,
+        "scenarioFit": 96,
+        "exportIntegrity": 100,
+        "overall": 94,
+        "cleanliness": 92,
+        "structure": 92,
+        "contentDepth": 95,
+        "layoutConsistency": 92,
+        "topicRelevance": 96
+      }
+    },
+    "autoScore": 64,
+    "blockerCount": 0,
+    "scoreNotes": [
+      "half_filled_slide"
+    ]
+  }
+]
