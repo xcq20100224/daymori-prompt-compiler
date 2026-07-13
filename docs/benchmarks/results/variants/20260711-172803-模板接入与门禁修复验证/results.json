@@ -1,0 +1,16 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 500,
+    "error": "upload server error",
+    "detail": "request entity too large",
+    "requestId": "",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": ""
+  }
+]

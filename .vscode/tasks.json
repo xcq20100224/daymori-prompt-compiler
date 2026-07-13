@@ -2981,6 +2981,838 @@
 				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && git commit -m chore-day3-benchmark-pipeline-updates-artifacts"
 			],
 			"isBackground": false
+		},
+		{
+			"label": "LazyMan: 完整验证流程",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"node tools/create-clean-template.mjs && node tools/diagnose-ppt-lazyman.mjs docs/benchmarks/templates/inbox/clean-lazyman.pptx && node tools/auto-fix-to-lazyman.mjs \"${input:lazymanTopic}\""
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"isBackground": false
+		},
+		{
+			"label": "LazyMan: 快速验证单个PPT",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/validate-lazyman-constraints.mjs",
+				"${input:pptxPathToValidate}"
+			],
+			"group": "test",
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp diagnose clean",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/diagnose-ppt-lazyman.mjs",
+				"docs/benchmarks/templates/inbox/clean-lazyman.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp validate clean",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/validate-lazyman-constraints.mjs",
+				"docs/benchmarks/templates/inbox/clean-lazyman.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp variant one",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--topic=LazyMan验证",
+				"--count=1",
+				"--concurrency=1",
+				"--enhanced"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp latest variant best",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-e",
+				"const fs=require('fs');const path=require('path');const root=process.cwd();const dir=path.join(root,'docs','benchmarks','results','variants');const ds=fs.readdirSync(dir).map(n=>({n,p:path.join(dir,n),m:fs.statSync(path.join(dir,n)).mtimeMs})).sort((a,b)=>b.m-a.m);if(!ds.length){console.log('NO_VARIANT_DIR');process.exit(0);}const sp=path.join(ds[0].p,'summary.json');if(!fs.existsSync(sp)){console.log('NO_SUMMARY');process.exit(0);}const s=JSON.parse(fs.readFileSync(sp,'utf8'));const best=s&&s.best&&s.best.relativePath?s.best.relativePath:'';console.log(best||'NO_BEST_PATH');"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp latest export ppt",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$f=Get-ChildItem 'docs/benchmarks/results/exports' -Recurse -File -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1; if($f){$f.FullName}else{'NO_EXPORT_PPT'}"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp batch20",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--topic=AI客服降本增效方案",
+				"--count=20",
+				"--concurrency=4",
+				"--enhanced",
+				"--template=docs/benchmarks/templates/inbox/clean-lazyman.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp diagnose20",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/batch-diagnose-variants.mjs",
+				"20"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp syntax check changed",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--check",
+				"tools/run-variant-batch.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp validate clean after config",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/validate-lazyman-constraints.mjs",
+				"docs/benchmarks/templates/inbox/clean-lazyman.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp one sample after prompt tune",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--topic=LazyMan验证",
+				"--count=1",
+				"--concurrency=1",
+				"--enhanced",
+				"--template=docs/benchmarks/templates/inbox/clean-lazyman.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp2 step1 diagnose clean",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/diagnose-ppt-lazyman.mjs",
+				"docs/benchmarks/templates/inbox/clean-lazyman.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp2 step2 one variant",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--topic=LazyMan物理验证",
+				"--count=1",
+				"--concurrency=1",
+				"--enhanced"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp3 syntax server",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--check",
+				"server.js"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp3 api health 3402",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"try { $r=Invoke-WebRequest -Uri 'http://127.0.0.1:3402/api/ppt/officeplus-status' -TimeoutSec 8; Write-Output ('HTTP ' + [int]$r.StatusCode); Write-Output $r.Content } catch { Write-Output ('ERROR ' + $_.Exception.Message) }"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp3 api health by node",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-e",
+				"fetch('http://127.0.0.1:3402/api/ppt/officeplus-status').then(async r=>{console.log('HTTP',r.status);console.log(await r.text());}).catch(e=>{console.log('ERROR',e.message);process.exitCode=1;});"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp3 one variant rerun",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--topic=LazyMan物理验证",
+				"--count=1",
+				"--concurrency=1",
+				"--enhanced",
+				"--template=docs/benchmarks/templates/inbox/clean-lazyman.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp3 latest export diagnose",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$f=Get-ChildItem 'docs/benchmarks/results/exports' -Recurse -File -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1; if(-not $f){ Write-Output 'NO_EXPORT_PPT'; exit 0 }; Write-Output ('LATEST=' + $f.FullName); node tools/diagnose-ppt-lazyman.mjs $f.FullName"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp4 syntax server",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--check",
+				"server.js"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp4 variant one no-page",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/run-variant-batch.mjs",
+				"--topic=LazyMan物理验证",
+				"--count=1",
+				"--concurrency=1",
+				"--enhanced",
+				"--template=docs/benchmarks/templates/inbox/clean-lazyman.pptx"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp4 latest export diagnose",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"for /f \"delims=\" %F in ('powershell -NoProfile -Command \"(Get-ChildItem docs/benchmarks/results/exports -Recurse -File -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName)\"') do node tools/diagnose-ppt-lazyman.mjs \"%F\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp fp5 latest export diagnose ps",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"& { $f=(Get-ChildItem 'docs/benchmarks/results/exports' -Recurse -File -Filter *.pptx | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName); if([string]::IsNullOrWhiteSpace($f)){ Write-Output 'NO_EXPORT_PPT'; exit 0 }; Write-Output ('LATEST_PPT=' + $f); node tools/diagnose-ppt-lazyman.mjs $f }"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp com fix syntax server",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--check",
+				"server.js"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp com fix syntax batch",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--check",
+				"tools/run-variant-batch.mjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp forbidden-term-count-latest-ppt",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-e",
+				"const fs=require('fs');const path=require('path');const AdmZip=require('adm-zip');const summaryPath=path.join('docs','benchmarks','results','variants','20260709-095849-ai客服降本增效方案','summary.json');const summary=JSON.parse(fs.readFileSync(summaryPath,'utf8'));const rel=summary.best&&summary.best.relativePath?summary.best.relativePath:'';if(!rel){console.log(JSON.stringify({ok:false,reason:'NO_BEST_RELATIVE_PATH'},null,2));process.exit(0);}const pptPath=path.resolve(rel);const zip=new AdmZip(pptPath);const slides=zip.getEntries().filter(e=>/^ppt\\/slides\\/slide\\d+\\.xml$/i.test(e.entryName));const terms=['结论：','证据：','行动：','OfficePLUS','20XX'];const counts=Object.fromEntries(terms.map(t=>[t,0]));for(const s of slides){const xml=s.getData().toString('utf8');for(const t of terms){let i=0;while((i=xml.indexOf(t,i))!==-1){counts[t]++;i+=t.length;}}}console.log(JSON.stringify({ok:true,pptPath:rel,slideCount:slides.length,counts},null,2));"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp count forbidden terms final",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"& { $ppt='docs/benchmarks/results/exports/d7b52d37-0c0d-49f8-b877-2ab0ec590224/deck.pptx'; Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip=[System.IO.Compression.ZipFile]::OpenRead((Resolve-Path $ppt)); $terms=@('结论：','证据：','行动：','OfficePLUS','20XX'); $counts=@{}; foreach($t in $terms){$counts[$t]=0}; foreach($e in $zip.Entries){ if($e.FullName -match '^ppt/slides/slide\\d+\\.xml$'){ $sr=New-Object System.IO.StreamReader($e.Open()); $xml=$sr.ReadToEnd(); $sr.Close(); foreach($t in $terms){ $idx=0; while(($idx=$xml.IndexOf($t,$idx,[System.StringComparison]::Ordinal)) -ge 0){ $counts[$t]++; $idx += $t.Length } } } }; $zip.Dispose(); [pscustomobject]@{ppt=$ppt;counts=$counts} | ConvertTo-Json -Depth 5 }"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp list latest variants now",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem 'docs/benchmarks/results/variants' -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 5 -ExpandProperty FullName"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp show latest summary now",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$latest=Get-ChildItem 'docs/benchmarks/results/variants' -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 1; Write-Output ('LATEST=' + $latest.Name); Get-Content (Join-Path $latest.FullName 'summary.json') -Raw"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp batch10 now stable",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$env:BENCH_API_BASE='http://127.0.0.1:3402'; & 'C:\\Program Files\\nodejs\\node.exe' tools/run-variant-batch.mjs --topic=\"AI客服降本增效方案\" --count=10 --concurrency=3 --enhanced"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp batch10 cmd direct stable",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402&& \"C:\\Program Files\\nodejs\\node.exe\" tools\\run-variant-batch.mjs --topic=\"AI客服降本增效方案\" --count=10 --concurrency=3 --enhanced"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp batch10 cmd progra1",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402&& C:\\Progra~1\\nodejs\\node.exe tools\\run-variant-batch.mjs --topic=\"AI客服降本增效方案\" --count=10 --concurrency=3 --enhanced"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp check latest variant safe",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$latest=Get-ChildItem 'docs/benchmarks/results/variants' -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 1; $latest.Name; Get-Content (Join-Path $latest.FullName 'summary.json') -Raw"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp extract top10 file paths",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$p='docs/benchmarks/results/variants/20260709-101217-ai客服降本增效方案/top10.json'; $arr=Get-Content $p -Raw | ConvertFrom-Json; $arr | Select-Object -ExpandProperty relativePath"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp extract top10 paths 2",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$latest=Get-ChildItem \"docs/benchmarks/results/variants\" -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 1; $p=Join-Path $latest.FullName \"top10.json\"; $arr=Get-Content $p -Raw | ConvertFrom-Json; $arr | ForEach-Object { $_.relativePath }"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp optimize runtime processes",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"tasklist | findstr /I \"node.exe powershell.exe\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp optimize latest variants names",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem 'docs/benchmarks/results/variants' -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 10 -ExpandProperty Name"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp optimize latest summaries",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$dirs=Get-ChildItem 'docs/benchmarks/results/variants' -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 3; foreach($d in $dirs){ $p=Join-Path $d.FullName 'summary.json'; if(Test-Path $p){ Write-Output ('--- ' + $d.Name); Get-Content $p -Raw } }"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp bad sample count now",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$p='docs/benchmarks/training/bad_samples.jsonl'; if(Test-Path $p){ (Get-Content $p | Measure-Object).Count } else { 0 }"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp bad sample tail now",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$p='docs/benchmarks/training/bad_samples.jsonl'; if(Test-Path $p){ Get-Content $p | Select-Object -Last 3 }"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp optimize round3 batch10",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402&& C:\\Progra~1\\nodejs\\node.exe tools\\run-variant-batch.mjs --topic=\"AI客服降本增效方案\" --count=10 --concurrency=2 --enhanced"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp optimize latest3 summaries clean",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"powershell -NoProfile -Command \"$dirs=Get-ChildItem \\\"docs/benchmarks/results/variants\\\" -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 3; foreach($d in $dirs){ $p=Join-Path $d.FullName 'summary.json'; Write-Output ('DIR=' + $d.Name); Get-Content $p -Raw }\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp optimize latest names post round3",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem 'docs/benchmarks/results/variants' -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 6 -ExpandProperty Name"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp bundle find latest variants",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem 'docs/benchmarks/results/variants' -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 3 -ExpandProperty Name"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp build single submission zip",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$zip='docs/benchmarks/results/daymori_submission_20260709.zip'; if(Test-Path $zip){ Remove-Item $zip -Force }; $items=@('docs/benchmarks/results/submission_manifest_20260709.md','auto-optimize.ps1','docs/benchmarks/results/variants/20260709-102030-ai客服降本增效方案/summary.json','docs/benchmarks/results/variants/20260709-102122-ai客服降本增效方案/summary.json','docs/benchmarks/results/variants/20260709-102849-ai客服降本增效方案/summary.json','docs/benchmarks/results/exports/b15cc647-b088-46ed-863e-d201eb5f84ba/deck.pptx','docs/benchmarks/results/exports/b15cc647-b088-46ed-863e-d201eb5f84ba/quality.json','docs/benchmarks/results/exports/b15cc647-b088-46ed-863e-d201eb5f84ba/validation.json','docs/benchmarks/results/exports/b15cc647-b088-46ed-863e-d201eb5f84ba/generation_trace.json','docs/benchmarks/results/exports/c1257e6a-da6c-4612-a1d5-6c4ca420174f/deck.pptx','docs/benchmarks/results/exports/c1257e6a-da6c-4612-a1d5-6c4ca420174f/quality.json','docs/benchmarks/results/exports/c1257e6a-da6c-4612-a1d5-6c4ca420174f/validation.json','docs/benchmarks/results/exports/c1257e6a-da6c-4612-a1d5-6c4ca420174f/generation_trace.json','docs/benchmarks/results/exports/a14dc900-bc3f-40d3-84ea-053a274f6673/deck.pptx','docs/benchmarks/results/exports/a14dc900-bc3f-40d3-84ea-053a274f6673/quality.json','docs/benchmarks/results/exports/a14dc900-bc3f-40d3-84ea-053a274f6673/validation.json','docs/benchmarks/results/exports/a14dc900-bc3f-40d3-84ea-053a274f6673/generation_trace.json'); Compress-Archive -Path $items -DestinationPath $zip -CompressionLevel Optimal; Write-Output $zip"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp diversity check server syntax",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--check",
+				"server.js"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp diversity check golden json",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-e",
+				"JSON.parse(require('fs').readFileSync('docs/benchmarks/training/golden_samples.json','utf8')); console.log('golden_samples.json OK');"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp syntax check server after diversity fix",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--check",
+				"server.js"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp rerun auto optimize diversity",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"auto-optimize.ps1",
+				"-Topic",
+				"AI客服降本增效方案",
+				"-Rounds",
+				"1",
+				"-CountPerRound",
+				"10"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp syntax check fallback diversity patch",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--check",
+				"server.js"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp rerun auto optimize after fallback diversity",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"auto-optimize.ps1",
+				"-Topic",
+				"AI客服降本增效方案",
+				"-Rounds",
+				"1",
+				"-CountPerRound",
+				"10"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp echo check output",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"echo hello"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp api health quick check",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"try { (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:3402/health -TimeoutSec 3).StatusCode } catch { 'ERR' }"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp api health curl check",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"curl -s -o NUL -w \"%{http_code}\" http://127.0.0.1:3402/health"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp round1x10 after fallback patch",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"auto-optimize.ps1",
+				"-Topic",
+				"AI客服降本增效方案",
+				"-Rounds",
+				"1",
+				"-CountPerRound",
+				"10"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp direct variant batch 10 after patch",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"\"C:\\Program Files\\nodejs\\node.exe\" tools\\run-variant-batch.mjs --topic=\"AI客服降本增效方案\" --count=10 --concurrency=2 --enhanced"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp direct variant batch 10 after patch 2",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"C:\\Progra~1\\nodejs\\node.exe tools\\run-variant-batch.mjs --topic=\"AI客服降本增效方案\" --count=10 --concurrency=2 --enhanced"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp list newest variant dirs post-fix",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-ChildItem docs/benchmarks/results/variants -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 5 | ForEach-Object { \"{0}|{1}\" -f $_.Name, $_.LastWriteTime.ToString('yyyy-MM-dd HH:mm:ss') }"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp list newest variant dirs cmd",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"for /f \"delims=\" %d in ('dir /ad /b /o-d docs\\benchmarks\\results\\variants') do @echo %d"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp list newest variant dirs cmd simple",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"dir /ad /b /o-d docs\\benchmarks\\results\\variants"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp auto optimize 1x10 post-source-validate-fix",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"auto-optimize.ps1",
+				"-Topic",
+				"AI客服降本增效方案",
+				"-Rounds",
+				"1",
+				"-CountPerRound",
+				"10"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp newest variant dirs after latest auto",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"dir /ad /b /o-d docs\\benchmarks\\results\\variants | more +0"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp auto optimize 1x10 post-type-fix",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"auto-optimize.ps1",
+				"-Topic",
+				"AI客服降本增效方案",
+				"-Rounds",
+				"1",
+				"-CountPerRound",
+				"10"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp newest variant dirs after type-fix run",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"dir /ad /b /o-d docs\\benchmarks\\results\\variants"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp final auto optimize 1x10",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"auto-optimize.ps1",
+				"-Topic",
+				"AI客服降本增效方案",
+				"-Rounds",
+				"1",
+				"-CountPerRound",
+				"10"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp latest 5 variant dirs concise",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"dir /ad /b /o-d docs\\benchmarks\\results\\variants | findstr /R \"^20260709-11\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp compute diversity latest run",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$p='docs/benchmarks/results/variants/20260709-111617-ai客服降本增效方案/results.json'; $j=Get-Content $p -Raw | ConvertFrom-Json; $sigs=@(); foreach($r in $j){ $slides=$r.dump.slides; $parts=@(); foreach($s in $slides){ $parts += ($s.title + '|' + (($s.texts -join ' ') -replace '\\s+',' ')); }; $sigs += ($parts -join '||'); }; $total=$sigs.Count; $unique=($sigs | Sort-Object -Unique).Count; $pct=[math]::Round(($unique*100.0)/[math]::Max($total,1),2); Write-Output \"total=$total unique=$unique diversityRatePct=$pct\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp smoke on 3403 patched",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3403&& node tools/run-variant-batch.mjs --topic=Day3连通性冒烟 --count=1 --concurrency=1 --enhanced --fetchTimeoutMs=240000 --maxRetries=1"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp decision gate day3 batch20",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3402&& node tools/run-variant-batch.mjs --topic=Day3连通性冒烟 --count=20 --concurrency=2 --enhanced --fetchTimeoutMs=240000 --maxRetries=1"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp decision gate smoke on 3404",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3404&& node tools/run-variant-batch.mjs --topic=Day3连通性冒烟 --count=1 --concurrency=1 --enhanced --fetchTimeoutMs=240000 --maxRetries=1"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp decision gate day3 batch10 on 3404",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3404&& node tools/run-variant-batch.mjs --topic=Day3连通性冒烟 --count=10 --concurrency=2 --enhanced --fetchTimeoutMs=240000 --maxRetries=1"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp quant gate day3 batch10 on 3405",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3405&& node tools/run-variant-batch.mjs --topic=Day3连通性冒烟 --count=10 --concurrency=2 --enhanced --fetchTimeoutMs=240000 --maxRetries=1"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp quant fallback day3 batch10 on 3406",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"set BENCH_API_BASE=http://127.0.0.1:3406&& node tools/run-variant-batch.mjs --topic=Day3连通性冒烟 --count=10 --concurrency=2 --enhanced --fetchTimeoutMs=240000 --maxRetries=1"
+			],
+			"isBackground": false
 		}
 	],
 	"inputs": [
@@ -2995,6 +3827,12 @@
 			"type": "promptString",
 			"description": "待诊断PPT路径（相对仓库根目录）",
 			"default": "docs/benchmarks/results/exports/17.pptx"
+		},
+		{
+			"id": "pptxPathToValidate",
+			"type": "promptString",
+			"description": "要验证的PPTX文件路径",
+			"default": "docs/benchmarks/results/exports/latest.pptx"
 		}
 	]
 }

@@ -1,0 +1,80 @@
+{
+  "requestId": "bc4a6151-7519-4518-bb23-10da8c9289d1",
+  "inputSlideCount": 10,
+  "outputSlideCount": 10,
+  "physicalSlideCount": 10,
+  "visibleSlideCount": 10,
+  "hiddenSlideCount": 0,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "RAG系统性能优化",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 2,
+      "slideType": "section",
+      "slideTitle": "章节02",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 3,
+      "slideType": "content_text",
+      "slideTitle": "RAG系统性能优化第3页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 4,
+      "slideType": "content_text",
+      "slideTitle": "RAG系统性能优化第4页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 5,
+      "slideType": "section",
+      "slideTitle": "章节05",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 6,
+      "slideType": "content_text",
+      "slideTitle": "RAG系统性能优化第6页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 7,
+      "slideType": "content_bullets",
+      "slideTitle": "RAG系统性能优化第7页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 8,
+      "slideType": "content_text",
+      "slideTitle": "RAG系统性能优化第8页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 9,
+      "slideType": "content_bullets",
+      "slideTitle": "RAG系统性能优化第9页",
+      "slotWrites": []
+    },
+    {
+      "sourceTemplateIndex": 4,
+      "outputSlideIndex": 10,
+      "slideType": "thanks",
+      "slideTitle": "感谢",
+      "slotWrites": []
+    }
+  ]
+}

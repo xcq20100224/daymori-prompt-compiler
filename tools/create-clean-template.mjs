@@ -15,12 +15,30 @@ const forbiddenPatterns = [
     /输入标题/g,
     /20XX/g,
     /202X/g,
-    /\d+\/\d+/g
+    /\d+\/\d+/g,
+    /placeholder/gi,
+    /示例|样例|范例/g,
+    /此处添加|在此输入/g,
+    /默认|default/gi,
+    /模板|template/gi,
+    /THANK\s*YOU/gi,
+    /Lorem ipsum[^<]*/gi,
+    /添加标题|Add title/gi,
+    /单击此处|Click here/gi,
+    /编辑文本|Edit text/gi,
+    /副标题|Subtitle/gi,
+    /页脚|Footer/gi,
+    /\d{4}年\d{1,2}月\d{1,2}日/g,
+    /汇报人|Presenter/gi
 ];
 
 const exampleSlidePatterns = /目录|阶段工作|项目成果|感谢聆听|示例|样例/i;
 
 function stripTextNodes(xml) {
+    return xml.replace(/<a:t>[^<]*<\/a:t>/g, '<a:t></a:t>');
+}
+
+function stripAllText(xml) {
     return xml.replace(/<a:t>[^<]*<\/a:t>/g, '<a:t></a:t>');
 }
 
@@ -54,8 +72,9 @@ function cleanTemplate(sourceTemplatePath, outputPath) {
         let modified = false;
 
         for (const pattern of forbiddenPatterns) {
-            if (pattern.test(content)) {
-                content = content.replace(pattern, '');
+            const next = content.replace(pattern, '');
+            if (next !== content) {
+                content = next;
                 modified = true;
             }
         }
@@ -63,6 +82,22 @@ function cleanTemplate(sourceTemplatePath, outputPath) {
         if (/^ppt\/slides\/slide\d+\.xml$/i.test(entryName) && exampleSlidePatterns.test(content)) {
             removedSlides += 1;
             continue;
+        }
+
+        if (/^ppt\/slides\/slide\d+\.xml$/i.test(entryName)) {
+            const next = stripAllText(content);
+            if (next !== content) {
+                content = next;
+                modified = true;
+            }
+        }
+
+        if (/^ppt\/slideMasters\/slideMaster\d+\.xml$/i.test(entryName)) {
+            const next = stripAllText(content);
+            if (next !== content) {
+                content = next;
+                modified = true;
+            }
         }
 
         if (modified) cleanedCount += 1;

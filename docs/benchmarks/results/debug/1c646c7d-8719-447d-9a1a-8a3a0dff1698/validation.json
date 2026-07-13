@@ -1,0 +1,25 @@
+{
+  "requestId": "1c646c7d-8719-447d-9a1a-8a3a0dff1698",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 6,
+      "type": "minimumEffectiveSlide",
+      "text": "content_text_body_chars_54"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 92,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 94,
+    "cleanliness": 92,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

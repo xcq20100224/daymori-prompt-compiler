@@ -1,0 +1,13 @@
+{
+  "topic": "AI客服降本增效方案",
+  "scenario": "proposal",
+  "sceneType": "企业",
+  "total": 20,
+  "success": 0,
+  "failed": 20,
+  "templateFileName": "clean-lazyman.pptx",
+  "topCount": 0,
+  "uncertainCount": 0,
+  "best": null,
+  "timestamp": "2026-07-09T01:05:47.514Z"
+}

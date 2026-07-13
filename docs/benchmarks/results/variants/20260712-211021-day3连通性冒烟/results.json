@@ -1,0 +1,20 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 0,
+    "error": "max_retries_exceeded",
+    "detail": "deck_validation_failed:mixedLayout_slide_2,mixedLayout_slide_5,slotOrder_slide_9",
+    "retryStrategy": {
+      "usedBalancedFallback": true,
+      "usedTargetedRepair": true
+    },
+    "requestId": "",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": ""
+  }
+]

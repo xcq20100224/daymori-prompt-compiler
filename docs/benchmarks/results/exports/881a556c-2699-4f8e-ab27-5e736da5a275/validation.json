@@ -1,0 +1,19 @@
+{
+  "requestId": "881a556c-2699-4f8e-ab27-5e736da5a275",
+  "ok": true,
+  "errors": [],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 92,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 94,
+    "cleanliness": 92,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

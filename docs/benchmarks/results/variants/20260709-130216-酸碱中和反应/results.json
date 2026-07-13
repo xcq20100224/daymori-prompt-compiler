@@ -1,0 +1,72 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 409,
+    "error": "ppt_export_quality_gate_failed",
+    "detail": "dual_gate_failed:teaching_gate_failed:formula_lt_0.5:0.000,avg_chars_out_of_45_180:32.1",
+    "requestId": "cef40c5b-002a-4483-9a64-f7a5f806e20e",
+    "generationTracePath": "docs/benchmarks/results/debug/cef40c5b-002a-4483-9a64-f7a5f806e20e/generation_trace.json",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 409,
+    "error": "ppt_export_quality_gate_failed",
+    "detail": "dual_gate_failed:teaching_gate_failed:formula_lt_0.5:0.000,avg_chars_out_of_45_180:32.1",
+    "requestId": "f7824d06-dd26-46af-ba3d-b4897cc08db6",
+    "generationTracePath": "docs/benchmarks/results/debug/f7824d06-dd26-46af-ba3d-b4897cc08db6/generation_trace.json",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 2,
+    "variant": "v4_concise",
+    "status": 409,
+    "error": "ppt_export_quality_gate_failed",
+    "detail": "dual_gate_failed:teaching_gate_failed:formula_lt_0.5:0.000,avg_chars_out_of_45_180:32.1",
+    "requestId": "5cee4584-ff34-4270-9158-d2b39ff5939e",
+    "generationTracePath": "docs/benchmarks/results/debug/5cee4584-ff34-4270-9158-d2b39ff5939e/generation_trace.json",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 3,
+    "variant": "v4_strict",
+    "status": 409,
+    "error": "ppt_export_quality_gate_failed",
+    "detail": "dual_gate_failed:teaching_gate_failed:formula_lt_0.5:0.000,avg_chars_out_of_45_180:32.1",
+    "requestId": "172e3657-bebf-4486-bc30-d21eb767de79",
+    "generationTracePath": "docs/benchmarks/results/debug/172e3657-bebf-4486-bc30-d21eb767de79/generation_trace.json",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 4,
+    "variant": "v4_creative",
+    "status": 409,
+    "error": "ppt_export_quality_gate_failed",
+    "detail": "dual_gate_failed:teaching_gate_failed:formula_lt_0.5:0.000,avg_chars_out_of_45_180:32.1",
+    "requestId": "822f3b83-55a2-460e-92d0-f6670b18812d",
+    "generationTracePath": "docs/benchmarks/results/debug/822f3b83-55a2-460e-92d0-f6670b18812d/generation_trace.json",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": ""
+  }
+]

@@ -1,0 +1,67 @@
+{
+  "requestId": "930b028a-a7ee-4520-8613-27741d3c1101",
+  "inputSlideCount": 10,
+  "outputSlideCount": 10,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "竞品对比分析"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 2,
+      "slideType": "section",
+      "slideTitle": "章节02"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 3,
+      "slideType": "content_text",
+      "slideTitle": "竞品对比分析第3页"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 4,
+      "slideType": "content_text",
+      "slideTitle": "竞品对比分析第4页"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 5,
+      "slideType": "section",
+      "slideTitle": "章节05"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 6,
+      "slideType": "content_text",
+      "slideTitle": "竞品对比分析第6页"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 7,
+      "slideType": "content_bullets",
+      "slideTitle": "竞品对比分析第7页"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 8,
+      "slideType": "content_text",
+      "slideTitle": "竞品对比分析第8页"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 9,
+      "slideType": "content_bullets",
+      "slideTitle": "竞品对比分析第9页"
+    },
+    {
+      "sourceTemplateIndex": 4,
+      "outputSlideIndex": 10,
+      "slideType": "thanks",
+      "slideTitle": "感谢"
+    }
+  ]
+}

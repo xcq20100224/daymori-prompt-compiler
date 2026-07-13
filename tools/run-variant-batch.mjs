@@ -1,15 +1,36 @@
 import fs from "node:fs";
 import path from "node:path";
+import { createRequire } from "node:module";
+import { analyzePptxFile } from "./ppt-quality-metrics.mjs";
+import { lazymanQualityGate } from "./lazyman-quality-gate.mjs";
+import { loadLazymanStandard } from "./lazyman-standard.mjs";
 
 const apiBase = process.env.BENCH_API_BASE || "http://localhost:3402";
 const repoRoot = process.cwd();
+const require = createRequire(import.meta.url);
+
+const CLEAN_TEMPLATE_RELATIVE = "docs/benchmarks/templates/inbox/模板.pptx";
+const DEFAULT_TEMPLATE_PATH = path.resolve(repoRoot, CLEAN_TEMPLATE_RELATIVE);
+const standard = loadLazymanStandard();
+
+function loadLazymanPromptRules() {
+  try {
+    const mod = require("../config/lazyman-prompt-enhancement.js");
+    if (mod && mod.lazymanPromptRules) return mod.lazymanPromptRules;
+    if (mod && mod.default && mod.default.lazymanPromptRules)
+      return mod.default.lazymanPromptRules;
+  } catch {}
+  return null;
+}
+
+const lazymanPromptRules = loadLazymanPromptRules();
 
 const defaultConfig = {
   count: 10,
   concurrency: 2,
   fetchTimeoutMs: 120000,
   retryOnTimeout: true,
-  maxRetries: 2
+  maxRetries: 2,
 };
 
 function parseIntOrFallback(value, fallback) {
@@ -26,16 +47,38 @@ function parseArgs(argv) {
     pageCount: 10,
     sceneType: "企业",
     scenario: "proposal",
-    templatePath: "",
+    layoutMode: "strict-layout",
+    layoutMinScore: 84,
+    templatePath: DEFAULT_TEMPLATE_PATH,
     temperatureBase: 0.7,
     temperatureStep: 0.1,
     variants: ["v4_strict", "v4_creative", "v4_concise"],
+    embedTemplate: false,
     enhanced: false,
     updateTraining: true,
-    fetchTimeoutMs: Math.max(3000, parseIntOrFallback(process.env.VARIANT_FETCH_TIMEOUT_MS, defaultConfig.fetchTimeoutMs)),
-    retryOnTimeout: String(process.env.VARIANT_RETRY_ON_TIMEOUT || String(defaultConfig.retryOnTimeout)).toLowerCase() !== "false",
-    maxRetries: Math.max(0, Math.min(5, parseIntOrFallback(process.env.VARIANT_MAX_RETRIES, defaultConfig.maxRetries))),
-    debugScore: false
+    fetchTimeoutMs: Math.max(
+      3000,
+      parseIntOrFallback(
+        process.env.VARIANT_FETCH_TIMEOUT_MS,
+        defaultConfig.fetchTimeoutMs,
+      ),
+    ),
+    retryOnTimeout:
+      String(
+        process.env.VARIANT_RETRY_ON_TIMEOUT ||
+          String(defaultConfig.retryOnTimeout),
+      ).toLowerCase() !== "false",
+    maxRetries: Math.max(
+      0,
+      Math.min(
+        5,
+        parseIntOrFallback(
+          process.env.VARIANT_MAX_RETRIES,
+          defaultConfig.maxRetries,
+        ),
+      ),
+    ),
+    debugScore: false,
   };
 
   for (let i = 2; i < argv.length; i += 1) {
@@ -44,23 +87,47 @@ function parseArgs(argv) {
     const [k, vRaw] = arg.slice(2).split("=");
     const v = vRaw ?? "";
     if (k === "topic" && v) out.topic = v;
-    if (k === "count" && v) out.count = Math.max(1, Math.min(500, Number(v) || 100));
-    if (k === "concurrency" && v) out.concurrency = Math.max(1, Math.min(20, Number(v) || 5));
+    if (k === "count" && v)
+      out.count = Math.max(1, Math.min(500, Number(v) || 100));
+    if (k === "concurrency" && v)
+      out.concurrency = Math.max(1, Math.min(20, Number(v) || 5));
     if (k === "top" && v) out.topN = Math.max(1, Math.min(50, Number(v) || 10));
-    if (k === "pageCount" && v) out.pageCount = Math.max(8, Math.min(12, Number(v) || 10));
+    if (k === "pageCount" && v)
+      out.pageCount = Math.max(8, Math.min(12, Number(v) || 10));
     if (k === "sceneType" && v) out.sceneType = v;
     if (k === "scenario" && v) out.scenario = v;
+    if (k === "layoutMode" && v) out.layoutMode = v;
+    if (k === "layoutMinScore" && v)
+      out.layoutMinScore = Math.max(
+        0,
+        Math.min(100, Number(v) || out.layoutMinScore),
+      );
     if (k === "template" && v) out.templatePath = v;
-    if (k === "fetchTimeoutMs" && v) out.fetchTimeoutMs = Math.max(3000, parseIntOrFallback(v, out.fetchTimeoutMs));
-    if (k === "retryOnTimeout" && v) out.retryOnTimeout = String(v).toLowerCase() !== "false";
-    if (k === "maxRetries" && v !== "") out.maxRetries = Math.max(0, Math.min(5, parseIntOrFallback(v, out.maxRetries)));
+    if (k === "fetchTimeoutMs" && v)
+      out.fetchTimeoutMs = Math.max(
+        3000,
+        parseIntOrFallback(v, out.fetchTimeoutMs),
+      );
+    if (k === "retryOnTimeout" && v)
+      out.retryOnTimeout = String(v).toLowerCase() !== "false";
+    if (k === "maxRetries" && v !== "")
+      out.maxRetries = Math.max(
+        0,
+        Math.min(5, parseIntOrFallback(v, out.maxRetries)),
+      );
     if (k === "debug-score") out.debugScore = true;
     if (k === "learnedRulesFile" && v) out.learnedRulesFile = v;
     if (k === "variants" && v) {
-      const arr = v.split(",").map((x) => x.trim()).filter(Boolean);
+      const arr = v
+        .split(",")
+        .map((x) => x.trim())
+        .filter(Boolean);
       if (arr.length) out.variants = arr;
     }
-    if (k === "enhanced") out.enhanced = v === "" ? true : String(v).toLowerCase() !== "false";
+    if (k === "enhanced")
+      out.enhanced = v === "" ? true : String(v).toLowerCase() !== "false";
+    if (k === "embedTemplate")
+      out.embedTemplate = v === "" ? true : String(v).toLowerCase() !== "false";
     if (k === "no-training") out.updateTraining = false;
   }
 
@@ -69,8 +136,16 @@ function parseArgs(argv) {
 
 function loadLearnedRules(repoRootDir, fileArg) {
   const p = fileArg
-    ? (path.isAbsolute(fileArg) ? fileArg : path.resolve(repoRootDir, fileArg))
-    : path.resolve(repoRootDir, "docs", "benchmarks", "training", "learned_rules.json");
+    ? path.isAbsolute(fileArg)
+      ? fileArg
+      : path.resolve(repoRootDir, fileArg)
+    : path.resolve(
+        repoRootDir,
+        "docs",
+        "benchmarks",
+        "training",
+        "learned_rules.json",
+      );
   if (!fs.existsSync(p)) return [];
   const arr = readJsonSafe(p, []);
   return Array.isArray(arr) ? arr : [];
@@ -80,9 +155,14 @@ function buildPromptWithLearnedRules(basePrompt, learnedRules) {
   if (!Array.isArray(learnedRules) || !learnedRules.length) return basePrompt;
   const rulePrompt = learnedRules
     .slice()
-    .sort((a, b) => Number(b && b.strength || 0) - Number(a && a.strength || 0))
+    .sort(
+      (a, b) => Number((b && b.strength) || 0) - Number((a && a.strength) || 0),
+    )
     .slice(0, 5)
-    .map((r) => `- ${String(r && r.rule || "")}${r && r.evidence ? `（${String(r.evidence)}）` : ""}`)
+    .map(
+      (r) =>
+        `- ${String((r && r.rule) || "")}${r && r.evidence ? `（${String(r.evidence)}）` : ""}`,
+    )
     .join("\n");
   return [
     basePrompt,
@@ -90,17 +170,19 @@ function buildPromptWithLearnedRules(basePrompt, learnedRules) {
     "【从历史样本中学到的重要规则】",
     rulePrompt,
     "",
-    "请严格遵守以上规则。"
+    "请严格遵守以上规则。",
   ].join("\n");
 }
 
 function slugify(input) {
-  return String(input || "topic")
-    .toLowerCase()
-    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 60) || "topic";
+  return (
+    String(input || "topic")
+      .toLowerCase()
+      .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 60) || "topic"
+  );
 }
 
 function readJsonSafe(absPath, fallback) {
@@ -128,13 +210,37 @@ function sleep(ms) {
 
 function getLatestTemplate(absArgPath = "") {
   if (absArgPath) {
-    const abs = path.isAbsolute(absArgPath) ? absArgPath : path.resolve(repoRoot, absArgPath);
+    const abs = path.isAbsolute(absArgPath)
+      ? absArgPath
+      : path.resolve(repoRoot, absArgPath);
     if (!fs.existsSync(abs)) throw new Error(`template not found: ${abs}`);
     return abs;
   }
-  const inbox = path.resolve(repoRoot, "docs", "benchmarks", "templates", "inbox");
-  if (!fs.existsSync(inbox)) throw new Error(`template inbox not found: ${inbox}`);
-  const files = fs.readdirSync(inbox)
+  const preferredPaths = [
+    DEFAULT_TEMPLATE_PATH,
+    path.resolve(
+      repoRoot,
+      "docs",
+      "benchmarks",
+      "templates",
+      "inbox",
+      "演示文稿4.pptx",
+    ),
+  ];
+  for (const preferred of preferredPaths) {
+    if (fs.existsSync(preferred)) return preferred;
+  }
+  const inbox = path.resolve(
+    repoRoot,
+    "docs",
+    "benchmarks",
+    "templates",
+    "inbox",
+  );
+  if (!fs.existsSync(inbox))
+    throw new Error(`template inbox not found: ${inbox}`);
+  const files = fs
+    .readdirSync(inbox)
     .filter((x) => /\.pptx$/i.test(x))
     .map((name) => {
       const absPath = path.join(inbox, name);
@@ -149,11 +255,14 @@ function getLatestTemplate(absArgPath = "") {
 function variance(values) {
   if (!values.length) return 0;
   const mean = values.reduce((a, b) => a + b, 0) / values.length;
-  return values.reduce((acc, x) => acc + ((x - mean) ** 2), 0) / values.length;
+  return values.reduce((acc, x) => acc + (x - mean) ** 2, 0) / values.length;
 }
 
 function detectRepetition(text) {
-  const tokens = String(text || "").toLowerCase().match(/[\u4e00-\u9fa5]{2,}|[a-z0-9_]+/g) || [];
+  const tokens =
+    String(text || "")
+      .toLowerCase()
+      .match(/[\u4e00-\u9fa5]{2,}|[a-z0-9_]+/g) || [];
   const map = new Map();
   for (const t of tokens) map.set(t, (map.get(t) || 0) + 1);
   let maxCount = 0;
@@ -161,20 +270,33 @@ function detectRepetition(text) {
   return { maxCount, tokenCount: tokens.length };
 }
 
-function autoScoreDeck(result) {
-  if (!result.ok) return { score: 0, blockerCount: 99, notes: ["request_failed"] };
+function isMechanicalRepetition(rep) {
+  const tokenCount = Number((rep && rep.tokenCount) || 0);
+  const maxCount = Number((rep && rep.maxCount) || 0);
+  if (tokenCount < 90) return false;
+  const dynamicThreshold = Math.max(10, Math.floor(tokenCount * 0.12));
+  return maxCount >= dynamicThreshold;
+}
 
-  const baseScore = Number(result.qualityScore && result.qualityScore.overall || 65);
+function autoScoreDeck(result) {
+  if (!result.ok)
+    return { score: 0, blockerCount: 99, notes: ["request_failed"] };
+
+  const baseScore = Number(
+    (result.qualityScore && result.qualityScore.overall) || 65,
+  );
   const notes = [];
   let score = baseScore;
 
-  const validationErrors = Array.isArray(result.validation && result.validation.errors)
+  const validationErrors = Array.isArray(
+    result.validation && result.validation.errors,
+  )
     ? result.validation.errors
     : [];
   const blockerCount = validationErrors.length;
 
   for (const e of validationErrors) {
-    const t = String(e && e.type || "");
+    const t = String((e && e.type) || "");
     if (/blank|missing|incomplete|slideCountMismatch/i.test(t)) {
       score -= 12;
       notes.push(`BLOCKER:${t}`);
@@ -187,11 +309,14 @@ function autoScoreDeck(result) {
     }
   }
 
-  const slides = Array.isArray(result.dump && result.dump.slides) ? result.dump.slides : [];
+  const slides = Array.isArray(result.dump && result.dump.slides)
+    ? result.dump.slides
+    : [];
+  const pptMetrics = result.pptMetrics || null;
   const titleLens = [];
 
   for (const slide of slides) {
-    const title = String(slide && slide.title || "").trim();
+    const title = String((slide && slide.title) || "").trim();
     titleLens.push(title.length);
 
     if (/\d+\s*\/\s*\d+/.test(title)) {
@@ -203,7 +328,9 @@ function autoScoreDeck(result) {
       notes.push("title_has_version_word");
     }
 
-    const texts = Array.isArray(slide && slide.texts) ? slide.texts.map((x) => String(x || "").trim()).filter(Boolean) : [];
+    const texts = Array.isArray(slide && slide.texts)
+      ? slide.texts.map((x) => String(x || "").trim()).filter(Boolean)
+      : [];
     if (!texts.length) {
       score -= 20;
       notes.push("empty_slide");
@@ -217,8 +344,8 @@ function autoScoreDeck(result) {
 
     const joined = texts.join(" ");
     const rep = detectRepetition(joined);
-    if (rep.maxCount > 3) {
-      score -= rep.maxCount * 2;
+    if (isMechanicalRepetition(rep)) {
+      score -= Math.min(12, Math.max(4, Math.floor(rep.maxCount / 2)));
       notes.push("high_repetition");
     }
   }
@@ -231,41 +358,125 @@ function autoScoreDeck(result) {
     }
   }
 
+  if (pptMetrics) {
+    const pageNumberSlides = Array.isArray(pptMetrics.pageNumberSlides)
+      ? pptMetrics.pageNumberSlides
+      : [];
+    const metadataSlides = Array.isArray(pptMetrics.metadataSlides)
+      ? pptMetrics.metadataSlides
+      : [];
+    const placeholderOnlySlides = Array.isArray(
+      pptMetrics.placeholderOnlySlides,
+    )
+      ? pptMetrics.placeholderOnlySlides
+      : [];
+    const halfFilledRatio = Number(pptMetrics.halfFilledRatio || 0);
+    const contentCoverage = Number(pptMetrics.contentCoverage || 0);
+    const halfFilledThreshold = Number(
+      (standard.gate && standard.gate.halfFilledThreshold) || 0.15,
+    );
+    const minCoverage = Number(
+      (standard.gate && standard.gate.minContentCoverage) || 0.98,
+    );
+
+    if (pageNumberSlides.length > 0) {
+      score -= 20;
+      notes.push("page_number_pollution");
+    }
+    if (metadataSlides.length > 0) {
+      score -= 12;
+      notes.push("metadata_pollution");
+    }
+    if (placeholderOnlySlides.length > 0) {
+      score -= 18;
+      notes.push("placeholder_only_slide");
+    }
+    if (halfFilledRatio > halfFilledThreshold) {
+      score -= 14;
+      notes.push("half_filled_ratio_high");
+    }
+    if (contentCoverage < minCoverage) {
+      score -= 14;
+      notes.push("content_coverage_low");
+    }
+  }
+
   score = clamp(Math.round(score), 0, 100);
   return { score, blockerCount, notes: Array.from(new Set(notes)) };
 }
 
 function debugScoreDifference(result) {
   if (!result || !result.ok) return;
-  const systemScore = Number(result.qualityScore && result.qualityScore.overall || 0);
+  const systemScore = Number(
+    (result.qualityScore && result.qualityScore.overall) || 0,
+  );
   const autoResult = autoScoreDeck(result);
   const autoScore = autoResult.score;
   const qualityScore = result.qualityScore || {};
 
-  console.log([
-    "",
-    `系统评分: ${systemScore}`,
-    `自动评分: ${autoScore}`,
-    `差距: ${Math.abs(systemScore - autoScore)}`,
-    "",
-    "系统的判断依据:",
-    `- templateUsage: ${Number(qualityScore.templateUsage || 0)}`,
-    `- contentSpecificity: ${Number(qualityScore.contentSpecificity || 0)}`,
-    `- narrativeFlow: ${Number(qualityScore.narrativeFlow || 0)}`,
-    "",
-    "自动评分的扣分项:",
-    `- blockerCount: ${autoResult.blockerCount}`,
-    `- scoreNotes: ${(autoResult.notes || []).join(",")}`
-  ].join("\n"));
+  console.log(
+    [
+      "",
+      `系统评分: ${systemScore}`,
+      `自动评分: ${autoScore}`,
+      `差距: ${Math.abs(systemScore - autoScore)}`,
+      "",
+      "系统的判断依据:",
+      `- templateUsage: ${Number(qualityScore.templateUsage || 0)}`,
+      `- contentSpecificity: ${Number(qualityScore.contentSpecificity || 0)}`,
+      `- narrativeFlow: ${Number(qualityScore.narrativeFlow || 0)}`,
+      "",
+      "自动评分的扣分项:",
+      `- blockerCount: ${autoResult.blockerCount}`,
+      `- scoreNotes: ${(autoResult.notes || []).join(",")}`,
+    ].join("\n"),
+  );
+}
+
+function buildDiversityHint(runIndex = 0) {
+  const angles = [
+    "roi",
+    "risk",
+    "tech",
+    "process",
+    "experience",
+    "cost",
+    "compliance",
+    "scalability",
+    "timeline",
+    "stakeholder",
+  ];
+  const hints = {
+    roi: "强调投入产出比、成本下降、收益验证",
+    risk: "强调风险边界、兜底机制、灰度试点",
+    tech: "强调技术选型、接口对接、模型迭代",
+    process: "强调流程标准化、协同效率、复盘改进",
+    experience: "强调用户体验、触点优化、满意度提升",
+    cost: "强调成本结构、人力优化、峰值调度",
+    compliance: "强调合规要求、审计追溯、风控流程",
+    scalability: "强调扩展性、模块化、长期演进",
+    timeline: "强调里程碑、交付节奏、资源协调",
+    stakeholder: "强调干系人对齐、决策机制、责任划分",
+  };
+  const angle =
+    angles[Math.abs(Number(runIndex) || 0) % angles.length] || "roi";
+  return {
+    angle,
+    instruction: `本次生成聚焦【${angle}】视角：${hints[angle]}。避免通用套话，给出该视角下的具体判断和行动。`,
+  };
 }
 
 function buildContract(args, seed, variant, templateName, templateB64) {
   const variantIdx = seed % Math.max(1, args.variants.length);
+  const angles = ["roi", "risk", "tech", "process", "experience"];
+  const diversityAngle = angles[seed % angles.length];
   const toneCycle = ["专业可信", "简洁有力", "清晰可执行"];
   const visualCycle = ["business clean", "信息密度均衡", "结构清晰"];
   const narrativeCycle = ["standard", "lazyman", "standard"];
   const chartCycle = ["calm", "calm", "dynamic"];
-  const temperature = args.temperatureBase + (variantIdx % 3) * args.temperatureStep;
+  const temperature =
+    args.temperatureBase + (variantIdx % 3) * args.temperatureStep;
+  const diversityHint = buildDiversityHint(seed);
 
   const basePrompt = [
     `【核心主题】${args.topic}`,
@@ -277,15 +488,16 @@ function buildContract(args, seed, variant, templateName, templateB64) {
     "2. 不要复用模板示例主题词或固定业务案例",
     `3. 封面标题必须包含主题名称\"${args.topic}\"`,
     "4. 内容简洁、完整、无元数据污染",
-    "5. 每页内容填充完整，避免空白或半填充"
+    "5. 每页内容填充完整，避免空白或半填充",
+    `6. ${diversityHint.instruction}`,
   ].join("\n");
 
   const prohibitions = [
     "【禁止事项】",
-    "1. 禁止添加\"内容由AI生成\"等水印",
-    "2. 禁止添加\"X/Y\"格式页码",
+    '1. 禁止添加"内容由AI生成"等水印',
+    '2. 禁止添加"X/Y"格式页码',
     "3. 禁止在标题中重复主题名称超过3次",
-    "4. 禁止只有标题没有内容的空页"
+    "4. 禁止只有标题没有内容的空页",
   ].join("\n");
 
   const contentRules = [
@@ -293,22 +505,57 @@ function buildContract(args, seed, variant, templateName, templateB64) {
     "对于content类型页面：",
     "- 每页至少3条完整要点",
     "- 每条要点包含主标题(5-8字) + 详细说明(15-30字)",
-    "- 至少2页包含结构化布局（步骤、对比、列表）"
+    "- 至少2页包含结构化布局（步骤、对比、列表）",
   ].join("\n");
 
   const enhancedPrompt = args.enhanced
     ? [
-      basePrompt,
-      "",
-      prohibitions,
-      "",
-      contentRules,
-      "",
-      `请开始生成关于\"${args.topic}\"的高质量PPT契约。`
-    ].join("\n")
+        basePrompt,
+        "",
+        prohibitions,
+        "",
+        contentRules,
+        "",
+        `请开始生成关于\"${args.topic}\"的高质量PPT契约。`,
+      ].join("\n")
     : basePrompt;
 
-  const learnedPrompt = buildPromptWithLearnedRules(enhancedPrompt, args.learnedRules || []);
+  const promptLevel = Math.max(
+    0,
+    Number(process.env.PROMPT_ENHANCED_LEVEL || 1) || 1,
+  );
+  const strictPrompt = lazymanPromptRules
+    ? [
+        enhancedPrompt,
+        "",
+        lazymanPromptRules.systemPromptEnhancement,
+        "",
+        "【内容要求】",
+        `- 每页${lazymanPromptRules.contentRules.minKeyPointsPerSlide}-${lazymanPromptRules.contentRules.maxKeyPointsPerSlide}条要点`,
+        '- 每条要点必须体现结论+证据+行动逻辑，但禁止输出"结论：""证据：""行动："字样',
+        "- 每条要点格式：",
+        ...lazymanPromptRules.contentRules.keyPointFormat.map((x) => `  ${x}`),
+        `- 每条要点${lazymanPromptRules.contentRules.minCharsPerKeyPoint}-${lazymanPromptRules.contentRules.maxCharsPerKeyPoint}字`,
+        "",
+        "【示例（必须参考此格式）】",
+        "第3页标题：降本增效的3大支柱",
+        "要点1：人工成本降低40%是本轮优化的核心目标，优先替代重复咨询场景。",
+        "要点2：对比12家企业运营数据，人力成本平均占客服总成本的65%，自动化空间明确。",
+        "要点3：分三阶段上线AI客服，先覆盖60%高频问题，再扩展到复杂工单流转。",
+        "",
+        "现在请严格按上述要求输出JSON契约。",
+      ].join("\n")
+    : enhancedPrompt;
+
+  const promptWithLevel =
+    promptLevel >= 3
+      ? `${strictPrompt}\n\n[重试模式] 这是第${promptLevel}级严格约束，请执行最严标准。`
+      : strictPrompt;
+
+  const learnedPrompt = buildPromptWithLearnedRules(
+    promptWithLevel,
+    args.learnedRules || [],
+  );
 
   return {
     contractVersion: "aippt.v1",
@@ -316,9 +563,10 @@ function buildContract(args, seed, variant, templateName, templateB64) {
     sceneType: args.sceneType,
     scenario: args.scenario,
     templateId: "default-business-template",
+    diversityAngle,
     templateSource: "officeplus",
     templateFileName: templateName,
-    templateFileBase64: templateB64,
+    templateFileBase64: args.embedTemplate ? templateB64 : "",
     pageCount: args.pageCount,
     visualStyle: visualCycle[variantIdx % visualCycle.length],
     tone: toneCycle[variantIdx % toneCycle.length],
@@ -330,22 +578,66 @@ function buildContract(args, seed, variant, templateName, templateB64) {
     promptVersion: variant,
     promptVariant: variant,
     promptHints: learnedPrompt,
-    customInstructions: `必须严格围绕主题\"${args.topic}\"生成内容，不要使用模板示例内容；禁止水印与页码；content页保持至少3条完整要点。`,
-    learnedRules: Array.isArray(args.learnedRules) ? args.learnedRules.slice(0, 5) : [],
+    customInstructions: `必须严格围绕主题\"${args.topic}\"生成内容，不要使用模板示例内容；禁止水印与页码；content页保持至少3条完整要点。${diversityHint.instruction}。PROMPT_ENHANCED_LEVEL=${promptLevel}`,
+    learnedRules: Array.isArray(args.learnedRules)
+      ? args.learnedRules.slice(0, 5)
+      : [],
     temperature,
     seed,
+    runIndex: seed,
+    diversityHint,
     layoutPolicy: {
-      mode: "strict-layout",
-      minScore: 80,
-      mappingVersion: "semantic-slot-v1"
+      mode: args.layoutMode,
+      minScore: Number.isFinite(Number(args.layoutMinScore))
+        ? Number(args.layoutMinScore)
+        : 68,
+      mappingVersion: "semantic-slot-v1",
     },
-    slides: []
+    repairSlideIndexes: Array.isArray(args.repairSlideIndexes)
+      ? args.repairSlideIndexes
+      : [],
+    slides: [],
   };
 }
 
-async function exportOne(args, templateName, templateB64, seed) {
+function parseFailedSlideIndexesFromValidation(validation) {
+  const errors = Array.isArray(validation && validation.errors)
+    ? validation.errors
+    : [];
+  return Array.from(
+    new Set(
+      errors
+        .map((e) => Number(e && e.slideIndex))
+        .filter((n) => Number.isInteger(n) && n > 0),
+    ),
+  ).sort((a, b) => a - b);
+}
+
+async function exportOne(
+  args,
+  templateName,
+  templateB64,
+  seed,
+  overrides = {},
+) {
+  const attemptArgs = {
+    ...args,
+    layoutMode: overrides.layoutMode || args.layoutMode,
+    layoutMinScore: Number.isFinite(Number(overrides.layoutMinScore))
+      ? Number(overrides.layoutMinScore)
+      : args.layoutMinScore,
+    repairSlideIndexes: Array.isArray(overrides.repairSlideIndexes)
+      ? overrides.repairSlideIndexes
+      : [],
+  };
   const variant = args.variants[seed % args.variants.length];
-  const contract = buildContract(args, seed, variant, templateName, templateB64);
+  const contract = buildContract(
+    attemptArgs,
+    seed,
+    variant,
+    templateName,
+    templateB64,
+  );
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), args.fetchTimeoutMs);
   let resp;
@@ -354,7 +646,7 @@ async function exportOne(args, templateName, templateB64, seed) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ contract }),
-      signal: ctrl.signal
+      signal: ctrl.signal,
     });
   } catch (err) {
     clearTimeout(timer);
@@ -366,6 +658,7 @@ async function exportOne(args, templateName, templateB64, seed) {
       ok: false,
       seed,
       variant,
+      layoutMode: String(attemptArgs.layoutMode || ""),
       status: 0,
       error: isTimeout ? "request_timeout" : "request_failed",
       detail,
@@ -374,7 +667,7 @@ async function exportOne(args, templateName, templateB64, seed) {
       qualityScore: null,
       validation: null,
       dump: null,
-      relativePath: ""
+      relativePath: "",
     };
   } finally {
     clearTimeout(timer);
@@ -386,6 +679,7 @@ async function exportOne(args, templateName, templateB64, seed) {
       ok: false,
       seed,
       variant,
+      layoutMode: String(attemptArgs.layoutMode || ""),
       status: resp.status,
       error: data.error || "request_failed",
       detail: data.detail || "",
@@ -394,27 +688,52 @@ async function exportOne(args, templateName, templateB64, seed) {
       qualityScore: data.qualityScore || null,
       validation: data.validation || null,
       dump: null,
-      relativePath: ""
+      relativePath: "",
     };
   }
 
-  const dumpAbs = data.dumpRelativePath ? path.resolve(repoRoot, data.dumpRelativePath) : "";
-  const validationAbs = data.validationRelativePath ? path.resolve(repoRoot, data.validationRelativePath) : "";
+  const dumpAbs = data.dumpRelativePath
+    ? path.resolve(repoRoot, data.dumpRelativePath)
+    : "";
+  const validationAbs = data.validationRelativePath
+    ? path.resolve(repoRoot, data.validationRelativePath)
+    : "";
 
-  const dump = dumpAbs && fs.existsSync(dumpAbs) ? readJsonSafe(dumpAbs, null) : null;
-  const validation = validationAbs && fs.existsSync(validationAbs) ? readJsonSafe(validationAbs, null) : null;
+  const dump =
+    dumpAbs && fs.existsSync(dumpAbs) ? readJsonSafe(dumpAbs, null) : null;
+  const validation =
+    validationAbs && fs.existsSync(validationAbs)
+      ? readJsonSafe(validationAbs, null)
+      : null;
+  const pptAbs = data.relativePath
+    ? path.resolve(repoRoot, data.relativePath)
+    : "";
+  const pptMetrics =
+    pptAbs && fs.existsSync(pptAbs) ? analyzePptxFile(pptAbs) : null;
 
   const scored = autoScoreDeck({
     ok: true,
     qualityScore: data.qualityScore || null,
     validation,
-    dump
+    dump,
+    pptMetrics,
+  });
+
+  const gate = lazymanQualityGate({
+    qualityScore: data.qualityScore || null,
+    validation,
+    dump,
+    autoScore: scored.score,
+    blockerCount: scored.blockerCount,
+    pptMetrics,
   });
 
   return {
     ok: true,
     seed,
     variant,
+    layoutMode: String(attemptArgs.layoutMode || ""),
+    repairSlideIndexes: attemptArgs.repairSlideIndexes || [],
     temperature: Number(contract.temperature || 0),
     status: resp.status,
     requestId: data.requestId || "",
@@ -424,37 +743,88 @@ async function exportOne(args, templateName, templateB64, seed) {
     qualityScore: data.qualityScore || null,
     validation,
     dump,
+    pptMetrics,
     autoScore: scored.score,
     blockerCount: scored.blockerCount,
-    scoreNotes: scored.notes
+    scoreNotes: scored.notes,
+    gate,
   };
 }
 
 async function exportOneWithRetry(args, templateName, templateB64, seed) {
   let last = null;
-  const maxAttempts = Math.max(1, (Number(args.maxRetries || 0) + 1));
+  const maxAttempts = Math.max(3, Number(args.maxRetries || 0) + 3);
+  let layoutMode = String(args.layoutMode || "strict-layout");
+  let layoutMinScore = Number(args.layoutMinScore || 84);
+  let repairSlideIndexes = [];
+  let usedBalancedFallback = false;
+  let usedTargetedRepair = false;
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-    const result = await exportOne(args, templateName, templateB64, seed);
+    const attemptingBalanced = layoutMode === "balanced";
+    const attemptingTargetedRepair = repairSlideIndexes.length > 0;
+    const result = await exportOne(args, templateName, templateB64, seed, {
+      layoutMode,
+      layoutMinScore,
+      repairSlideIndexes,
+    });
+    if (attemptingBalanced) usedBalancedFallback = true;
+    if (attemptingTargetedRepair) usedTargetedRepair = true;
     if (result.ok) {
       if (attempt > 0) {
         result.retried = attempt;
       }
+      result.retryStrategy = {
+        usedBalancedFallback,
+        usedTargetedRepair,
+      };
       return result;
     }
 
     last = result;
-    const isRetryable = args.retryOnTimeout
-      && (result.error === "request_timeout"
-        || result.error === "request_failed"
-        || /timeout|unreachable|fetch failed/i.test(String(result.detail || "")));
+    const failedIndexes = parseFailedSlideIndexesFromValidation(
+      result.validation,
+    );
+
+    if (
+      !usedBalancedFallback &&
+      layoutMode === "strict-layout" &&
+      (result.status === 422 ||
+        /deck_validation_failed/i.test(String(result.detail || "")))
+    ) {
+      layoutMode = "balanced";
+      layoutMinScore = 68;
+      usedBalancedFallback = true;
+      continue;
+    }
+
+    if (
+      !usedTargetedRepair &&
+      failedIndexes.length > 0 &&
+      (layoutMode === "balanced" || usedBalancedFallback)
+    ) {
+      repairSlideIndexes = failedIndexes;
+      continue;
+    }
+
+    const isRetryable =
+      args.retryOnTimeout &&
+      (result.error === "request_timeout" ||
+        result.error === "request_failed" ||
+        /timeout|unreachable|fetch failed/i.test(String(result.detail || "")));
 
     if (!isRetryable || attempt >= maxAttempts - 1) {
+      result.retryStrategy = {
+        usedBalancedFallback,
+        usedTargetedRepair,
+      };
       return result;
     }
 
     const waitMs = (attempt + 1) * 5000;
-    console.log(`seed=${seed} attempt=${attempt + 1} failed(${result.error}) wait=${waitMs}ms then retry`);
+    console.log(
+      `seed=${seed} attempt=${attempt + 1} failed(${result.error}) wait=${waitMs}ms then retry`,
+    );
     await sleep(waitMs);
   }
 
@@ -464,13 +834,17 @@ async function exportOneWithRetry(args, templateName, templateB64, seed) {
     variant: args.variants[seed % args.variants.length],
     status: 0,
     error: "max_retries_exceeded",
-    detail: String(last && last.detail || ""),
+    detail: String((last && last.detail) || ""),
+    retryStrategy: {
+      usedBalancedFallback,
+      usedTargetedRepair,
+    },
     requestId: "",
     generationTracePath: "",
     qualityScore: null,
     validation: null,
     dump: null,
-    relativePath: ""
+    relativePath: "",
   };
 }
 
@@ -494,7 +868,13 @@ async function runWithConcurrency(items, concurrency, fn) {
 
 function appendBadSamples(topic, rows) {
   if (!rows.length) return 0;
-  const file = path.resolve(repoRoot, "docs", "benchmarks", "training", "bad_samples.jsonl");
+  const file = path.resolve(
+    repoRoot,
+    "docs",
+    "benchmarks",
+    "training",
+    "bad_samples.jsonl",
+  );
   const lines = rows.map((x) => JSON.stringify(x)).join("\n") + "\n";
   fs.appendFileSync(file, lines, "utf8");
   return rows.length;
@@ -502,7 +882,13 @@ function appendBadSamples(topic, rows) {
 
 function updateGoldenSamples(rows) {
   if (!rows.length) return 0;
-  const file = path.resolve(repoRoot, "docs", "benchmarks", "training", "golden_samples.json");
+  const file = path.resolve(
+    repoRoot,
+    "docs",
+    "benchmarks",
+    "training",
+    "golden_samples.json",
+  );
   const current = readJsonSafe(file, []);
   const list = Array.isArray(current) ? current : [];
   for (const row of rows) {
@@ -516,13 +902,13 @@ function updateGoldenSamples(rows) {
         generationTracePath: row.generationTracePath,
         promptVersion: row.variant,
         seed: row.seed,
-        temperature: row.temperature
+        temperature: row.temperature,
       },
       rules: [
         "优先选择 BLOCKER=0 的版本",
         "优先选择标题无页码、无版本词的版本",
-        "优先选择总体质量分高且自动评分高的版本"
-      ]
+        "优先选择总体质量分高且自动评分高的版本",
+      ],
     });
   }
   fs.writeFileSync(file, JSON.stringify(list.slice(-120), null, 2), "utf8");
@@ -533,21 +919,58 @@ function summarize(results, topN) {
   const okRows = results.filter((x) => x && x.ok);
   const failRows = results.filter((x) => !x || !x.ok);
 
-  const ranked = okRows
-    .slice()
-    .sort((a, b) => {
-      if (b.autoScore !== a.autoScore) return b.autoScore - a.autoScore;
-      if (a.blockerCount !== b.blockerCount) return a.blockerCount - b.blockerCount;
-      const qa = Number(a.qualityScore && a.qualityScore.overall || 0);
-      const qb = Number(b.qualityScore && b.qualityScore.overall || 0);
-      return qb - qa;
-    });
+  const ranked = okRows.slice().sort((a, b) => {
+    const ap = Boolean(a.gate && a.gate.passed);
+    const bp = Boolean(b.gate && b.gate.passed);
+    if (bp !== ap) return Number(bp) - Number(ap);
+    const as = Number((a.gate && a.gate.score) || 0);
+    const bs = Number((b.gate && b.gate.score) || 0);
+    if (bs !== as) return bs - as;
+    if (b.autoScore !== a.autoScore) return b.autoScore - a.autoScore;
+    if (a.blockerCount !== b.blockerCount)
+      return a.blockerCount - b.blockerCount;
+    const qa = Number((a.qualityScore && a.qualityScore.overall) || 0);
+    const qb = Number((b.qualityScore && b.qualityScore.overall) || 0);
+    return qb - qa;
+  });
 
-  const top = ranked.slice(0, Math.max(1, topN));
-  const uncertain = ranked.filter((x) => x.autoScore >= 60 && x.autoScore <= 70);
+  const passRows = ranked.filter((x) => x.gate && x.gate.passed);
+  const topBase = passRows.length ? passRows : ranked;
+  const top = topBase.slice(0, Math.max(1, topN));
+  const uncertain = ranked.filter(
+    (x) => x.autoScore >= 60 && x.autoScore <= 70,
+  );
   const worst = ranked.slice(-Math.min(5, ranked.length));
+  const passRate = okRows.length ? passRows.length / okRows.length : 0;
 
-  return { okRows, failRows, ranked, top, uncertain, worst };
+  return {
+    okRows,
+    failRows,
+    ranked,
+    top,
+    uncertain,
+    worst,
+    passRows,
+    passRate,
+  };
+}
+
+function extractSemanticBadText(row) {
+  const slides = Array.isArray(row && row.dump && row.dump.slides)
+    ? row.dump.slides
+    : [];
+  const candidates = [];
+  for (const slide of slides) {
+    const texts = Array.isArray(slide && slide.texts) ? slide.texts : [];
+    const joined = texts.join(" ").replace(/\s+/g, " ").trim();
+    if (!joined) continue;
+    if (joined.length >= 40) candidates.push(joined);
+  }
+  const fallback = String((row && row.error) || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 120);
+  return String(candidates[0] || "").slice(0, 180) || fallback || "(empty)";
 }
 
 async function main() {
@@ -555,18 +978,36 @@ async function main() {
   args.learnedRules = loadLearnedRules(repoRoot, args.learnedRulesFile);
   const templateAbs = getLatestTemplate(args.templatePath);
   const templateName = path.basename(templateAbs);
-  const templateB64 = fs.readFileSync(templateAbs).toString("base64");
+  const templateB64 = args.embedTemplate
+    ? fs.readFileSync(templateAbs).toString("base64")
+    : "";
 
   const seeds = Array.from({ length: args.count }, (_, i) => i);
   const results = await runWithConcurrency(
     seeds,
     args.concurrency,
-    async (seed) => exportOneWithRetry(args, templateName, templateB64, seed)
+    async (seed) => exportOneWithRetry(args, templateName, templateB64, seed),
   );
 
-  const { okRows, failRows, ranked, top, uncertain, worst } = summarize(results, args.topN);
+  const {
+    okRows,
+    failRows,
+    ranked,
+    top,
+    uncertain,
+    worst,
+    passRows,
+    passRate,
+  } = summarize(results, args.topN);
 
-  const dir = path.resolve(repoRoot, "docs", "benchmarks", "results", "variants", `${nowStamp()}-${slugify(args.topic)}`);
+  const dir = path.resolve(
+    repoRoot,
+    "docs",
+    "benchmarks",
+    "results",
+    "variants",
+    `${nowStamp()}-${slugify(args.topic)}`,
+  );
   fs.mkdirSync(dir, { recursive: true });
 
   const summary = {
@@ -578,15 +1019,33 @@ async function main() {
     failed: failRows.length,
     templateFileName: templateName,
     topCount: top.length,
+    passCount: passRows.length,
+    passRate: Number((passRate * 100).toFixed(2)),
     uncertainCount: uncertain.length,
     best: top[0] || null,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
-  fs.writeFileSync(path.join(dir, "summary.json"), JSON.stringify(summary, null, 2), "utf8");
-  fs.writeFileSync(path.join(dir, "results.json"), JSON.stringify(results, null, 2), "utf8");
-  fs.writeFileSync(path.join(dir, "top10.json"), JSON.stringify(top, null, 2), "utf8");
-  fs.writeFileSync(path.join(dir, "uncertain.json"), JSON.stringify(uncertain, null, 2), "utf8");
+  fs.writeFileSync(
+    path.join(dir, "summary.json"),
+    JSON.stringify(summary, null, 2),
+    "utf8",
+  );
+  fs.writeFileSync(
+    path.join(dir, "results.json"),
+    JSON.stringify(results, null, 2),
+    "utf8",
+  );
+  fs.writeFileSync(
+    path.join(dir, "top10.json"),
+    JSON.stringify(top, null, 2),
+    "utf8",
+  );
+  fs.writeFileSync(
+    path.join(dir, "uncertain.json"),
+    JSON.stringify(uncertain, null, 2),
+    "utf8",
+  );
 
   if (args.debugScore && top[0]) {
     debugScoreDifference(top[0]);
@@ -602,7 +1061,10 @@ async function main() {
     `- Template: ${templateName}`,
     ``,
     `## Top ${top.length}`,
-    ...top.map((x, i) => `${i + 1}. score=${x.autoScore} blocker=${x.blockerCount} requestId=${x.requestId} file=${x.relativePath}`)
+    ...top.map(
+      (x, i) =>
+        `${i + 1}. score=${x.autoScore} blocker=${x.blockerCount} requestId=${x.requestId} file=${x.relativePath}`,
+    ),
   ].join("\n");
   fs.writeFileSync(path.join(dir, "report.md"), md, "utf8");
 
@@ -611,17 +1073,25 @@ async function main() {
   if (args.updateTraining) {
     const badRows = worst.map((x) => ({
       slide: 0,
-      error: x.blockerCount > 0 ? "variant_batch_low_quality" : "variant_batch_low_score",
-      bad: `${x.variant}|score=${x.autoScore}|blockers=${x.blockerCount}`,
-      good: "优先选择自动评分更高且BLOCKER更少的版本",
+      error:
+        x.blockerCount > 0
+          ? "variant_batch_low_quality"
+          : "variant_batch_high_repetition",
+      bad: extractSemanticBadText(x),
+      good:
+        x.blockerCount > 0
+          ? "按模板槽位重写，补齐缺失内容并通过校验"
+          : "从不同业务视角改写，避免复用句式与关键词",
       timestamp: new Date().toISOString(),
       topic: args.topic,
       requestId: x.requestId || "",
-      source: "variant_batch"
+      source: "variant_batch",
     }));
     appendedBad = appendBadSamples(args.topic, badRows);
 
-    const goldenRows = top.slice(0, Math.min(2, top.length)).map((x) => ({ ...x, topic: args.topic }));
+    const goldenRows = top
+      .slice(0, Math.min(2, top.length))
+      .map((x) => ({ ...x, topic: args.topic }));
     appendedGolden = updateGoldenSamples(goldenRows);
   }
 
@@ -631,7 +1101,7 @@ async function main() {
     summary,
     top,
     appendedBad,
-    appendedGolden
+    appendedGolden,
   };
 
   console.log(JSON.stringify(output, null, 2));

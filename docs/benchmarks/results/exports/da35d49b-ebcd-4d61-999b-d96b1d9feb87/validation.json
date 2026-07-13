@@ -1,0 +1,25 @@
+{
+  "requestId": "da35d49b-ebcd-4d61-999b-d96b1d9feb87",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 2,
+      "type": "mixedLayout",
+      "text": "section_body_too_long"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 92,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 94,
+    "cleanliness": 92,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

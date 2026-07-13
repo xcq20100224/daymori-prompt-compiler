@@ -1,0 +1,296 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,slotOrder_slide_9",
+    "requestId": "7d6420f9-63b1-47d7-8827-96037b441b05",
+    "generationTracePath": "docs/benchmarks/results/debug/7d6420f9-63b1-47d7-8827-96037b441b05/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "slotOrder_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,slotOrder_slide_9",
+    "requestId": "bcac3d24-e83b-4180-84a3-44189de4b5ff",
+    "generationTracePath": "docs/benchmarks/results/debug/bcac3d24-e83b-4180-84a3-44189de4b5ff/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "slotOrder_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 2,
+    "variant": "v4_concise",
+    "status": 0,
+    "error": "request_failed",
+    "detail": "fetch failed",
+    "requestId": "",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 3,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,slotOrder_slide_9",
+    "requestId": "b8da059a-82d8-4503-b780-e7775ca49dfe",
+    "generationTracePath": "docs/benchmarks/results/debug/b8da059a-82d8-4503-b780-e7775ca49dfe/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "slotOrder_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 4,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,slotOrder_slide_9",
+    "requestId": "ce6c15dd-93df-44bb-acb6-e33fdad42398",
+    "generationTracePath": "docs/benchmarks/results/debug/ce6c15dd-93df-44bb-acb6-e33fdad42398/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "slotOrder_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]

@@ -59,5 +59,13 @@
     "topics": ["用户增长策略", "新产品上市计划", "客户留存提升方案"],
     "avgScore": 94,
     "gap": 1
+  },
+  "gate": {
+    "passScore": 88,
+    "nearLazyManScore": 88,
+    "lazyManScore": 95,
+    "maxRepetition": 3,
+    "maxTitleVariance": 50,
+    "minContentCoverage": 0.98
   }
 }

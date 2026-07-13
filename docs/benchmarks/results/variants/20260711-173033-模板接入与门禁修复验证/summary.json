@@ -1,0 +1,15 @@
+{
+  "topic": "模板接入与门禁修复验证",
+  "scenario": "proposal",
+  "sceneType": "企业",
+  "total": 1,
+  "success": 0,
+  "failed": 1,
+  "templateFileName": "模板.pptx",
+  "topCount": 0,
+  "passCount": 0,
+  "passRate": 0,
+  "uncertainCount": 0,
+  "best": null,
+  "timestamp": "2026-07-11T09:30:33.437Z"
+}

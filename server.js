@@ -20,11 +20,18 @@ const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0";
 const ROBOT_LANDING = String(process.env.ROBOT_LANDING || "0") === "1";
 const ROBOT_AP_ONLY = String(process.env.ROBOT_AP_ONLY || "0") === "1";
-const ROBOT_AP_ROUTE = String(process.env.ROBOT_AP_ROUTE || "/robot-entry").trim() || "/robot-entry";
-const ROBOT_AP_SUBNET_PREFIX = String(process.env.ROBOT_AP_SUBNET_PREFIX || "192.168.8.").trim() || "192.168.8.";
-const ROBOT_AP_WIFI_SSID = String(process.env.ROBOT_AP_WIFI_SSID || "chenlong-robot-725047").trim();
-const ROBOT_AP_STRICT_WIFI = String(process.env.ROBOT_AP_STRICT_WIFI || "0") === "1";
-const AUDIT_LOG_ENABLED = String(process.env.AUDIT_LOG_ENABLED || "true").toLowerCase() !== "false";
+const ROBOT_AP_ROUTE =
+  String(process.env.ROBOT_AP_ROUTE || "/robot-entry").trim() || "/robot-entry";
+const ROBOT_AP_SUBNET_PREFIX =
+  String(process.env.ROBOT_AP_SUBNET_PREFIX || "192.168.8.").trim() ||
+  "192.168.8.";
+const ROBOT_AP_WIFI_SSID = String(
+  process.env.ROBOT_AP_WIFI_SSID || "chenlong-robot-725047",
+).trim();
+const ROBOT_AP_STRICT_WIFI =
+  String(process.env.ROBOT_AP_STRICT_WIFI || "0") === "1";
+const AUDIT_LOG_ENABLED =
+  String(process.env.AUDIT_LOG_ENABLED || "true").toLowerCase() !== "false";
 const AUDIT_LOG_DIR = process.env.AUDIT_LOG_DIR || path.join(__dirname, "logs");
 const AUDIT_LOG_FILE = path.join(AUDIT_LOG_DIR, "audit.log");
 const AUDIT_SALT = process.env.AUDIT_SALT || "daymori-audit-salt";
@@ -35,6 +42,14 @@ const TRAINING_DIR = path.join(__dirname, "docs", "benchmarks", "training");
 const PROMPTS_DIR = path.join(__dirname, "docs", "benchmarks", "prompts");
 const BAD_SAMPLES_PATH = path.join(TRAINING_DIR, "bad_samples.jsonl");
 const GOLDEN_SAMPLES_PATH = path.join(TRAINING_DIR, "golden_samples.json");
+const DEFAULT_TEMPLATE_PATH = path.join(
+  __dirname,
+  "docs",
+  "benchmarks",
+  "templates",
+  "inbox",
+  "模板.pptx",
+);
 
 async function fetchWithRetry(url, options, retries = 0) {
   let lastError;
@@ -42,7 +57,10 @@ async function fetchWithRetry(url, options, retries = 0) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), LLM_FETCH_TIMEOUT_MS);
     try {
-      const response = await fetch(url, { ...options, signal: controller.signal });
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      });
       clearTimeout(timer);
       return response;
     } catch (error) {
@@ -57,7 +75,10 @@ async function fetchWithRetry(url, options, retries = 0) {
 function parseAllowedOrigins() {
   const raw = String(process.env.ALLOWED_ORIGINS || "").trim();
   if (!raw) return [];
-  return raw.split(",").map((s) => s.trim()).filter(Boolean);
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 const ALLOWED_ORIGINS = parseAllowedOrigins();
@@ -70,7 +91,11 @@ function corsOriginHandler(origin, callback) {
 }
 
 function hashValue(value) {
-  return crypto.createHash("sha256").update(`${AUDIT_SALT}:${String(value || "")}`).digest("hex").slice(0, 16);
+  return crypto
+    .createHash("sha256")
+    .update(`${AUDIT_SALT}:${String(value || "")}`)
+    .digest("hex")
+    .slice(0, 16);
 }
 
 function getClientIp(req) {
@@ -136,14 +161,14 @@ function robotApOnlyGuard(req, res, next) {
       return res.status(403).json({
         ok: false,
         error: "hotspot-only access denied",
-        detail: `Current Wi-Fi SSID ${wifi} does not match required ${ROBOT_AP_WIFI_SSID}`
+        detail: `Current Wi-Fi SSID ${wifi} does not match required ${ROBOT_AP_WIFI_SSID}`,
       });
     }
     if (!wifi) {
       return res.status(403).json({
         ok: false,
         error: "hotspot-only access denied",
-        detail: "Cannot detect current Wi-Fi SSID"
+        detail: "Cannot detect current Wi-Fi SSID",
       });
     }
 
@@ -156,7 +181,7 @@ function robotApOnlyGuard(req, res, next) {
     return res.status(403).json({
       ok: false,
       error: "hotspot-only access denied",
-      detail: `Local WLAN is not in hotspot subnet ${ROBOT_AP_SUBNET_PREFIX}*`
+      detail: `Local WLAN is not in hotspot subnet ${ROBOT_AP_SUBNET_PREFIX}*`,
     });
   }
 
@@ -166,7 +191,7 @@ function robotApOnlyGuard(req, res, next) {
   return res.status(403).json({
     ok: false,
     error: "hotspot-only access denied",
-    detail: `Current client ip ${ip || "unknown"} is not in hotspot subnet ${ROBOT_AP_SUBNET_PREFIX}*`
+    detail: `Current client ip ${ip || "unknown"} is not in hotspot subnet ${ROBOT_AP_SUBNET_PREFIX}*`,
   });
 }
 
@@ -174,7 +199,7 @@ function getCurrentWifiSsid() {
   try {
     const out = spawnSync("netsh", ["wlan", "show", "interfaces"], {
       encoding: "utf8",
-      timeout: 1500
+      timeout: 1500,
     });
 
     const text = String(out.stdout || "");
@@ -195,9 +220,9 @@ function getCurrentWifiSsid() {
       [
         "-NoProfile",
         "-Command",
-        "(Get-NetConnectionProfile | Where-Object { $_.InterfaceAlias -match 'WLAN|Wi-Fi|无线' } | Select-Object -First 1 -ExpandProperty Name)"
+        "(Get-NetConnectionProfile | Where-Object { $_.InterfaceAlias -match 'WLAN|Wi-Fi|无线' } | Select-Object -First 1 -ExpandProperty Name)",
       ],
-      { encoding: "utf8", timeout: 2000 }
+      { encoding: "utf8", timeout: 2000 },
     );
     const ssid = String(ps.stdout || "").trim();
     return ssid;
@@ -232,18 +257,18 @@ function baseAuditEvent(req) {
     ipHash: hashValue(getClientIp(req)),
     uaHash: hashValue(req.headers["user-agent"] || ""),
     originHash: hashValue(req.headers.origin || ""),
-    provider: (process.env.LLM_PROVIDER || "deepseek").toLowerCase().trim()
+    provider: (process.env.LLM_PROVIDER || "deepseek").toLowerCase().trim(),
   };
 }
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 15 * 1024 * 1024, files: 2 }
+  limits: { fileSize: 15 * 1024 * 1024, files: 2 },
 });
 
 const uploadAsr = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 26 * 1024 * 1024, files: 1 }
+  limits: { fileSize: 26 * 1024 * 1024, files: 1 },
 });
 
 app.use(express.json({ limit: "10mb" }));
@@ -269,7 +294,10 @@ app.get("/fighter", (req, res) => {
 });
 
 app.get("/robot-drive", (req, res) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+  );
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
   res.setHeader("Surrogate-Control", "no-store");
@@ -277,7 +305,10 @@ app.get("/robot-drive", (req, res) => {
 });
 
 app.get("/robot-drive-latest", (req, res) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+  );
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
   res.setHeader("Surrogate-Control", "no-store");
@@ -285,7 +316,10 @@ app.get("/robot-drive-latest", (req, res) => {
 });
 
 app.get("/car-control.html", (req, res) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+  );
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
   res.setHeader("Surrogate-Control", "no-store");
@@ -293,7 +327,10 @@ app.get("/car-control.html", (req, res) => {
 });
 
 app.get(ROBOT_AP_ROUTE, robotApOnlyGuard, (req, res) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+  );
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
   res.setHeader("Surrogate-Control", "no-store");
@@ -301,7 +338,10 @@ app.get(ROBOT_AP_ROUTE, robotApOnlyGuard, (req, res) => {
 });
 
 app.get("/robot-entry", robotApOnlyGuard, (req, res) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+  );
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
   res.setHeader("Surrogate-Control", "no-store");
@@ -313,7 +353,8 @@ app.get("/api/robot/ap-status", (req, res) => {
   const hotspotAllowed = isHotspotClient(req);
   const currentWifiSsid = getCurrentWifiSsid();
   const localWlanIp = getLocalWlanIpv4();
-  const suggestedTarget = buildLikelyRobotTargetsFromWlan()[0] || "http://192.168.4.1";
+  const suggestedTarget =
+    buildLikelyRobotTargetsFromWlan()[0] || "http://192.168.4.1";
   return res.json({
     ok: true,
     apOnlyMode: ROBOT_AP_ONLY,
@@ -324,9 +365,11 @@ app.get("/api/robot/ap-status", (req, res) => {
     currentWifiSsid,
     localWlanIp,
     suggestedTarget,
-    localWlanInSubnet: Boolean(localWlanIp && localWlanIp.startsWith(ROBOT_AP_SUBNET_PREFIX)),
+    localWlanInSubnet: Boolean(
+      localWlanIp && localWlanIp.startsWith(ROBOT_AP_SUBNET_PREFIX),
+    ),
     clientIp: ip,
-    hotspotAllowed
+    hotspotAllowed,
   });
 });
 
@@ -336,7 +379,12 @@ function buildRobotTargetCandidates(inputTarget) {
   const normalized = hasScheme ? raw : `http://${raw}`;
 
   const dynamic = buildLikelyRobotTargetsFromWlan();
-  const candidates = [normalized, ...dynamic, "http://192.168.4.1", "http://192.168.4.1:8080"];
+  const candidates = [
+    normalized,
+    ...dynamic,
+    "http://192.168.4.1",
+    "http://192.168.4.1:8080",
+  ];
   try {
     const u = new URL(normalized);
     if (u.port === "8080") {
@@ -366,24 +414,31 @@ function tryRobotWebControlFallback(action, target, seconds) {
     right: "right-hold",
     stop: "stop",
     grab: "grab",
-    release: "release"
+    release: "release",
   };
   const mappedAction = actionMap[action];
   if (!mappedAction) {
     return { ok: false, error: `unsupported fallback action: ${action}` };
   }
 
-  const holdMs = Math.max(120, Math.min(3000, Math.round((Number(seconds) || 0.45) * 1000)));
+  const holdMs = Math.max(
+    120,
+    Math.min(3000, Math.round((Number(seconds) || 0.45) * 1000)),
+  );
   const scriptPath = path.join(__dirname, "tools", "robot-web-control.mjs");
   const targets = buildRobotTargetCandidates(target);
   let lastError = "fallback failed";
 
   for (const candidate of targets) {
-    const result = spawnSync(process.execPath, [scriptPath, mappedAction, candidate, String(holdMs), "true"], {
-      cwd: __dirname,
-      encoding: "utf8",
-      timeout: 9000
-    });
+    const result = spawnSync(
+      process.execPath,
+      [scriptPath, mappedAction, candidate, String(holdMs), "true"],
+      {
+        cwd: __dirname,
+        encoding: "utf8",
+        timeout: 9000,
+      },
+    );
 
     if (result.error) {
       lastError = result.error.message;
@@ -394,50 +449,122 @@ function tryRobotWebControlFallback(action, target, seconds) {
       return {
         ok: true,
         target: candidate,
-        output: String(result.stdout || "").trim()
+        output: String(result.stdout || "").trim(),
       };
     }
 
-    lastError = String(result.stderr || result.stdout || "fallback failed").trim();
+    lastError = String(
+      result.stderr || result.stdout || "fallback failed",
+    ).trim();
   }
 
   return { ok: false, error: lastError };
 }
 
 app.get("/api/robot/control", async (req, res) => {
-  const action = String(req.query.action || "stop").trim().toLowerCase();
-  const target = normalizeRobotBaseTarget(req.query.target || req.query.ip || "192.168.4.1");
+  const action = String(req.query.action || "stop")
+    .trim()
+    .toLowerCase();
+  const target = normalizeRobotBaseTarget(
+    req.query.target || req.query.ip || "192.168.4.1",
+  );
   const speedRaw = Number(req.query.speed);
   const timeRaw = Number(req.query.time);
-  const speed = Number.isFinite(speedRaw) ? Math.max(0, Math.min(100, Math.round(speedRaw))) : 0;
-  const seconds = Number.isFinite(timeRaw) ? Math.max(0, Math.min(8, timeRaw)) : 0;
+  const speed = Number.isFinite(speedRaw)
+    ? Math.max(0, Math.min(100, Math.round(speedRaw)))
+    : 0;
+  const seconds = Number.isFinite(timeRaw)
+    ? Math.max(0, Math.min(8, timeRaw))
+    : 0;
 
-  const allowed = new Set(["up", "down", "left", "right", "stop", "grab", "release"]);
+  const allowed = new Set([
+    "up",
+    "down",
+    "left",
+    "right",
+    "stop",
+    "grab",
+    "release",
+  ]);
   if (!allowed.has(action)) {
-    return res.status(400).json({ ok: false, error: `invalid action: ${action}` });
+    return res
+      .status(400)
+      .json({ ok: false, error: `invalid action: ${action}` });
   }
 
-  const isMovementAction = action === "up" || action === "down" || action === "left" || action === "right";
+  const isMovementAction =
+    action === "up" ||
+    action === "down" ||
+    action === "left" ||
+    action === "right";
   const isRealtimeAction = isMovementAction || action === "stop";
 
   const primaryProfile = {
-    up: { path: "/control", robotAction: "forward", robotSpeed: Math.max(speed, 180) },
-    down: { path: "/control", robotAction: "backward", robotSpeed: Math.max(speed, 180) },
-    left: { path: "/control", robotAction: "left", robotSpeed: Math.max(speed, 170) },
-    right: { path: "/control", robotAction: "right", robotSpeed: Math.max(speed, 170) },
+    up: {
+      path: "/control",
+      robotAction: "forward",
+      robotSpeed: Math.max(speed, 180),
+    },
+    down: {
+      path: "/control",
+      robotAction: "backward",
+      robotSpeed: Math.max(speed, 180),
+    },
+    left: {
+      path: "/control",
+      robotAction: "left",
+      robotSpeed: Math.max(speed, 170),
+    },
+    right: {
+      path: "/control",
+      robotAction: "right",
+      robotSpeed: Math.max(speed, 170),
+    },
     stop: { path: "/api/control", robotAction: "stop", robotSpeed: 0 },
-    grab: { path: "/api/control", robotAction: "grab", robotSpeed: Math.max(speed, 70) },
-    release: { path: "/api/control", robotAction: "release", robotSpeed: Math.max(speed, 70) }
+    grab: {
+      path: "/api/control",
+      robotAction: "grab",
+      robotSpeed: Math.max(speed, 70),
+    },
+    release: {
+      path: "/api/control",
+      robotAction: "release",
+      robotSpeed: Math.max(speed, 70),
+    },
   }[action];
 
   const backupProfile = {
-    up: { path: "/api/control", robotAction: "up", robotSpeed: Math.max(speed, 92) },
-    down: { path: "/api/control", robotAction: "down", robotSpeed: Math.max(speed, 92) },
-    left: { path: "/api/control", robotAction: "left", robotSpeed: Math.max(speed, 88) },
-    right: { path: "/api/control", robotAction: "right", robotSpeed: Math.max(speed, 88) },
+    up: {
+      path: "/api/control",
+      robotAction: "up",
+      robotSpeed: Math.max(speed, 92),
+    },
+    down: {
+      path: "/api/control",
+      robotAction: "down",
+      robotSpeed: Math.max(speed, 92),
+    },
+    left: {
+      path: "/api/control",
+      robotAction: "left",
+      robotSpeed: Math.max(speed, 88),
+    },
+    right: {
+      path: "/api/control",
+      robotAction: "right",
+      robotSpeed: Math.max(speed, 88),
+    },
     stop: { path: "/control", robotAction: "stop", robotSpeed: 0 },
-    grab: { path: "/control", robotAction: "grab", robotSpeed: Math.max(speed, 70) },
-    release: { path: "/control", robotAction: "release", robotSpeed: Math.max(speed, 70) }
+    grab: {
+      path: "/control",
+      robotAction: "grab",
+      robotSpeed: Math.max(speed, 70),
+    },
+    release: {
+      path: "/control",
+      robotAction: "release",
+      robotSpeed: Math.max(speed, 70),
+    },
   }[action];
 
   const triedHttp = [];
@@ -455,14 +582,18 @@ app.get("/api/robot/control", async (req, res) => {
       const response = await fetch(endpoint.toString(), {
         method: "GET",
         signal: controller.signal,
-        cache: "no-store"
+        cache: "no-store",
       });
       clearTimeout(timer);
-      triedHttp.push(`${profile.path}?action=${profile.robotAction}&speed=${profile.robotSpeed}:status=${response.status}`);
+      triedHttp.push(
+        `${profile.path}?action=${profile.robotAction}&speed=${profile.robotSpeed}:status=${response.status}`,
+      );
       return response.ok;
     } catch (error) {
       clearTimeout(timer);
-      triedHttp.push(`${profile.path}?action=${profile.robotAction}&speed=${profile.robotSpeed}:error=${error && error.message ? error.message : "unknown"}`);
+      triedHttp.push(
+        `${profile.path}?action=${profile.robotAction}&speed=${profile.robotSpeed}:error=${error && error.message ? error.message : "unknown"}`,
+      );
       return false;
     }
   };
@@ -477,20 +608,25 @@ app.get("/api/robot/control", async (req, res) => {
 
     fetch(endpoint.toString(), {
       method: "GET",
-      cache: "no-store"
-    }).catch(() => { });
+      cache: "no-store",
+    }).catch(() => {});
     return endpoint.toString();
   };
 
   if (isRealtimeAction) {
-    const dispatched = [dispatchAsync(primaryProfile), dispatchAsync(backupProfile)];
+    const dispatched = [
+      dispatchAsync(primaryProfile),
+      dispatchAsync(backupProfile),
+    ];
     return res.json({
       ok: true,
       target,
       action,
       proxied: true,
-      controlMode: isMovementAction ? "movement-async-dispatch" : "stop-async-dispatch",
-      dispatched
+      controlMode: isMovementAction
+        ? "movement-async-dispatch"
+        : "stop-async-dispatch",
+      dispatched,
     });
   }
 
@@ -504,7 +640,7 @@ app.get("/api/robot/control", async (req, res) => {
       controlMode: "http-fast-primary",
       httpPath: primaryProfile.path,
       httpAction: primaryProfile.robotAction,
-      httpSpeed: primaryProfile.robotSpeed
+      httpSpeed: primaryProfile.robotSpeed,
     });
   }
 
@@ -519,7 +655,7 @@ app.get("/api/robot/control", async (req, res) => {
       httpPath: backupProfile.path,
       httpAction: backupProfile.robotAction,
       httpSpeed: backupProfile.robotSpeed,
-      triedHttp
+      triedHttp,
     });
   }
 
@@ -531,7 +667,7 @@ app.get("/api/robot/control", async (req, res) => {
       action,
       proxied: true,
       controlMode: "http-fast-failed",
-      triedHttp
+      triedHttp,
     });
   }
 
@@ -544,7 +680,7 @@ app.get("/api/robot/control", async (req, res) => {
       proxied: true,
       controlMode: "web-fallback-only",
       fallback: "robot-web-control",
-      triedHttp
+      triedHttp,
     });
   }
 
@@ -555,12 +691,17 @@ app.get("/api/robot/control", async (req, res) => {
     action,
     proxied: true,
     triedHttp,
-    fallbackError: fallback.error
+    fallbackError: fallback.error,
   });
 });
 
 app.post("/api/robot/camera/open", async (req, res) => {
-  const target = normalizeRobotBaseTarget((req.body && req.body.target) || req.query.target || req.query.ip || "192.168.4.1");
+  const target = normalizeRobotBaseTarget(
+    (req.body && req.body.target) ||
+      req.query.target ||
+      req.query.ip ||
+      "192.168.4.1",
+  );
 
   const openUrl = new URL("/api/camera/open", target).toString();
   const statusUrl = new URL("/api/camera/status", target).toString();
@@ -589,18 +730,31 @@ app.post("/api/robot/camera/open", async (req, res) => {
     openTried: true,
     openOk,
     cameraOn: !!(statusPayload && statusPayload.camera_on),
-    status: statusPayload || {}
+    status: statusPayload || {},
   });
 });
 
 app.get("/api/robot/vision-proxy", async (req, res) => {
-  const target = normalizeRobotBaseTarget(req.query.target || req.query.ip || "192.168.4.1");
+  const target = normalizeRobotBaseTarget(
+    req.query.target || req.query.ip || "192.168.4.1",
+  );
   const preferredPathRaw = String(req.query.path || "").trim();
-  const preferredPath = preferredPathRaw.startsWith("/") ? preferredPathRaw : "";
+  const preferredPath = preferredPathRaw.startsWith("/")
+    ? preferredPathRaw
+    : "";
 
   const baseTargets = buildRobotTargetCandidates(target);
-  const defaultPaths = ["/api/camera/stream?fps=30", "/stream", "/video", "/?action=stream", "/?action=video", "/"];
-  const scanPaths = preferredPath ? [preferredPath, ...defaultPaths] : defaultPaths;
+  const defaultPaths = [
+    "/api/camera/stream?fps=30",
+    "/stream",
+    "/video",
+    "/?action=stream",
+    "/?action=video",
+    "/",
+  ];
+  const scanPaths = preferredPath
+    ? [preferredPath, ...defaultPaths]
+    : defaultPaths;
   const tried = [];
 
   for (const base of baseTargets) {
@@ -618,7 +772,7 @@ app.get("/api/robot/vision-proxy", async (req, res) => {
         const upstream = await fetch(endpoint, {
           method: "GET",
           cache: "no-store",
-          signal: controller.signal
+          signal: controller.signal,
         });
         clearTimeout(timer);
 
@@ -627,10 +781,14 @@ app.get("/api/robot/vision-proxy", async (req, res) => {
           continue;
         }
 
-        const contentType = upstream.headers.get("content-type") || "application/octet-stream";
+        const contentType =
+          upstream.headers.get("content-type") || "application/octet-stream";
         tried.push(`${endpoint}:status=${upstream.status}:ok`);
 
-        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+        res.setHeader(
+          "Cache-Control",
+          "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+        );
         res.setHeader("Pragma", "no-cache");
         res.setHeader("Expires", "0");
         res.setHeader("x-robot-vision-upstream", endpoint);
@@ -648,7 +806,9 @@ app.get("/api/robot/vision-proxy", async (req, res) => {
         return;
       } catch (error) {
         clearTimeout(timer);
-        tried.push(`${endpoint}:error=${error && error.message ? error.message : "unknown"}`);
+        tried.push(
+          `${endpoint}:error=${error && error.message ? error.message : "unknown"}`,
+        );
       }
     }
   }
@@ -657,14 +817,23 @@ app.get("/api/robot/vision-proxy", async (req, res) => {
     ok: false,
     error: "robot vision unavailable",
     target,
-    tried
+    tried,
   });
 });
 
-async function readFirstJpegFrameFromResponse(upstream, maxBytes = 3 * 1024 * 1024) {
-  const contentType = String(upstream.headers.get("content-type") || "").toLowerCase();
+async function readFirstJpegFrameFromResponse(
+  upstream,
+  maxBytes = 3 * 1024 * 1024,
+) {
+  const contentType = String(
+    upstream.headers.get("content-type") || "",
+  ).toLowerCase();
 
-  if (contentType.includes("image/jpeg") || contentType.includes("image/jpg") || contentType.includes("image/png")) {
+  if (
+    contentType.includes("image/jpeg") ||
+    contentType.includes("image/jpg") ||
+    contentType.includes("image/png")
+  ) {
     const ab = await upstream.arrayBuffer();
     const bin = Buffer.from(ab);
     if (!bin.length) return null;
@@ -713,7 +882,11 @@ async function fetchRobotCameraFrameBuffer(target, preferredPath) {
   const pathCandidates = [];
   const p = String(preferredPath || "").trim();
   if (p && p.startsWith("/")) pathCandidates.push(p);
-  pathCandidates.push("/api/camera/stream", "/api/camera/stream?fps=30", "/api/camera/stream?fps=24");
+  pathCandidates.push(
+    "/api/camera/stream",
+    "/api/camera/stream?fps=30",
+    "/api/camera/stream?fps=24",
+  );
 
   const uniquePaths = Array.from(new Set(pathCandidates));
   const tried = [];
@@ -733,7 +906,7 @@ async function fetchRobotCameraFrameBuffer(target, preferredPath) {
         const upstream = await fetch(endpoint, {
           method: "GET",
           cache: "no-store",
-          signal: controller.signal
+          signal: controller.signal,
         });
         clearTimeout(timer);
 
@@ -748,13 +921,15 @@ async function fetchRobotCameraFrameBuffer(target, preferredPath) {
             ok: true,
             frame,
             endpoint,
-            contentType: String(upstream.headers.get("content-type") || "")
+            contentType: String(upstream.headers.get("content-type") || ""),
           };
         }
         tried.push(`${endpoint}:no_frame`);
       } catch (error) {
         clearTimeout(timer);
-        tried.push(`${endpoint}:error=${error && error.message ? error.message : "unknown"}`);
+        tried.push(
+          `${endpoint}:error=${error && error.message ? error.message : "unknown"}`,
+        );
       }
     }
   }
@@ -802,17 +977,25 @@ function normalizeVisionSummary(raw) {
       try {
         const parsed = JSON.parse(out.slice(firstBrace, lastBrace + 1));
         const scene2 = String(parsed.scene || parsed.场景 || "").trim();
-        const object2 = String(parsed.object || parsed.objects || parsed.物体 || "").trim();
-        const position2 = String(parsed.position || parsed.location || parsed.方位 || "").trim();
-        const distance2 = String(parsed.distance || parsed.range || parsed.距离 || "").trim();
-        const risk2 = String(parsed.risk || parsed.hazard || parsed.风险 || "").trim();
+        const object2 = String(
+          parsed.object || parsed.objects || parsed.物体 || "",
+        ).trim();
+        const position2 = String(
+          parsed.position || parsed.location || parsed.方位 || "",
+        ).trim();
+        const distance2 = String(
+          parsed.distance || parsed.range || parsed.距离 || "",
+        ).trim();
+        const risk2 = String(
+          parsed.risk || parsed.hazard || parsed.风险 || "",
+        ).trim();
         if (scene2 || object2 || position2 || distance2 || risk2) {
           out = [
             `场景: ${scene2 || "未识别"}`,
             `物体: ${object2 || "未识别"}`,
             `方位: ${position2 || "未识别"}`,
             `距离: ${distance2 || "未识别"}`,
-            `风险: ${risk2 || "未识别"}`
+            `风险: ${risk2 || "未识别"}`,
           ].join("\n");
           return out.slice(0, 900);
         }
@@ -828,7 +1011,7 @@ function normalizeVisionSummary(raw) {
       `物体: ${object || "未识别"}`,
       `方位: ${position || "未识别"}`,
       `距离: ${distance || "未识别"}`,
-      `风险: ${risk || "未识别"}`
+      `风险: ${risk || "未识别"}`,
     ].join("\n");
   }
 
@@ -847,20 +1030,37 @@ function normalizeVisionSummary(raw) {
 
 app.post("/api/vision/analyze", async (req, res) => {
   const startedAt = Date.now();
-  const target = normalizeRobotBaseTarget(req.body && req.body.target ? req.body.target : (req.query.target || "192.168.4.1"));
-  const streamPathRaw = String(req.body && req.body.streamPath ? req.body.streamPath : (req.query.streamPath || "/api/camera/stream")).trim();
-  const streamPath = streamPathRaw.startsWith("/") ? streamPathRaw : "/api/camera/stream";
+  const target = normalizeRobotBaseTarget(
+    req.body && req.body.target
+      ? req.body.target
+      : req.query.target || "192.168.4.1",
+  );
+  const streamPathRaw = String(
+    req.body && req.body.streamPath
+      ? req.body.streamPath
+      : req.query.streamPath || "/api/camera/stream",
+  ).trim();
+  const streamPath = streamPathRaw.startsWith("/")
+    ? streamPathRaw
+    : "/api/camera/stream";
   const cacheKey = `${target}|${streamPath}`;
   const cached = visionSummaryCache.get(cacheKey);
-  const visionModel = sanitizeContractText(String((req.body && req.body.model) || process.env.ZHIPU_VISION_MODEL || "glm-4.1v-thinking-flash"), 64)
-    || "glm-4.1v-thinking-flash";
+  const visionModel =
+    sanitizeContractText(
+      String(
+        (req.body && req.body.model) ||
+          process.env.ZHIPU_VISION_MODEL ||
+          "glm-4.1v-thinking-flash",
+      ),
+      64,
+    ) || "glm-4.1v-thinking-flash";
 
   const apiKey = process.env.ZHIPU_API_KEY;
   if (!apiKey) {
     return res.status(500).json({
       ok: false,
       error: "missing_ZHIPU_API_KEY",
-      detail: "服务端未配置 ZHIPU_API_KEY，无法进行视觉识别"
+      detail: "服务端未配置 ZHIPU_API_KEY，无法进行视觉识别",
     });
   }
 
@@ -879,7 +1079,7 @@ app.post("/api/vision/analyze", async (req, res) => {
         summary: cached.summary,
         fallback: true,
         fallbackReason: "camera_frame_unavailable",
-        cachedAt: cached.ts
+        cachedAt: cached.ts,
       });
     }
     return res.status(502).json({
@@ -888,7 +1088,7 @@ app.post("/api/vision/analyze", async (req, res) => {
       detail: "未能从前置摄像头获取有效帧",
       target,
       streamPath,
-      tried: frameResult.tried || []
+      tried: frameResult.tried || [],
     });
   }
 
@@ -900,30 +1100,38 @@ app.post("/api/vision/analyze", async (req, res) => {
     messages: [
       {
         role: "system",
-        content: "你是机器人视觉识别助手。请只基于图像回答，用中文简洁输出。输出格式固定为五行：场景:...\\n物体:...（列出最多3个核心物体，逗号分隔，每个物体尽量附带置信度如苹果(置信78%)）\\n方位:...（左/中/右，可写偏左/偏右）\\n距离:...（近/中/远）\\n风险:..."
+        content:
+          "你是机器人视觉识别助手。请只基于图像回答，用中文简洁输出。输出格式固定为五行：场景:...\\n物体:...（列出最多3个核心物体，逗号分隔，每个物体尽量附带置信度如苹果(置信78%)）\\n方位:...（左/中/右，可写偏左/偏右）\\n距离:...（近/中/远）\\n风险:...",
       },
       {
         role: "user",
         content: [
-          { type: "text", text: "仔细识别这张机器人前置摄像头画面中的主要物体和潜在风险。请保证通用识别，不只针对球类，并在物体行输出可用于匹配的标准物体名称与置信度。" },
-          { type: "image_url", image_url: { url: dataUrl } }
-        ]
-      }
+          {
+            type: "text",
+            text: "仔细识别这张机器人前置摄像头画面中的主要物体和潜在风险。请保证通用识别，不只针对球类，并在物体行输出可用于匹配的标准物体名称与置信度。",
+          },
+          { type: "image_url", image_url: { url: dataUrl } },
+        ],
+      },
     ],
     temperature: 0.1,
-    max_tokens: 420
+    max_tokens: 420,
   });
 
   let upstream;
   try {
-    upstream = await fetchWithRetry("https://open.bigmodel.cn/api/paas/v4/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`
+    upstream = await fetchWithRetry(
+      "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(buildVisionRequestBody()),
       },
-      body: JSON.stringify(buildVisionRequestBody())
-    }, LLM_FETCH_RETRY);
+      LLM_FETCH_RETRY,
+    );
   } catch (error) {
     if (cached && cached.summary) {
       return res.json({
@@ -938,13 +1146,13 @@ app.post("/api/vision/analyze", async (req, res) => {
         summary: cached.summary,
         fallback: true,
         fallbackReason: "vision_upstream_connect_error",
-        cachedAt: cached.ts
+        cachedAt: cached.ts,
       });
     }
     return res.status(502).json({
       ok: false,
       error: "vision_upstream_connect_error",
-      detail: describeUpstreamError(error)
+      detail: describeUpstreamError(error),
     });
   }
 
@@ -952,14 +1160,18 @@ app.post("/api/vision/analyze", async (req, res) => {
     // Retry once for transient upstream throttling/instability.
     await new Promise((r) => setTimeout(r, 320));
     try {
-      const retryResp = await fetchWithRetry("https://open.bigmodel.cn/api/paas/v4/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`
+      const retryResp = await fetchWithRetry(
+        "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(buildVisionRequestBody()),
         },
-        body: JSON.stringify(buildVisionRequestBody())
-      }, 0);
+        0,
+      );
       upstream = retryResp;
     } catch {
       // Keep original upstream response for error detail below.
@@ -981,13 +1193,13 @@ app.post("/api/vision/analyze", async (req, res) => {
         summary: cached.summary,
         fallback: true,
         fallbackReason: "vision_upstream_http_error",
-        cachedAt: cached.ts
+        cachedAt: cached.ts,
       });
     }
     return res.status(upstream.status).json({
       ok: false,
       error: "vision_upstream_http_error",
-      detail: rawText.slice(0, 1000)
+      detail: rawText.slice(0, 1000),
     });
   }
 
@@ -1008,13 +1220,13 @@ app.post("/api/vision/analyze", async (req, res) => {
         summary: cached.summary,
         fallback: true,
         fallbackReason: "vision_upstream_non_json",
-        cachedAt: cached.ts
+        cachedAt: cached.ts,
       });
     }
     return res.status(502).json({
       ok: false,
       error: "vision_upstream_non_json",
-      detail: rawText.slice(0, 400)
+      detail: rawText.slice(0, 400),
     });
   }
 
@@ -1023,7 +1235,7 @@ app.post("/api/vision/analyze", async (req, res) => {
     visionSummaryCache.set(cacheKey, {
       summary,
       upstream: frameResult.endpoint,
-      ts: new Date().toISOString()
+      ts: new Date().toISOString(),
     });
   }
   return res.json({
@@ -1035,26 +1247,41 @@ app.post("/api/vision/analyze", async (req, res) => {
     upstream: frameResult.endpoint,
     frameBytes: Number(frameResult.frame.length || 0),
     latencyMs: Date.now() - startedAt,
-    summary
+    summary,
   });
 });
 
 app.post("/api/robot/drive", (req, res) => {
-  const actionRaw = String(req.body && req.body.action ? req.body.action : "").toLowerCase().trim();
-  const target = String(req.body && req.body.target ? req.body.target : "http://192.168.4.1").trim();
-  const durationRaw = Number(req.body && req.body.durationMs ? req.body.durationMs : 450);
-  const durationMs = Math.max(120, Math.min(3000, Number.isFinite(durationRaw) ? Math.round(durationRaw) : 450));
+  const actionRaw = String(req.body && req.body.action ? req.body.action : "")
+    .toLowerCase()
+    .trim();
+  const target = String(
+    req.body && req.body.target ? req.body.target : "http://192.168.4.1",
+  ).trim();
+  const durationRaw = Number(
+    req.body && req.body.durationMs ? req.body.durationMs : 450,
+  );
+  const durationMs = Math.max(
+    120,
+    Math.min(
+      3000,
+      Number.isFinite(durationRaw) ? Math.round(durationRaw) : 450,
+    ),
+  );
 
   const actionMap = {
     forward: "forward-hold",
     backward: "backward-hold",
     left: "left-hold",
-    right: "right-hold"
+    right: "right-hold",
   };
 
   const action = actionMap[actionRaw];
   if (!action) {
-    return res.status(400).json({ ok: false, error: "Invalid action. Use forward/backward/left/right." });
+    return res.status(400).json({
+      ok: false,
+      error: "Invalid action. Use forward/backward/left/right.",
+    });
   }
 
   const scriptPath = path.join(__dirname, "tools", "robot-web-control.mjs");
@@ -1062,11 +1289,15 @@ app.post("/api/robot/drive", (req, res) => {
 
   let lastFailure = "robot control failed";
   for (const targetCandidate of targetCandidates) {
-    const result = spawnSync(process.execPath, [scriptPath, action, targetCandidate, String(durationMs), "true"], {
-      cwd: __dirname,
-      encoding: "utf8",
-      timeout: 9000
-    });
+    const result = spawnSync(
+      process.execPath,
+      [scriptPath, action, targetCandidate, String(durationMs), "true"],
+      {
+        cwd: __dirname,
+        encoding: "utf8",
+        timeout: 9000,
+      },
+    );
 
     if (result.error) {
       lastFailure = result.error.message;
@@ -1079,35 +1310,49 @@ app.post("/api/robot/drive", (req, res) => {
         action: actionRaw,
         durationMs,
         target: targetCandidate,
-        output: (result.stdout || "").trim()
+        output: (result.stdout || "").trim(),
       });
     }
 
-    lastFailure = (result.stderr || result.stdout || "robot control failed").trim();
+    lastFailure = (
+      result.stderr ||
+      result.stdout ||
+      "robot control failed"
+    ).trim();
   }
 
   return res.status(500).json({ ok: false, error: lastFailure });
 });
 
 app.post("/api/robot/ping", (req, res) => {
-  const target = String(req.body && req.body.target ? req.body.target : "http://192.168.4.1").trim();
+  const target = String(
+    req.body && req.body.target ? req.body.target : "http://192.168.4.1",
+  ).trim();
   const scriptPath = path.join(__dirname, "tools", "robot-web-control.mjs");
   const targets = buildRobotTargetCandidates(target);
 
   let lastFailure = "ping failed";
   for (const t of targets) {
-    const result = spawnSync(process.execPath, [scriptPath, "stop", t, "120", "true"], {
-      cwd: __dirname,
-      encoding: "utf8",
-      timeout: 8000
-    });
+    const result = spawnSync(
+      process.execPath,
+      [scriptPath, "stop", t, "120", "true"],
+      {
+        cwd: __dirname,
+        encoding: "utf8",
+        timeout: 8000,
+      },
+    );
 
     if (result.error) {
       lastFailure = result.error.message;
       continue;
     }
     if (result.status === 0) {
-      return res.json({ ok: true, target: t, output: (result.stdout || "").trim() });
+      return res.json({
+        ok: true,
+        target: t,
+        output: (result.stdout || "").trim(),
+      });
     }
     lastFailure = (result.stderr || result.stdout || "ping failed").trim();
   }
@@ -1126,8 +1371,25 @@ async function parseUploadedFile(file) {
     }
   }
 
-  const textExts = new Set([".txt", ".md", ".json", ".js", ".ts", ".tsx", ".jsx", ".html", ".css", ".csv", ".yml", ".yaml", ".xml"]);
-  if (textExts.has(ext) || (file.mimetype && file.mimetype.startsWith("text/"))) {
+  const textExts = new Set([
+    ".txt",
+    ".md",
+    ".json",
+    ".js",
+    ".ts",
+    ".tsx",
+    ".jsx",
+    ".html",
+    ".css",
+    ".csv",
+    ".yml",
+    ".yaml",
+    ".xml",
+  ]);
+  if (
+    textExts.has(ext) ||
+    (file.mimetype && file.mimetype.startsWith("text/"))
+  ) {
     return file.buffer.toString("utf8");
   }
 
@@ -1135,7 +1397,9 @@ async function parseUploadedFile(file) {
 }
 
 function getProviderConfig() {
-  const provider = (process.env.LLM_PROVIDER || "deepseek").toLowerCase().trim();
+  const provider = (process.env.LLM_PROVIDER || "deepseek")
+    .toLowerCase()
+    .trim();
   const modelOverride = (process.env.LLM_MODEL || "").trim();
   const zhipuModel = (process.env.ZHIPU_MODEL || "").trim();
 
@@ -1146,7 +1410,7 @@ function getProviderConfig() {
       keyEnv: "DEEPSEEK_API_KEY",
       apiKey: process.env.DEEPSEEK_API_KEY,
       endpoint: "https://api.deepseek.com/v1/chat/completions",
-      model: modelOverride || "deepseek-chat"
+      model: modelOverride || "deepseek-chat",
     };
   }
 
@@ -1156,8 +1420,9 @@ function getProviderConfig() {
       type: "chat-completions",
       keyEnv: "QWEN_API_KEY",
       apiKey: process.env.QWEN_API_KEY,
-      endpoint: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
-      model: modelOverride || "qwen-plus"
+      endpoint:
+        "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      model: modelOverride || "qwen-plus",
     };
   }
 
@@ -1168,7 +1433,7 @@ function getProviderConfig() {
       keyEnv: "ZHIPU_API_KEY",
       apiKey: process.env.ZHIPU_API_KEY,
       endpoint: "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-      model: zhipuModel || "glm-5.2"
+      model: zhipuModel || "glm-5.2",
     };
   }
 
@@ -1179,7 +1444,7 @@ function getProviderConfig() {
       keyEnv: "OPENAI_API_KEY",
       apiKey: process.env.OPENAI_API_KEY,
       endpoint: "https://api.openai.com/v1/responses",
-      model: modelOverride || "gpt-5.3-codex"
+      model: modelOverride || "gpt-5.3-codex",
     };
   }
 
@@ -1197,13 +1462,17 @@ function buildThinkingExtras(model) {
 }
 
 function extractChatText(data) {
-  const choice = data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message : null;
+  const choice =
+    data && data.choices && data.choices[0] && data.choices[0].message
+      ? data.choices[0].message
+      : null;
   const message = choice ? choice.content : "";
   if (typeof message === "string") {
     const t = message.trim();
     // 思考模型即便关闭 thinking 仍可能偶发把正文放进 reasoning_content，做一次兜底回退。
     if (t) return message;
-    if (choice && typeof choice.reasoning_content === "string") return choice.reasoning_content;
+    if (choice && typeof choice.reasoning_content === "string")
+      return choice.reasoning_content;
     return message;
   }
   if (Array.isArray(message)) {
@@ -1211,7 +1480,12 @@ function extractChatText(data) {
       .map((part) => {
         if (typeof part === "string") return part;
         if (part && typeof part.text === "string") return part.text;
-        if (part && part.type === "output_text" && typeof part.content === "string") return part.content;
+        if (
+          part &&
+          part.type === "output_text" &&
+          typeof part.content === "string"
+        )
+          return part.content;
         return "";
       })
       .join("")
@@ -1263,7 +1537,9 @@ function tryRepairMojibakeText(input) {
   try {
     const repaired = iconv.decode(iconv.encode(original, "gbk"), "utf8");
     if (!repaired || repaired === original) return original;
-    return scoreReadableText(repaired) > scoreReadableText(original) + 1 ? repaired : original;
+    return scoreReadableText(repaired) > scoreReadableText(original) + 1
+      ? repaired
+      : original;
   } catch {
     return original;
   }
@@ -1285,7 +1561,18 @@ function sanitizeContractText(value, maxLen = 0) {
   return text;
 }
 
-const SLIDE_TYPE_ENUM = ["cover", "agenda", "section", "content", "comparison", "process", "example", "exercise", "summary", "qa"];
+const SLIDE_TYPE_ENUM = [
+  "cover",
+  "agenda",
+  "section",
+  "content",
+  "comparison",
+  "process",
+  "example",
+  "exercise",
+  "summary",
+  "qa",
+];
 const SLIDE_TYPES = [
   "cover",
   "agenda",
@@ -1302,16 +1589,89 @@ const SLIDE_TYPES = [
   "exercise",
   "summary",
   "next_steps",
-  "thanks"
+  "thanks",
 ];
 const SCENARIO_PRESETS = {
-  teaching: ["cover", "section", "content_text", "content_text", "section", "content_text", "content_bullets", "content_text", "content_bullets", "thanks"],
-  business_report: ["cover", "section", "content_text", "content_text", "section", "content_text", "content_bullets", "content_text", "content_bullets", "thanks"],
-  proposal: ["cover", "section", "content_text", "content_text", "section", "content_text", "content_bullets", "content_text", "content_bullets", "thanks"],
-  training: ["cover", "section", "content_text", "content_bullets", "section", "content_text", "content_bullets", "content_text", "content_bullets", "thanks"],
-  research: ["cover", "agenda", "section", "content_text", "data_insight", "compare", "case_study", "summary", "next_steps", "thanks"],
-  product_intro: ["cover", "agenda", "section", "content_text", "compare", "content_text", "case_study", "data_insight", "summary", "thanks"],
-  summary: ["cover", "agenda", "content_text", "summary", "next_steps", "thanks"]
+  teaching: [
+    "cover",
+    "section",
+    "content_text",
+    "content_text",
+    "section",
+    "content_text",
+    "content_bullets",
+    "content_text",
+    "content_bullets",
+    "thanks",
+  ],
+  business_report: [
+    "cover",
+    "section",
+    "content_text",
+    "content_text",
+    "section",
+    "content_text",
+    "content_bullets",
+    "content_text",
+    "content_bullets",
+    "thanks",
+  ],
+  proposal: [
+    "cover",
+    "section",
+    "content_text",
+    "content_text",
+    "section",
+    "content_text",
+    "content_bullets",
+    "content_text",
+    "content_bullets",
+    "thanks",
+  ],
+  training: [
+    "cover",
+    "section",
+    "content_text",
+    "content_bullets",
+    "section",
+    "content_text",
+    "content_bullets",
+    "content_text",
+    "content_bullets",
+    "thanks",
+  ],
+  research: [
+    "cover",
+    "agenda",
+    "section",
+    "content_text",
+    "data_insight",
+    "compare",
+    "case_study",
+    "summary",
+    "next_steps",
+    "thanks",
+  ],
+  product_intro: [
+    "cover",
+    "agenda",
+    "section",
+    "content_text",
+    "compare",
+    "content_text",
+    "case_study",
+    "data_insight",
+    "summary",
+    "thanks",
+  ],
+  summary: [
+    "cover",
+    "agenda",
+    "content_text",
+    "summary",
+    "next_steps",
+    "thanks",
+  ],
 };
 const SCENARIO_EXPANDABLE_TYPES = {
   teaching: ["content_text", "content_bullets"],
@@ -1320,7 +1680,7 @@ const SCENARIO_EXPANDABLE_TYPES = {
   training: ["content_text", "content_bullets"],
   research: ["content_text", "data_insight", "case_study"],
   product_intro: ["content_text", "compare", "data_insight"],
-  summary: ["content_text", "summary"]
+  summary: ["content_text", "summary"],
 };
 const FORBIDDEN_TEMPLATE_TEXT = [
   "OfficePLUS",
@@ -1345,13 +1705,9 @@ const FORBIDDEN_TEMPLATE_TEXT = [
   "placeholder",
   "template",
   "PART 01",
-  "PART 02"
+  "PART 02",
 ];
-const STALE_MOCK_PATTERNS = [
-  /要点\d+/i,
-  /动作\d+/i,
-  /聚焦一个中心观点/i
-];
+const STALE_MOCK_PATTERNS = [/要点\d+/i, /动作\d+/i, /聚焦一个中心观点/i];
 const CROSS_TOPIC_LEAK_TERMS = [
   /牛顿第二定律/i,
   /牛顿第一定律/i,
@@ -1360,20 +1716,22 @@ const CROSS_TOPIC_LEAK_TERMS = [
   /课堂讲解/i,
   /公式详解/i,
   /复习[:：]/i,
-  /本章目标/i
+  /本章目标/i,
 ];
 const SCENARIO_LEAK_PATTERNS = {
   proposal: [/实验探究/i, /牛顿/i, /课堂/i, /PART\s*0?\d+/i],
   business_report: [/实验探究/i, /牛顿/i, /课堂/i],
   teaching: [/市场分析报告/i, /降本增效方案/i, /ROI/i],
-  training: [/牛顿/i, /实验探究/i]
+  training: [/牛顿/i, /实验探究/i],
 };
 const PLACEHOLDER_PATTERNS = [
-  ...FORBIDDEN_TEMPLATE_TEXT.map((x) => new RegExp(String(x).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")),
+  ...FORBIDDEN_TEMPLATE_TEXT.map(
+    (x) => new RegExp(String(x).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"),
+  ),
   /单击添加标题/i,
   /单击添加副标题/i,
   /CONTENT/i,
-  /LOGO/i
+  /LOGO/i,
 ];
 const SLIDE_TYPE_FIELDS = {
   cover: ["title", "subtitle", "speaker", "date", "footer"],
@@ -1381,7 +1739,15 @@ const SLIDE_TYPE_FIELDS = {
   section: ["sectionNo", "title", "subtitle", "footer"],
   content_text: ["title", "label", "body", "visualHint", "footer"],
   content_bullets: ["title", "label", "bullets", "visualHint", "footer"],
-  compare: ["title", "leftTitle", "leftPoints", "rightTitle", "rightPoints", "conclusion", "footer"],
+  compare: [
+    "title",
+    "leftTitle",
+    "leftPoints",
+    "rightTitle",
+    "rightPoints",
+    "conclusion",
+    "footer",
+  ],
   process: ["title", "steps", "conclusion", "footer"],
   timeline: ["title", "milestones", "footer"],
   data_insight: ["title", "metric", "insight", "chartHint", "footer"],
@@ -1391,52 +1757,66 @@ const SLIDE_TYPE_FIELDS = {
   exercise: ["title", "question", "options", "answer", "footer"],
   summary: ["title", "keyPoints", "conclusion", "footer"],
   next_steps: ["title", "actions", "ownerHint", "footer"],
-  thanks: ["title", "subtitle", "footer"]
+  thanks: ["title", "subtitle", "footer"],
 };
 const FORBIDDEN_IN_TITLE_PATTERNS = [
   /\d+\s*\/\s*\d+/,
   /\bV\s*\d+(?:\.\d+)?\b/i,
   /内容由\s*AI\s*生成/i,
   /Q\s*&?\s*A\s*Q\s*&?\s*A/i,
-  /图示[:：]|示意[:：]/
+  /图示[:：]|示意[:：]/,
 ];
 const METADATA_POLLUTION_PATTERNS = [
   /\d+\s*\/\s*\d+/,
   /内容由\s*AI\s*生成/i,
   /\bV\s*\d+(?:\.\d+)?\b/i,
-  /版本\s*\d+(?:\.\d+)?/i
+  /版本\s*\d+(?:\.\d+)?/i,
 ];
 
 function extractSlideNamespaces(slideInput, index = 1) {
   const raw = slideInput && typeof slideInput === "object" ? slideInput : {};
-  const contentRaw = raw.content && typeof raw.content === "object" ? raw.content : {};
-  const metadataRaw = raw.metadata && typeof raw.metadata === "object" ? raw.metadata : {};
+  const contentRaw =
+    raw.content && typeof raw.content === "object" ? raw.content : {};
+  const metadataRaw =
+    raw.metadata && typeof raw.metadata === "object" ? raw.metadata : {};
 
-  const title = stripVersionSuffix(cleanDeckText(contentRaw.title || raw.title || "", 96));
+  const title = stripVersionSuffix(
+    cleanDeckText(contentRaw.title || raw.title || "", 96),
+  );
   const subtitle = cleanDeckText(contentRaw.subtitle || raw.subtitle || "", 80);
-  const bodyRaw = contentRaw.body !== undefined
-    ? contentRaw.body
-    : (raw.body !== undefined ? raw.body : (raw.goal !== undefined ? raw.goal : (raw.summary !== undefined ? raw.summary : "")));
+  const bodyRaw =
+    contentRaw.body !== undefined
+      ? contentRaw.body
+      : raw.body !== undefined
+        ? raw.body
+        : raw.goal !== undefined
+          ? raw.goal
+          : raw.summary !== undefined
+            ? raw.summary
+            : "";
   const body = Array.isArray(bodyRaw)
     ? bodyRaw.map((x) => cleanDeckText(x, 80)).filter(Boolean)
     : cleanDeckText(bodyRaw, 220);
 
   const version = cleanDeckText(metadataRaw.version || raw.version || "", 32);
-  const source = cleanDeckText(metadataRaw.source || raw.footer || "内容由AI生成", 32) || "内容由AI生成";
-  const pageNumber = cleanDeckText(metadataRaw.pageNumber || raw.pageNo || "", 16);
+  const source = cleanDeckText(metadataRaw.source || raw.footer || "", 32);
+  const pageNumber = cleanDeckText(
+    metadataRaw.pageNumber || raw.pageNo || "",
+    16,
+  );
 
   return {
     content: {
       title,
       subtitle,
-      body
+      body,
     },
     metadata: {
       version,
       source,
-      pageNumber
+      pageNumber,
     },
-    hasExplicitNamespaces: !!(raw.content || raw.metadata)
+    hasExplicitNamespaces: !!(raw.content || raw.metadata),
   };
 }
 
@@ -1459,33 +1839,60 @@ function validateContentMetadataBoundary(slide, index) {
   const subtitle = cleanDeckText(ns.content.subtitle, 0);
 
   if (!title) {
-    errors.push({ slideIndex: index, type: "schemaBoundary", text: "missing_content_title" });
+    errors.push({
+      slideIndex: index,
+      type: "schemaBoundary",
+      text: "missing_content_title",
+    });
     return errors;
   }
 
   if (titleHasForbiddenPattern(title)) {
-    errors.push({ slideIndex: index, type: "schemaBoundary", text: "forbidden_pattern_in_title" });
+    errors.push({
+      slideIndex: index,
+      type: "schemaBoundary",
+      text: "forbidden_pattern_in_title",
+    });
   }
 
   if (subtitle && hasMetadataPollution(subtitle)) {
-    errors.push({ slideIndex: index, type: "schemaBoundary", text: "metadata_pollution_in_subtitle" });
+    errors.push({
+      slideIndex: index,
+      type: "schemaBoundary",
+      text: "metadata_pollution_in_subtitle",
+    });
   }
 
   const body = ns.content.body;
   if (typeof body === "string") {
     if (/\d+\s*\/\s*\d+/.test(body) || /内容由\s*AI\s*生成/i.test(body)) {
-      errors.push({ slideIndex: index, type: "schemaBoundary", text: "metadata_pollution_in_body" });
+      errors.push({
+        slideIndex: index,
+        type: "schemaBoundary",
+        text: "metadata_pollution_in_body",
+      });
     }
   } else if (Array.isArray(body)) {
-    const polluted = body.some((x) => /\d+\s*\/\s*\d+/.test(String(x || "")) || /内容由\s*AI\s*生成/i.test(String(x || "")));
-    if (polluted) errors.push({ slideIndex: index, type: "schemaBoundary", text: "metadata_pollution_in_body" });
+    const polluted = body.some(
+      (x) =>
+        /\d+\s*\/\s*\d+/.test(String(x || "")) ||
+        /内容由\s*AI\s*生成/i.test(String(x || "")),
+    );
+    if (polluted)
+      errors.push({
+        slideIndex: index,
+        type: "schemaBoundary",
+        text: "metadata_pollution_in_body",
+      });
   }
 
   return errors;
 }
 
 function asGlobalRegex(pattern) {
-  const flags = pattern.flags.includes("g") ? pattern.flags : `${pattern.flags}g`;
+  const flags = pattern.flags.includes("g")
+    ? pattern.flags
+    : `${pattern.flags}g`;
   return new RegExp(pattern.source, flags);
 }
 
@@ -1543,7 +1950,7 @@ function buildDecisionFourPointDefaults() {
     { title: "试点范围", desc: "明确首批渠道与服务场景边界" },
     { title: "预算边界", desc: "锁定试点投入上限与审批口径" },
     { title: "系统接入", desc: "确认客服系统接口与联调计划" },
-    { title: "责任人", desc: "指定业务与技术双负责人机制" }
+    { title: "责任人", desc: "指定业务与技术双负责人机制" },
   ];
 }
 
@@ -1554,7 +1961,9 @@ function normalizeFourPointItems(rawItems, rawBullets, labelText = "") {
   const seenDesc = new Set();
 
   const pushItem = (title, desc) => {
-    const t = cleanDeckText(title || "", 10).replace(/^输入标题$/i, "").trim();
+    const t = cleanDeckText(title || "", 10)
+      .replace(/^输入标题$/i, "")
+      .trim();
     const d = cleanDecisionDesc(desc || "", 22);
     if (!t || !d) return;
     const tk = t.toLowerCase();
@@ -1568,7 +1977,10 @@ function normalizeFourPointItems(rawItems, rawBullets, labelText = "") {
   const items = Array.isArray(rawItems) ? rawItems : [];
   for (const it of items) {
     if (!it || typeof it !== "object") continue;
-    pushItem(it.title || it.name || it.label, it.desc || it.point || it.text || it.body);
+    pushItem(
+      it.title || it.name || it.label,
+      it.desc || it.point || it.text || it.body,
+    );
     if (out.length >= 4) break;
   }
 
@@ -1576,7 +1988,9 @@ function normalizeFourPointItems(rawItems, rawBullets, labelText = "") {
     const bullets = Array.isArray(rawBullets) ? rawBullets : [];
     for (let i = 0; i < bullets.length && out.length < 4; i += 1) {
       const b = cleanDecisionDesc(bullets[i] || "", 22);
-      const fallbackTitle = defaults[out.length] ? defaults[out.length].title : `事项${out.length + 1}`;
+      const fallbackTitle = defaults[out.length]
+        ? defaults[out.length].title
+        : `事项${out.length + 1}`;
       pushItem(fallbackTitle, b);
     }
   }
@@ -1591,7 +2005,7 @@ function normalizeFourPointItems(rawItems, rawBullets, labelText = "") {
   return {
     label: label || "管理决策",
     items: normalized,
-    bullets: normalized.map((x) => x.desc)
+    bullets: normalized.map((x) => x.desc),
   };
 }
 
@@ -1603,7 +2017,11 @@ function validateFourPointGeneration(slide, index) {
   const errors = [];
   const items = Array.isArray(s.items) ? s.items : [];
   if (items.length !== 4) {
-    errors.push({ slideIndex: index, type: "fourPointsGeneration", text: `items_count_${items.length}` });
+    errors.push({
+      slideIndex: index,
+      type: "fourPointsGeneration",
+      text: `items_count_${items.length}`,
+    });
     return errors;
   }
 
@@ -1614,17 +2032,33 @@ function validateFourPointGeneration(slide, index) {
     const title = cleanDeckText(it.title || "", 0);
     const desc = cleanDecisionDesc(it.desc || it.text || "", 40);
     if (!title || /^输入标题$/i.test(title)) {
-      errors.push({ slideIndex: index, type: "fourPointsGeneration", text: `item_${i + 1}_title_invalid` });
+      errors.push({
+        slideIndex: index,
+        type: "fourPointsGeneration",
+        text: `item_${i + 1}_title_invalid`,
+      });
     }
     if (!desc) {
-      errors.push({ slideIndex: index, type: "fourPointsGeneration", text: `item_${i + 1}_desc_empty` });
+      errors.push({
+        slideIndex: index,
+        type: "fourPointsGeneration",
+        text: `item_${i + 1}_desc_empty`,
+      });
     }
     if (desc.length < 10 || desc.length > 24) {
-      errors.push({ slideIndex: index, type: "fourPointsGeneration", text: `item_${i + 1}_desc_chars_${desc.length}` });
+      errors.push({
+        slideIndex: index,
+        type: "fourPointsGeneration",
+        text: `item_${i + 1}_desc_chars_${desc.length}`,
+      });
     }
     const key = `${title}::${desc}`.toLowerCase();
     if (seen.has(key)) {
-      errors.push({ slideIndex: index, type: "fourPointsGeneration", text: `item_${i + 1}_duplicate` });
+      errors.push({
+        slideIndex: index,
+        type: "fourPointsGeneration",
+        text: `item_${i + 1}_duplicate`,
+      });
     }
     seen.add(key);
     if (desc) lengths.push(desc.length);
@@ -1634,7 +2068,11 @@ function validateFourPointGeneration(slide, index) {
     const minLen = Math.min(...lengths);
     const maxLen = Math.max(...lengths);
     if (maxLen - minLen > 10) {
-      errors.push({ slideIndex: index, type: "fourPointsGeneration", text: `length_spread_${maxLen - minLen}` });
+      errors.push({
+        slideIndex: index,
+        type: "fourPointsGeneration",
+        text: `length_spread_${maxLen - minLen}`,
+      });
     }
   }
 
@@ -1653,7 +2091,7 @@ function validateSlideScriptsAtSource(slideScripts) {
     ok: errors.length === 0,
     pass: errors.length === 0,
     errors,
-    issues: errors.map((e) => `${e.type}_slide_${e.slideIndex}_${e.text}`)
+    issues: errors.map((e) => `${e.type}_slide_${e.slideIndex}_${e.text}`),
   };
 }
 
@@ -1667,10 +2105,19 @@ function isLikelyTitleGarble(value) {
 }
 
 function normalizeSlideType(rawType, index = 1) {
-  const t = String(rawType || "").trim().toLowerCase();
+  const t = String(rawType || "")
+    .trim()
+    .toLowerCase();
   if (SLIDE_TYPE_ENUM.includes(t)) return t;
   if (SLIDE_TYPES.includes(t)) {
-    if (t === "content_text" || t === "content_bullets" || t === "data_insight" || t === "case_study" || t === "quote") return "content";
+    if (
+      t === "content_text" ||
+      t === "content_bullets" ||
+      t === "data_insight" ||
+      t === "case_study" ||
+      t === "quote"
+    )
+      return "content";
     if (t === "compare") return "comparison";
     if (t === "timeline") return "process";
     if (t === "next_steps" || t === "thanks") return "qa";
@@ -1682,7 +2129,9 @@ function normalizeSlideType(rawType, index = 1) {
 }
 
 function normalizeScriptType(rawType, index = 1) {
-  const t = String(rawType || "").trim().toLowerCase();
+  const t = String(rawType || "")
+    .trim()
+    .toLowerCase();
   if (SLIDE_TYPES.includes(t)) return t;
   if (t === "content") return "content_text";
   if (t === "comparison") return "compare";
@@ -1693,7 +2142,9 @@ function normalizeScriptType(rawType, index = 1) {
 }
 
 function mapLayoutTypeToSlideType(layoutType, index = 1) {
-  const t = String(layoutType || "").trim().toLowerCase();
+  const t = String(layoutType || "")
+    .trim()
+    .toLowerCase();
   if (!t) return normalizeSlideType("", index);
   if (t === "summary-hero") return index === 1 ? "cover" : "summary";
   if (t === "roadmap-timeline") return "process";
@@ -1723,12 +2174,16 @@ function chooseLayoutByContentIntent(slideScript, index = 1) {
   const s = slideScript && typeof slideScript === "object" ? slideScript : {};
   const type = normalizeScriptType(s.type || s.slideType, index);
   const sectionNo = cleanDeckText(s.sectionNo || "", 8);
-  const body = cleanDeckText(s.body || s.goal || s.summary || s.insight || "", 260);
+  const body = cleanDeckText(
+    s.body || s.goal || s.summary || s.insight || "",
+    260,
+  );
   const bullets = sanitizeBullets(s.bullets || s.keyPoints || [], 6);
   const actions = Array.isArray(s.actions) ? s.actions.filter(Boolean) : [];
 
   if (type === "cover" || type === "thanks") return type;
-  if (String(s.layoutId || "").toLowerCase() === "four_points") return "four_points";
+  if (String(s.layoutId || "").toLowerCase() === "four_points")
+    return "four_points";
   if (type === "next_steps") return "content_bullets";
   if (sectionNo && !body && bullets.length === 0) return "section";
   if (type === "section") return "section";
@@ -1746,7 +2201,9 @@ function sanitizeBullets(input, maxItems = 5) {
   const out = [];
   const seen = new Set();
   for (const row of list) {
-    let cleaned = cleanDeckText(row, 0).replace(/^(结论：|证据：|行动：)/, "").trim();
+    let cleaned = cleanDeckText(row, 0)
+      .replace(/^(结论：|证据：|行动：)/, "")
+      .trim();
     if (cleaned.length > 24) cleaned = cleaned.slice(0, 24);
     if (!cleaned) continue;
     if (isTemplatePlaceholderText(cleaned)) continue;
@@ -1759,12 +2216,23 @@ function sanitizeBullets(input, maxItems = 5) {
   return out;
 }
 
+function cleanForbiddenPrefixes(text) {
+  return String(text || "")
+    .replace(/^(结论：|证据：|行动：)/g, "")
+    .replace(/^(结论:|证据:|行动:)/g, "")
+    .replace(/OfficePLUS/gi, "")
+    .replace(/20XX|202X/g, "")
+    .replace(/LOGO|CONTENT/gi, "")
+    .trim();
+}
+
 function inferScenarioFromText(text) {
   const value = String(text || "");
   if (/(培训|入职|上岗|演练|课堂训练)/.test(value)) return "training";
   if (/(方案|建议书|提案|招标|落地路径)/.test(value)) return "proposal";
   if (/(研究|调研|白皮书|论文|实验报告)/.test(value)) return "research";
-  if (/(产品|发布|功能介绍|路演|发布会|品牌故事)/.test(value)) return "product_intro";
+  if (/(产品|发布|功能介绍|路演|发布会|品牌故事)/.test(value))
+    return "product_intro";
   if (/(复盘|总结|回顾)/.test(value)) return "summary";
   if (/(课堂|教学|学生|教案|讲解|课件)/.test(value)) return "teaching";
   return "business_report";
@@ -1779,41 +2247,73 @@ function inferToneByScenario(scenario) {
 
 function analyzeUserIntent(input) {
   const source = input && typeof input === "object" ? input : {};
-  const rawScenario = String(source.scenario || source.sceneType || "").trim().toLowerCase();
-  const topic = stripVersionSuffix(cleanDeckText(source.topic || source.userTopic || source.userInput || "当前主题", 120)) || "当前主题";
-  const scenario = SCENARIO_PRESETS[rawScenario] ? rawScenario : inferScenarioFromText(`${source.sceneType || ""} ${topic}`);
-  const audience = cleanDeckText(source.audience || source.targetAudience || "通用受众", 60) || "通用受众";
-  const tone = cleanDeckText(source.tone || inferToneByScenario(scenario), 32) || inferToneByScenario(scenario);
+  const rawScenario = String(source.scenario || source.sceneType || "")
+    .trim()
+    .toLowerCase();
+  const topic =
+    stripVersionSuffix(
+      cleanDeckText(
+        source.topic || source.userTopic || source.userInput || "当前主题",
+        120,
+      ),
+    ) || "当前主题";
+  const scenario = SCENARIO_PRESETS[rawScenario]
+    ? rawScenario
+    : inferScenarioFromText(`${source.sceneType || ""} ${topic}`);
+  const audience =
+    cleanDeckText(source.audience || source.targetAudience || "通用受众", 60) ||
+    "通用受众";
+  const tone =
+    cleanDeckText(source.tone || inferToneByScenario(scenario), 32) ||
+    inferToneByScenario(scenario);
   const explicitCount = Number(source.pageCount || 0);
-  const pageCount = Number.isFinite(explicitCount) && explicitCount > 0 ? Math.max(8, Math.min(12, Math.round(explicitCount))) : 10;
+  const pageCount =
+    Number.isFinite(explicitCount) && explicitCount > 0
+      ? Math.max(8, Math.min(12, Math.round(explicitCount)))
+      : 10;
   return { topic, scenario, audience, tone, pageCount };
 }
 
 function buildDeckPlan(intent, input = {}) {
   const base = intent || analyzeUserIntent(input);
-  const structure = Array.isArray(input && input.structure) && input.structure.length
-    ? input.structure.map((x, i) => ({
-      sectionTitle: cleanDeckText(x && x.sectionTitle, 24) || `第${i + 1}部分`,
-      pages: Math.max(1, Number(x && x.pages) || 1)
-    }))
-    : [
-      { sectionTitle: "问题背景", pages: Math.max(1, Math.round(base.pageCount * 0.2)) },
-      { sectionTitle: "核心分析", pages: Math.max(2, Math.round(base.pageCount * 0.4)) },
-      { sectionTitle: "方案与行动", pages: Math.max(1, Math.round(base.pageCount * 0.3)) }
-    ];
+  const structure =
+    Array.isArray(input && input.structure) && input.structure.length
+      ? input.structure.map((x, i) => ({
+          sectionTitle:
+            cleanDeckText(x && x.sectionTitle, 24) || `第${i + 1}部分`,
+          pages: Math.max(1, Number(x && x.pages) || 1),
+        }))
+      : [
+          {
+            sectionTitle: "问题背景",
+            pages: Math.max(1, Math.round(base.pageCount * 0.2)),
+          },
+          {
+            sectionTitle: "核心分析",
+            pages: Math.max(2, Math.round(base.pageCount * 0.4)),
+          },
+          {
+            sectionTitle: "方案与行动",
+            pages: Math.max(1, Math.round(base.pageCount * 0.3)),
+          },
+        ];
   return {
     topic: base.topic,
     scenario: base.scenario,
     audience: base.audience,
     tone: base.tone,
     pageCount: base.pageCount,
-    narrative: cleanDeckText(input && input.narrative, 120) || `${base.topic}从背景到行动的单线叙事`,
-    structure
+    narrative:
+      cleanDeckText(input && input.narrative, 120) ||
+      `${base.topic}从背景到行动的单线叙事`,
+    structure,
   };
 }
 
 function stretchPresetTypes(scenario, pageCount) {
-  const base = Array.isArray(SCENARIO_PRESETS[scenario]) ? [...SCENARIO_PRESETS[scenario]] : [...SCENARIO_PRESETS.business_report];
+  const base = Array.isArray(SCENARIO_PRESETS[scenario])
+    ? [...SCENARIO_PRESETS[scenario]]
+    : [...SCENARIO_PRESETS.business_report];
   const target = Math.max(6, Math.min(20, Number(pageCount) || 10));
   if (base.length === target) return base;
   if (base.length > target) {
@@ -1821,35 +2321,202 @@ function stretchPresetTypes(scenario, pageCount) {
     const head = base.slice(0, Math.max(1, target - keepTail.length));
     return [...head, ...keepTail].slice(0, target);
   }
-  const expandable = SCENARIO_EXPANDABLE_TYPES[scenario] || ["content_text", "data_insight", "case_study"];
+  const expandable = SCENARIO_EXPANDABLE_TYPES[scenario] || [
+    "content_text",
+    "data_insight",
+    "case_study",
+  ];
   const out = [...base];
   let i = 0;
   while (out.length < target) {
-    out.splice(Math.max(1, out.length - 2), 0, expandable[i % expandable.length]);
+    out.splice(
+      Math.max(1, out.length - 2),
+      0,
+      expandable[i % expandable.length],
+    );
     i += 1;
   }
   return out;
 }
 
-function createDefaultSlideScript(type, idx, deckPlan) {
+function createDefaultSlideScript(type, idx, deckPlan, input = {}) {
   const sectionNo = String(idx).padStart(2, "0");
-  const topic = stripVersionSuffix(cleanDeckText(deckPlan && deckPlan.topic, 40)) || "当前主题";
-  const scenario = String(deckPlan && deckPlan.scenario || "business_report").toLowerCase();
-  const footer = "内容由AI生成";
+  const topic =
+    stripVersionSuffix(cleanDeckText(deckPlan && deckPlan.topic, 40)) ||
+    "当前主题";
+  const scenario = String(
+    (deckPlan && deckPlan.scenario) || "business_report",
+  ).toLowerCase();
+  const styleHint = cleanDeckText(
+    (input && (input.styleGuide || input.variant || input.promptVersion)) || "",
+    80,
+  ).toLowerCase();
+  const seedHint = Number(input && input.seed);
+  const diversityKey = `${topic}|${styleHint}|${Number.isFinite(seedHint) ? seedHint : "na"}|${idx}`;
+  const footer = "";
   const title = idx === 1 ? topic : `${topic}第${idx}页`;
   const oneBody = `${topic}围绕业务目标给出可执行方案，结合场景对象、关键动作与衡量指标，确保本页信息可直接用于汇报与决策。`;
 
+  const pickByKey = (arr, fallback = "") => {
+    const list = Array.isArray(arr)
+      ? arr.filter((x) => typeof x === "string" && x.trim())
+      : [];
+    if (!list.length) return fallback;
+    let h = 0;
+    for (let i = 0; i < diversityKey.length; i += 1)
+      h = (h * 31 + diversityKey.charCodeAt(i)) >>> 0;
+    return list[h % list.length] || fallback;
+  };
+
   if (scenario === "proposal") {
     const t = topic;
+    const angle = String((input && input.diversityAngle) || "balanced");
+    const angleProfiles = {
+      roi: {
+        subtitle: `${t}提案汇报：聚焦ROI验证路径`,
+        s3: `${t}目前在高频场景中存在明显资源浪费，标准问题处理成本偏高。若按试点方式先覆盖TOP场景，可在3个月内验证单位成本下降与响应效率提升。`,
+        s4: `围绕${t}应优先拆解“流量入口、问题分类、转接策略、复盘机制”四段链路，先做高影响节点优化，再扩展到中低频场景，确保收益可量化。`,
+        s6: `${t}建议采用“价值目标-能力模块-收益看板”架构，用同一指标口径追踪效率、成本与满意度，形成可持续优化闭环。`,
+        s7: [
+          `第1阶段：锁定${t}的ROI口径与基线`,
+          `第2阶段：在高频场景上线${t}并对比前后数据`,
+          `第3阶段：按收益优先级扩展至更多场景`,
+        ],
+        s8: `建议围绕${t}建立收益看板，至少覆盖单次服务成本、一次解决率、平均响应时长与满意度，按周复盘并动态调整资源投入。`,
+      },
+      risk: {
+        subtitle: `${t}提案汇报：强调风险可控`,
+        s3: `${t}当前问题并非单点故障，而是流程协同与质量兜底不足。若直接大规模上线，可能引发体验波动，应先通过小范围试点验证风险边界。`,
+        s4: `围绕${t}需重点拆解“误判风险、转人工滞后、知识库缺口、监控盲区”四类问题，先补齐兜底机制，再逐步扩大自动化覆盖范围。`,
+        s6: `${t}建议采用“分级策略+人工兜底+实时告警”架构，在每个关键节点设置回退机制，确保效率提升不以服务质量为代价。`,
+        s7: [
+          `第1阶段：定义${t}的风险分级与兜底规则`,
+          `第2阶段：灰度试点${t}并监控异常告警`,
+          `第3阶段：在风险可控前提下扩大覆盖`,
+        ],
+        s8: `建议围绕${t}建立风险指标集，包括误判率、转人工时延、投诉率与SLA达成率，确保每次扩容都在阈值内推进。`,
+      },
+      tech: {
+        subtitle: `${t}提案汇报：技术能力演进`,
+        s3: `${t}当前瓶颈集中在知识检索精度与多系统联动效率，导致自动化能力难以稳定释放。需要先完成数据治理和接口标准化。`,
+        s4: `围绕${t}应拆解“数据层、模型层、编排层、运营层”能力缺口，先打通知识与工单系统，再优化策略引擎与反馈学习流程。`,
+        s6: `${t}建议采用“知识中台+策略编排+质量评估”技术架构，以模块化方式迭代能力，降低后续扩展与维护成本。`,
+        s7: [
+          `第1阶段：完成${t}核心系统接口与数据对齐`,
+          `第2阶段：上线${t}策略编排并接入质量评估`,
+          `第3阶段：持续迭代模型与知识更新机制`,
+        ],
+        s8: `建议围绕${t}跟踪技术指标，如召回准确率、接口稳定性、自动处理成功率与回归缺陷率，确保技术迭代可观测。`,
+      },
+      process: {
+        subtitle: `${t}提案汇报：流程重构优先`,
+        s3: `${t}当前流程存在重复确认与跨团队交接低效，导致处理链路拉长。需要通过标准化流程与职责边界重构提升整体吞吐。`,
+        s4: `围绕${t}应拆解“入口分流、任务路由、协同审批、复盘改进”四段流程，先治理长链路节点，再提升跨部门协同效率。`,
+        s6: `${t}建议采用“流程模板化+策略自动化+复盘常态化”架构，确保每次流程调整都能快速验证并沉淀可复制经验。`,
+        s7: [
+          `第1阶段：梳理${t}关键流程并设定标准模板`,
+          `第2阶段：上线${t}自动路由与协同规则`,
+          `第3阶段：按复盘结果持续优化流程`,
+        ],
+        s8: `建议围绕${t}跟踪流程指标，包括流转时长、中断率、协同完成率与复盘闭环率，持续压缩无效环节。`,
+      },
+      experience: {
+        subtitle: `${t}提案汇报：体验与增长并重`,
+        s3: `${t}当前用户体验受响应一致性与问题解决率影响明显，导致留存和满意度承压。应优先在关键触点提升体验稳定性。`,
+        s4: `围绕${t}应拆解“首次触达体验、问题解决效率、升级处理体验、复访反馈体验”四个触点，逐步提升端到端感知质量。`,
+        s6: `${t}建议采用“体验指标驱动+策略精细化+反馈闭环”架构，让体验优化和效率提升同步推进，避免单边优化。`,
+        s7: [
+          `第1阶段：定义${t}关键体验指标与目标值`,
+          `第2阶段：在核心触点试点${t}体验优化策略`,
+          `第3阶段：根据用户反馈迭代并扩展`,
+        ],
+        s8: `建议围绕${t}监测NPS、一次解决率、重复咨询率与关键触点满意度，建立体验与效率联动看板。`,
+      },
+      cost: {
+        subtitle: `${t}提案汇报：成本结构优化`,
+        s3: `${t}当前成本压力来自高频重复处理与人力峰值冗余，边际成本随业务增长快速上升。需要通过自动化与分级处理优化成本结构。`,
+        s4: `围绕${t}应拆解“人力结构、自动化覆盖、峰值调度、质量返工”四项成本因子，优先治理可规模化降本的关键环节。`,
+        s6: `${t}建议采用“成本分层核算+自动化优先+质量防返工”架构，以周为单位评估投入产出并滚动优化预算分配。`,
+        s7: [
+          `第1阶段：建立${t}成本基线与分层口径`,
+          `第2阶段：提升${t}自动化覆盖并压降人工峰值`,
+          `第3阶段：按成本收益曲线持续优化投放`,
+        ],
+        s8: `建议围绕${t}持续跟踪人均产出、单次处理成本、返工率与峰值人力利用率，形成可执行的降本节奏。`,
+      },
+    };
+    const profile = angleProfiles[angle] || angleProfiles.roi;
+    const profileCopy = profile;
+
     const proposalByIndex = {
-      1: { type: "cover", title: t, subtitle: `${t}提案汇报`, speaker: "项目负责人", date: new Date().toISOString().slice(0, 10), footer },
-      2: { type: "section", sectionNo: "01", title: "现状与问题", subtitle: `${t}的核心约束与机会`, footer },
-      3: { type: "content_text", title: "现状评估", label: "现状背景", body: `${t}当前在目标达成、资源配置与执行路径上存在明显瓶颈。若继续沿用现有方式，成本、效率与可持续性将同步承压，需要先完成问题分层与优先级重排。`, visualHint: `${t}现状结构图`, footer },
-      4: { type: "content_text", title: "关键问题拆解", label: "问题拆解", body: `围绕${t}可将问题拆为目标定义、流程协同、执行能力与反馈闭环四个层面。先聚焦高频高影响环节，再逐步覆盖复杂场景，可显著降低试点风险。`, visualHint: `${t}问题分层卡片`, footer },
-      5: { type: "section", sectionNo: "02", title: "方案设计", subtitle: `${t}的分阶段落地方案`, footer },
-      6: { type: "content_text", title: "方案架构", label: "方案设计", body: `${t}方案建议采用“目标对齐-能力建设-效果验证”三层架构，先完成基线与关键能力建设，再通过迭代机制优化质量，形成可复制的执行闭环。`, visualHint: `${t}方案架构图`, footer },
-      7: { type: "content_bullets", title: "三阶段推进试点落地", label: "实施路径", bullets: [`第1阶段：明确${t}目标与边界`, `第2阶段：完成${t}试点并跟踪关键指标`, `第3阶段：复盘优化后推进规模化`], visualHint: "阶段里程碑流程图", footer },
-      8: { type: "content_text", title: "用关键指标验证收益", label: "价值评估", body: `建议围绕${t}建立统一指标集，至少覆盖效率、质量、成本与稳定性四类指标。只有当关键指标持续改善，才进入下一阶段投入。`, visualHint: "试点指标仪表盘", footer },
+      1: {
+        type: "cover",
+        title: t,
+        subtitle: profileCopy.subtitle,
+        speaker: "项目负责人",
+        date: new Date().toISOString().slice(0, 10),
+        footer,
+      },
+      2: {
+        type: "section",
+        sectionNo: "01",
+        title: "现状与问题",
+        subtitle: `${t}的核心约束与机会`,
+        footer,
+      },
+      3: {
+        type: "content_text",
+        title: "现状评估",
+        label: "现状背景",
+        body: profileCopy.s3,
+        visualHint: `${t}现状结构图`,
+        footer,
+      },
+      4: {
+        type: "content_text",
+        title: "关键问题拆解",
+        label: "问题拆解",
+        body: profileCopy.s4,
+        visualHint: `${t}问题分层卡片`,
+        footer,
+      },
+      5: {
+        type: "section",
+        sectionNo: "02",
+        title: "方案设计",
+        subtitle: `${t}的分阶段落地方案`,
+        footer,
+      },
+      6: {
+        type: "content_text",
+        title: "方案架构",
+        label: "方案设计",
+        body: profileCopy.s6,
+        visualHint: `${t}方案架构图`,
+        footer,
+      },
+      7: {
+        type: "content_bullets",
+        title: "三阶段推进试点落地",
+        label: "实施路径",
+        bullets: Array.isArray(profileCopy.s7)
+          ? profileCopy.s7
+          : [
+              `第1阶段：明确${t}目标与边界`,
+              `第2阶段：完成${t}试点并跟踪关键指标`,
+              `第3阶段：复盘优化后推进规模化`,
+            ],
+        visualHint: "阶段里程碑流程图",
+        footer,
+      },
+      8: {
+        type: "content_text",
+        title: "用关键指标验证收益",
+        label: "价值评估",
+        body: profileCopy.s8,
+        visualHint: "试点指标仪表盘",
+        footer,
+      },
       9: {
         type: "content_bullets",
         layoutId: "four_points",
@@ -1859,54 +2526,235 @@ function createDefaultSlideScript(type, idx, deckPlan) {
         items: buildDecisionFourPointDefaults(),
         bullets: buildDecisionFourPointDefaults().map((x) => x.desc),
         visualHint: "决策事项清单",
-        footer
+        footer,
       },
-      10: { type: "thanks", title: "谢谢观看", subtitle: "Q&A", footer }
+      10: { type: "thanks", title: "谢谢观看", subtitle: "Q&A", footer },
     };
     const picked = proposalByIndex[idx];
     if (picked) return { id: `s${idx}`, ...picked };
   }
 
-  if (type === "cover") return { id: `s${idx}`, type, title: topic, subtitle: `${scenario} 场景汇报`, speaker: "汇报人", date: new Date().toISOString().slice(0, 10), footer };
-  if (type === "agenda") return { id: `s${idx}`, type, title: "目录", bullets: ["背景", "分析", "行动"], visualHint: "目录结构图", footer };
-  if (type === "section") return { id: `s${idx}`, type, sectionNo, title: `章节${sectionNo}`, subtitle: "章节说明", footer };
-  if (type === "content_bullets") return { id: `s${idx}`, type, title, label: "核心要点", bullets: ["先定义问题边界与目标", "再明确关键动作与责任", "最后确认指标与复盘机制"], visualHint: "执行要点图", footer };
-  if (type === "compare") return { id: `s${idx}`, type, title, leftTitle: "方案A", leftPoints: ["投入更低，适合快速试点", "上线周期短，风险可控", "适合先验证关键指标"], rightTitle: "方案B", rightPoints: ["能力更完整，覆盖面更广", "实施复杂度更高", "适合中长期规模化"], conclusion: "按目标阶段选择最优解", visualHint: "对比图", footer };
-  if (type === "process") return { id: `s${idx}`, type, title, steps: ["完成现状诊断并锁定优先场景", "按里程碑推进实施并跟踪数据", "复盘问题后持续优化与扩展"], conclusion: "形成可复制的执行闭环", visualHint: "流程图", footer };
-  if (type === "timeline") return { id: `s${idx}`, type, title, milestones: ["第1阶段：准备与基线建立", "第2阶段：试点上线与验证", "第3阶段：优化与全面推广"], visualHint: "时间轴", footer };
-  if (type === "data_insight") return { id: `s${idx}`, type, title, metric: "关键指标", insight: "通过对成本、效率和满意度数据的联合分析，可以识别最具价值的优化环节并优先投入资源。", chartHint: "柱状图", visualHint: "数据图", footer };
-  if (type === "case_study") return { id: `s${idx}`, type, title, background: "某团队在高峰期出现响应延迟和人力压力。", action: "先聚焦高频问题场景上线自动化能力，再逐步接入复杂问题转人工链路。", result: "响应时效与处理效率显著提升，人工压力下降。", visualHint: "案例卡片", footer };
-  if (type === "quote") return { id: `s${idx}`, type, title, body: "引用观点用于强调核心判断。", visualHint: "引言页", footer };
-  if (type === "example") return { id: `s${idx}`, type, title, problem: "当前流程存在重复沟通和响应延迟。", solution: "通过标准化流程与自动化分流降低无效操作。", keyTakeaway: "先抓高频场景再扩展复杂场景。", visualHint: "示例图", footer };
-  if (type === "exercise") return { id: `s${idx}`, type, title, question: "如果目标是先降本，应该优先推进哪一类场景？", options: ["高频标准化问题", "低频复杂问题", "所有场景同时推进"], answer: "优先高频标准化问题", visualHint: "练习卡", footer };
-  if (type === "summary") return { id: `s${idx}`, type, title: "总结", keyPoints: ["核心问题已被结构化识别", "方案具备分阶段落地路径", "收益指标可持续跟踪验证"], conclusion: "形成统一结论", visualHint: "总结图", footer };
-  if (type === "next_steps") return { id: `s${idx}`, type, title: "下一步行动", actions: ["明确里程碑与负责人", "完成试点并跟踪指标", "复盘优化后规模化推广"], ownerHint: "责任人", visualHint: "行动清单", footer };
-  if (type === "thanks") return { id: `s${idx}`, type, title: "感谢", subtitle: "Q&A", footer };
-  return { id: `s${idx}`, type: "content_text", title, label: "核心观点", body: oneBody, visualHint: "结构示意图", footer };
+  if (type === "cover")
+    return {
+      id: `s${idx}`,
+      type,
+      title: topic,
+      subtitle: `${scenario} 场景汇报`,
+      speaker: "汇报人",
+      date: new Date().toISOString().slice(0, 10),
+      footer,
+    };
+  if (type === "agenda")
+    return {
+      id: `s${idx}`,
+      type,
+      title: "目录",
+      bullets: ["背景", "分析", "行动"],
+      visualHint: "目录结构图",
+      footer,
+    };
+  if (type === "section")
+    return {
+      id: `s${idx}`,
+      type,
+      sectionNo,
+      title: `章节${sectionNo}`,
+      subtitle: "章节说明",
+      footer,
+    };
+  if (type === "content_bullets")
+    return {
+      id: `s${idx}`,
+      type,
+      title,
+      label: "核心要点",
+      bullets: [
+        "先定义问题边界与目标",
+        "再明确关键动作与责任",
+        "最后确认指标与复盘机制",
+      ],
+      visualHint: "执行要点图",
+      footer,
+    };
+  if (type === "compare")
+    return {
+      id: `s${idx}`,
+      type,
+      title,
+      leftTitle: "方案A",
+      leftPoints: [
+        "投入更低，适合快速试点",
+        "上线周期短，风险可控",
+        "适合先验证关键指标",
+      ],
+      rightTitle: "方案B",
+      rightPoints: [
+        "能力更完整，覆盖面更广",
+        "实施复杂度更高",
+        "适合中长期规模化",
+      ],
+      conclusion: "按目标阶段选择最优解",
+      visualHint: "对比图",
+      footer,
+    };
+  if (type === "process")
+    return {
+      id: `s${idx}`,
+      type,
+      title,
+      steps: [
+        "完成现状诊断并锁定优先场景",
+        "按里程碑推进实施并跟踪数据",
+        "复盘问题后持续优化与扩展",
+      ],
+      conclusion: "形成可复制的执行闭环",
+      visualHint: "流程图",
+      footer,
+    };
+  if (type === "timeline")
+    return {
+      id: `s${idx}`,
+      type,
+      title,
+      milestones: [
+        "第1阶段：准备与基线建立",
+        "第2阶段：试点上线与验证",
+        "第3阶段：优化与全面推广",
+      ],
+      visualHint: "时间轴",
+      footer,
+    };
+  if (type === "data_insight")
+    return {
+      id: `s${idx}`,
+      type,
+      title,
+      metric: "关键指标",
+      insight:
+        "通过对成本、效率和满意度数据的联合分析，可以识别最具价值的优化环节并优先投入资源。",
+      chartHint: "柱状图",
+      visualHint: "数据图",
+      footer,
+    };
+  if (type === "case_study")
+    return {
+      id: `s${idx}`,
+      type,
+      title,
+      background: "某团队在高峰期出现响应延迟和人力压力。",
+      action:
+        "先聚焦高频问题场景上线自动化能力，再逐步接入复杂问题转人工链路。",
+      result: "响应时效与处理效率显著提升，人工压力下降。",
+      visualHint: "案例卡片",
+      footer,
+    };
+  if (type === "quote")
+    return {
+      id: `s${idx}`,
+      type,
+      title,
+      body: "引用观点用于强调核心判断。",
+      visualHint: "引言页",
+      footer,
+    };
+  if (type === "example")
+    return {
+      id: `s${idx}`,
+      type,
+      title,
+      problem: "当前流程存在重复沟通和响应延迟。",
+      solution: "通过标准化流程与自动化分流降低无效操作。",
+      keyTakeaway: "先抓高频场景再扩展复杂场景。",
+      visualHint: "示例图",
+      footer,
+    };
+  if (type === "exercise")
+    return {
+      id: `s${idx}`,
+      type,
+      title,
+      question: "如果目标是先降本，应该优先推进哪一类场景？",
+      options: ["高频标准化问题", "低频复杂问题", "所有场景同时推进"],
+      answer: "优先高频标准化问题",
+      visualHint: "练习卡",
+      footer,
+    };
+  if (type === "summary")
+    return {
+      id: `s${idx}`,
+      type,
+      title: "总结",
+      keyPoints: [
+        "核心问题已被结构化识别",
+        "方案具备分阶段落地路径",
+        "收益指标可持续跟踪验证",
+      ],
+      conclusion: "形成统一结论",
+      visualHint: "总结图",
+      footer,
+    };
+  if (type === "next_steps")
+    return {
+      id: `s${idx}`,
+      type,
+      title: "下一步行动",
+      actions: [
+        "明确里程碑与负责人",
+        "完成试点并跟踪指标",
+        "复盘优化后规模化推广",
+      ],
+      ownerHint: "责任人",
+      visualHint: "行动清单",
+      footer,
+    };
+  if (type === "thanks")
+    return { id: `s${idx}`, type, title: "感谢", subtitle: "Q&A", footer };
+  return {
+    id: `s${idx}`,
+    type: "content_text",
+    title,
+    label: "核心观点",
+    body: oneBody,
+    visualHint: "结构示意图",
+    footer,
+  };
 }
 
 function generateSlideScripts(deckPlan, input = {}) {
   const sourceSlides = Array.isArray(input && input.slides) ? input.slides : [];
   if (sourceSlides.length > 0) {
     return sourceSlides.map((s, i) => {
-      const type = normalizeScriptType((s && (s.type || s.slideType)) || "", i + 1);
-      const fallback = createDefaultSlideScript(type, i + 1, deckPlan);
+      const type = normalizeScriptType(
+        (s && (s.type || s.slideType)) || "",
+        i + 1,
+      );
+      const fallback = createDefaultSlideScript(type, i + 1, deckPlan, input);
       const merged = { ...fallback, ...(s && typeof s === "object" ? s : {}) };
       merged.id = cleanDeckText(merged.id || `s${i + 1}`, 12) || `s${i + 1}`;
       merged.type = type;
-      if (String(merged.layoutId || "").toLowerCase() === "four_points" || isDecisionLikeText(`${merged.title || ""} ${merged.label || ""}`)) {
-        const four = normalizeFourPointItems(merged.items, merged.bullets || merged.actions || [], merged.label || "管理决策");
+      if (
+        String(merged.layoutId || "").toLowerCase() === "four_points" ||
+        isDecisionLikeText(`${merged.title || ""} ${merged.label || ""}`)
+      ) {
+        const four = normalizeFourPointItems(
+          merged.items,
+          merged.bullets || merged.actions || [],
+          merged.label || "管理决策",
+        );
         merged.layoutId = "four_points";
         merged.label = four.label;
         merged.items = four.items;
         merged.bullets = four.bullets;
-        if (!merged.generationPrompt) merged.generationPrompt = getDecisionFourPointPrompt();
+        if (!merged.generationPrompt)
+          merged.generationPrompt = getDecisionFourPointPrompt();
       }
       return merged;
     });
   }
   const sequence = stretchPresetTypes(deckPlan.scenario, deckPlan.pageCount);
-  return sequence.map((type, i) => createDefaultSlideScript(type, i + 1, deckPlan));
+  return sequence.map((type, i) =>
+    createDefaultSlideScript(type, i + 1, deckPlan, input),
+  );
 }
 
 function normalizeSlideScripts(slides, deckPlan = null) {
@@ -1920,80 +2768,180 @@ function normalizeSlideScripts(slides, deckPlan = null) {
     const idx = i + 1;
     const ns = extractSlideNamespaces(raw, idx);
     const type = normalizeScriptType(raw.type || raw.slideType, idx);
-    const footer = cleanDeckText(raw.footer || "内容由AI生成", 24) || "内容由AI生成";
-    let title = stripVersionSuffix(cleanDeckText(ns.content.title || raw.title || `第${idx}页`, 22));
-    if (!title || /^封面[:：]|^章节[:：]/.test(title)) title = cleanDeckText((deckPlan && deckPlan.topic) || `第${idx}页`, 22) || `第${idx}页`;
-    if (seenTitle.has(title.toLowerCase())) title = cleanDeckText(`${title}-${idx}`, 22) || `第${idx}页`;
+    const footer = cleanDeckText(raw.footer || "", 24);
+    let title = stripVersionSuffix(
+      cleanDeckText(ns.content.title || raw.title || `第${idx}页`, 22),
+    );
+    if (!title || /^封面[:：]|^章节[:：]/.test(title))
+      title =
+        cleanDeckText((deckPlan && deckPlan.topic) || `第${idx}页`, 22) ||
+        `第${idx}页`;
+    if (seenTitle.has(title.toLowerCase()))
+      title = cleanDeckText(`${title}-${idx}`, 22) || `第${idx}页`;
     seenTitle.add(title.toLowerCase());
 
-    const normalized = { id: cleanDeckText(raw.id || `s${idx}`, 12) || `s${idx}`, type, title, footer };
+    const normalized = {
+      id: cleanDeckText(raw.id || `s${idx}`, 12) || `s${idx}`,
+      type,
+      title,
+      footer,
+    };
     if (type === "section") {
-      normalized.sectionNo = cleanDeckText(raw.sectionNo || String(idx).padStart(2, "0"), 4) || String(idx).padStart(2, "0");
-      normalized.subtitle = cleanDeckText(ns.content.subtitle || raw.subtitle || "章节说明", 32);
+      normalized.sectionNo =
+        cleanDeckText(raw.sectionNo || String(idx).padStart(2, "0"), 4) ||
+        String(idx).padStart(2, "0");
+      normalized.subtitle = cleanDeckText(
+        ns.content.subtitle || raw.subtitle || "章节说明",
+        32,
+      );
     } else if (type === "cover" || type === "thanks") {
-      normalized.subtitle = cleanDeckText(ns.content.subtitle || raw.subtitle || "", 32);
+      normalized.subtitle = cleanDeckText(
+        ns.content.subtitle || raw.subtitle || "",
+        32,
+      );
       if (type === "cover") {
         normalized.speaker = cleanDeckText(raw.speaker || "汇报人", 18);
-        normalized.date = cleanDeckText(raw.date || new Date().toISOString().slice(0, 10), 24);
+        normalized.date = cleanDeckText(
+          raw.date || new Date().toISOString().slice(0, 10),
+          24,
+        );
       }
     } else if (type === "content_bullets") {
-      const wantFourPoints = String(raw.layoutId || "").toLowerCase() === "four_points"
-        || isDecisionLikeText(`${title} ${raw.label || ""}`);
+      const wantFourPoints =
+        String(raw.layoutId || "").toLowerCase() === "four_points" ||
+        isDecisionLikeText(`${title} ${raw.label || ""}`);
       if (wantFourPoints) {
-        const four = normalizeFourPointItems(raw.items, raw.bullets || raw.keyPoints || raw.actions || [], raw.label || "管理决策");
+        const four = normalizeFourPointItems(
+          raw.items,
+          raw.bullets || raw.keyPoints || raw.actions || [],
+          raw.label || "管理决策",
+        );
         normalized.layoutId = "four_points";
-        normalized.generationPrompt = cleanDeckText(raw.generationPrompt || getDecisionFourPointPrompt(), 220);
+        normalized.generationPrompt = cleanDeckText(
+          raw.generationPrompt || getDecisionFourPointPrompt(),
+          220,
+        );
         normalized.label = four.label;
         normalized.items = four.items;
         normalized.bullets = four.bullets;
       } else {
         normalized.label = cleanDeckText(raw.label || "核心要点", 20);
-        normalized.bullets = sanitizeBullets(raw.bullets || raw.keyPoints || [], 5).slice(0, 5);
+        normalized.bullets = sanitizeBullets(
+          raw.bullets || raw.keyPoints || [],
+          5,
+        )
+          .map((b) => cleanForbiddenPrefixes(b))
+          .filter(Boolean)
+          .slice(0, 5);
         if (normalized.bullets.length < 3) {
           const fallbackBullets = [
             "明确目标与适用范围",
             "拆解执行动作与负责人",
-            "定义验收指标与节奏"
+            "定义验收指标与节奏",
           ];
           for (const line of fallbackBullets) {
             if (normalized.bullets.length >= 3) break;
-            if (!normalized.bullets.includes(line)) normalized.bullets.push(line);
+            if (!normalized.bullets.includes(line))
+              normalized.bullets.push(line);
           }
         }
+        const hasQuantBullet = normalized.bullets.some((b) =>
+          /\d+(\.\d+)?\s*(%|万元|元|天|周|月|季度|年|人|个|倍)/i.test(
+            String(b || ""),
+          ),
+        );
+        if (!hasQuantBullet) {
+          normalized.bullets[0] = "试点目标：3周内把一次解决率提升到85%";
+        }
       }
-      normalized.visualHint = cleanDeckText(raw.visualHint || "图示建议", 32) || "图示建议";
+      normalized.visualHint =
+        cleanDeckText(raw.visualHint || "图示建议", 32) || "图示建议";
     } else if (type === "content_text") {
       normalized.label = cleanDeckText(raw.label || "核心观点", 20);
-      let body = cleanDeckText((typeof ns.content.body === "string" ? ns.content.body : "") || raw.body || raw.summary || raw.goal || "", 160);
+      let body = cleanDeckText(
+        (typeof ns.content.body === "string" ? ns.content.body : "") ||
+          raw.body ||
+          raw.summary ||
+          raw.goal ||
+          "",
+        160,
+      );
       if (body.length < 60) {
-        body = cleanDeckText("本页提供可直接用于汇报的业务说明，覆盖场景现状、关键判断与执行动作，确保读者能据此理解问题并推进下一步决策。", 150);
+        body = cleanDeckText(
+          "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。",
+          160,
+        );
+      }
+      if (!/\d+(\.\d+)?\s*(%|万元|元|天|周|月|季度|年|人|个|倍)/i.test(body)) {
+        body = cleanDeckText(
+          `${body} 量化目标：4周内将响应时长降低30%，季度节省成本50万元。`,
+          160,
+        );
       }
       normalized.body = body;
-      normalized.visualHint = cleanDeckText(raw.visualHint || "图示建议", 32) || "图示建议";
+      normalized.visualHint =
+        cleanDeckText(raw.visualHint || "图示建议", 32) || "图示建议";
       const bodyKey = body.toLowerCase();
-      if (seenBody.has(bodyKey)) normalized.body = cleanDeckText(body, 150);
+      if (seenBody.has(bodyKey)) {
+        const alternatives = [
+          body
+            .replace(/目标达成/g, "价值验证")
+            .replace(/资源配置/g, "投入分配"),
+          body.replace(/执行路径/g, "落地节奏").replace(/关键/g, "核心"),
+          body
+            .replace(/明显瓶颈/g, "结构性约束")
+            .replace(/同步承压/g, "面临挑战"),
+        ];
+        normalized.body = cleanDeckText(
+          alternatives[i % alternatives.length] || body,
+          160,
+        );
+      }
       seenBody.add((normalized.body || "").toLowerCase());
     } else {
-      Object.assign(normalized, { ...createDefaultSlideScript(type, idx, deckPlan || { topic: title, scenario: "business_report" }), ...normalized });
+      Object.assign(normalized, {
+        ...createDefaultSlideScript(
+          type,
+          idx,
+          deckPlan || { topic: title, scenario: "business_report" },
+        ),
+        ...normalized,
+      });
       normalized.title = title;
       normalized.footer = footer;
-      if (!normalized.visualHint && !normalized.chartHint) normalized.visualHint = "图示建议";
+      if (!normalized.visualHint && !normalized.chartHint)
+        normalized.visualHint = "图示建议";
     }
 
-    const contentBody = String(normalized.layoutId || "").toLowerCase() === "four_points"
-      ? ((Array.isArray(normalized.items) ? normalized.items : []).map((it) => `${cleanDeckText(it && it.title, 10)}：${cleanDecisionDesc(it && (it.desc || it.text || it.body), 22)}`.replace(/^：/, "")).filter(Boolean))
-      : (type === "content_bullets"
-        ? (Array.isArray(normalized.bullets) ? normalized.bullets.slice(0, 6) : [])
-        : (type === "content_text" ? cleanDeckText(normalized.body || "", 180) : ""));
+    const contentBody =
+      String(normalized.layoutId || "").toLowerCase() === "four_points"
+        ? (Array.isArray(normalized.items) ? normalized.items : [])
+            .map((it) =>
+              `${cleanDeckText(it && it.title, 10)}：${cleanDecisionDesc(it && (it.desc || it.text || it.body), 22)}`.replace(
+                /^：/,
+                "",
+              ),
+            )
+            .filter(Boolean)
+        : type === "content_bullets"
+          ? Array.isArray(normalized.bullets)
+            ? normalized.bullets.slice(0, 6)
+            : []
+          : type === "content_text"
+            ? cleanDeckText(normalized.body || "", 180)
+            : "";
     normalized.content = {
       title: cleanDeckText(normalized.title || "", 96),
-      subtitle: cleanDeckText(normalized.subtitle || normalized.label || "", 80),
-      body: contentBody
+      subtitle: cleanDeckText(
+        normalized.subtitle || normalized.label || "",
+        80,
+      ),
+      body: contentBody,
     };
     normalized.metadata = {
       version: cleanDeckText(ns.metadata.version || raw.version || "", 32),
-      source: cleanDeckText(ns.metadata.source || normalized.footer || "内容由AI生成", 32) || "内容由AI生成",
-      pageNumber: cleanDeckText(ns.metadata.pageNumber || raw.pageNo || "", 16)
+      source: cleanDeckText(ns.metadata.source || normalized.footer || "", 32),
+      pageNumber: cleanDeckText(ns.metadata.pageNumber || raw.pageNo || "", 16),
     };
     out.push(normalized);
   }
@@ -2011,8 +2959,8 @@ function buildLayoutManifest(templateId = "default-clean") {
           title: { shapeName: "TITLE", required: true, maxLength: 28 },
           subtitle: { shapeName: "SUBTITLE", maxLength: 42 },
           footer: { shapeName: "FOOTER", maxLength: 24 },
-          pageNo: { shapeName: "PAGE_NO", maxLength: 10 }
-        }
+          pageNo: { shapeName: "PAGE_NO", maxLength: 10 },
+        },
       },
       section: {
         templateIndex: 1,
@@ -2021,8 +2969,8 @@ function buildLayoutManifest(templateId = "default-clean") {
           title: { shapeName: "TITLE", required: true, maxLength: 24 },
           subtitle: { shapeName: "SUBTITLE", maxLength: 20 },
           footer: { shapeName: "FOOTER", maxLength: 24 },
-          pageNo: { shapeName: "PAGE_NO", maxLength: 10 }
-        }
+          pageNo: { shapeName: "PAGE_NO", maxLength: 10 },
+        },
       },
       content_text: {
         templateIndex: 2,
@@ -2032,19 +2980,24 @@ function buildLayoutManifest(templateId = "default-clean") {
           body: { shapeName: "BODY", required: true, maxLength: 150 },
           visualHint: { shapeName: "VISUAL_HINT", maxLength: 24 },
           footer: { shapeName: "FOOTER", maxLength: 24 },
-          pageNo: { shapeName: "PAGE_NO", maxLength: 10 }
-        }
+          pageNo: { shapeName: "PAGE_NO", maxLength: 10 },
+        },
       },
       content_bullets: {
         templateIndex: 3,
         slots: {
           title: { shapeName: "TITLE", required: true, maxLength: 24 },
           label: { shapeName: "LABEL", maxLength: 10 },
-          bullets: { shapeName: "BODY", required: true, maxItems: 3, maxItemLength: 30 },
+          bullets: {
+            shapeName: "BODY",
+            required: true,
+            maxItems: 3,
+            maxItemLength: 30,
+          },
           visualHint: { shapeName: "VISUAL_HINT", maxLength: 24 },
           footer: { shapeName: "FOOTER", maxLength: 24 },
-          pageNo: { shapeName: "PAGE_NO", maxLength: 10 }
-        }
+          pageNo: { shapeName: "PAGE_NO", maxLength: 10 },
+        },
       },
       thanks: {
         templateIndex: 4,
@@ -2052,40 +3005,55 @@ function buildLayoutManifest(templateId = "default-clean") {
           title: { shapeName: "TITLE", required: true, maxLength: 24 },
           subtitle: { shapeName: "SUBTITLE", maxLength: 24 },
           footer: { shapeName: "FOOTER", maxLength: 24 },
-          pageNo: { shapeName: "PAGE_NO", maxLength: 10 }
-        }
-      }
-    }
+          pageNo: { shapeName: "PAGE_NO", maxLength: 10 },
+        },
+      },
+    },
   };
 }
 
 function selectTemplateLayouts(slideScripts, templateId = "default-clean") {
   const manifest = buildLayoutManifest(templateId);
   const warnings = [];
-  const selected = (Array.isArray(slideScripts) ? slideScripts : []).map((slide, i) => {
-    const type = normalizeScriptType(slide && slide.type, i + 1);
-    const intentType = chooseLayoutByContentIntent(slide, i + 1);
-    const mappedType = intentType === "four_points"
-      ? "content_bullets"
-      : (["cover", "section", "content_text", "content_bullets", "thanks"].includes(intentType) ? intentType : "content_text");
-    const layout = manifest.layouts[mappedType] || manifest.layouts.content_text;
-    if (!manifest.layouts[type]) warnings.push(`missing_layout_${type}_fallback_${mappedType}`);
-    const requiredKeys = Object.keys(layout.slots || {}).filter((key) => !!(layout.slots[key] && layout.slots[key].required));
-    const missingRequiredSlots = requiredKeys.filter((key) => {
-      const v = slide && slide[key];
-      if (Array.isArray(v)) return v.length === 0;
-      return !cleanDeckText(v, 0);
-    });
-    return {
-      ...slide,
-      type,
-      intentType,
-      mappedType,
-      templateIndex: layout.templateIndex,
-      slots: layout.slots,
-      missingRequiredSlots
-    };
-  });
+  const selected = (Array.isArray(slideScripts) ? slideScripts : []).map(
+    (slide, i) => {
+      const type = normalizeScriptType(slide && slide.type, i + 1);
+      const intentType = chooseLayoutByContentIntent(slide, i + 1);
+      const mappedType =
+        intentType === "four_points"
+          ? "content_bullets"
+          : [
+                "cover",
+                "section",
+                "content_text",
+                "content_bullets",
+                "thanks",
+              ].includes(intentType)
+            ? intentType
+            : "content_text";
+      const layout =
+        manifest.layouts[mappedType] || manifest.layouts.content_text;
+      if (!manifest.layouts[type])
+        warnings.push(`missing_layout_${type}_fallback_${mappedType}`);
+      const requiredKeys = Object.keys(layout.slots || {}).filter(
+        (key) => !!(layout.slots[key] && layout.slots[key].required),
+      );
+      const missingRequiredSlots = requiredKeys.filter((key) => {
+        const v = slide && slide[key];
+        if (Array.isArray(v)) return v.length === 0;
+        return !cleanDeckText(v, 0);
+      });
+      return {
+        ...slide,
+        type,
+        intentType,
+        mappedType,
+        templateIndex: layout.templateIndex,
+        slots: layout.slots,
+        missingRequiredSlots,
+      };
+    },
+  );
   return { manifest, warnings, slides: selected };
 }
 
@@ -2103,10 +3071,13 @@ function toBulletListFromScript(script) {
   }
   if (Array.isArray(s.bullets)) out.push(...sanitizeBullets(s.bullets, 5));
   if (Array.isArray(s.keyPoints)) out.push(...sanitizeBullets(s.keyPoints, 5));
-  if (Array.isArray(s.leftPoints)) out.push(...sanitizeBullets(s.leftPoints, 3));
-  if (Array.isArray(s.rightPoints)) out.push(...sanitizeBullets(s.rightPoints, 3));
+  if (Array.isArray(s.leftPoints))
+    out.push(...sanitizeBullets(s.leftPoints, 3));
+  if (Array.isArray(s.rightPoints))
+    out.push(...sanitizeBullets(s.rightPoints, 3));
   if (Array.isArray(s.steps)) out.push(...sanitizeBullets(s.steps, 5));
-  if (Array.isArray(s.milestones)) out.push(...sanitizeBullets(s.milestones, 5));
+  if (Array.isArray(s.milestones))
+    out.push(...sanitizeBullets(s.milestones, 5));
   if (Array.isArray(s.options)) out.push(...sanitizeBullets(s.options, 5));
   if (Array.isArray(s.actions)) out.push(...sanitizeBullets(s.actions, 5));
   if (Array.isArray(s.keyPoints)) out.push(...sanitizeBullets(s.keyPoints, 5));
@@ -2115,22 +3086,52 @@ function toBulletListFromScript(script) {
 
 function formatStageBullets(bullets) {
   return sanitizeBullets(bullets || [], 3).map((line, idx) => {
-    const cleaned = cleanDeckText(line || "", 0).replace(/^第\s*\d+\s*阶段[:：]?\s*/i, "").trim();
+    const cleaned = cleanDeckText(line || "", 0)
+      .replace(/^第\s*\d+\s*阶段[:：]?\s*/i, "")
+      .trim();
     return `第${idx + 1}阶段：${cleaned || "补充该阶段动作"}`;
   });
 }
 
 function renderSlidesFromTemplate(layoutSelection, deckPlan) {
-  const selected = layoutSelection && Array.isArray(layoutSelection.slides) ? layoutSelection.slides : [];
+  const selected =
+    layoutSelection && Array.isArray(layoutSelection.slides)
+      ? layoutSelection.slides
+      : [];
   const slides = selected.map((script, i) => {
     const idx = i + 1;
     const scriptType = normalizeScriptType(script && script.type, idx);
     const slideType = normalizeSlideType(scriptType, idx);
-    const title = cleanDeckText(script && script.title, 42) || cleanDeckText(deckPlan && deckPlan.topic, 42) || `第${idx}页`;
-    const subtitle = cleanDeckText(script && (script.subtitle || script.label || script.metric), 56);
-    const body = cleanDeckText(script && (script.body || script.insight || script.background || script.problem || script.question || script.conclusion || script.result), 220);
+    const title =
+      cleanDeckText(script && script.title, 42) ||
+      cleanDeckText(deckPlan && deckPlan.topic, 42) ||
+      `第${idx}页`;
+    const subtitle = cleanDeckText(
+      script && (script.subtitle || script.label || script.metric),
+      56,
+    );
+    const body = cleanDeckText(
+      script &&
+        (script.body ||
+          script.insight ||
+          script.background ||
+          script.problem ||
+          script.question ||
+          script.conclusion ||
+          script.result),
+      220,
+    );
     const bullets = toBulletListFromScript(script);
-    const notes = cleanDeckText(script && (script.visualHint || script.chartHint || script.ownerHint || script.solution || script.answer || ""), 280);
+    const notes = cleanDeckText(
+      script &&
+        (script.visualHint ||
+          script.chartHint ||
+          script.ownerHint ||
+          script.solution ||
+          script.answer ||
+          ""),
+      280,
+    );
     const slotPayload = {};
     const slots = script && script.slots ? script.slots : {};
     Object.keys(slots).forEach((slotKey) => {
@@ -2143,25 +3144,29 @@ function renderSlidesFromTemplate(layoutSelection, deckPlan) {
       index: idx,
       scriptId: script && script.id ? script.id : `s${idx}`,
       scriptType,
-      layoutId: String(script && script.layoutId || "").toLowerCase(),
+      layoutId: String((script && script.layoutId) || "").toLowerCase(),
       slideType,
       title,
       subtitle,
       bullets,
-      items: Array.isArray(script && script.items) ? script.items.slice(0, 4).map((it) => ({
-        title: cleanDeckText(it && it.title, 10),
-        desc: cleanDecisionDesc(it && (it.desc || it.text || it.body), 22)
-      })) : [],
+      items: Array.isArray(script && script.items)
+        ? script.items.slice(0, 4).map((it) => ({
+            title: cleanDeckText(it && it.title, 10),
+            desc: cleanDecisionDesc(it && (it.desc || it.text || it.body), 22),
+          }))
+        : [],
       notes,
-      footer: cleanDeckText(script && script.footer, 48) || "内容由AI生成",
+      footer: cleanDeckText(script && script.footer, 48),
       date: cleanDeckText(script && script.date, 24),
-      goal: scriptType === "section" ? "" : (body || subtitle),
+      goal: scriptType === "section" ? "" : body || subtitle,
       layoutType: mapSlideTypeToLayoutType(slideType, idx),
       keyPoints: bullets,
       speakerNotes: notes,
       templateIndex: Number(script && script.templateIndex) || 0,
       slotPayload,
-      missingRequiredSlots: Array.isArray(script && script.missingRequiredSlots) ? script.missingRequiredSlots.slice(0, 8) : []
+      missingRequiredSlots: Array.isArray(script && script.missingRequiredSlots)
+        ? script.missingRequiredSlots.slice(0, 8)
+        : [],
     };
   });
 
@@ -2182,10 +3187,13 @@ function runDeckPipeline(input) {
       templateManifest: null,
       templateWarnings: [],
       slides: [],
-      generationValidation
+      generationValidation,
     };
   }
-  const layoutSelection = selectTemplateLayouts(normalizedScripts, String(input && input.templateId || "default-clean"));
+  const layoutSelection = selectTemplateLayouts(
+    normalizedScripts,
+    String((input && input.templateId) || "default-clean"),
+  );
   const rendered = renderSlidesFromTemplate(layoutSelection, deckPlan);
   return {
     intent,
@@ -2194,21 +3202,33 @@ function runDeckPipeline(input) {
     templateManifest: layoutSelection.manifest,
     templateWarnings: layoutSelection.warnings,
     slides: rendered.slides,
-    generationValidation
+    generationValidation,
   };
 }
 
 function sanitizeSlideContent(slideInput, index = 1, topic = "") {
   const raw = slideInput && typeof slideInput === "object" ? slideInput : {};
-  const slideType = normalizeSlideType(raw.slideType || raw.type || mapLayoutTypeToSlideType(raw.layoutType, index), index);
+  const slideType = normalizeSlideType(
+    raw.slideType ||
+      raw.type ||
+      mapLayoutTypeToSlideType(raw.layoutType, index),
+    index,
+  );
   const rawBullets = Array.isArray(raw.bullets)
     ? raw.bullets
-    : (Array.isArray(raw.items) ? raw.items : (Array.isArray(raw.keyPoints) ? raw.keyPoints : []));
+    : Array.isArray(raw.items)
+      ? raw.items
+      : Array.isArray(raw.keyPoints)
+        ? raw.keyPoints
+        : [];
   let bullets = sanitizeBullets(rawBullets, 5);
 
-  const fallbackTitle = slideType === "cover"
-    ? cleanDeckText(topic || `第${index}页`, 42)
-    : (slideType === "section" ? `第${index}部分` : `第${index}页`);
+  const fallbackTitle =
+    slideType === "cover"
+      ? cleanDeckText(topic || `第${index}页`, 42)
+      : slideType === "section"
+        ? `第${index}部分`
+        : `第${index}页`;
 
   let title = stripVersionSuffix(cleanDeckText(raw.title, 42));
   if (/^\d{1,2}$/.test(title)) title = "";
@@ -2220,11 +3240,18 @@ function sanitizeSlideContent(slideInput, index = 1, topic = "") {
   const footer = cleanDeckText(raw.footer, 48);
   const date = cleanDeckText(raw.date, 24);
 
-  if (bullets.length === 0 && slideType !== "cover" && slideType !== "section") {
+  if (
+    bullets.length === 0 &&
+    slideType !== "cover" &&
+    slideType !== "section"
+  ) {
     if (slideType === "agenda") {
       bullets = ["现状背景", "关键问题", "方案思路", "执行路径", "结果目标"];
     } else {
-      const fallbackPoint = cleanDeckText(raw.goal || raw.subtitle || raw.notes || "核心信息说明", 28);
+      const fallbackPoint = cleanDeckText(
+        raw.goal || raw.subtitle || raw.notes || "核心信息说明",
+        28,
+      );
       bullets = [fallbackPoint || "核心信息说明"];
     }
   }
@@ -2241,8 +3268,11 @@ function sanitizeSlideContent(slideInput, index = 1, topic = "") {
     date,
     layoutType: mapSlideTypeToLayoutType(slideType, index),
     assetPlaceholders: Array.isArray(raw.assetPlaceholders)
-      ? raw.assetPlaceholders.map((x) => cleanDeckText(x, 24)).filter(Boolean).slice(0, 4)
-      : []
+      ? raw.assetPlaceholders
+          .map((x) => cleanDeckText(x, 24))
+          .filter(Boolean)
+          .slice(0, 4)
+      : [],
   };
 }
 
@@ -2265,7 +3295,11 @@ function isDuplicateTitle(a, b) {
 function hasForbiddenTemplateText(value) {
   const text = sanitizeContractText(value || "", 0);
   if (!text) return false;
-  return FORBIDDEN_TEMPLATE_TEXT.some((x) => new RegExp(String(x).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i").test(text));
+  return FORBIDDEN_TEMPLATE_TEXT.some((x) =>
+    new RegExp(String(x).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i").test(
+      text,
+    ),
+  );
 }
 
 function validateMinimumEffectiveSlide(scriptType, slide, idx) {
@@ -2273,57 +3307,230 @@ function validateMinimumEffectiveSlide(scriptType, slide, idx) {
   const title = cleanDeckText(s.title || "", 0);
   const subtitle = cleanDeckText(s.subtitle || "", 0);
   const label = cleanDeckText(s.label || "", 0);
-  const body = cleanDeckText(s.goal || s.body || s.insight || "", 0);
   const bullets = sanitizeBullets(s.bullets || s.keyPoints || [], 6);
+  const body =
+    cleanDeckText(s.goal || s.body || s.insight || "", 0) ||
+    cleanDeckText(Array.isArray(bullets) ? bullets.join("；") : "", 0);
   const sectionNo = cleanDeckText(s.sectionNo || "", 0);
   const visualHint = cleanDeckText(s.visualHint || "", 0);
   const errors = [];
 
-  if (!title) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: "missing_title" });
+  if (!title)
+    errors.push({
+      slideIndex: idx,
+      type: "minimumEffectiveSlide",
+      text: "missing_title",
+    });
 
   if (scriptType === "cover") {
-    if (!title) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: "cover_missing_title" });
+    if (!title)
+      errors.push({
+        slideIndex: idx,
+        type: "minimumEffectiveSlide",
+        text: "cover_missing_title",
+      });
   }
 
   if (scriptType === "section") {
     const bodyChars = body.replace(/\s+/g, "").length;
-    if (bodyChars > 120) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: "section_body_too_long" });
+    if (bodyChars > 120)
+      errors.push({
+        slideIndex: idx,
+        type: "minimumEffectiveSlide",
+        text: "section_body_too_long",
+      });
   }
 
   if (scriptType === "content_text") {
     const bodyChars = body.replace(/\s+/g, "").length;
-    if (!body) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: "content_text_missing_body" });
-    if (bodyChars < 60 || bodyChars > 180) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: `content_text_body_chars_${bodyChars}` });
-    if (title && (body.includes(title) || label === title)) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: "content_text_repeats_title" });
+    if (!body)
+      errors.push({
+        slideIndex: idx,
+        type: "minimumEffectiveSlide",
+        text: "content_text_missing_body",
+      });
+    if (bodyChars < 60 || bodyChars > 180)
+      errors.push({
+        slideIndex: idx,
+        type: "minimumEffectiveSlide",
+        text: `content_text_body_chars_${bodyChars}`,
+      });
+    if (title && (body.includes(title) || label === title))
+      errors.push({
+        slideIndex: idx,
+        type: "minimumEffectiveSlide",
+        text: "content_text_repeats_title",
+      });
   }
 
-  if (scriptType === "content_bullets" && String(s.layoutId || "").toLowerCase() !== "four_points") {
-    if (bullets.length !== 3) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: `content_bullets_count_${bullets.length}` });
+  if (
+    scriptType === "content_bullets" &&
+    String(s.layoutId || "").toLowerCase() !== "four_points"
+  ) {
+    if (bullets.length !== 3)
+      errors.push({
+        slideIndex: idx,
+        type: "minimumEffectiveSlide",
+        text: `content_bullets_count_${bullets.length}`,
+      });
     bullets.forEach((b, bi) => {
       const chars = String(b || "").replace(/\s+/g, "").length;
-      if (chars < 10 || chars > 40) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: `bullet_${bi + 1}_chars_${chars}` });
+      if (chars < 10 || chars > 40)
+        errors.push({
+          slideIndex: idx,
+          type: "minimumEffectiveSlide",
+          text: `bullet_${bi + 1}_chars_${chars}`,
+        });
     });
   }
 
   if (String(s.layoutId || "").toLowerCase() === "four_points") {
     const items = Array.isArray(s.items) ? s.items : [];
-    if (items.length !== 4) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: `four_points_items_count_${items.length}` });
+    if (items.length !== 4)
+      errors.push({
+        slideIndex: idx,
+        type: "minimumEffectiveSlide",
+        text: `four_points_items_count_${items.length}`,
+      });
     const seen = new Set();
     for (let i = 0; i < items.length; i += 1) {
       const it = items[i] || {};
       const t = cleanDeckText(it.title || "", 0);
       const d = cleanDecisionDesc(it.desc || "", 40);
-      if (!t || /^输入标题$/i.test(t)) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: `four_points_item_${i + 1}_title_invalid` });
-      if (!d || d.length < 10 || d.length > 24) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: `four_points_item_${i + 1}_desc_invalid` });
+      if (!t || /^输入标题$/i.test(t))
+        errors.push({
+          slideIndex: idx,
+          type: "minimumEffectiveSlide",
+          text: `four_points_item_${i + 1}_title_invalid`,
+        });
+      if (!d || d.length < 10 || d.length > 24)
+        errors.push({
+          slideIndex: idx,
+          type: "minimumEffectiveSlide",
+          text: `four_points_item_${i + 1}_desc_invalid`,
+        });
       const key = `${t}::${d}`.toLowerCase();
-      if (seen.has(key)) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: `four_points_item_${i + 1}_duplicate` });
+      if (seen.has(key))
+        errors.push({
+          slideIndex: idx,
+          type: "minimumEffectiveSlide",
+          text: `four_points_item_${i + 1}_duplicate`,
+        });
       seen.add(key);
     }
   }
 
   if (scriptType === "thanks") {
-    if (!title) errors.push({ slideIndex: idx, type: "minimumEffectiveSlide", text: "thanks_missing_title" });
+    if (!title)
+      errors.push({
+        slideIndex: idx,
+        type: "minimumEffectiveSlide",
+        text: "thanks_missing_title",
+      });
   }
+
+  return errors;
+}
+
+function validateDecisionToolCompleteness(contract) {
+  const errors = [];
+  const scenario = String(
+    (contract && (contract.scenario || contract.sceneType)) || "",
+  ).toLowerCase();
+  if (scenario === "teaching" || scenario === "training") return errors;
+
+  const slides = Array.isArray(contract && contract.slides)
+    ? contract.slides
+    : [];
+  if (slides.length === 0) return errors;
+
+  const textParts = [];
+  for (const s of slides) {
+    if (!s || typeof s !== "object") continue;
+    textParts.push(
+      cleanDeckText(s.title || "", 0),
+      cleanDeckText(s.subtitle || "", 0),
+      cleanDeckText(s.label || "", 0),
+      cleanDeckText(s.goal || s.body || s.insight || "", 0),
+      cleanDeckText(s.ownerHint || "", 0),
+    );
+    const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+    for (const b of bullets) textParts.push(cleanDeckText(b, 0));
+    const actions = Array.isArray(s.actions) ? s.actions : [];
+    for (const a of actions) textParts.push(cleanDeckText(a, 0));
+    const items = Array.isArray(s.items) ? s.items : [];
+    for (const it of items) {
+      textParts.push(
+        cleanDeckText(it && it.title, 0),
+        cleanDeckText(it && (it.desc || it.text || it.body), 0),
+      );
+    }
+  }
+  const joined = textParts.filter(Boolean).join(" ");
+
+  const hasDecisionBoard = slides.some((s) => {
+    const layoutId = String((s && s.layoutId) || "").toLowerCase();
+    const title = String((s && s.title) || "");
+    const label = String((s && s.label) || "");
+    return (
+      layoutId === "four_points" ||
+      /决策事项|行动项|下一步决策|管理决策/.test(`${title} ${label}`)
+    );
+  });
+  const hasObjective = /目标|指标|收益|成本|roi|转化|达成/i.test(joined);
+  const hasQuant =
+    /\d+(\.\d+)?\s*(%|万元|元|天|周|月|季度|年|人|个|倍)/i.test(joined) ||
+    /\broi\b/i.test(joined);
+  const hasPlan = /方案|路径|策略|试点|推进|落地|执行/i.test(joined);
+  const hasRisk = /风险|问题反思|兜底|边界|不确定|假设/i.test(joined);
+  const hasOwner = /责任人|负责人|owner/i.test(joined);
+  const hasTimeline =
+    /第\s*\d+\s*阶段|里程碑|本周|下周|本月|季度|时间|截止|deadline|\bm\d\b/i.test(
+      joined,
+    );
+
+  if (!hasDecisionBoard)
+    errors.push({
+      slideIndex: 0,
+      type: "decisionCompleteness",
+      text: "missing_decision_board",
+    });
+  if (!hasObjective)
+    errors.push({
+      slideIndex: 0,
+      type: "decisionCompleteness",
+      text: "missing_objective_or_metric",
+    });
+  if (!hasQuant)
+    errors.push({
+      slideIndex: 0,
+      type: "decisionCompleteness",
+      text: "missing_quant_target",
+    });
+  if (!hasPlan)
+    errors.push({
+      slideIndex: 0,
+      type: "decisionCompleteness",
+      text: "missing_plan_or_execution_path",
+    });
+  if (!hasRisk)
+    errors.push({
+      slideIndex: 0,
+      type: "decisionCompleteness",
+      text: "missing_risk_boundary",
+    });
+  if (!hasOwner)
+    errors.push({
+      slideIndex: 0,
+      type: "decisionCompleteness",
+      text: "missing_owner",
+    });
+  if (!hasTimeline)
+    errors.push({
+      slideIndex: 0,
+      type: "decisionCompleteness",
+      text: "missing_timeline",
+    });
 
   return errors;
 }
@@ -2333,88 +3540,208 @@ function validateDeck(contract, exportedTextDump = null) {
   const warnings = [];
   const seenTitle = [];
   const seenBody = new Set();
-  const slides = Array.isArray(contract && contract.slides) ? contract.slides : [];
-  const slideScripts = Array.isArray(contract && contract.slideScripts) ? contract.slideScripts : [];
+  const slides = Array.isArray(contract && contract.slides)
+    ? contract.slides
+    : [];
+  const slideScripts = Array.isArray(contract && contract.slideScripts)
+    ? contract.slideScripts
+    : [];
   const topic = cleanDeckText(contract && contract.topic, 120).toLowerCase();
-  const scenario = String(contract && (contract.scenario || contract.sceneType) || "").toLowerCase();
+  const scenario = String(
+    (contract && (contract.scenario || contract.sceneType)) || "",
+  ).toLowerCase();
   const textBudget = {
     cover: { maxBlocks: 4, maxChars: 80 },
     section: { maxBlocks: 4, maxChars: 70 },
     content_text: { maxBlocks: 5, maxChars: 210 },
     content_bullets: { maxBlocks: 6, maxChars: 180 },
-    thanks: { maxBlocks: 4, maxChars: 60 }
+    thanks: { maxBlocks: 4, maxChars: 60 },
   };
   const scenarioForbidden = {
-    proposal: [/课堂抓手/i, /学生/i, /例题/i, /本课/i, /教学目标/i, /复习/i, /练习题/i],
-    business_report: [/课堂抓手/i, /学生/i, /例题/i, /本课/i, /教学目标/i, /复习/i, /练习题/i],
+    proposal: [
+      /课堂抓手/i,
+      /学生/i,
+      /例题/i,
+      /本课/i,
+      /教学目标/i,
+      /复习/i,
+      /练习题/i,
+    ],
+    business_report: [
+      /课堂抓手/i,
+      /学生/i,
+      /例题/i,
+      /本课/i,
+      /教学目标/i,
+      /复习/i,
+      /练习题/i,
+    ],
     teaching: [/降本增效方案/i, /试点预算/i, /客户满意度/i],
-    training: []
+    training: [],
   };
 
   slides.forEach((s, i) => {
     const idx = i + 1;
-    const title = String(s && s.title || "").trim();
-    const layoutId = String(s && s.layoutId || "").toLowerCase();
-    const scriptType = normalizeScriptType((s && s.scriptType) || (s && s.slideType) || (slideScripts[i] && slideScripts[i].type) || "", idx);
+    const title = String((s && s.title) || "").trim();
+    const layoutId = String((s && s.layoutId) || "").toLowerCase();
+    const scriptType = normalizeScriptType(
+      (s && s.scriptType) ||
+        (s && s.slideType) ||
+        (slideScripts[i] && slideScripts[i].type) ||
+        "",
+      idx,
+    );
     const legacyType = normalizeSlideType((s && s.slideType) || "", idx);
-    if (!title) errors.push({ slideIndex: idx, type: "missingTitle", text: "" });
+    if (!title)
+      errors.push({ slideIndex: idx, type: "missingTitle", text: "" });
     if (/[\(（]?v\s*\d+(?:\.\d+)?[\)）]?$/i.test(title)) {
-      errors.push({ slideIndex: idx, type: "titlePollution", text: "version_suffix_detected" });
+      errors.push({
+        slideIndex: idx,
+        type: "titlePollution",
+        text: "version_suffix_detected",
+      });
     }
-    if (!SLIDE_TYPES.includes(scriptType)) errors.push({ slideIndex: idx, type: "unknownSlideType", text: String(scriptType || "") });
-    if (!SLIDE_TYPE_ENUM.includes(legacyType)) errors.push({ slideIndex: idx, type: "unknownLegacySlideType", text: String(legacyType || "") });
+    if (!SLIDE_TYPES.includes(scriptType))
+      errors.push({
+        slideIndex: idx,
+        type: "unknownSlideType",
+        text: String(scriptType || ""),
+      });
+    if (!SLIDE_TYPE_ENUM.includes(legacyType))
+      errors.push({
+        slideIndex: idx,
+        type: "unknownLegacySlideType",
+        text: String(legacyType || ""),
+      });
 
     if (title) {
       if (seenTitle.some((x) => isDuplicateTitle(x, title))) {
-        errors.push({ slideIndex: idx, type: "duplicateSlideTitles", text: title });
+        errors.push({
+          slideIndex: idx,
+          type: "duplicateSlideTitles",
+          text: title,
+        });
       }
       seenTitle.push(title);
     }
 
     const bullets = Array.isArray(s && s.bullets) ? s.bullets : [];
     const bodyText = cleanDeckText((s && s.goal) || "", 0);
-    const fields = [s && s.title, s && s.subtitle, bodyText, ...(bullets || []), s && s.notes, s && s.footer, s && s.date]
+    const fields = [
+      s && s.title,
+      s && s.subtitle,
+      bodyText,
+      ...(bullets || []),
+      s && s.notes,
+      s && s.footer,
+      s && s.date,
+    ]
       .map((x) => sanitizeContractText(x || "", 0))
       .filter(Boolean);
     const fieldBlob = fields.join(" ");
 
     const normalizedTitle = normalizeTitle(title);
-    const duplicateTitleMatches = fields.filter((x) => normalizeTitle(x) === normalizedTitle);
+    const duplicateTitleMatches = fields.filter(
+      (x) => normalizeTitle(x) === normalizedTitle,
+    );
     const duplicateTitleInSlideCount = duplicateTitleMatches.length;
     const subtitleNormalized = normalizeTitle(String((s && s.subtitle) || ""));
-    const isCoverSubtitleEcho = scriptType === "cover"
-      && duplicateTitleInSlideCount === 2
-      && subtitleNormalized
-      && subtitleNormalized === normalizedTitle;
+    const isCoverSubtitleEcho =
+      scriptType === "cover" &&
+      duplicateTitleInSlideCount === 2 &&
+      subtitleNormalized &&
+      subtitleNormalized === normalizedTitle;
     if (title && duplicateTitleInSlideCount > 1 && !isCoverSubtitleEcho) {
-      errors.push({ slideIndex: idx, type: "duplicateTitleInSlide", text: title });
+      errors.push({
+        slideIndex: idx,
+        type: "duplicateTitleInSlide",
+        text: title,
+      });
     }
 
-    const missingRequiredSlots = Array.isArray(s && s.missingRequiredSlots) ? s.missingRequiredSlots : [];
+    const missingRequiredSlots = Array.isArray(s && s.missingRequiredSlots)
+      ? s.missingRequiredSlots
+      : [];
     if (missingRequiredSlots.length > 0) {
-      errors.push({ slideIndex: idx, type: "missingRequiredSlots", text: missingRequiredSlots.join(",") });
+      errors.push({
+        slideIndex: idx,
+        type: "missingRequiredSlots",
+        text: missingRequiredSlots.join(","),
+      });
     }
 
-    if (fields.some((x) => isTemplatePlaceholderText(x) || hasForbiddenTemplateText(x))) {
-      errors.push({ slideIndex: idx, type: "forbiddenText", text: String(fields.find((x) => isTemplatePlaceholderText(x) || hasForbiddenTemplateText(x)) || "") });
+    if (
+      fields.some(
+        (x) => isTemplatePlaceholderText(x) || hasForbiddenTemplateText(x),
+      )
+    ) {
+      errors.push({
+        slideIndex: idx,
+        type: "forbiddenText",
+        text: String(
+          fields.find(
+            (x) => isTemplatePlaceholderText(x) || hasForbiddenTemplateText(x),
+          ) || "",
+        ),
+      });
     }
     if (fields.some((x) => STALE_MOCK_PATTERNS.some((p) => p.test(x)))) {
-      errors.push({ slideIndex: idx, type: "staleMockData", text: String(fields.find((x) => STALE_MOCK_PATTERNS.some((p) => p.test(x))) || "") });
+      errors.push({
+        slideIndex: idx,
+        type: "staleMockData",
+        text: String(
+          fields.find((x) => STALE_MOCK_PATTERNS.some((p) => p.test(x))) || "",
+        ),
+      });
     }
-    if (topic && !/牛顿第二定律|牛顿第一定律|f\s*=\s*ma/.test(topic) && fields.some((x) => CROSS_TOPIC_LEAK_TERMS.some((p) => p.test(x)))) {
-      errors.push({ slideIndex: idx, type: "crossTopicLeak", text: String(fields.find((x) => CROSS_TOPIC_LEAK_TERMS.some((p) => p.test(x))) || "") });
+    if (
+      topic &&
+      !/牛顿第二定律|牛顿第一定律|f\s*=\s*ma/.test(topic) &&
+      fields.some((x) => CROSS_TOPIC_LEAK_TERMS.some((p) => p.test(x)))
+    ) {
+      errors.push({
+        slideIndex: idx,
+        type: "crossTopicLeak",
+        text: String(
+          fields.find((x) => CROSS_TOPIC_LEAK_TERMS.some((p) => p.test(x))) ||
+            "",
+        ),
+      });
     }
-    if (SCENARIO_LEAK_PATTERNS[scenario] && fields.some((x) => SCENARIO_LEAK_PATTERNS[scenario].some((p) => p.test(x)))) {
-      errors.push({ slideIndex: idx, type: "mixedScenario", text: String(fields.find((x) => SCENARIO_LEAK_PATTERNS[scenario].some((p) => p.test(x))) || "") });
+    if (
+      SCENARIO_LEAK_PATTERNS[scenario] &&
+      fields.some((x) =>
+        SCENARIO_LEAK_PATTERNS[scenario].some((p) => p.test(x)),
+      )
+    ) {
+      errors.push({
+        slideIndex: idx,
+        type: "mixedScenario",
+        text: String(
+          fields.find((x) =>
+            SCENARIO_LEAK_PATTERNS[scenario].some((p) => p.test(x)),
+          ) || "",
+        ),
+      });
     }
     if (fields.some((x) => /(结论：|证据：|行动：)/.test(x))) {
-      errors.push({ slideIndex: idx, type: "mechanicalLanguage", text: String(fields.find((x) => /(结论：|证据：|行动：)/.test(x)) || "") });
+      errors.push({
+        slideIndex: idx,
+        type: "mechanicalLanguage",
+        text: String(
+          fields.find((x) => /(结论：|证据：|行动：)/.test(x)) || "",
+        ),
+      });
     }
 
     if (layoutId === "four_points") {
       const items = Array.isArray(s && s.items) ? s.items : [];
       if (items.length !== 4) {
-        errors.push({ slideIndex: idx, type: "fourPointsInvalid", text: `items_count_${items.length}` });
+        errors.push({
+          slideIndex: idx,
+          type: "fourPointsInvalid",
+          text: `items_count_${items.length}`,
+        });
       }
       const seenItems = new Set();
       const itemLens = [];
@@ -2422,40 +3749,121 @@ function validateDeck(contract, exportedTextDump = null) {
         const it = items[k] || {};
         const itTitle = cleanDeckText(it.title || "", 0);
         const itDesc = cleanDecisionDesc(it.desc || "", 40);
-        if (!itTitle || /^输入标题$/i.test(itTitle)) errors.push({ slideIndex: idx, type: "fourPointsInvalid", text: `item_${k + 1}_title` });
-        if (!itDesc || itDesc.length < 10 || itDesc.length > 24) errors.push({ slideIndex: idx, type: "fourPointsInvalid", text: `item_${k + 1}_desc` });
-        if (/(阶段|流程|里程碑)/.test(itDesc)) errors.push({ slideIndex: idx, type: "crossSlideLanguageLeak", text: `item_${k + 1}_stage_word` });
+        if (!itTitle || /^输入标题$/i.test(itTitle))
+          errors.push({
+            slideIndex: idx,
+            type: "fourPointsInvalid",
+            text: `item_${k + 1}_title`,
+          });
+        if (!itDesc || itDesc.length < 10 || itDesc.length > 24)
+          errors.push({
+            slideIndex: idx,
+            type: "fourPointsInvalid",
+            text: `item_${k + 1}_desc`,
+          });
+        if (/(阶段|流程|里程碑)/.test(itDesc))
+          errors.push({
+            slideIndex: idx,
+            type: "crossSlideLanguageLeak",
+            text: `item_${k + 1}_stage_word`,
+          });
         const key2 = `${itTitle}::${itDesc}`.toLowerCase();
-        if (seenItems.has(key2)) errors.push({ slideIndex: idx, type: "fourPointsInvalid", text: `item_${k + 1}_duplicate` });
+        if (seenItems.has(key2))
+          errors.push({
+            slideIndex: idx,
+            type: "fourPointsInvalid",
+            text: `item_${k + 1}_duplicate`,
+          });
         seenItems.add(key2);
         if (itDesc) itemLens.push(itDesc.length);
       }
       if (itemLens.length === 4) {
         const spread = Math.max(...itemLens) - Math.min(...itemLens);
-        if (spread > 10) errors.push({ slideIndex: idx, type: "fourPointsInvalid", text: `length_spread_${spread}` });
+        if (spread > 10)
+          errors.push({
+            slideIndex: idx,
+            type: "fourPointsInvalid",
+            text: `length_spread_${spread}`,
+          });
       }
-      const labelText = cleanDeckText((s && s.slotPayload && s.slotPayload.label) || s && s.subtitle || "", 0);
-      if (labelText && bullets.some((b) => cleanDeckText(b, 0).startsWith(labelText))) {
-        errors.push({ slideIndex: idx, type: "duplicateLabel", text: "label_repeated_in_items" });
+      const labelText = cleanDeckText(
+        (s && s.slotPayload && s.slotPayload.label) || (s && s.subtitle) || "",
+        0,
+      );
+      if (
+        labelText &&
+        bullets.some((b) => cleanDeckText(b, 0).startsWith(labelText))
+      ) {
+        errors.push({
+          slideIndex: idx,
+          type: "duplicateLabel",
+          text: "label_repeated_in_items",
+        });
       }
     }
 
-    if (title.length > 22) errors.push({ slideIndex: idx, type: "overlongText", text: `title:${title}` });
-    if (["cover", "agenda", "section", "thanks"].includes(scriptType) && String(s && s.subtitle || "").length > 32) {
-      errors.push({ slideIndex: idx, type: "overlongText", text: `subtitle:${String(s && s.subtitle || "")}` });
+    if (title.length > 22)
+      errors.push({
+        slideIndex: idx,
+        type: "overlongText",
+        text: `title:${title}`,
+      });
+    if (
+      ["cover", "agenda", "section", "thanks"].includes(scriptType) &&
+      String((s && s.subtitle) || "").length > 32
+    ) {
+      errors.push({
+        slideIndex: idx,
+        type: "overlongText",
+        text: `subtitle:${String((s && s.subtitle) || "")}`,
+      });
     }
-    if (bullets.some((b) => String(b || "").length > 24)) errors.push({ slideIndex: idx, type: "overlongText", text: `bullet:${String(bullets.find((b) => String(b || "").length > 24) || "")}` });
-    if (bullets.length > 5) errors.push({ slideIndex: idx, type: "overlongText", text: `bullets=${bullets.length}` });
+    if (bullets.some((b) => String(b || "").length > 24))
+      errors.push({
+        slideIndex: idx,
+        type: "overlongText",
+        text: `bullet:${String(bullets.find((b) => String(b || "").length > 24) || "")}`,
+      });
+    if (bullets.length > 5)
+      errors.push({
+        slideIndex: idx,
+        type: "overlongText",
+        text: `bullets=${bullets.length}`,
+      });
 
     if (scriptType === "section" && (bullets.length > 0 || bodyText)) {
-      errors.push({ slideIndex: idx, type: "mixedSlideTypes", text: "section_has_content" });
+      errors.push({
+        slideIndex: idx,
+        type: "mixedSlideTypes",
+        text: "section_has_content",
+      });
     }
-    if (["content_text", "content_bullets", "data_insight", "case_study", "compare", "process", "timeline", "example", "exercise"].includes(scriptType)) {
+    if (
+      [
+        "content_text",
+        "content_bullets",
+        "data_insight",
+        "case_study",
+        "compare",
+        "process",
+        "timeline",
+        "example",
+        "exercise",
+      ].includes(scriptType)
+    ) {
       if (bullets.length === 0 && !bodyText) {
-        errors.push({ slideIndex: idx, type: "blankSlide", text: "content_empty" });
+        errors.push({
+          slideIndex: idx,
+          type: "blankSlide",
+          text: "content_empty",
+        });
       }
       if (/^\d{1,2}$/.test(title)) {
-        errors.push({ slideIndex: idx, type: "mixedSlideTypes", text: "content_title_is_section_no" });
+        errors.push({
+          slideIndex: idx,
+          type: "mixedSlideTypes",
+          text: "content_title_is_section_no",
+        });
       }
     }
 
@@ -2465,163 +3873,410 @@ function validateDeck(contract, exportedTextDump = null) {
     }
     if (bodyText) seenBody.add(bodyKey);
 
-    if (idx > 1 && (scriptType === "content_text" || scriptType === "content_bullets" || scriptType === "data_insight" || scriptType === "process" || scriptType === "compare")
-      && (!fieldBlob || (bullets.length === 0 && bodyText.length < 20))) {
-      errors.push({ slideIndex: idx, type: "blankOrHalfFilled", text: title || "" });
+    if (
+      idx > 1 &&
+      (scriptType === "content_text" ||
+        scriptType === "content_bullets" ||
+        scriptType === "data_insight" ||
+        scriptType === "process" ||
+        scriptType === "compare") &&
+      (!fieldBlob || (bullets.length === 0 && bodyText.length < 20))
+    ) {
+      errors.push({
+        slideIndex: idx,
+        type: "blankOrHalfFilled",
+        text: title || "",
+      });
     }
 
-    const visibleBlocks = [title, s && s.subtitle, bodyText, ...bullets, s && s.footer].map((x) => sanitizeContractText(x || "", 0)).filter(Boolean);
+    const visibleBlocks = [
+      title,
+      s && s.subtitle,
+      bodyText,
+      ...bullets,
+      s && s.footer,
+    ]
+      .map((x) => sanitizeContractText(x || "", 0))
+      .filter(Boolean);
     const visibleChars = visibleBlocks.join("").length;
-    const budget = layoutId === "four_points"
-      ? { maxBlocks: 9, maxChars: 260 }
-      : (textBudget[scriptType] || textBudget.content_text);
-    if (visibleBlocks.length > Number(budget.maxBlocks || 5) || visibleChars > Number(budget.maxChars || 220)) {
-      errors.push({ slideIndex: idx, type: "textBudgetExceeded", text: `${visibleBlocks.length}/${visibleChars}` });
+    const budget =
+      layoutId === "four_points"
+        ? { maxBlocks: 9, maxChars: 260 }
+        : textBudget[scriptType] || textBudget.content_text;
+    if (
+      visibleBlocks.length > Number(budget.maxBlocks || 5) ||
+      visibleChars > Number(budget.maxChars || 220)
+    ) {
+      errors.push({
+        slideIndex: idx,
+        type: "textBudgetExceeded",
+        text: `${visibleBlocks.length}/${visibleChars}`,
+      });
     }
 
     const forbiddenPatterns = scenarioForbidden[scenario] || [];
-    if (forbiddenPatterns.some((re) => visibleBlocks.some((line) => re.test(line)))) {
-      errors.push({ slideIndex: idx, type: "scenarioVocabularyLeak", text: title || "" });
+    if (
+      forbiddenPatterns.some((re) =>
+        visibleBlocks.some((line) => re.test(line)),
+      )
+    ) {
+      errors.push({
+        slideIndex: idx,
+        type: "scenarioVocabularyLeak",
+        text: title || "",
+      });
     }
 
-    if (!cleanDeckText(s && s.footer, 0)) warnings.push(`missing_footer_slide_${idx}`);
+    if (!cleanDeckText(s && s.footer, 0))
+      warnings.push(`missing_footer_slide_${idx}`);
   });
 
+  const decisionCompletenessErrors = validateDecisionToolCompleteness(contract);
+  for (const err of decisionCompletenessErrors) errors.push(err);
+
   if (exportedTextDump && Array.isArray(exportedTextDump.slides)) {
-    const inputCount = Number(exportedTextDump.inputSlideCount || slides.length || 0);
+    const inputCount = Number(
+      exportedTextDump.inputSlideCount || slides.length || 0,
+    );
     const outputCount = Number(exportedTextDump.outputSlideCount || 0);
-    const physicalCount = Number(exportedTextDump.physicalSlideCount || outputCount || 0);
-    const visibleCount = Number(exportedTextDump.visibleSlideCount || outputCount || 0);
+    const physicalCount = Number(
+      exportedTextDump.physicalSlideCount || outputCount || 0,
+    );
+    const visibleCount = Number(
+      exportedTextDump.visibleSlideCount || outputCount || 0,
+    );
     const hiddenCount = Number(exportedTextDump.hiddenSlideCount || 0);
     if (outputCount !== inputCount) {
-      errors.push({ slideIndex: 0, type: "slideCountMismatch", text: `input=${inputCount},output=${outputCount}` });
+      errors.push({
+        slideIndex: 0,
+        type: "slideCountMismatch",
+        text: `input=${inputCount},output=${outputCount}`,
+      });
     }
     if (physicalCount !== inputCount) {
-      errors.push({ slideIndex: 0, type: "slideCountMismatch", text: `input=${inputCount},physical=${physicalCount}` });
+      errors.push({
+        slideIndex: 0,
+        type: "slideCountMismatch",
+        text: `input=${inputCount},physical=${physicalCount}`,
+      });
     }
     if (visibleCount !== inputCount) {
-      errors.push({ slideIndex: 0, type: "slideCountMismatch", text: `input=${inputCount},visible=${visibleCount}` });
+      errors.push({
+        slideIndex: 0,
+        type: "slideCountMismatch",
+        text: `input=${inputCount},visible=${visibleCount}`,
+      });
     }
     if (hiddenCount !== 0) {
-      errors.push({ slideIndex: 0, type: "hiddenSlideDetected", text: `hidden=${hiddenCount}` });
+      errors.push({
+        slideIndex: 0,
+        type: "hiddenSlideDetected",
+        text: `hidden=${hiddenCount}`,
+      });
     }
     if (outputCount < 8 || outputCount > 12) {
-      errors.push({ slideIndex: 0, type: "pageCountMismatch", text: `output=${outputCount}` });
+      errors.push({
+        slideIndex: 0,
+        type: "pageCountMismatch",
+        text: `output=${outputCount}`,
+      });
     }
     if (outputCount > inputCount) {
-      errors.push({ slideIndex: 0, type: "orphanTemplatePages", text: `input=${inputCount},output=${outputCount}` });
+      errors.push({
+        slideIndex: 0,
+        type: "orphanTemplatePages",
+        text: `input=${inputCount},output=${outputCount}`,
+      });
     }
 
-    const indexes = exportedTextDump.slides.map((row) => Number(row && row.index) || 0).filter((n) => n > 0);
+    const indexes = exportedTextDump.slides
+      .map((row) => Number(row && row.index) || 0)
+      .filter((n) => n > 0);
     for (let i = 0; i < indexes.length; i += 1) {
       if (indexes[i] !== i + 1) {
-        errors.push({ slideIndex: 0, type: "nonContinuousSlideIndex", text: `at=${i + 1},got=${indexes[i]}` });
+        errors.push({
+          slideIndex: 0,
+          type: "nonContinuousSlideIndex",
+          text: `at=${i + 1},got=${indexes[i]}`,
+        });
         break;
       }
     }
 
     for (const row of exportedTextDump.slides) {
       const idx = Number(row && row.index) || 0;
-      const texts = Array.isArray(row && row.texts) ? row.texts.map((x) => cleanDeckText(x, 0)).filter(Boolean) : [];
+      const texts = Array.isArray(row && row.texts)
+        ? row.texts.map((x) => cleanDeckText(x, 0)).filter(Boolean)
+        : [];
       const nonPlaceholder = texts.filter((t) => !isTemplatePlaceholderText(t));
-      const title = String(row && row.title || "").trim();
+      const semanticTexts = nonPlaceholder.filter((t) => !isMetaText(t));
+      const title = String((row && row.title) || "").trim();
       const plan = slides[idx - 1] || {};
-      const planType = normalizeScriptType((plan && plan.scriptType) || (plan && plan.slideType) || "", idx);
-      const planLayoutId = String(plan && plan.layoutId || "").toLowerCase();
-      const titleIndex = title ? nonPlaceholder.findIndex((t) => isDuplicateTitle(t, title) || t.includes(title) || title.includes(t)) : -1;
+      const planType = normalizeScriptType(
+        (plan && plan.scriptType) || (plan && plan.slideType) || "",
+        idx,
+      );
+      const planLayoutId = String((plan && plan.layoutId) || "").toLowerCase();
+      const titleIndex = title
+        ? semanticTexts.findIndex(
+            (t) =>
+              isDuplicateTitle(t, title) ||
+              t.includes(title) ||
+              title.includes(t),
+          )
+        : -1;
 
-      if (title && ["content_text", "content_bullets", "data_insight", "process", "compare", "case_study"].includes(planType) && titleIndex > 1) {
-        errors.push({ slideIndex: idx, type: "slotOrder", text: "title_after_body" });
+      if (
+        title &&
+        [
+          "content_text",
+          "content_bullets",
+          "data_insight",
+          "process",
+          "compare",
+          "case_study",
+        ].includes(planType) &&
+        titleIndex > 2
+      ) {
+        errors.push({
+          slideIndex: idx,
+          type: "slotOrder",
+          text: "title_after_body",
+        });
       }
 
-      if (title && ["content_text", "content_bullets", "data_insight", "process", "compare", "case_study"].includes(planType)
-        && nonPlaceholder.some((t) => t.length > 12 && t !== title && isDuplicateTitle(t, title))) {
-        errors.push({ slideIndex: idx, type: "slotOrder", text: "title_written_to_body" });
+      if (
+        title &&
+        [
+          "content_text",
+          "content_bullets",
+          "data_insight",
+          "process",
+          "compare",
+          "case_study",
+        ].includes(planType) &&
+        semanticTexts.some(
+          (t) => t.length > 12 && t !== title && isDuplicateTitle(t, title),
+        )
+      ) {
+        errors.push({
+          slideIndex: idx,
+          type: "slotOrder",
+          text: "title_written_to_body",
+        });
       }
 
       if (planLayoutId === "four_points") {
         const candidateItems = nonPlaceholder
           .map((t) => cleanDeckText(t, 0))
-          .filter((t) => t && t !== title && !/^\d+$/.test(t) && !/^管理决策$/i.test(t));
+          .filter(
+            (t) =>
+              t && t !== title && !/^\d+$/.test(t) && !/^管理决策$/i.test(t),
+          );
         const normalizedItems = Array.from(new Set(candidateItems));
         if (normalizedItems.length < 4) {
-          errors.push({ slideIndex: idx, type: "fourPointsRenderIncomplete", text: `items_rendered_${normalizedItems.length}` });
+          errors.push({
+            slideIndex: idx,
+            type: "fourPointsRenderIncomplete",
+            text: `items_rendered_${normalizedItems.length}`,
+          });
         }
       }
 
-      if (texts.some((t) => isTemplatePlaceholderText(t) || hasForbiddenTemplateText(t))) {
-        errors.push({ slideIndex: idx, type: "templateLeakage", text: texts.find((t) => isTemplatePlaceholderText(t) || hasForbiddenTemplateText(t)) || "" });
+      if (
+        texts.some(
+          (t) => isTemplatePlaceholderText(t) || hasForbiddenTemplateText(t),
+        )
+      ) {
+        errors.push({
+          slideIndex: idx,
+          type: "templateLeakage",
+          text:
+            texts.find(
+              (t) =>
+                isTemplatePlaceholderText(t) || hasForbiddenTemplateText(t),
+            ) || "",
+        });
       }
       if (texts.some((t) => STALE_MOCK_PATTERNS.some((p) => p.test(t)))) {
-        errors.push({ slideIndex: idx, type: "staleMockData", text: texts.find((t) => STALE_MOCK_PATTERNS.some((p) => p.test(t))) || "" });
+        errors.push({
+          slideIndex: idx,
+          type: "staleMockData",
+          text:
+            texts.find((t) => STALE_MOCK_PATTERNS.some((p) => p.test(t))) || "",
+        });
       }
-      if (topic && !/牛顿第二定律|牛顿第一定律|f\s*=\s*ma/.test(topic) && texts.some((t) => CROSS_TOPIC_LEAK_TERMS.some((p) => p.test(t)))) {
-        errors.push({ slideIndex: idx, type: "crossTopicLeak", text: texts.find((t) => CROSS_TOPIC_LEAK_TERMS.some((p) => p.test(t))) || "" });
+      if (
+        topic &&
+        !/牛顿第二定律|牛顿第一定律|f\s*=\s*ma/.test(topic) &&
+        texts.some((t) => CROSS_TOPIC_LEAK_TERMS.some((p) => p.test(t)))
+      ) {
+        errors.push({
+          slideIndex: idx,
+          type: "crossTopicLeak",
+          text:
+            texts.find((t) => CROSS_TOPIC_LEAK_TERMS.some((p) => p.test(t))) ||
+            "",
+        });
       }
-      if (SCENARIO_LEAK_PATTERNS[scenario] && texts.some((t) => SCENARIO_LEAK_PATTERNS[scenario].some((p) => p.test(t)))) {
-        errors.push({ slideIndex: idx, type: "mixedScenario", text: texts.find((t) => SCENARIO_LEAK_PATTERNS[scenario].some((p) => p.test(t))) || "" });
+      if (
+        SCENARIO_LEAK_PATTERNS[scenario] &&
+        texts.some((t) =>
+          SCENARIO_LEAK_PATTERNS[scenario].some((p) => p.test(t)),
+        )
+      ) {
+        errors.push({
+          slideIndex: idx,
+          type: "mixedScenario",
+          text:
+            texts.find((t) =>
+              SCENARIO_LEAK_PATTERNS[scenario].some((p) => p.test(t)),
+            ) || "",
+        });
       }
       if (texts.some((t) => /(结论：|证据：|行动：)/.test(t))) {
-        errors.push({ slideIndex: idx, type: "mechanicalLanguage", text: texts.find((t) => /(结论：|证据：|行动：)/.test(t)) || "" });
+        errors.push({
+          slideIndex: idx,
+          type: "mechanicalLanguage",
+          text: texts.find((t) => /(结论：|证据：|行动：)/.test(t)) || "",
+        });
       }
 
       if (texts.some((t) => (t.match(/•/g) || []).length >= 2)) {
-        errors.push({ slideIndex: idx, type: "bulletFormat", text: texts.find((t) => (t.match(/•/g) || []).length >= 2) || "" });
+        errors.push({
+          slideIndex: idx,
+          type: "bulletFormat",
+          text: texts.find((t) => (t.match(/•/g) || []).length >= 2) || "",
+        });
       }
 
       const phraseCount = new Map();
       for (const t of nonPlaceholder) {
-        const key = String(t || "").replace(/\s+/g, "").slice(0, 28).toLowerCase();
+        const key = String(t || "")
+          .replace(/\s+/g, "")
+          .slice(0, 28)
+          .toLowerCase();
         if (!key) continue;
         phraseCount.set(key, (phraseCount.get(key) || 0) + 1);
       }
       const repeated = Array.from(phraseCount.entries()).find(([, n]) => n > 2);
       if (repeated) {
-        errors.push({ slideIndex: idx, type: "repeatedTextInSlide", text: repeated[0] });
+        errors.push({
+          slideIndex: idx,
+          type: "repeatedTextInSlide",
+          text: repeated[0],
+        });
       }
 
-      const joined = nonPlaceholder.join(" ");
+      const joined = semanticTexts.join(" ");
       const hasPartToken = /\bPART\s*0?\d+\b/i.test(joined);
       if (planType !== "section" && hasPartToken) {
-        errors.push({ slideIndex: idx, type: "mixedLayout", text: "part_token_in_non_section" });
+        errors.push({
+          slideIndex: idx,
+          type: "mixedLayout",
+          text: "part_token_in_non_section",
+        });
       }
       if (planType === "section") {
-        const bodyChars = joined.replace(/\s+/g, "").length;
+        const sectionPayload = semanticTexts
+          .filter((t) => !isDuplicateTitle(t, title))
+          .filter((t) => !/^part\s*\d+$/i.test(t))
+          .filter((t) => !isSectionScaffoldText(t));
+        const bodyChars = sectionPayload.join("").replace(/\s+/g, "").length;
         if (bodyChars > 140) {
-          errors.push({ slideIndex: idx, type: "mixedLayout", text: "section_body_too_long" });
+          errors.push({
+            slideIndex: idx,
+            type: "mixedLayout",
+            text: "section_body_too_long",
+          });
         }
       }
       if (nonPlaceholder.length === 0) {
         errors.push({ slideIndex: idx, type: "blankSlide", text: "" });
       }
 
-      const dupeInSlide = nonPlaceholder.filter((t) => isDuplicateTitle(t, title)).length;
-      const inSlideType = normalizeScriptType((slides[idx - 1] && slides[idx - 1].scriptType) || "", idx);
-      if (title && dupeInSlide > 3 && inSlideType !== "section" && inSlideType !== "cover") {
-        errors.push({ slideIndex: idx, type: "duplicateTitleInSlide", text: title });
+      const dupeInSlide = nonPlaceholder.filter((t) =>
+        isDuplicateTitle(t, title),
+      ).length;
+      const inSlideType = normalizeScriptType(
+        (slides[idx - 1] && slides[idx - 1].scriptType) || "",
+        idx,
+      );
+      if (
+        title &&
+        dupeInSlide > 3 &&
+        inSlideType !== "section" &&
+        inSlideType !== "cover"
+      ) {
+        errors.push({
+          slideIndex: idx,
+          type: "duplicateTitleInSlide",
+          text: title,
+        });
       }
 
       if (nonPlaceholder.some((t) => t.length > 150)) {
-        errors.push({ slideIndex: idx, type: "overlongText", text: nonPlaceholder.find((t) => t.length > 150) || "" });
+        errors.push({
+          slideIndex: idx,
+          type: "overlongText",
+          text: nonPlaceholder.find((t) => t.length > 150) || "",
+        });
       }
       if (nonPlaceholder.length <= 1) {
         const planned = slides[idx - 1] || {};
-        const plannedType = normalizeScriptType((planned && planned.scriptType) || (planned && planned.slideType) || "", idx);
+        const plannedType = normalizeScriptType(
+          (planned && planned.scriptType) ||
+            (planned && planned.slideType) ||
+            "",
+          idx,
+        );
         const plannedBody = cleanDeckText((planned && planned.goal) || "", 0);
-        const plannedBullets = Array.isArray(planned && planned.bullets) ? planned.bullets.filter(Boolean) : [];
-        const needsDenseContent = idx > 1 && ["content_text", "content_bullets", "data_insight", "process", "compare", "case_study"].includes(plannedType);
-        const canTrustSource = ["content_text", "content_bullets"].includes(plannedType)
-          && (plannedBody.length >= 60 || plannedBullets.length >= 3);
-        if (needsDenseContent && !canTrustSource && nonPlaceholder.length <= 1) {
-          errors.push({ slideIndex: idx, type: "blankOrHalfFilled", text: String(row && row.title || "") });
+        const plannedBullets = Array.isArray(planned && planned.bullets)
+          ? planned.bullets.filter(Boolean)
+          : [];
+        const needsDenseContent =
+          idx > 1 &&
+          [
+            "content_text",
+            "content_bullets",
+            "data_insight",
+            "process",
+            "compare",
+            "case_study",
+          ].includes(plannedType);
+        const canTrustSource =
+          ["content_text", "content_bullets"].includes(plannedType) &&
+          (plannedBody.length >= 60 || plannedBullets.length >= 3);
+        if (
+          needsDenseContent &&
+          !canTrustSource &&
+          nonPlaceholder.length <= 1
+        ) {
+          errors.push({
+            slideIndex: idx,
+            type: "blankOrHalfFilled",
+            text: String((row && row.title) || ""),
+          });
         }
       }
     }
 
     slides.forEach((s, i) => {
       const idx = i + 1;
-      const t = normalizeScriptType((s && s.scriptType) || (s && s.slideType) || "", idx);
-      const mins = validateMinimumEffectiveSlide(t, s, idx);
+      const sourceSlide =
+        slideScripts[i] && typeof slideScripts[i] === "object"
+          ? slideScripts[i]
+          : s && typeof s === "object"
+            ? s
+            : {};
+      const t = normalizeScriptType(
+        (sourceSlide && sourceSlide.scriptType) ||
+          (sourceSlide && sourceSlide.slideType) ||
+          (sourceSlide && sourceSlide.type) ||
+          "",
+        idx,
+      );
+      const mins = validateMinimumEffectiveSlide(t, sourceSlide, idx);
       mins.forEach((e) => errors.push(e));
     });
 
@@ -2629,18 +4284,24 @@ function validateDeck(contract, exportedTextDump = null) {
       const prev = exportedTextDump.slides[i - 1];
       const curr = exportedTextDump.slides[i];
       if (isDuplicateTitle(prev && prev.title, curr && curr.title)) {
-        errors.push({ slideIndex: Number(curr && curr.index) || i + 1, type: "duplicateSlideTitles", text: String(curr && curr.title || "") });
+        errors.push({
+          slideIndex: Number(curr && curr.index) || i + 1,
+          type: "duplicateSlideTitles",
+          text: String((curr && curr.title) || ""),
+        });
       }
     }
   }
 
-  const issueSet = new Set(errors.map((e) => `${e.type}_slide_${e.slideIndex}`));
+  const issueSet = new Set(
+    errors.map((e) => `${e.type}_slide_${e.slideIndex}`),
+  );
   return {
     ok: errors.length === 0,
     pass: errors.length === 0,
     errors,
     issues: Array.from(issueSet),
-    warnings
+    warnings,
   };
 }
 
@@ -2664,7 +4325,34 @@ function topKeywords(text, limit = 16) {
     .split(/\s+/)
     .filter((w) => w && w.length >= 2);
 
-  const stop = new Set(["the", "and", "for", "with", "that", "this", "from", "have", "will", "into", "you", "your", "http", "https", "www", "com", "的", "了", "和", "是", "在", "与", "以及", "一个", "进行", "可以"]);
+  const stop = new Set([
+    "the",
+    "and",
+    "for",
+    "with",
+    "that",
+    "this",
+    "from",
+    "have",
+    "will",
+    "into",
+    "you",
+    "your",
+    "http",
+    "https",
+    "www",
+    "com",
+    "的",
+    "了",
+    "和",
+    "是",
+    "在",
+    "与",
+    "以及",
+    "一个",
+    "进行",
+    "可以",
+  ]);
   const counts = new Map();
   for (const token of tokens) {
     if (stop.has(token)) continue;
@@ -2679,7 +4367,10 @@ function topKeywords(text, limit = 16) {
 
 function buildIngestorPack({ userInput, fileContexts }) {
   const merged = normalizeText(fileContexts.join("\n\n"));
-  const clipped = merged.length > 18000 ? `${merged.slice(0, 18000)}\n...[context truncated]` : merged;
+  const clipped =
+    merged.length > 18000
+      ? `${merged.slice(0, 18000)}\n...[context truncated]`
+      : merged;
   const headings = extractHeadings(clipped);
   const keywords = topKeywords(clipped, 16);
   const lines = clipped.split("\n").filter((line) => line.trim());
@@ -2690,12 +4381,12 @@ function buildIngestorPack({ userInput, fileContexts }) {
     contextStats: {
       fileCount: fileContexts.length,
       contextChars: clipped.length,
-      headingCount: headings.length
+      headingCount: headings.length,
     },
     headings,
     keywords,
     keySnippets,
-    contextBody: clipped
+    contextBody: clipped,
   };
 }
 
@@ -2708,13 +4399,20 @@ function extractFirstJsonObject(text) {
 
   const firstBrace = candidate.indexOf("{");
   const lastBrace = candidate.lastIndexOf("}");
-  if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) return null;
+  if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace)
+    return null;
 
   return candidate.slice(firstBrace, lastBrace + 1);
 }
 
 function validateCompiledJson(parsed) {
-  const requiredString = ["goal", "audience", "style", "contextSummary", "finalPrompt"];
+  const requiredString = [
+    "goal",
+    "audience",
+    "style",
+    "contextSummary",
+    "finalPrompt",
+  ];
   const requiredArray = ["constraints", "successCriteria", "checklist"];
 
   for (const key of requiredString) {
@@ -2735,7 +4433,8 @@ function validateCompiledJson(parsed) {
 function describeUpstreamError(error) {
   const cause = error && error.cause ? error.cause : {};
   const code = cause.code || error.code || "UNKNOWN";
-  const message = cause.message || (error && error.message ? error.message : String(error));
+  const message =
+    cause.message || (error && error.message ? error.message : String(error));
   return `upstream_connect_error(${code}): ${message}`;
 }
 
@@ -2752,15 +4451,33 @@ function sanitizeFileName(name) {
 }
 
 function createRequestContext(req, contractInput = null) {
-  const requestId = String(req && req.requestId || crypto.randomUUID());
-  const exportDir = path.join(__dirname, "docs", "benchmarks", "results", "exports", requestId);
-  const debugDir = path.join(__dirname, "docs", "benchmarks", "results", "debug", requestId);
+  const requestId = String((req && req.requestId) || crypto.randomUUID());
+  const exportDir = path.join(
+    __dirname,
+    "docs",
+    "benchmarks",
+    "results",
+    "exports",
+    requestId,
+  );
+  const debugDir = path.join(
+    __dirname,
+    "docs",
+    "benchmarks",
+    "results",
+    "debug",
+    requestId,
+  );
   fs.mkdirSync(exportDir, { recursive: true });
   fs.mkdirSync(debugDir, { recursive: true });
   if (contractInput) {
     try {
-      fs.writeFileSync(path.join(debugDir, "input.json"), JSON.stringify(contractInput, null, 2), "utf8");
-    } catch { }
+      fs.writeFileSync(
+        path.join(debugDir, "input.json"),
+        JSON.stringify(contractInput, null, 2),
+        "utf8",
+      );
+    } catch {}
   }
   return { requestId, exportDir, debugDir };
 }
@@ -2779,13 +4496,13 @@ function writeDebugJson(requestContext, name, payload) {
 function ensureDirSafe(dirPath) {
   try {
     fs.mkdirSync(dirPath, { recursive: true });
-  } catch { }
+  } catch {}
 }
 
 function readJsonFileSafe(filePath, fallback = null) {
   try {
     if (!fs.existsSync(filePath)) return fallback;
-    const text = fs.readFileSync(filePath, "utf8");
+    const text = fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, "");
     return JSON.parse(text);
   } catch {
     return fallback;
@@ -2801,13 +4518,13 @@ function ensureGoldenSamplesFile() {
       example: {
         title: "AI客服降本增效方案",
         subtitle: "从高频服务场景切入，验证自动化降本路径",
-        metadata: { source: "内容由AI生成", pageNumber: "1/10" }
+        metadata: { source: "", pageNumber: "" },
       },
       rules: [
         "标题5-20字，不含版本号",
         "副标题15-40字，说明业务定位",
-        "元数据仅出现在页脚，不混入标题"
-      ]
+        "元数据仅出现在页脚，不混入标题",
+      ],
     },
     {
       slideType: "four_points",
@@ -2817,52 +4534,160 @@ function ensureGoldenSamplesFile() {
           { label: "试点范围", desc: "明确首批渠道与服务场景" },
           { label: "预算边界", desc: "确认工具、人力和集成成本" },
           { label: "系统接入", desc: "打通客服、工单和知识库系统" },
-          { label: "责任机制", desc: "指定业务、技术和运营负责人" }
-        ]
+          { label: "责任机制", desc: "指定业务、技术和运营负责人" },
+        ],
       },
       rules: [
         "必须恰好4条，每条含label和desc",
         "label 4-6字，desc 12-20字",
-        "4条内容不重复、不交叉"
-      ]
-    }
+        "4条内容不重复、不交叉",
+      ],
+    },
   ];
   try {
-    fs.writeFileSync(GOLDEN_SAMPLES_PATH, JSON.stringify(seed, null, 2), "utf8");
-  } catch { }
+    fs.writeFileSync(
+      GOLDEN_SAMPLES_PATH,
+      JSON.stringify(seed, null, 2),
+      "utf8",
+    );
+  } catch {}
 }
 
 function readBadSamples(limit = 40) {
   ensureDirSafe(TRAINING_DIR);
   if (!fs.existsSync(BAD_SAMPLES_PATH)) return [];
   try {
-    const lines = fs.readFileSync(BAD_SAMPLES_PATH, "utf8").split(/\r?\n/).map((x) => x.trim()).filter(Boolean);
+    const lines = fs
+      .readFileSync(BAD_SAMPLES_PATH, "utf8")
+      .split(/\r?\n/)
+      .map((x) => x.trim())
+      .filter(Boolean);
     const rows = [];
     for (const line of lines) {
       try {
         const parsed = JSON.parse(line);
         if (parsed && typeof parsed === "object") rows.push(parsed);
-      } catch { }
+      } catch {}
     }
-    return rows.slice(Math.max(0, rows.length - Math.max(1, Number(limit) || 40)));
+    return rows.slice(
+      Math.max(0, rows.length - Math.max(1, Number(limit) || 40)),
+    );
   } catch {
     return [];
   }
 }
 
 function buildNegativeExamplesBlock(badSamples) {
-  const rows = Array.isArray(badSamples) ? badSamples.slice(-12) : [];
+  const rows = Array.isArray(badSamples) ? badSamples.slice(-24) : [];
   if (!rows.length) return "";
-  const lines = ["以下是必须避免的错误示例："];
+
+  const seen = new Set();
+  const compact = [];
   for (const row of rows) {
     const err = cleanDeckText(row && row.error, 64) || "unknown_error";
-    const bad = cleanDeckText(row && row.bad, 120) || "(空)";
-    const good = cleanDeckText(row && row.good, 120) || "(请按语义纠正)";
-    lines.push(`❌ 错误(${err})：${bad}`);
-    lines.push(`✅ 正确：${good}`);
+    const bad = cleanDeckText(row && row.bad, 64) || "(空)";
+    const good = cleanDeckText(row && row.good, 64) || "(请按语义纠正)";
+    const key = `${err}|${bad}|${good}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    compact.push({ err, bad, good });
+    if (compact.length >= 6) break;
   }
-  lines.push("请严格避免以上错误模式。仅输出合同要求内容，不要输出解释。");
+
+  if (!compact.length) return "";
+  const lines = ["以下是必须避免的错误示例："];
+  for (const row of compact) {
+    lines.push(`❌ ${row.err}: ${row.bad}`);
+    lines.push(`✅ ${row.good}`);
+  }
+  lines.push("请避免以上错误模式，仅输出合同要求内容。\n");
   return lines.join("\n");
+}
+
+function buildPositiveExamplesBlock(goldenSamples) {
+  const samples = Array.isArray(goldenSamples) ? goldenSamples : [];
+  if (!samples.length) return "";
+
+  const lines = [
+    "以下是优秀差异化示例（请参考角度，生成独特内容，禁止照抄）：\n",
+  ];
+
+  for (const sample of samples) {
+    const variants = Array.isArray(sample && sample.variants)
+      ? sample.variants
+      : [];
+    if (!variants.length) continue;
+
+    const slideType =
+      cleanDeckText(sample && sample.slideType, 40) || "content";
+    lines.push(`\n【${slideType} 的 ${variants.length} 种业务视角】`);
+
+    variants.forEach((v, idx) => {
+      const context =
+        cleanDeckText((v && (v.context || v.angle || v.focus)) || "", 20) ||
+        `视角${idx + 1}`;
+      const bodyPreview = cleanDeckText((v && v.body) || "", 80);
+      const bulletsPreview = Array.isArray(v && v.bullets)
+        ? v.bullets
+            .slice(0, 2)
+            .map((b) => cleanDeckText(b, 40))
+            .join("；")
+        : "";
+      const itemPreview = cleanDeckText(
+        (v && Array.isArray(v.items) && v.items[0] && v.items[0].desc) || "",
+        80,
+      );
+      const preview =
+        bodyPreview ||
+        bulletsPreview ||
+        itemPreview ||
+        cleanDeckText((v && v.subtitle) || "", 80);
+      if (preview) lines.push(`  ${idx + 1}. 【${context}】${preview}...`);
+    });
+  }
+
+  lines.push(
+    "\n✅ 请从不同业务视角生成内容，确保每个变体有独特价值。不要复用同一句式。",
+  );
+  lines.push('❌ 禁止重复使用"目标达成、资源配置、执行路径"等通用套话。\n');
+  return lines.join("\n");
+}
+
+function buildDiversityHint(contract) {
+  const angles = [
+    "roi",
+    "risk",
+    "tech",
+    "process",
+    "experience",
+    "cost",
+    "compliance",
+    "scalability",
+    "timeline",
+    "stakeholder",
+  ];
+  const hints = {
+    roi: "强调投入产出比、成本下降、收益验证",
+    risk: "强调风险边界、兜底机制、灰度试点",
+    tech: "强调技术选型、接口对接、模型迭代",
+    process: "强调流程标准化、协同效率、复盘改进",
+    experience: "强调用户体验、触点优化、满意度提升",
+    cost: "强调成本结构、人力优化、峰值调度",
+    compliance: "强调合规要求、审计追溯、风控流程",
+    scalability: "强调扩展性、模块化、长期演进",
+    timeline: "强调里程碑、交付节奏、资源协调",
+    stakeholder: "强调干系人对齐、决策机制、责任划分",
+  };
+  const rawIndex = Number(
+    contract && (contract.runIndex ?? contract.seed ?? 0),
+  );
+  const runIndex = Number.isFinite(rawIndex) ? rawIndex : 0;
+  const angle = angles[Math.abs(runIndex) % angles.length] || "roi";
+  return {
+    angle,
+    runIndex,
+    instruction: `本次生成聚焦【${angle}】视角：${hints[angle]}。避免通用套话，给出该视角下的具体判断和行动。`,
+  };
 }
 
 function applyFeedbackConstraintsToContract(contract) {
@@ -2873,35 +4698,69 @@ function applyFeedbackConstraintsToContract(contract) {
   if (!fs.existsSync(BAD_SAMPLES_PATH)) {
     try {
       fs.writeFileSync(BAD_SAMPLES_PATH, "", "utf8");
-    } catch { }
+    } catch {}
   }
 
   const badSamples = readBadSamples(40);
   const negativeBlock = buildNegativeExamplesBlock(badSamples);
   const goldenSamples = readJsonFileSafe(GOLDEN_SAMPLES_PATH, []);
-  const promptVersion = cleanDeckText(contract.promptVersion || "v1_observable_baseline", 64) || "v1_observable_baseline";
+  const positiveBlock = buildPositiveExamplesBlock(goldenSamples);
+  const diversityHint = buildDiversityHint(contract);
+  const diversityBlock =
+    diversityHint && diversityHint.instruction
+      ? `【差异化视角约束】\n${diversityHint.instruction}`
+      : "";
+  const quantKpiBlock =
+    "【量化指标硬约束】\n每页必须至少包含1个可验证的量化指标，并带单位（例如：12%、50万元、3周、Q3、120人、2倍）。禁止只写抽象目标，不给数字。";
+  const promptVersion =
+    cleanDeckText(contract.promptVersion || "v1_observable_baseline", 64) ||
+    "v1_observable_baseline";
 
   const promptSource = [
     `promptVersion=${promptVersion}`,
     JSON.stringify(goldenSamples || []),
+    diversityBlock,
+    quantKpiBlock,
     negativeBlock,
-    JSON.stringify({ topic: contract.topic || "", pageCount: contract.pageCount || 0 })
+    positiveBlock,
+    JSON.stringify({
+      topic: contract.topic || "",
+      pageCount: contract.pageCount || 0,
+    }),
   ].join("\n");
-  const promptHash = crypto.createHash("sha256").update(promptSource).digest("hex");
+  const promptHash = crypto
+    .createHash("sha256")
+    .update(promptSource)
+    .digest("hex");
 
   contract.promptVersion = promptVersion;
   contract.promptHash = promptHash;
   contract.promptHints = {
     negativeExamples: negativeBlock,
+    positiveExamples: positiveBlock,
+    diversity: diversityHint,
     goldenSamples,
-    loadedBadSamples: Array.isArray(badSamples) ? badSamples.length : 0
+    loadedBadSamples: Array.isArray(badSamples) ? badSamples.length : 0,
   };
 
   if (Array.isArray(contract.slideScripts)) {
     contract.slideScripts = contract.slideScripts.map((s, i) => {
       const copy = s && typeof s === "object" ? { ...s } : { id: `s${i + 1}` };
-      const basePrompt = cleanDeckText(copy.generationPrompt || `生成第${i + 1}页内容：${copy.title || ""}`, 800);
-      copy.generationPrompt = negativeBlock ? `${basePrompt}\n\n${negativeBlock}` : basePrompt;
+      const basePrompt = cleanDeckText(
+        copy.generationPrompt || `生成第${i + 1}页内容：${copy.title || ""}`,
+        800,
+      );
+      const injectedBlocks = [
+        diversityBlock,
+        quantKpiBlock,
+        positiveBlock,
+        negativeBlock,
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+      copy.generationPrompt = injectedBlocks
+        ? `${basePrompt}\n\n${injectedBlocks}`
+        : basePrompt;
       return copy;
     });
   }
@@ -2909,15 +4768,37 @@ function applyFeedbackConstraintsToContract(contract) {
 
 function mapErrorToBadSample(contract, errorItem) {
   const slideIndex = Number(errorItem && errorItem.slideIndex) || 0;
-  const slide = Array.isArray(contract && contract.slides) && slideIndex > 0 ? contract.slides[slideIndex - 1] : null;
+  const slide =
+    Array.isArray(contract && contract.slides) && slideIndex > 0
+      ? contract.slides[slideIndex - 1]
+      : null;
   const errorType = cleanDeckText(errorItem && errorItem.type, 64) || "unknown";
-  const badText = cleanDeckText(errorItem && errorItem.text, 180)
-    || cleanDeckText(slide && slide.title, 120)
-    || "(empty)";
-  let goodText = "按模板槽位重写并去除元数据污染";
-  if (/title|metadata|version|duplicate/i.test(errorType)) goodText = "标题仅保留主题，不含版本号、页码、来源信息";
-  if (/blank|empty/i.test(errorType)) goodText = "补齐正文，保证至少1条清晰业务/教学信息";
-  if (/qualityscore/i.test(errorType)) goodText = "优先清零 BLOCKER，再提升模板匹配与可读性";
+  const slideBullets = Array.isArray(slide && slide.bullets)
+    ? slide.bullets.join("；")
+    : "";
+  const badText =
+    cleanDeckText(
+      (slide &&
+        (slide.goal ||
+          slide.body ||
+          slide.summary ||
+          slideBullets ||
+          slide.title)) ||
+        (errorItem && errorItem.text) ||
+        "",
+      180,
+    ) || "(empty)";
+  let goodText = "按模板槽位重写，确保信息密度和可读性";
+  if (/repetition|duplicate/i.test(errorType))
+    goodText = "从不同业务视角改写，避免复用相同句式和关键词";
+  else if (/blank|empty/i.test(errorType))
+    goodText = "补齐至少60字业务说明，包含场景、动作、指标";
+  else if (/mechanical/i.test(errorType))
+    goodText = "去除机械前缀，保持自然业务表达";
+  else if (/title|metadata|version/i.test(errorType))
+    goodText = "标题仅保留主题，不含版本号、页码、来源信息";
+  else if (/qualityscore/i.test(errorType))
+    goodText = "优先清零 BLOCKER，再提升模板匹配与可读性";
   return {
     slide: slideIndex,
     error: errorType,
@@ -2925,7 +4806,7 @@ function mapErrorToBadSample(contract, errorItem) {
     good: goodText,
     timestamp: new Date().toISOString(),
     topic: cleanDeckText(contract && contract.topic, 120),
-    requestId: cleanDeckText(contract && contract.requestId, 80)
+    requestId: cleanDeckText(contract && contract.requestId, 80),
   };
 }
 
@@ -2933,13 +4814,15 @@ function appendBadSamples(entries) {
   const rows = Array.isArray(entries) ? entries : [];
   if (!rows.length) return 0;
   ensureDirSafe(TRAINING_DIR);
-  const lines = rows.map((x) => {
-    try {
-      return JSON.stringify(x);
-    } catch {
-      return "";
-    }
-  }).filter(Boolean);
+  const lines = rows
+    .map((x) => {
+      try {
+        return JSON.stringify(x);
+      } catch {
+        return "";
+      }
+    })
+    .filter(Boolean);
   if (!lines.length) return 0;
   try {
     fs.appendFileSync(BAD_SAMPLES_PATH, `${lines.join("\n")}\n`, "utf8");
@@ -2957,29 +4840,43 @@ function buildGenerationTracePayload(params) {
     result,
     postCheck,
     elapsedMs,
-    exportConfig
+    exportConfig,
   } = params || {};
-  const deckValidation = postCheck && postCheck.deckValidation ? postCheck.deckValidation : { errors: [] };
-  const errors = Array.isArray(deckValidation.errors) ? deckValidation.errors : [];
-  const scripts = Array.isArray(contract && contract.slideScripts) ? contract.slideScripts : [];
-  const slides = Array.isArray(contract && contract.slides) ? contract.slides : [];
+  const deckValidation =
+    postCheck && postCheck.deckValidation
+      ? postCheck.deckValidation
+      : { errors: [] };
+  const errors = Array.isArray(deckValidation.errors)
+    ? deckValidation.errors
+    : [];
+  const scripts = Array.isArray(contract && contract.slideScripts)
+    ? contract.slideScripts
+    : [];
+  const slides = Array.isArray(contract && contract.slides)
+    ? contract.slides
+    : [];
   const llmCalls = scripts.map((s, i) => {
     const idx = i + 1;
     const itemErrors = errors.filter((e) => Number(e && e.slideIndex) === idx);
     const responseSlide = slides[i] || {};
     return {
       slideIndex: idx,
-      prompt: cleanDeckText(s && s.generationPrompt, 2400) || `生成第${idx}页内容`,
+      prompt:
+        cleanDeckText(s && s.generationPrompt, 2400) || `生成第${idx}页内容`,
       response: {
         title: cleanDeckText(responseSlide.title, 120),
         subtitle: cleanDeckText(responseSlide.subtitle, 200),
-        bullets: Array.isArray(responseSlide.bullets) ? responseSlide.bullets : [],
-        items: Array.isArray(responseSlide.items) ? responseSlide.items : []
+        bullets: Array.isArray(responseSlide.bullets)
+          ? responseSlide.bullets
+          : [],
+        items: Array.isArray(responseSlide.items) ? responseSlide.items : [],
       },
       validationResult: {
         passed: itemErrors.length === 0,
-        errors: itemErrors.map((e) => cleanDeckText(`${e.type}:${e.text || ""}`, 180))
-      }
+        errors: itemErrors.map((e) =>
+          cleanDeckText(`${e.type}:${e.text || ""}`, 180),
+        ),
+      },
     };
   });
 
@@ -2988,14 +4885,20 @@ function buildGenerationTracePayload(params) {
       slideIndex: 0,
       prompt: result.llmTrace.prompt || "",
       response: result.llmTrace.response || {},
-      validationResult: { passed: true, errors: [] }
+      validationResult: { passed: true, errors: [] },
     });
   }
 
   return {
     timestamp: new Date().toISOString(),
-    requestId: requestContext && requestContext.requestId ? requestContext.requestId : "",
-    version: cleanDeckText((contract && contract.version) || (contract && contract.requestId) || "", 64),
+    requestId:
+      requestContext && requestContext.requestId
+        ? requestContext.requestId
+        : "",
+    version: cleanDeckText(
+      (contract && contract.version) || (contract && contract.requestId) || "",
+      64,
+    ),
     promptVersion: cleanDeckText(contract && contract.promptVersion, 64),
     promptHash: cleanDeckText(contract && contract.promptHash, 80),
     input: {
@@ -3003,20 +4906,26 @@ function buildGenerationTracePayload(params) {
       targetSlides: Number(contract && contract.pageCount) || 0,
       styleGuide: cleanDeckText(contract && contract.visualStyle, 80),
       scenario: cleanDeckText(contract && contract.sceneType, 40),
-      templateFileName: cleanDeckText(contract && contract.templateFileName, 120)
+      templateFileName: cleanDeckText(
+        contract && contract.templateFileName,
+        120,
+      ),
     },
     llmProvider: {
       aipptProvider: cleanDeckText(exportConfig && exportConfig.provider, 40),
       endpoint: cleanDeckText(exportConfig && exportConfig.endpoint, 180),
-      model: cleanDeckText(exportConfig && exportConfig.model, 80)
+      model: cleanDeckText(exportConfig && exportConfig.model, 80),
     },
     llmCalls,
     output: {
       filePath: saved && saved.relPath ? saved.relPath : "",
-      qualityScore: postCheck && postCheck.qualityScore ? postCheck.qualityScore : null,
-      failedChecks: errors.map((e) => cleanDeckText(e && e.type, 64)).filter(Boolean),
-      elapsedMs: Number(elapsedMs) || 0
-    }
+      qualityScore:
+        postCheck && postCheck.qualityScore ? postCheck.qualityScore : null,
+      failedChecks: errors
+        .map((e) => cleanDeckText(e && e.type, 64))
+        .filter(Boolean),
+      elapsedMs: Number(elapsedMs) || 0,
+    },
   };
 }
 
@@ -3024,7 +4933,11 @@ function writeGenerationTraceFile(requestContext, tracePayload) {
   if (!requestContext || !requestContext.debugDir) return "";
   try {
     const absPath = path.join(requestContext.debugDir, "generation_trace.json");
-    fs.writeFileSync(absPath, JSON.stringify(tracePayload || {}, null, 2), "utf8");
+    fs.writeFileSync(
+      absPath,
+      JSON.stringify(tracePayload || {}, null, 2),
+      "utf8",
+    );
     return path.relative(__dirname, absPath).replace(/\\/g, "/");
   } catch {
     return "";
@@ -3032,33 +4945,74 @@ function writeGenerationTraceFile(requestContext, tracePayload) {
 }
 
 function computeQualityScore(contract, textDump, deckValidation) {
-  const errors = Array.isArray(deckValidation && deckValidation.errors) ? deckValidation.errors : [];
-  const hasType = (type) => errors.some((e) => String(e && e.type || "") === type);
+  const errors = Array.isArray(deckValidation && deckValidation.errors)
+    ? deckValidation.errors
+    : [];
+  const hasType = (type) =>
+    errors.some((e) => String((e && e.type) || "") === type);
   const hasAny = (types) => types.some((t) => hasType(t));
-  const slides = Array.isArray(textDump && textDump.slides) ? textDump.slides : [];
-  const scripts = Array.isArray(contract && contract.slideScripts) ? contract.slideScripts : [];
-  const scriptTypes = new Set(scripts.map((s) => normalizeScriptType(s && s.type, 1)));
+  const slides = Array.isArray(textDump && textDump.slides)
+    ? textDump.slides
+    : [];
+  const scripts = Array.isArray(contract && contract.slideScripts)
+    ? contract.slideScripts
+    : [];
+  const scriptTypes = new Set(
+    scripts.map((s) => normalizeScriptType(s && s.type, 1)),
+  );
 
-  const templateUsage = hasAny(["missingRequiredSlots", "unknownSlideType"]) ? 70 : 92;
-  let visualCleanliness = hasAny(["textBudgetExceeded", "blankOrHalfFilled", "mechanicalLanguage"]) ? 72 : 92;
-  if (hasAny(["forbiddenText", "templateLeakage", "staleMockData"])) visualCleanliness = Math.min(visualCleanliness, 55);
+  const templateUsage = hasAny(["missingRequiredSlots", "unknownSlideType"])
+    ? 70
+    : 92;
+  let visualCleanliness = hasAny([
+    "textBudgetExceeded",
+    "blankOrHalfFilled",
+    "mechanicalLanguage",
+  ])
+    ? 72
+    : 92;
+  if (hasAny(["forbiddenText", "templateLeakage", "staleMockData"]))
+    visualCleanliness = Math.min(visualCleanliness, 55);
 
-  const specificityPenalty = hasAny(["staleMockData", "mechanicalLanguage", "duplicateTitleInSlide"]) ? 18 : 0;
+  const specificityPenalty = hasAny([
+    "staleMockData",
+    "mechanicalLanguage",
+    "duplicateTitleInSlide",
+  ])
+    ? 18
+    : 0;
   const contentSpecificity = Math.max(50, 95 - specificityPenalty);
 
-  const hasFlow = scriptTypes.has("cover") && scriptTypes.has("section") && (scriptTypes.has("content_text") || scriptTypes.has("content_bullets")) && scriptTypes.has("thanks");
+  const hasFlow =
+    scriptTypes.has("cover") &&
+    scriptTypes.has("section") &&
+    (scriptTypes.has("content_text") || scriptTypes.has("content_bullets")) &&
+    scriptTypes.has("thanks");
   const narrativeFlow = hasFlow ? 92 : 68;
 
-  const scenarioFit = hasAny(["mixedScenario", "crossTopicLeak", "scenarioVocabularyLeak"]) ? 55 : 96;
-  const exportIntegrity = hasAny(["slideCountMismatch", "pageCountMismatch", "orphanTemplatePages", "nonContinuousSlideIndex"]) ? 0 : 100;
+  const scenarioFit = hasAny([
+    "mixedScenario",
+    "crossTopicLeak",
+    "scenarioVocabularyLeak",
+  ])
+    ? 55
+    : 96;
+  const exportIntegrity = hasAny([
+    "slideCountMismatch",
+    "pageCountMismatch",
+    "orphanTemplatePages",
+    "nonContinuousSlideIndex",
+  ])
+    ? 0
+    : 100;
 
   const overall = Math.round(
-    templateUsage * 0.2
-    + visualCleanliness * 0.18
-    + contentSpecificity * 0.2
-    + narrativeFlow * 0.14
-    + scenarioFit * 0.14
-    + exportIntegrity * 0.14
+    templateUsage * 0.2 +
+      visualCleanliness * 0.18 +
+      contentSpecificity * 0.2 +
+      narrativeFlow * 0.14 +
+      scenarioFit * 0.14 +
+      exportIntegrity * 0.14,
   );
 
   return {
@@ -3074,7 +5028,7 @@ function computeQualityScore(contract, textDump, deckValidation) {
     structure: narrativeFlow,
     contentDepth: contentSpecificity,
     layoutConsistency: templateUsage,
-    topicRelevance: scenarioFit
+    topicRelevance: scenarioFit,
   };
 }
 
@@ -3095,14 +5049,17 @@ function ensureOfficeplusTemplateInboxDir() {
 
 function listInboxPptxFiles() {
   const dir = ensureOfficeplusTemplateInboxDir();
-  const files = fs.readdirSync(dir)
+  const files = fs
+    .readdirSync(dir)
     .map((name) => {
       const absPath = path.join(dir, name);
       const stat = fs.statSync(absPath);
       return { name, absPath, stat };
     })
     .filter((x) => x.stat && x.stat.isFile() && /\.pptx$/i.test(x.name));
-  return files.sort((a, b) => Number(b.stat.mtimeMs || 0) - Number(a.stat.mtimeMs || 0));
+  return files.sort(
+    (a, b) => Number(b.stat.mtimeMs || 0) - Number(a.stat.mtimeMs || 0),
+  );
 }
 
 function getLatestInboxPptxFile() {
@@ -3119,13 +5076,37 @@ function buildPowerPointLaunchScript(officeplusUrl, inboxDir, options = {}) {
   const shouldOpenInbox = options.openInbox !== false;
   const ppCandidates = [
     "powerpnt.exe",
-    path.join(process.env.ProgramFiles || "", "Microsoft Office", "root", "Office16", "POWERPNT.EXE"),
-    path.join(process.env.ProgramFiles || "", "Microsoft Office", "Office16", "POWERPNT.EXE"),
-    path.join(process.env["ProgramFiles(x86)"] || "", "Microsoft Office", "root", "Office16", "POWERPNT.EXE"),
-    path.join(process.env["ProgramFiles(x86)"] || "", "Microsoft Office", "Office16", "POWERPNT.EXE")
+    path.join(
+      process.env.ProgramFiles || "",
+      "Microsoft Office",
+      "root",
+      "Office16",
+      "POWERPNT.EXE",
+    ),
+    path.join(
+      process.env.ProgramFiles || "",
+      "Microsoft Office",
+      "Office16",
+      "POWERPNT.EXE",
+    ),
+    path.join(
+      process.env["ProgramFiles(x86)"] || "",
+      "Microsoft Office",
+      "root",
+      "Office16",
+      "POWERPNT.EXE",
+    ),
+    path.join(
+      process.env["ProgramFiles(x86)"] || "",
+      "Microsoft Office",
+      "Office16",
+      "POWERPNT.EXE",
+    ),
   ].filter(Boolean);
 
-  const candidateExpr = ppCandidates.map((x) => `'${escapePowerShellSingleQuoted(x)}'`).join(", ");
+  const candidateExpr = ppCandidates
+    .map((x) => `'${escapePowerShellSingleQuoted(x)}'`)
+    .join(", ");
   const safeUrl = escapePowerShellSingleQuoted(officeplusUrl);
   const safeInbox = escapePowerShellSingleQuoted(inboxDir);
   const openOfficeplusExpr = shouldOpenOfficeplus ? "$true" : "$false";
@@ -3197,7 +5178,7 @@ function buildPowerPointLaunchScript(officeplusUrl, inboxDir, options = {}) {
     "  $result.inbox.ok = $true",
     "  $result.inbox.detail = 'skipped'",
     "}",
-    "$result | ConvertTo-Json -Compress"
+    "$result | ConvertTo-Json -Compress",
   ].join("\n");
 }
 
@@ -3208,16 +5189,19 @@ function launchPowerPointAndOpenInbox(options = {}) {
   const inboxDir = ensureOfficeplusTemplateInboxDir();
   const officeplusUrl = getOfficeplusPickUrl();
   try {
-    const script = buildPowerPointLaunchScript(officeplusUrl, inboxDir, options);
-    const result = spawnSync("powershell.exe", [
-      "-NoProfile",
-      "-ExecutionPolicy", "Bypass",
-      "-Command",
-      script
-    ], {
-      encoding: "utf8",
-      windowsHide: true
-    });
+    const script = buildPowerPointLaunchScript(
+      officeplusUrl,
+      inboxDir,
+      options,
+    );
+    const result = spawnSync(
+      "powershell.exe",
+      ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", script],
+      {
+        encoding: "utf8",
+        windowsHide: true,
+      },
+    );
 
     const stdout = String(result && result.stdout ? result.stdout : "").trim();
     const stderr = String(result && result.stderr ? result.stderr : "").trim();
@@ -3229,7 +5213,9 @@ function launchPowerPointAndOpenInbox(options = {}) {
         reason: `open_powerpoint_failed:${sanitizeAuditDetail(detail)}`,
         officeplusUrl,
         inboxDir,
-        inboxRelativePath: path.relative(__dirname, inboxDir).replace(/\\/g, "/")
+        inboxRelativePath: path
+          .relative(__dirname, inboxDir)
+          .replace(/\\/g, "/"),
       };
     }
 
@@ -3242,13 +5228,27 @@ function launchPowerPointAndOpenInbox(options = {}) {
         reason: `open_powerpoint_failed:invalid_script_output:${sanitizeAuditDetail(stdout)}`,
         officeplusUrl,
         inboxDir,
-        inboxRelativePath: path.relative(__dirname, inboxDir).replace(/\\/g, "/")
+        inboxRelativePath: path
+          .relative(__dirname, inboxDir)
+          .replace(/\\/g, "/"),
       };
     }
 
-    const powerPointOk = !!(launchStatus && launchStatus.powerPoint && launchStatus.powerPoint.ok);
-    const officeplusOk = !!(launchStatus && launchStatus.officeplus && launchStatus.officeplus.ok);
-    const inboxOk = !!(launchStatus && launchStatus.inbox && launchStatus.inbox.ok);
+    const powerPointOk = !!(
+      launchStatus &&
+      launchStatus.powerPoint &&
+      launchStatus.powerPoint.ok
+    );
+    const officeplusOk = !!(
+      launchStatus &&
+      launchStatus.officeplus &&
+      launchStatus.officeplus.ok
+    );
+    const inboxOk = !!(
+      launchStatus &&
+      launchStatus.inbox &&
+      launchStatus.inbox.ok
+    );
     if (!powerPointOk || !officeplusOk || !inboxOk) {
       return {
         ok: false,
@@ -3256,7 +5256,9 @@ function launchPowerPointAndOpenInbox(options = {}) {
         launchStatus,
         officeplusUrl,
         inboxDir,
-        inboxRelativePath: path.relative(__dirname, inboxDir).replace(/\\/g, "/")
+        inboxRelativePath: path
+          .relative(__dirname, inboxDir)
+          .replace(/\\/g, "/"),
       };
     }
 
@@ -3265,12 +5267,12 @@ function launchPowerPointAndOpenInbox(options = {}) {
       inboxDir,
       officeplusUrl,
       inboxRelativePath: path.relative(__dirname, inboxDir).replace(/\\/g, "/"),
-      launchStatus
+      launchStatus,
     };
   } catch (error) {
     return {
       ok: false,
-      reason: `open_powerpoint_failed:${sanitizeAuditDetail(error && error.message ? error.message : String(error))}`
+      reason: `open_powerpoint_failed:${sanitizeAuditDetail(error && error.message ? error.message : String(error))}`,
     };
   }
 }
@@ -3287,7 +5289,9 @@ function normalizeContract(input, requestContext = null) {
   }
 
   const rawPageCount = Number(input.pageCount || input.slides.length || 10);
-  const pageCount = Number.isFinite(rawPageCount) ? Math.max(8, Math.min(12, Math.round(rawPageCount))) : NaN;
+  const pageCount = Number.isFinite(rawPageCount)
+    ? Math.max(8, Math.min(12, Math.round(rawPageCount)))
+    : NaN;
   if (!Number.isFinite(pageCount) || pageCount <= 0) {
     return { ok: false, reason: "invalid_page_count" };
   }
@@ -3300,17 +5304,44 @@ function normalizeContract(input, requestContext = null) {
     tone: input.tone,
     pageCount,
     slides: input.slides,
-    templateId: input.templateId
+    templateId: input.templateId,
+    diversityAngle: String(
+      input.diversityAngle ||
+        (input.diversityHint && input.diversityHint.angle) ||
+        "balanced",
+    ),
+    seed: Number.isFinite(Number(input.seed)) ? Number(input.seed) : undefined,
+    runIndex: Number.isFinite(Number(input.runIndex))
+      ? Number(input.runIndex)
+      : undefined,
+    promptVersion: String(input.promptVersion || ""),
+    variant: String(input.promptVariant || input.promptVersion || ""),
+    styleGuide: String(
+      (input.diversityHint &&
+        (input.diversityHint.angle || input.diversityHint.instruction)) ||
+        input.promptVariant ||
+        input.promptVersion ||
+        input.visualStyle ||
+        "",
+    ),
   });
   writeDebugJson(requestContext, "deckPlan.json", pipeline.deckPlan || {});
-  writeDebugJson(requestContext, "slideScripts.raw.json", Array.isArray(pipeline.slideScripts) ? pipeline.slideScripts : []);
+  writeDebugJson(
+    requestContext,
+    "slideScripts.raw.json",
+    Array.isArray(pipeline.slideScripts) ? pipeline.slideScripts : [],
+  );
 
   if (pipeline.generationValidation && !pipeline.generationValidation.pass) {
-    writeDebugJson(requestContext, "generation.validation.json", pipeline.generationValidation);
+    writeDebugJson(
+      requestContext,
+      "generation.validation.json",
+      pipeline.generationValidation,
+    );
     return {
       ok: false,
       reason: `generation_validation_failed:${(pipeline.generationValidation.issues || []).join(",")}`,
-      validation: pipeline.generationValidation
+      validation: pipeline.generationValidation,
     };
   }
 
@@ -3323,50 +5354,89 @@ function normalizeContract(input, requestContext = null) {
     const footer = sanitizeContractText(sanitized.footer || "", 80);
     const date = sanitizeContractText(sanitized.date || "", 32);
     const richGoal = sanitizeContractText(
-      (s && (s.goal || s.body || s.insight || s.background || s.problem || s.question || s.conclusion || s.result))
-      || subtitle
-      || "",
-      260
+      (s &&
+        (s.goal ||
+          s.body ||
+          s.insight ||
+          s.background ||
+          s.problem ||
+          s.question ||
+          s.conclusion ||
+          s.result)) ||
+        subtitle ||
+        "",
+      260,
     );
     return {
       index,
       slideType: sanitized.slideType,
-      title: sanitizeContractText(stripVersionSuffix(sanitized.title || `第${i + 1}页`), 96),
+      title: sanitizeContractText(
+        stripVersionSuffix(sanitized.title || `第${i + 1}页`),
+        96,
+      ),
       subtitle,
       bullets,
       notes,
       footer,
       date,
       goal: sanitized.slideType === "section" ? "" : richGoal,
-      layoutType: String((s && s.layoutType) || sanitized.layoutType || "").trim(),
-      layoutId: String((s && s.layoutId) || "").trim().toLowerCase(),
-      scriptType: String((s && s.scriptType) || "").trim().toLowerCase(),
+      layoutType: String(
+        (s && s.layoutType) || sanitized.layoutType || "",
+      ).trim(),
+      layoutId: String((s && s.layoutId) || "")
+        .trim()
+        .toLowerCase(),
+      scriptType: String((s && s.scriptType) || "")
+        .trim()
+        .toLowerCase(),
       scriptId: String((s && s.scriptId) || `s${index}`),
       templateIndex: Number(s && s.templateIndex) || 0,
-      slotPayload: s && s.slotPayload && typeof s.slotPayload === "object" ? s.slotPayload : {},
-      missingRequiredSlots: Array.isArray(s && s.missingRequiredSlots) ? s.missingRequiredSlots.slice(0, 8) : [],
+      slotPayload:
+        s && s.slotPayload && typeof s.slotPayload === "object"
+          ? s.slotPayload
+          : {},
+      missingRequiredSlots: Array.isArray(s && s.missingRequiredSlots)
+        ? s.missingRequiredSlots.slice(0, 8)
+        : [],
       keyPoints: bullets,
-      items: Array.isArray(s && s.items) ? s.items.slice(0, 4).map((it) => ({
-        title: cleanDeckText(it && it.title, 10),
-        desc: cleanDecisionDesc(it && (it.desc || it.text || it.body), 22)
-      })) : [],
+      items: Array.isArray(s && s.items)
+        ? s.items.slice(0, 4).map((it) => ({
+            title: cleanDeckText(it && it.title, 10),
+            desc: cleanDecisionDesc(it && (it.desc || it.text || it.body), 22),
+          }))
+        : [],
       assetPlaceholders: sanitized.assetPlaceholders,
-      speakerNotes: notes
+      speakerNotes: notes,
     };
   });
 
-  const rawMode = String(input.layoutPolicy && input.layoutPolicy.mode || input.failureStrategy || "balanced").trim().toLowerCase();
-  const mode = ["strict-layout", "balanced", "strict-content"].includes(rawMode) ? rawMode : "balanced";
+  const rawMode = String(
+    (input.layoutPolicy && input.layoutPolicy.mode) ||
+      input.failureStrategy ||
+      "balanced",
+  )
+    .trim()
+    .toLowerCase();
+  const mode = ["strict-layout", "balanced", "strict-content"].includes(rawMode)
+    ? rawMode
+    : "balanced";
   const minScoreRaw = Number(input.layoutPolicy && input.layoutPolicy.minScore);
-  const defaultMinScore = mode === "strict-layout" ? 84 : (mode === "strict-content" ? 55 : 68);
-  const minScore = Number.isFinite(minScoreRaw) ? Math.max(0, Math.min(100, minScoreRaw)) : defaultMinScore;
-  const mappingVersion = String(input.layoutPolicy && input.layoutPolicy.mappingVersion || "semantic-slot-v1").trim() || "semantic-slot-v1";
+  const defaultMinScore =
+    mode === "strict-layout" ? 84 : mode === "strict-content" ? 55 : 68;
+  const minScore = Number.isFinite(minScoreRaw)
+    ? Math.max(0, Math.min(100, minScoreRaw))
+    : defaultMinScore;
+  const mappingVersion =
+    String(
+      (input.layoutPolicy && input.layoutPolicy.mappingVersion) ||
+        "semantic-slot-v1",
+    ).trim() || "semantic-slot-v1";
 
   const layoutPolicy = {
     mode,
     minScore,
     mappingVersion,
-    overflowPolicy: mode === "strict-content" ? "notes-first" : "layout-first"
+    overflowPolicy: mode === "strict-content" ? "notes-first" : "layout-first",
   };
 
   const normalizedContract = {
@@ -3374,6 +5444,7 @@ function normalizeContract(input, requestContext = null) {
     engineType: String(input.engineType || "generic-aippt"),
     sceneType: String(input.sceneType || "通用"),
     templateId: String(input.templateId || "default-business-template"),
+    diversityAngle: String(input.diversityAngle || "balanced"),
     templateSource: String(input.templateSource || "internal"),
     externalTemplateId: String(input.externalTemplateId || ""),
     externalTemplateName: String(input.externalTemplateName || ""),
@@ -3387,28 +5458,54 @@ function normalizeContract(input, requestContext = null) {
     narrativeMode: String(input.narrativeMode || "standard"),
     lockToTemplate: true,
     codegenOnly: false,
-    requestId: requestContext && requestContext.requestId ? requestContext.requestId : "",
-    topic: sanitizeContractText(stripVersionSuffix(input.topic || "当前需求"), 140),
+    requestId:
+      requestContext && requestContext.requestId
+        ? requestContext.requestId
+        : "",
+    topic: sanitizeContractText(
+      stripVersionSuffix(input.topic || "当前需求"),
+      140,
+    ),
+    seed: Number.isFinite(Number(input.seed)) ? Number(input.seed) : undefined,
+    runIndex: Number.isFinite(Number(input.runIndex))
+      ? Number(input.runIndex)
+      : undefined,
+    diversityHint:
+      input && input.diversityHint && typeof input.diversityHint === "object"
+        ? {
+            angle: sanitizeContractText(input.diversityHint.angle || "", 32),
+            instruction: sanitizeContractText(
+              input.diversityHint.instruction || "",
+              220,
+            ),
+          }
+        : null,
     deckPlan: pipeline.deckPlan,
     slideScripts: pipeline.slideScripts,
     templateManifest: pipeline.templateManifest,
     templateWarnings: pipeline.templateWarnings,
     layoutPolicy,
-    slides
+    slides,
   };
 
   applyFeedbackConstraintsToContract(normalizedContract);
 
   // Auto bind a real local template when caller does not provide one.
   if (!normalizedContract.templateFileBase64) {
-    const latestTemplate = getLatestInboxPptxFile();
-    if (latestTemplate) {
+    const preferredTemplate = fs.existsSync(DEFAULT_TEMPLATE_PATH)
+      ? {
+          name: path.basename(DEFAULT_TEMPLATE_PATH),
+          absPath: DEFAULT_TEMPLATE_PATH,
+        }
+      : getLatestInboxPptxFile();
+    if (preferredTemplate) {
       try {
         normalizedContract.templateSource = "officeplus";
-        normalizedContract.templateFileName = latestTemplate.name;
-        normalizedContract.templateFileBase64 = fs.readFileSync(latestTemplate.absPath).toString("base64");
-      } catch {
-      }
+        normalizedContract.templateFileName = preferredTemplate.name;
+        normalizedContract.templateFileBase64 = fs
+          .readFileSync(preferredTemplate.absPath)
+          .toString("base64");
+      } catch {}
     }
   }
 
@@ -3423,33 +5520,62 @@ function normalizeContract(input, requestContext = null) {
   const seenTitle = new Map();
   normalizedContract.slides = normalizedContract.slides.map((s, i) => {
     const cur = sanitizeSlideContent(s, i + 1, normalizedContract.topic);
-    const effectiveScriptType = normalizeScriptType((s && s.scriptType) || cur.slideType || "", i + 1);
-    let title = sanitizeContractText(stripVersionSuffix(cur.title || `第${i + 1}页`), 96);
+    const effectiveScriptType = normalizeScriptType(
+      (s && s.scriptType) || cur.slideType || "",
+      i + 1,
+    );
+    let title = cleanForbiddenPrefixes(
+      sanitizeContractText(stripVersionSuffix(cur.title || `第${i + 1}页`), 96),
+    );
     const key = title.toLowerCase();
     const count = seenTitle.get(key) || 0;
     if (count > 0) {
       title = `${title}（${i + 1}）`;
     }
     seenTitle.set(key, count + 1);
-    const bullets = sanitizeBullets(cur.bullets, 5);
-    const slotPayload = (s && s.slotPayload && typeof s.slotPayload === "object") ? s.slotPayload : {};
-    const isFourPoints = String((s && s.layoutId) || "").toLowerCase() === "four_points";
-    const visibleLabel = sanitizeContractText(slotPayload.label || cur.subtitle || "", 24);
-    let visibleBody = sanitizeContractText(slotPayload.body || s.goal || cur.subtitle || "", 180);
+    const bullets = sanitizeBullets(cur.bullets, 5)
+      .map((b) => cleanForbiddenPrefixes(b))
+      .filter(Boolean);
+    const slotPayload =
+      s && s.slotPayload && typeof s.slotPayload === "object"
+        ? s.slotPayload
+        : {};
+    const isFourPoints =
+      String((s && s.layoutId) || "").toLowerCase() === "four_points";
+    const visibleLabel = sanitizeContractText(
+      slotPayload.label || cur.subtitle || "",
+      24,
+    );
+    let visibleBody = sanitizeContractText(
+      slotPayload.body || s.goal || cur.subtitle || "",
+      180,
+    );
     if (visibleLabel && visibleBody) {
       const labelNorm = visibleLabel.replace(/\s+/g, "").toLowerCase();
       const bodyNorm = visibleBody.replace(/\s+/g, "").toLowerCase();
       if (bodyNorm === labelNorm) {
         visibleBody = "";
       } else if (bodyNorm.startsWith(labelNorm)) {
-        const sliced = visibleBody.slice(visibleLabel.length).replace(/^[：:，,\-\s]+/, "").trim();
+        const sliced = visibleBody
+          .slice(visibleLabel.length)
+          .replace(/^[：:，,\-\s]+/, "")
+          .trim();
         visibleBody = sliced || visibleBody;
       }
     }
-    const visibleHint = sanitizeContractText(slotPayload.visualHint || slotPayload.chartHint || "", 24);
-    let normalizedItems = Array.isArray(s && s.items) ? s.items.slice(0, 4) : [];
+    const visibleHint = sanitizeContractText(
+      slotPayload.visualHint || slotPayload.chartHint || "",
+      24,
+    );
+    let normalizedItems = Array.isArray(s && s.items)
+      ? s.items.slice(0, 4)
+      : [];
     if (isFourPoints) {
-      const four = normalizeFourPointItems(normalizedItems, s && s.bullets, visibleLabel || "管理决策");
+      const four = normalizeFourPointItems(
+        normalizedItems,
+        s && s.bullets,
+        visibleLabel || "管理决策",
+      );
       normalizedItems = four.items;
     }
     return {
@@ -3463,40 +5589,59 @@ function normalizeContract(input, requestContext = null) {
       footer: sanitizeContractText(cur.footer || "", 80),
       date: sanitizeContractText(cur.date || "", 32),
       keyPoints: bullets,
-      goal: (effectiveScriptType === "content_text") ? visibleBody : "",
+      goal: effectiveScriptType === "content_text" ? visibleBody : "",
       speakerNotes: sanitizeContractText(cur.notes || "", 520),
       layoutType: cur.layoutType,
-      layoutId: isFourPoints ? "four_points" : String((s && s.layoutId) || "").toLowerCase(),
+      layoutId: isFourPoints
+        ? "four_points"
+        : String((s && s.layoutId) || "").toLowerCase(),
       items: normalizedItems,
       slotPayload: {
         ...slotPayload,
-        label: isFourPoints ? sanitizeContractText(visibleLabel || "管理决策", 24) : visibleLabel,
+        label: isFourPoints
+          ? sanitizeContractText(visibleLabel || "管理决策", 24)
+          : visibleLabel,
         body: visibleBody,
         visualHint: visibleHint,
         footer: sanitizeContractText(cur.footer || "", 24),
-        pageNo: `${i + 1}/${normalizedContract.pageCount}`
-      }
+        pageNo: "",
+      },
     };
   });
-  writeDebugJson(requestContext, "slideScripts.normalized.json", normalizedContract.slideScripts || []);
+  writeDebugJson(
+    requestContext,
+    "slideScripts.normalized.json",
+    normalizedContract.slideScripts || [],
+  );
 
   const deckValidation = validateDeck(normalizedContract);
-  writeDebugJson(requestContext, "validation.precheck.json", deckValidation || {});
+  writeDebugJson(
+    requestContext,
+    "validation.precheck.json",
+    deckValidation || {},
+  );
   if (!deckValidation.pass) {
-    return { ok: false, reason: `deck_validation_failed:${deckValidation.issues.join(",")}`, validation: deckValidation };
+    return {
+      ok: false,
+      reason: `deck_validation_failed:${deckValidation.issues.join(",")}`,
+      validation: deckValidation,
+    };
   }
 
   return {
     ok: true,
     contract: normalizedContract,
-    validation: deckValidation
+    validation: deckValidation,
   };
 }
 
 function isTeachingScene(contract) {
-  const scene = String(contract && contract.sceneType || "");
-  const topic = String(contract && contract.topic || "");
-  return /(教务|教学|课堂|学生|初中|物理|理科)/.test(scene) || /(牛顿|合力|加速度|受力|实验|例题|练习|作业|定律|公式)/.test(topic);
+  const scene = String((contract && contract.sceneType) || "");
+  const topic = String((contract && contract.topic) || "");
+  return (
+    /(教务|教学|课堂|学生|初中|物理|理科)/.test(scene) ||
+    /(牛顿|合力|加速度|受力|实验|例题|练习|作业|定律|公式)/.test(topic)
+  );
 }
 
 function enforceFirstPrinciplesTeachingContract(contract) {
@@ -3515,10 +5660,12 @@ function decodeXmlText(value) {
 }
 
 function parseSlideSizeFromPresentationXml(xml) {
-  const m = String(xml || "").match(/<p:sldSz[^>]*\bcx="(\d+)"[^>]*\bcy="(\d+)"/i);
+  const m = String(xml || "").match(
+    /<p:sldSz[^>]*\bcx="(\d+)"[^>]*\bcy="(\d+)"/i,
+  );
   return {
     cx: m && m[1] ? Number(m[1]) : 12192000,
-    cy: m && m[2] ? Number(m[2]) : 6858000
+    cy: m && m[2] ? Number(m[2]) : 6858000,
   };
 }
 
@@ -3531,7 +5678,11 @@ function extractSlideTextBoxesFromXml(xml) {
     const part = sm[0];
     const textMatches = [...part.matchAll(/<a:t>([\s\S]*?)<\/a:t>/g)];
     if (!textMatches.length) continue;
-    const text = textMatches.map((t) => decodeXmlText(t[1] || "")).filter(Boolean).join(" ").trim();
+    const text = textMatches
+      .map((t) => decodeXmlText(t[1] || ""))
+      .filter(Boolean)
+      .join(" ")
+      .trim();
     if (!text) continue;
 
     const off = part.match(/<a:off[^>]*\bx="(-?\d+)"[^>]*\by="(-?\d+)"/i);
@@ -3547,29 +5698,59 @@ function extractSlideTextBoxesFromXml(xml) {
 }
 
 function isMetaText(text) {
-  return /^(logo|content)$/i.test(text) || /officeplus|^时间[:：]|^part\s*\d+|^\d+([\/\-]\d+)?$/i.test(text);
+  return (
+    /^(logo|content)$/i.test(text) ||
+    /officeplus|^时间[:：]|^part\s*\d+|^\d+([\/\-]\d+)?$/i.test(text)
+  );
+}
+
+function isSectionScaffoldText(text) {
+  const t = String(text || "").trim();
+  if (!t) return true;
+  if (/^[a-z]$/i.test(t)) return true;
+  return (
+    /^(work\s*overview|core\s*results|problem\s*reflection|future\s*plan)\b/i.test(
+      t,
+    ) ||
+    /review\s+of\s+goals\s+and\s+responsibilities/i.test(t) ||
+    /key\s+work\s+is\s+displayed/i.test(t) ||
+    /analysis\s+of\s+existing\s+deficiencies\s+and\s+causes/i.test(t) ||
+    /optimization\s+direction\s+and\s+implementation\s+plan/i.test(t) ||
+    /核心成果[:：]|问题反思[:：]|未来计划[:：]/.test(t)
+  );
 }
 
 function isTitleHintText(text) {
-  return /输入.*标题|标题文字添加|enter\s*your\s*title|work\s*report|this is your title|^title$|汇报|总结|大标题/i.test(text);
+  return /输入.*标题|标题文字添加|enter\s*your\s*title|work\s*report|this is your title|^title$|汇报|总结|大标题/i.test(
+    text,
+  );
 }
 
 function isBodyHintText(text) {
-  return /您的内容打在这里|点击此处|输入副标题|lorem|添加文本|输入标题|标题信息|副标题内容/i.test(text);
+  return /您的内容打在这里|点击此处|输入副标题|lorem|添加文本|输入标题|标题信息|副标题内容/i.test(
+    text,
+  );
 }
 
 function buildSemanticModelFromPptxBuffer(buffer) {
   try {
     const zip = new AdmZip(buffer);
     const presentationEntry = zip.getEntry("ppt/presentation.xml");
-    const presentationXml = presentationEntry ? presentationEntry.getData().toString("utf8") : "";
+    const presentationXml = presentationEntry
+      ? presentationEntry.getData().toString("utf8")
+      : "";
     const slideSize = parseSlideSizeFromPresentationXml(presentationXml);
 
-    const slideEntries = zip.getEntries()
+    const slideEntries = zip
+      .getEntries()
       .filter((e) => /^ppt\/slides\/slide\d+\.xml$/i.test(e.entryName))
       .sort((a, b) => {
-        const ai = Number((a.entryName.match(/slide(\d+)\.xml/i) || [])[1] || 0);
-        const bi = Number((b.entryName.match(/slide(\d+)\.xml/i) || [])[1] || 0);
+        const ai = Number(
+          (a.entryName.match(/slide(\d+)\.xml/i) || [])[1] || 0,
+        );
+        const bi = Number(
+          (b.entryName.match(/slide(\d+)\.xml/i) || [])[1] || 0,
+        );
         return ai - bi;
       });
 
@@ -3594,51 +5775,75 @@ function buildSemanticModelFromPptxBuffer(buffer) {
           h: b.h,
           topRatio,
           bottomRatio,
-          centerXRatio: (b.x + (b.w / 2)) / Math.max(1, Number(slideSize.cx) || 1),
-          centerYRatio: (b.y + (b.h / 2)) / validH
+          centerXRatio:
+            (b.x + b.w / 2) / Math.max(1, Number(slideSize.cx) || 1),
+          centerYRatio: (b.y + b.h / 2) / validH,
         };
       });
 
       const bodyHints = normalized.filter((b) => b.role === "body-hint");
       const titleHints = normalized.filter((b) => b.role === "title-hint");
-      const bodyBandCandidates = normalized.filter((b) => b.role === "body-candidate");
-      const bodyTop = bodyHints.length ? Math.max(0.16, Math.min(...bodyHints.map((b) => b.topRatio)) - 0.03) : 0.28;
-      const bodyBottom = bodyHints.length ? Math.min(0.96, Math.max(...bodyHints.map((b) => b.bottomRatio)) + 0.03) : 0.9;
+      const bodyBandCandidates = normalized.filter(
+        (b) => b.role === "body-candidate",
+      );
+      const bodyTop = bodyHints.length
+        ? Math.max(0.16, Math.min(...bodyHints.map((b) => b.topRatio)) - 0.03)
+        : 0.28;
+      const bodyBottom = bodyHints.length
+        ? Math.min(
+            0.96,
+            Math.max(...bodyHints.map((b) => b.bottomRatio)) + 0.03,
+          )
+        : 0.9;
       const titleMaxTop = titleHints.length
-        ? Math.min(0.62, Math.max(...titleHints.map((b) => b.bottomRatio)) + 0.04)
+        ? Math.min(
+            0.62,
+            Math.max(...titleHints.map((b) => b.bottomRatio)) + 0.04,
+          )
         : 0.36;
       const expectedTitleMin = titleHints.length > 0 ? 1 : 0;
-      const inferredBodyCandidates = bodyBandCandidates.filter((b) => b.topRatio >= bodyTop && b.bottomRatio <= bodyBottom);
-      const expectedBodyMin = bodyHints.length > 0
-        ? Math.max(1, Math.min(2, bodyHints.length))
-        : (inferredBodyCandidates.length > 0 ? 1 : 0);
+      const inferredBodyCandidates = bodyBandCandidates.filter(
+        (b) => b.topRatio >= bodyTop && b.bottomRatio <= bodyBottom,
+      );
+      const expectedBodyMin =
+        bodyHints.length > 0
+          ? Math.max(1, Math.min(2, bodyHints.length))
+          : inferredBodyCandidates.length > 0
+            ? 1
+            : 0;
 
       return {
         index: idx + 1,
         bodyBand: {
           minTopRatio: Number(bodyTop.toFixed(4)),
-          maxTopRatio: Number(bodyBottom.toFixed(4))
+          maxTopRatio: Number(bodyBottom.toFixed(4)),
         },
         titleBand: {
-          maxTopRatio: Number(titleMaxTop.toFixed(4))
+          maxTopRatio: Number(titleMaxTop.toFixed(4)),
         },
         expectedSlots: {
           titleMin: expectedTitleMin,
-          bodyMin: expectedBodyMin
+          bodyMin: expectedBodyMin,
         },
         anchors: bodyHints
-          .sort((a, b) => (a.topRatio - b.topRatio) || (a.centerXRatio - b.centerXRatio))
+          .sort(
+            (a, b) =>
+              a.topRatio - b.topRatio || a.centerXRatio - b.centerXRatio,
+          )
           .slice(0, 4)
-          .map((b) => ({ xRatio: Number(b.centerXRatio.toFixed(4)), yRatio: Number(b.centerYRatio.toFixed(4)) })),
+          .map((b) => ({
+            xRatio: Number(b.centerXRatio.toFixed(4)),
+            yRatio: Number(b.centerYRatio.toFixed(4)),
+          })),
         slotCount: normalized.length,
-        slots: normalized
+        slots: normalized,
       };
     });
 
     return {
       version: "semantic-slot-v1",
       slideSize,
-      slides
+      slides,
     };
   } catch {
     return null;
@@ -3646,7 +5851,7 @@ function buildSemanticModelFromPptxBuffer(buffer) {
 }
 
 function resolveTemplateSemanticModel(contract) {
-  const b64 = String(contract && contract.templateFileBase64 || "").trim();
+  const b64 = String((contract && contract.templateFileBase64) || "").trim();
   if (!b64) return null;
   const buffer = parseBase64Payload(b64);
   if (!buffer.length) return null;
@@ -3655,7 +5860,10 @@ function resolveTemplateSemanticModel(contract) {
 
 function evaluateLayoutQualityAgainstModel(model, outputBuffer, contract) {
   const outputModel = buildSemanticModelFromPptxBuffer(outputBuffer);
-  const policy = (contract && contract.layoutPolicy) || { mode: "balanced", minScore: 68 };
+  const policy = (contract && contract.layoutPolicy) || {
+    mode: "balanced",
+    minScore: 68,
+  };
   if (!outputModel || !outputModel.slides.length) {
     return {
       pass: false,
@@ -3663,27 +5871,53 @@ function evaluateLayoutQualityAgainstModel(model, outputBuffer, contract) {
       minScore: Number(policy.minScore) || 68,
       mode: String(policy.mode || "balanced"),
       issues: ["output_semantic_parse_failed"],
-      slideStats: []
+      slideStats: [],
     };
   }
 
   const slideStats = [];
   let totalPenalty = 0;
-  const count = Math.min(outputModel.slides.length, Array.isArray(contract && contract.slides) ? contract.slides.length : outputModel.slides.length);
+  const count = Math.min(
+    outputModel.slides.length,
+    Array.isArray(contract && contract.slides)
+      ? contract.slides.length
+      : outputModel.slides.length,
+  );
 
   for (let i = 0; i < count; i += 1) {
     const outSlide = outputModel.slides[i];
-    const refSlide = model && model.slides && model.slides[i] ? model.slides[i] : null;
-    const titleMax = refSlide ? Number(refSlide.titleBand.maxTopRatio || 0.36) : 0.36;
-    const bodyMin = refSlide ? Number(refSlide.bodyBand.minTopRatio || 0.28) : 0.28;
-    const bodyMax = refSlide ? Number(refSlide.bodyBand.maxTopRatio || 0.9) : 0.9;
-    const expectedTitleMin = refSlide && refSlide.expectedSlots ? Number(refSlide.expectedSlots.titleMin || 0) : 1;
-    const expectedBodyMin = refSlide && refSlide.expectedSlots ? Number(refSlide.expectedSlots.bodyMin || 0) : 1;
+    const refSlide =
+      model && model.slides && model.slides[i] ? model.slides[i] : null;
+    const titleMax = refSlide
+      ? Number(refSlide.titleBand.maxTopRatio || 0.36)
+      : 0.36;
+    const bodyMin = refSlide
+      ? Number(refSlide.bodyBand.minTopRatio || 0.28)
+      : 0.28;
+    const bodyMax = refSlide
+      ? Number(refSlide.bodyBand.maxTopRatio || 0.9)
+      : 0.9;
+    const expectedTitleMin =
+      refSlide && refSlide.expectedSlots
+        ? Number(refSlide.expectedSlots.titleMin || 0)
+        : 1;
+    const expectedBodyMin =
+      refSlide && refSlide.expectedSlots
+        ? Number(refSlide.expectedSlots.bodyMin || 0)
+        : 1;
 
     const contentSlots = outSlide.slots.filter((s) => !isMetaText(s.text));
-    const titleSlots = contentSlots.filter((s) => s.topRatio <= titleMax && s.text.length >= 2);
-    const bodySlots = contentSlots.filter((s) => s.topRatio >= bodyMin && s.bottomRatio <= bodyMax && s.text.length >= 2);
-    const outOfBand = contentSlots.filter((s) => s.topRatio < bodyMin && s.bottomRatio > titleMax && s.text.length >= 10);
+    const titleSlots = contentSlots.filter(
+      (s) => s.topRatio <= titleMax && s.text.length >= 2,
+    );
+    const bodySlots = contentSlots.filter(
+      (s) =>
+        s.topRatio >= bodyMin && s.bottomRatio <= bodyMax && s.text.length >= 2,
+    );
+    const outOfBand = contentSlots.filter(
+      (s) =>
+        s.topRatio < bodyMin && s.bottomRatio > titleMax && s.text.length >= 10,
+    );
 
     let overlapRisk = 0;
     for (let a = 0; a < bodySlots.length; a += 1) {
@@ -3697,15 +5931,30 @@ function evaluateLayoutQualityAgainstModel(model, outputBuffer, contract) {
     }
 
     const penalties = {
-      missingTitle: titleSlots.length >= expectedTitleMin ? 0 : (expectedTitleMin > 0 ? 14 : 0),
-      missingBody: bodySlots.length >= expectedBodyMin ? 0 : (expectedBodyMin > 0 ? 14 : 0),
+      missingTitle:
+        titleSlots.length >= expectedTitleMin
+          ? 0
+          : expectedTitleMin > 0
+            ? 14
+            : 0,
+      missingBody:
+        bodySlots.length >= expectedBodyMin ? 0 : expectedBodyMin > 0 ? 14 : 0,
       outOfBand: Math.min(22, outOfBand.length * 8),
-      overlap: Math.min(18, overlapRisk * 6)
+      overlap: Math.min(18, overlapRisk * 6),
     };
-    const slidePenalty = penalties.missingTitle + penalties.missingBody + penalties.outOfBand + penalties.overlap;
+    const slidePenalty =
+      penalties.missingTitle +
+      penalties.missingBody +
+      penalties.outOfBand +
+      penalties.overlap;
     totalPenalty += slidePenalty;
-    const expectedMiss = (titleSlots.length >= expectedTitleMin ? 0 : (expectedTitleMin > 0 ? 1 : 0))
-      + (bodySlots.length >= expectedBodyMin ? 0 : (expectedBodyMin > 0 ? 1 : 0));
+    const expectedMiss =
+      (titleSlots.length >= expectedTitleMin
+        ? 0
+        : expectedTitleMin > 0
+          ? 1
+          : 0) +
+      (bodySlots.length >= expectedBodyMin ? 0 : expectedBodyMin > 0 ? 1 : 0);
 
     slideStats.push({
       index: i + 1,
@@ -3716,22 +5965,35 @@ function evaluateLayoutQualityAgainstModel(model, outputBuffer, contract) {
       outOfBand: outOfBand.length,
       overlapRisk,
       expectedMiss,
-      penalty: slidePenalty
+      penalty: slidePenalty,
     });
   }
 
-  const avgPenalty = count > 0 ? (totalPenalty / count) : 100;
+  const avgPenalty = count > 0 ? totalPenalty / count : 100;
   const score = Math.max(0, Math.min(100, Math.round(100 - avgPenalty)));
   const minScore = Number(policy.minScore) || 68;
-  const visibleIssueSlides = slideStats.filter((s) => s.outOfBand > 0 || s.overlapRisk > 0).length;
-  const structuralMissSlides = slideStats.filter((s) => Number(s.titleSlots || 0) === 0 && Number(s.bodySlots || 0) === 0).length;
-  const expectedMissCount = slideStats.reduce((acc, s) => acc + Number(s.expectedMiss || 0), 0);
-  const estimatedManualFixes = Math.max(0, Math.ceil((visibleIssueSlides * 2 + structuralMissSlides) / 3));
+  const visibleIssueSlides = slideStats.filter(
+    (s) => s.outOfBand > 0 || s.overlapRisk > 0,
+  ).length;
+  const structuralMissSlides = slideStats.filter(
+    (s) => Number(s.titleSlots || 0) === 0 && Number(s.bodySlots || 0) === 0,
+  ).length;
+  const expectedMissCount = slideStats.reduce(
+    (acc, s) => acc + Number(s.expectedMiss || 0),
+    0,
+  );
+  const estimatedManualFixes = Math.max(
+    0,
+    Math.ceil((visibleIssueSlides * 2 + structuralMissSlides) / 3),
+  );
   const issues = [];
   if (score < minScore) issues.push("layout_quality_below_threshold");
-  if (slideStats.some((s) => s.outOfBand > 0)) issues.push("content_out_of_body_band");
-  if (slideStats.some((s) => s.overlapRisk > 0)) issues.push("potential_overlap_detected");
-  if (slideStats.some((s) => s.expectedMiss > 0)) issues.push("slot_missing_expected_content");
+  if (slideStats.some((s) => s.outOfBand > 0))
+    issues.push("content_out_of_body_band");
+  if (slideStats.some((s) => s.overlapRisk > 0))
+    issues.push("potential_overlap_detected");
+  if (slideStats.some((s) => s.expectedMiss > 0))
+    issues.push("slot_missing_expected_content");
 
   return {
     pass: score >= minScore,
@@ -3745,7 +6007,7 @@ function evaluateLayoutQualityAgainstModel(model, outputBuffer, contract) {
     expectedMissCount,
     estimatedManualFixes,
     issues,
-    slideStats
+    slideStats,
   };
 }
 
@@ -3753,19 +6015,27 @@ function evaluateContentQualityFromOutputBuffer(outputBuffer, contract) {
   const outputModel = buildSemanticModelFromPptxBuffer(outputBuffer);
   const expectedSlides = Math.max(
     1,
-    Number(contract && contract.pageCount)
-    || (Array.isArray(contract && contract.slides) ? contract.slides.length : 0)
-    || (outputModel && Array.isArray(outputModel.slides) ? outputModel.slides.length : 0)
+    Number(contract && contract.pageCount) ||
+      (Array.isArray(contract && contract.slides)
+        ? contract.slides.length
+        : 0) ||
+      (outputModel && Array.isArray(outputModel.slides)
+        ? outputModel.slides.length
+        : 0),
   );
 
-  if (!outputModel || !Array.isArray(outputModel.slides) || outputModel.slides.length === 0) {
+  if (
+    !outputModel ||
+    !Array.isArray(outputModel.slides) ||
+    outputModel.slides.length === 0
+  ) {
     return {
       pass: false,
       contentCoverage: 0,
       emptySlides: Array.from({ length: expectedSlides }, (_, i) => i + 1),
       placeholderOnlySlides: [],
       reasons: ["output_semantic_parse_failed"],
-      slideStats: []
+      slideStats: [],
     };
   }
 
@@ -3777,18 +6047,19 @@ function evaluateContentQualityFromOutputBuffer(outputBuffer, contract) {
   for (let i = 0; i < expectedSlides; i += 1) {
     const s = outputModel.slides[i] || null;
     const slots = s && Array.isArray(s.slots) ? s.slots : [];
-    const nonMeta = slots.filter((x) => String(x && x.role || "") !== "meta");
+    const nonMeta = slots.filter((x) => String((x && x.role) || "") !== "meta");
     const placeholderLike = nonMeta.filter((x) => {
-      const role = String(x && x.role || "");
+      const role = String((x && x.role) || "");
       return role === "title-hint" || role === "body-hint";
     });
     const contentLike = nonMeta.filter((x) => {
-      const role = String(x && x.role || "");
+      const role = String((x && x.role) || "");
       return role === "body-candidate";
     });
 
     const empty = nonMeta.length === 0;
-    const placeholderOnly = !empty && contentLike.length === 0 && placeholderLike.length > 0;
+    const placeholderOnly =
+      !empty && contentLike.length === 0 && placeholderLike.length > 0;
     const hasContent = contentLike.length > 0;
     if (empty) emptySlides.push(i + 1);
     if (placeholderOnly) placeholderOnlySlides.push(i + 1);
@@ -3802,44 +6073,57 @@ function evaluateContentQualityFromOutputBuffer(outputBuffer, contract) {
       contentCount: contentLike.length,
       empty,
       placeholderOnly,
-      hasContent
+      hasContent,
     });
   }
 
   const contentCoverage = contentSlides / expectedSlides;
   const reasons = [];
-  if (emptySlides.length > 0) reasons.push(`blank_slides:${emptySlides.join(",")}`);
-  if (placeholderOnlySlides.length > 0) reasons.push(`placeholder_only_slides:${placeholderOnlySlides.join(",")}`);
-  if (contentCoverage < 0.98) reasons.push(`content_coverage_low:${contentCoverage.toFixed(3)}`);
+  if (emptySlides.length > 0)
+    reasons.push(`blank_slides:${emptySlides.join(",")}`);
+  if (placeholderOnlySlides.length > 0)
+    reasons.push(`placeholder_only_slides:${placeholderOnlySlides.join(",")}`);
+  if (contentCoverage < 0.98)
+    reasons.push(`content_coverage_low:${contentCoverage.toFixed(3)}`);
 
   return {
-    pass: emptySlides.length === 0 && placeholderOnlySlides.length === 0 && contentCoverage >= 0.98,
+    pass:
+      emptySlides.length === 0 &&
+      placeholderOnlySlides.length === 0 &&
+      contentCoverage >= 0.98,
     contentCoverage,
     emptySlides,
     placeholderOnlySlides,
     reasons,
-    slideStats
+    slideStats,
   };
 }
 
 function extractPptTextDumpFromBuffer(outputBuffer, contract) {
-  const slidesIn = Array.isArray(contract && contract.slides) ? contract.slides : [];
+  const slidesIn = Array.isArray(contract && contract.slides)
+    ? contract.slides
+    : [];
   const dump = {
     inputSlideCount: slidesIn.length,
     physicalSlideCount: 0,
     visibleSlideCount: 0,
     hiddenSlideCount: 0,
     outputSlideCount: 0,
-    slides: []
+    slides: [],
   };
 
   try {
     const zip = new AdmZip(outputBuffer);
-    const slideEntries = zip.getEntries()
+    const slideEntries = zip
+      .getEntries()
       .filter((e) => /^ppt\/slides\/slide\d+\.xml$/i.test(e.entryName))
       .sort((a, b) => {
-        const ai = Number((a.entryName.match(/slide(\d+)\.xml/i) || [])[1] || 0);
-        const bi = Number((b.entryName.match(/slide(\d+)\.xml/i) || [])[1] || 0);
+        const ai = Number(
+          (a.entryName.match(/slide(\d+)\.xml/i) || [])[1] || 0,
+        );
+        const bi = Number(
+          (b.entryName.match(/slide(\d+)\.xml/i) || [])[1] || 0,
+        );
         return ai - bi;
       });
 
@@ -3848,7 +6132,10 @@ function extractPptTextDumpFromBuffer(outputBuffer, contract) {
       const xml = entry.getData().toString("utf8");
       return acc + (/<p:sld\b[^>]*\bshow="0"/i.test(xml) ? 1 : 0);
     }, 0);
-    dump.visibleSlideCount = Math.max(0, dump.physicalSlideCount - dump.hiddenSlideCount);
+    dump.visibleSlideCount = Math.max(
+      0,
+      dump.physicalSlideCount - dump.hiddenSlideCount,
+    );
     dump.outputSlideCount = slideEntries.length;
     dump.slides = slideEntries.map((entry, i) => {
       const xml = entry.getData().toString("utf8");
@@ -3859,37 +6146,46 @@ function extractPptTextDumpFromBuffer(outputBuffer, contract) {
           x: Number(b && b.x) || 0,
           y: Number(b && b.y) || 0,
           w: Number(b && b.w) || 0,
-          h: Number(b && b.h) || 0
+          h: Number(b && b.h) || 0,
         }))
         .filter((b) => !!b.text)
-        .sort((a, b) => (a.y - b.y) || (a.x - b.x));
+        .sort((a, b) => a.y - b.y || a.x - b.x);
       const texts = boxes
         .map((x) => cleanDeckText(x && x.text, 0))
         .filter(Boolean);
-      const title = cleanDeckText((slidesIn[i] && slidesIn[i].title) || (texts[0] || ""), 64);
+      const title = cleanDeckText(
+        (slidesIn[i] && slidesIn[i].title) || texts[0] || "",
+        64,
+      );
       return {
         index: i + 1,
-        type: String(slidesIn[i] && slidesIn[i].slideType || "").trim().toLowerCase() || "content",
+        type:
+          String((slidesIn[i] && slidesIn[i].slideType) || "")
+            .trim()
+            .toLowerCase() || "content",
         title,
         isHidden,
         texts,
-        boxes
+        boxes,
       };
     });
-  } catch {
-  }
+  } catch {}
 
   return dump;
 }
 
 function logExportSlideSummary(textDump) {
-  const inputCount = Number(textDump && textDump.inputSlideCount || 0);
-  const outputCount = Number(textDump && textDump.outputSlideCount || 0);
+  const inputCount = Number((textDump && textDump.inputSlideCount) || 0);
+  const outputCount = Number((textDump && textDump.outputSlideCount) || 0);
   console.log(`[ppt-export] inputSlideCount=${inputCount}`);
   console.log(`[ppt-export] outputSlideCount=${outputCount}`);
-  const rows = Array.isArray(textDump && textDump.slides) ? textDump.slides : [];
+  const rows = Array.isArray(textDump && textDump.slides)
+    ? textDump.slides
+    : [];
   for (const row of rows) {
-    console.log(`[ppt-export] slide#${row.index} type=${row.type || "content"} title=${String(row.title || "").slice(0, 60)}`);
+    console.log(
+      `[ppt-export] slide#${row.index} type=${row.type || "content"} title=${String(row.title || "").slice(0, 60)}`,
+    );
   }
 }
 
@@ -3897,7 +6193,12 @@ function runPostExportDeckValidation(contract, result, requestContext = null) {
   if (!result || !result.buffer) {
     return {
       textDump: { inputSlideCount: 0, outputSlideCount: 0, slides: [] },
-      deckValidation: { pass: false, errors: [{ slideIndex: 0, type: "missingBuffer", text: "" }], issues: ["missingBuffer"], warnings: [] }
+      deckValidation: {
+        pass: false,
+        errors: [{ slideIndex: 0, type: "missingBuffer", text: "" }],
+        issues: ["missingBuffer"],
+        warnings: [],
+      },
     };
   }
   const textDump = extractPptTextDumpFromBuffer(result.buffer, contract);
@@ -3908,67 +6209,95 @@ function runPostExportDeckValidation(contract, result, requestContext = null) {
   result.deckValidation = deckValidation;
   result.qualityScore = qualityScore;
   writeDebugJson(requestContext, "dump.json", {
-    requestId: String(contract && contract.requestId || ""),
-    topic: String(contract && contract.topic || ""),
+    requestId: String((contract && contract.requestId) || ""),
+    topic: String((contract && contract.topic) || ""),
     deckPlan: contract && contract.deckPlan ? contract.deckPlan : null,
-    inputSlideCount: Number(textDump && textDump.inputSlideCount || 0),
-    outputSlideCount: Number(textDump && textDump.outputSlideCount || 0),
+    inputSlideCount: Number((textDump && textDump.inputSlideCount) || 0),
+    outputSlideCount: Number((textDump && textDump.outputSlideCount) || 0),
     slides: Array.isArray(textDump && textDump.slides) ? textDump.slides : [],
     validation: {
       ok: !!(deckValidation && deckValidation.ok),
-      errors: Array.isArray(deckValidation && deckValidation.errors) ? deckValidation.errors : []
+      errors: Array.isArray(deckValidation && deckValidation.errors)
+        ? deckValidation.errors
+        : [],
     },
-    qualityScore
+    qualityScore,
   });
   writeDebugJson(requestContext, "validation.json", {
-    requestId: String(contract && contract.requestId || ""),
+    requestId: String((contract && contract.requestId) || ""),
     ok: !!(deckValidation && deckValidation.ok),
-    errors: Array.isArray(deckValidation && deckValidation.errors) ? deckValidation.errors : [],
-    qualityScore
+    errors: Array.isArray(deckValidation && deckValidation.errors)
+      ? deckValidation.errors
+      : [],
+    qualityScore,
   });
   writeDebugJson(requestContext, "renderLog.json", {
-    requestId: String(contract && contract.requestId || ""),
-    inputSlideCount: Array.isArray(contract && contract.slides) ? contract.slides.length : 0,
-    outputSlideCount: Number(textDump && textDump.outputSlideCount || 0),
-    physicalSlideCount: Number(textDump && textDump.physicalSlideCount || 0),
-    visibleSlideCount: Number(textDump && textDump.visibleSlideCount || 0),
-    hiddenSlideCount: Number(textDump && textDump.hiddenSlideCount || 0),
-    records: Array.isArray(contract && contract.slides) ? contract.slides.map((s, i) => ({
-      sourceTemplateIndex: Number(s && s.templateIndex) || 0,
-      outputSlideIndex: i + 1,
-      slideType: String(s && (s.scriptType || s.slideType) || ""),
-      slideTitle: String(s && s.title || ""),
-      slotWrites: (() => {
-        const row = Array.isArray(textDump && textDump.slides) ? textDump.slides[i] : null;
-        const boxes = Array.isArray(row && row.boxes) ? row.boxes.slice(0, 8) : [];
-        const slotSpec = (s && s.slots && typeof s.slots === "object") ? s.slots : {};
-        const expected = Object.keys(slotSpec).map((key) => ({
-          slot: key,
-          shapeName: String(slotSpec[key] && slotSpec[key].shapeName || ""),
-          required: !!(slotSpec[key] && slotSpec[key].required),
-          text: key === "title" ? String(s && s.title || "")
-            : key === "label" ? String((s && s.slotPayload && s.slotPayload.label) || s.goal || "")
-              : key === "body" ? String((s && s.slotPayload && s.slotPayload.body) || "")
-                : key === "bullets" ? String((s && s.pointText) || "")
-                  : key === "footer" ? String((s && s.slotPayload && s.slotPayload.footer) || "")
-                    : ""
-        }));
-        return expected.map((e, bi) => {
-          const b = boxes[bi] || null;
-          return {
-            slot: e.slot,
-            shapeName: e.shapeName,
-            required: e.required,
-            text: e.text,
-            fallback: !b,
-            x: b ? Number(b.x || 0) : null,
-            y: b ? Number(b.y || 0) : null,
-            w: b ? Number(b.w || 0) : null,
-            h: b ? Number(b.h || 0) : null
-          };
-        });
-      })()
-    })) : []
+    requestId: String((contract && contract.requestId) || ""),
+    inputSlideCount: Array.isArray(contract && contract.slides)
+      ? contract.slides.length
+      : 0,
+    outputSlideCount: Number((textDump && textDump.outputSlideCount) || 0),
+    physicalSlideCount: Number((textDump && textDump.physicalSlideCount) || 0),
+    visibleSlideCount: Number((textDump && textDump.visibleSlideCount) || 0),
+    hiddenSlideCount: Number((textDump && textDump.hiddenSlideCount) || 0),
+    records: Array.isArray(contract && contract.slides)
+      ? contract.slides.map((s, i) => ({
+          sourceTemplateIndex: Number(s && s.templateIndex) || 0,
+          outputSlideIndex: i + 1,
+          slideType: String((s && (s.scriptType || s.slideType)) || ""),
+          slideTitle: String((s && s.title) || ""),
+          slotWrites: (() => {
+            const row = Array.isArray(textDump && textDump.slides)
+              ? textDump.slides[i]
+              : null;
+            const boxes = Array.isArray(row && row.boxes)
+              ? row.boxes.slice(0, 8)
+              : [];
+            const slotSpec =
+              s && s.slots && typeof s.slots === "object" ? s.slots : {};
+            const expected = Object.keys(slotSpec).map((key) => ({
+              slot: key,
+              shapeName: String(
+                (slotSpec[key] && slotSpec[key].shapeName) || "",
+              ),
+              required: !!(slotSpec[key] && slotSpec[key].required),
+              text:
+                key === "title"
+                  ? String((s && s.title) || "")
+                  : key === "label"
+                    ? String(
+                        (s && s.slotPayload && s.slotPayload.label) ||
+                          s.goal ||
+                          "",
+                      )
+                    : key === "body"
+                      ? String((s && s.slotPayload && s.slotPayload.body) || "")
+                      : key === "bullets"
+                        ? String((s && s.pointText) || "")
+                        : key === "footer"
+                          ? String(
+                              (s && s.slotPayload && s.slotPayload.footer) ||
+                                "",
+                            )
+                          : "",
+            }));
+            return expected.map((e, bi) => {
+              const b = boxes[bi] || null;
+              return {
+                slot: e.slot,
+                shapeName: e.shapeName,
+                required: e.required,
+                text: e.text,
+                fallback: !b,
+                x: b ? Number(b.x || 0) : null,
+                y: b ? Number(b.y || 0) : null,
+                w: b ? Number(b.w || 0) : null,
+                h: b ? Number(b.h || 0) : null,
+              };
+            });
+          })(),
+        }))
+      : [],
   });
   return { textDump, deckValidation, qualityScore };
 }
@@ -3983,7 +6312,7 @@ function evaluateTeachingQualityFromOutputBuffer(outputBuffer, contract) {
       genericSlideRatio: 0,
       actionTimeCoverage: 0,
       titleViolationSlides: [],
-      reasons: []
+      reasons: [],
     };
   }
 
@@ -3996,12 +6325,16 @@ function evaluateTeachingQualityFromOutputBuffer(outputBuffer, contract) {
       genericSlideRatio: 0,
       actionTimeCoverage: 0,
       titleViolationSlides: [],
-      reasons: []
+      reasons: [],
     };
   }
 
   const outputModel = buildSemanticModelFromPptxBuffer(outputBuffer);
-  if (!outputModel || !Array.isArray(outputModel.slides) || outputModel.slides.length === 0) {
+  if (
+    !outputModel ||
+    !Array.isArray(outputModel.slides) ||
+    outputModel.slides.length === 0
+  ) {
     return {
       pass: false,
       enabled: true,
@@ -4011,14 +6344,17 @@ function evaluateTeachingQualityFromOutputBuffer(outputBuffer, contract) {
       actionTimeCoverage: 0,
       titleViolationSlides: [],
       reasons: ["teaching_parse_failed"],
-      slideStats: []
+      slideStats: [],
     };
   }
 
   const lockMode = !!(contract && contract.lockToTemplate === true);
-  const genericRe = /(当前需求|占位|模板|待完善|输入标题|添加标题|标题文字添加|点击此处|请在此输入)/;
-  const formulaRe = /(F\s*=\s*ma|牛顿第二定律|合力|加速度|\d+\s*(N|kg|m\/s2|m\/s²|%))/i;
-  const actionTimeRe = /(提问|板演|练习|实验|讨论|互评|复述|订正|分钟|课后|下节|本节)/;
+  const genericRe =
+    /(当前需求|占位|模板|待完善|输入标题|添加标题|标题文字添加|点击此处|请在此输入)/;
+  const formulaRe =
+    /(F\s*=\s*ma|牛顿第二定律|合力|加速度|\d+\s*(N|kg|m\/s2|m\/s²|%))/i;
+  const actionTimeRe =
+    /(提问|板演|练习|实验|讨论|互评|复述|订正|分钟|课后|下节|本节)/;
   const countChars = (text) => String(text || "").replace(/\s+/g, "").length;
   const slides = outputModel.slides;
 
@@ -4031,10 +6367,18 @@ function evaluateTeachingQualityFromOutputBuffer(outputBuffer, contract) {
 
   for (let i = 0; i < slides.length; i += 1) {
     const slots = Array.isArray(slides[i].slots) ? slides[i].slots : [];
-    const nonMeta = slots.filter((x) => String(x && x.role || "") !== "meta");
-    const ordered = nonMeta.slice().sort((a, b) => Number(a.topRatio || 0) - Number(b.topRatio || 0));
-    const topCandidates = ordered.filter((s) => Number(s.topRatio || 0) <= 0.32);
-    const title = String((topCandidates[0] && topCandidates[0].text) || (ordered[0] && ordered[0].text) || "").trim();
+    const nonMeta = slots.filter((x) => String((x && x.role) || "") !== "meta");
+    const ordered = nonMeta
+      .slice()
+      .sort((a, b) => Number(a.topRatio || 0) - Number(b.topRatio || 0));
+    const topCandidates = ordered.filter(
+      (s) => Number(s.topRatio || 0) <= 0.32,
+    );
+    const title = String(
+      (topCandidates[0] && topCandidates[0].text) ||
+        (ordered[0] && ordered[0].text) ||
+        "",
+    ).trim();
     const body = ordered.map((x) => String(x.text || "")).join(" ");
     const chars = countChars(body);
     const hasFormula = formulaRe.test(body);
@@ -4055,7 +6399,7 @@ function evaluateTeachingQualityFromOutputBuffer(outputBuffer, contract) {
       hasFormula,
       hasGeneric,
       hasAction,
-      titleBad
+      titleBad,
     });
   }
 
@@ -4073,11 +6417,26 @@ function evaluateTeachingQualityFromOutputBuffer(outputBuffer, contract) {
   const minActionCoverage = lockMode ? 0 : 0.95;
 
   const reasons = [];
-  if (genericSlideRatio > maxGeneric) reasons.push(`generic_gt_${maxGeneric.toFixed(3)}:${genericSlideRatio.toFixed(3)}`);
-  if (formulaSlideRatio < minFormula) reasons.push(`formula_lt_${minFormula.toFixed(1)}:${formulaSlideRatio.toFixed(3)}`);
-  if (avgCharsPerSlide < minAvgChars || avgCharsPerSlide > maxAvgChars) reasons.push(`avg_chars_out_of_${minAvgChars}_${maxAvgChars}:${avgCharsPerSlide}`);
-  if (titleViolationSlides.length > maxTitleViolations) reasons.push(`title_violations_gt_${maxTitleViolations}:${titleViolationSlides.join(",")}`);
-  if (actionTimeCoverage < minActionCoverage) reasons.push(`action_time_coverage_lt_${minActionCoverage.toFixed(2)}:${actionTimeCoverage.toFixed(3)}`);
+  if (genericSlideRatio > maxGeneric)
+    reasons.push(
+      `generic_gt_${maxGeneric.toFixed(3)}:${genericSlideRatio.toFixed(3)}`,
+    );
+  if (formulaSlideRatio < minFormula)
+    reasons.push(
+      `formula_lt_${minFormula.toFixed(1)}:${formulaSlideRatio.toFixed(3)}`,
+    );
+  if (avgCharsPerSlide < minAvgChars || avgCharsPerSlide > maxAvgChars)
+    reasons.push(
+      `avg_chars_out_of_${minAvgChars}_${maxAvgChars}:${avgCharsPerSlide}`,
+    );
+  if (titleViolationSlides.length > maxTitleViolations)
+    reasons.push(
+      `title_violations_gt_${maxTitleViolations}:${titleViolationSlides.join(",")}`,
+    );
+  if (actionTimeCoverage < minActionCoverage)
+    reasons.push(
+      `action_time_coverage_lt_${minActionCoverage.toFixed(2)}:${actionTimeCoverage.toFixed(3)}`,
+    );
 
   return {
     pass: reasons.length === 0,
@@ -4088,18 +6447,24 @@ function evaluateTeachingQualityFromOutputBuffer(outputBuffer, contract) {
     actionTimeCoverage,
     titleViolationSlides,
     reasons,
-    slideStats
+    slideStats,
   };
 }
 
 function buildPageDiagnostics(layoutQuality, contentQuality, contract) {
   const expectedSlides = Math.max(
     1,
-    Number(contract && contract.pageCount)
-    || (Array.isArray(contract && contract.slides) ? contract.slides.length : 0)
+    Number(contract && contract.pageCount) ||
+      (Array.isArray(contract && contract.slides) ? contract.slides.length : 0),
   );
-  const lStats = layoutQuality && Array.isArray(layoutQuality.slideStats) ? layoutQuality.slideStats : [];
-  const cStats = contentQuality && Array.isArray(contentQuality.slideStats) ? contentQuality.slideStats : [];
+  const lStats =
+    layoutQuality && Array.isArray(layoutQuality.slideStats)
+      ? layoutQuality.slideStats
+      : [];
+  const cStats =
+    contentQuality && Array.isArray(contentQuality.slideStats)
+      ? contentQuality.slideStats
+      : [];
   const byIndex = new Map();
 
   for (let i = 1; i <= expectedSlides; i += 1) {
@@ -4109,7 +6474,8 @@ function buildPageDiagnostics(layoutQuality, contentQuality, contract) {
   for (const s of lStats) {
     const row = byIndex.get(Number(s.index));
     if (!row) continue;
-    if (Number(s.expectedMiss || 0) > 0) row.reasons.push("missing_expected_slots");
+    if (Number(s.expectedMiss || 0) > 0)
+      row.reasons.push("missing_expected_slots");
     if (Number(s.outOfBand || 0) > 0) row.reasons.push("content_out_of_band");
     if (Number(s.overlapRisk || 0) > 0) row.reasons.push("potential_overlap");
   }
@@ -4125,7 +6491,7 @@ function buildPageDiagnostics(layoutQuality, contentQuality, contract) {
   const failedSlides = Array.from(byIndex.values())
     .map((x) => ({
       index: x.index,
-      reasons: Array.from(new Set(x.reasons))
+      reasons: Array.from(new Set(x.reasons)),
     }))
     .filter((x) => x.reasons.length > 0);
 
@@ -4136,10 +6502,18 @@ function buildPageDiagnostics(layoutQuality, contentQuality, contract) {
       layoutPass: !!(layoutQuality && layoutQuality.pass),
       strictLeakSafe: !!(layoutQuality && layoutQuality.strictLeakSafe),
       contentPass: !!(contentQuality && contentQuality.pass),
-      contentCoverage: Number(contentQuality && contentQuality.contentCoverage || 0),
-      emptySlides: contentQuality && Array.isArray(contentQuality.emptySlides) ? contentQuality.emptySlides : [],
-      placeholderOnlySlides: contentQuality && Array.isArray(contentQuality.placeholderOnlySlides) ? contentQuality.placeholderOnlySlides : []
-    }
+      contentCoverage: Number(
+        (contentQuality && contentQuality.contentCoverage) || 0,
+      ),
+      emptySlides:
+        contentQuality && Array.isArray(contentQuality.emptySlides)
+          ? contentQuality.emptySlides
+          : [],
+      placeholderOnlySlides:
+        contentQuality && Array.isArray(contentQuality.placeholderOnlySlides)
+          ? contentQuality.placeholderOnlySlides
+          : [],
+    },
   };
 }
 
@@ -4150,11 +6524,13 @@ function isDualGatePass(result) {
   const tq = result.teachingQuality || null;
   const layoutPass = !!(lq && lq.pass);
   const contentPass = !!(
-    cq
-    && cq.pass
-    && Number(cq.contentCoverage || 0) >= 0.98
-    && Array.isArray(cq.emptySlides) && cq.emptySlides.length === 0
-    && Array.isArray(cq.placeholderOnlySlides) && cq.placeholderOnlySlides.length === 0
+    cq &&
+    cq.pass &&
+    Number(cq.contentCoverage || 0) >= 0.98 &&
+    Array.isArray(cq.emptySlides) &&
+    cq.emptySlides.length === 0 &&
+    Array.isArray(cq.placeholderOnlySlides) &&
+    cq.placeholderOnlySlides.length === 0
   );
   const teachingPass = !!(!tq || tq.pass);
   return layoutPass && contentPass && teachingPass;
@@ -4168,10 +6544,24 @@ function dualGateFailReason(result) {
   const tq = result.teachingQuality || null;
   if (!lq || !lq.pass) reasons.push("layout_gate_failed");
   if (!cq || !cq.pass) reasons.push("content_gate_failed");
-  if (tq && !tq.pass) reasons.push(`teaching_gate_failed:${(Array.isArray(tq.reasons) ? tq.reasons.join(",") : "unknown")}`);
-  if (cq && Number(cq.contentCoverage || 0) < 0.98) reasons.push(`coverage_lt_0.98:${Number(cq.contentCoverage || 0).toFixed(3)}`);
-  if (cq && Array.isArray(cq.emptySlides) && cq.emptySlides.length > 0) reasons.push(`blank_slides:${cq.emptySlides.join(",")}`);
-  if (cq && Array.isArray(cq.placeholderOnlySlides) && cq.placeholderOnlySlides.length > 0) reasons.push(`placeholder_only_slides:${cq.placeholderOnlySlides.join(",")}`);
+  if (tq && !tq.pass)
+    reasons.push(
+      `teaching_gate_failed:${Array.isArray(tq.reasons) ? tq.reasons.join(",") : "unknown"}`,
+    );
+  if (cq && Number(cq.contentCoverage || 0) < 0.98)
+    reasons.push(
+      `coverage_lt_0.98:${Number(cq.contentCoverage || 0).toFixed(3)}`,
+    );
+  if (cq && Array.isArray(cq.emptySlides) && cq.emptySlides.length > 0)
+    reasons.push(`blank_slides:${cq.emptySlides.join(",")}`);
+  if (
+    cq &&
+    Array.isArray(cq.placeholderOnlySlides) &&
+    cq.placeholderOnlySlides.length > 0
+  )
+    reasons.push(
+      `placeholder_only_slides:${cq.placeholderOnlySlides.join(",")}`,
+    );
   return `dual_gate_failed:${reasons.join("|") || "unknown"}`;
 }
 
@@ -4184,23 +6574,51 @@ function candidateGatePenalty(result) {
   const failedSlides = Number(diag.failedSlideCount || 0);
   const layoutPenalty = Math.max(0, 100 - Number(lq.score || 0));
   const expectedMiss = Number(lq.expectedMissCount || 0);
-  const coveragePenalty = Math.max(0, Math.round((1 - Number(cq.contentCoverage || 0)) * 100));
-  const formulaPenalty = Math.max(0, Math.round((0.6 - Number(tq.formulaSlideRatio || 0)) * 100));
-  const genericPenalty = Math.max(0, Math.round(Number(tq.genericSlideRatio || 0) * 100));
+  const coveragePenalty = Math.max(
+    0,
+    Math.round((1 - Number(cq.contentCoverage || 0)) * 100),
+  );
+  const formulaPenalty = Math.max(
+    0,
+    Math.round((0.6 - Number(tq.formulaSlideRatio || 0)) * 100),
+  );
+  const genericPenalty = Math.max(
+    0,
+    Math.round(Number(tq.genericSlideRatio || 0) * 100),
+  );
   const avgChars = Number(tq.avgCharsPerSlide || 90);
-  const densityPenalty = avgChars < 85 ? (85 - avgChars) : (avgChars > 95 ? (avgChars - 95) : 0);
-  const actionPenalty = Math.max(0, Math.round((0.95 - Number(tq.actionTimeCoverage || 0)) * 100));
-  const titlePenalty = Array.isArray(tq.titleViolationSlides) ? tq.titleViolationSlides.length * 12 : 0;
-  return failedSlides * 1000 + expectedMiss * 50 + coveragePenalty * 8 + layoutPenalty + formulaPenalty * 6 + genericPenalty * 8 + densityPenalty * 4 + actionPenalty * 5 + titlePenalty;
+  const densityPenalty =
+    avgChars < 85 ? 85 - avgChars : avgChars > 95 ? avgChars - 95 : 0;
+  const actionPenalty = Math.max(
+    0,
+    Math.round((0.95 - Number(tq.actionTimeCoverage || 0)) * 100),
+  );
+  const titlePenalty = Array.isArray(tq.titleViolationSlides)
+    ? tq.titleViolationSlides.length * 12
+    : 0;
+  return (
+    failedSlides * 1000 +
+    expectedMiss * 50 +
+    coveragePenalty * 8 +
+    layoutPenalty +
+    formulaPenalty * 6 +
+    genericPenalty * 8 +
+    densityPenalty * 4 +
+    actionPenalty * 5 +
+    titlePenalty
+  );
 }
 
 function parseFailedSlideIndexesFromDiagnosticsFile(diagFile) {
   try {
     if (!diagFile || !fs.existsSync(diagFile)) return [];
     const parsed = parseJsonSafe(fs.readFileSync(diagFile, "utf8"));
-    const list = parsed && parsed.diagnostics && Array.isArray(parsed.diagnostics.failedSlides)
-      ? parsed.diagnostics.failedSlides
-      : [];
+    const list =
+      parsed &&
+      parsed.diagnostics &&
+      Array.isArray(parsed.diagnostics.failedSlides)
+        ? parsed.diagnostics.failedSlides
+        : [];
     const out = list
       .map((x) => Number(x && x.index))
       .filter((n) => Number.isInteger(n) && n > 0);
@@ -4210,34 +6628,79 @@ function parseFailedSlideIndexesFromDiagnosticsFile(diagFile) {
   }
 }
 
-function persistRepairTrainingPair({ contract, beforeResult, afterResult, beforeSaved, afterSaved, repairedSlides }) {
+function persistRepairTrainingPair({
+  contract,
+  beforeResult,
+  afterResult,
+  beforeSaved,
+  afterSaved,
+  repairedSlides,
+}) {
   try {
-    const dir = path.join(__dirname, "docs", "benchmarks", "results", "training-pairs");
+    const dir = path.join(
+      __dirname,
+      "docs",
+      "benchmarks",
+      "results",
+      "training-pairs",
+    );
     fs.mkdirSync(dir, { recursive: true });
     const date = new Date().toISOString().slice(0, 10);
     const file = path.join(dir, `${date}.jsonl`);
     const row = {
       timestamp: new Date().toISOString(),
-      topic: String(contract && contract.topic || ""),
-      sceneType: String(contract && contract.sceneType || ""),
-      templateSource: String(contract && contract.templateSource || "internal"),
+      topic: String((contract && contract.topic) || ""),
+      sceneType: String((contract && contract.sceneType) || ""),
+      templateSource: String(
+        (contract && contract.templateSource) || "internal",
+      ),
       repairedSlides: Array.isArray(repairedSlides) ? repairedSlides : [],
       before: {
         file: beforeSaved && beforeSaved.relPath ? beforeSaved.relPath : "",
-        diagnosticsFile: beforeSaved && beforeSaved.diagnosticsRelPath ? beforeSaved.diagnosticsRelPath : "",
-        layoutQuality: beforeResult && beforeResult.layoutQuality ? beforeResult.layoutQuality : null,
-        contentQuality: beforeResult && beforeResult.contentQuality ? beforeResult.contentQuality : null,
-        teachingQuality: beforeResult && beforeResult.teachingQuality ? beforeResult.teachingQuality : null,
-        diagnostics: beforeResult && beforeResult.diagnostics ? beforeResult.diagnostics : null
+        diagnosticsFile:
+          beforeSaved && beforeSaved.diagnosticsRelPath
+            ? beforeSaved.diagnosticsRelPath
+            : "",
+        layoutQuality:
+          beforeResult && beforeResult.layoutQuality
+            ? beforeResult.layoutQuality
+            : null,
+        contentQuality:
+          beforeResult && beforeResult.contentQuality
+            ? beforeResult.contentQuality
+            : null,
+        teachingQuality:
+          beforeResult && beforeResult.teachingQuality
+            ? beforeResult.teachingQuality
+            : null,
+        diagnostics:
+          beforeResult && beforeResult.diagnostics
+            ? beforeResult.diagnostics
+            : null,
       },
       after: {
         file: afterSaved && afterSaved.relPath ? afterSaved.relPath : "",
-        diagnosticsFile: afterSaved && afterSaved.diagnosticsRelPath ? afterSaved.diagnosticsRelPath : "",
-        layoutQuality: afterResult && afterResult.layoutQuality ? afterResult.layoutQuality : null,
-        contentQuality: afterResult && afterResult.contentQuality ? afterResult.contentQuality : null,
-        teachingQuality: afterResult && afterResult.teachingQuality ? afterResult.teachingQuality : null,
-        diagnostics: afterResult && afterResult.diagnostics ? afterResult.diagnostics : null
-      }
+        diagnosticsFile:
+          afterSaved && afterSaved.diagnosticsRelPath
+            ? afterSaved.diagnosticsRelPath
+            : "",
+        layoutQuality:
+          afterResult && afterResult.layoutQuality
+            ? afterResult.layoutQuality
+            : null,
+        contentQuality:
+          afterResult && afterResult.contentQuality
+            ? afterResult.contentQuality
+            : null,
+        teachingQuality:
+          afterResult && afterResult.teachingQuality
+            ? afterResult.teachingQuality
+            : null,
+        diagnostics:
+          afterResult && afterResult.diagnostics
+            ? afterResult.diagnostics
+            : null,
+      },
     };
     fs.appendFileSync(file, `${JSON.stringify(row)}\n`, "utf8");
     return path.relative(__dirname, file).replace(/\\/g, "/");
@@ -4264,19 +6727,25 @@ function parseJsonSafe(text) {
 function isPowerPointComEnabled() {
   // Explicit opt-in required: legacy env values cannot accidentally enable COM.
   // Must set POWERPOINT_COM_EXPLICIT_ALLOW=true to allow COM path.
-  const explicitAllow = String(process.env.POWERPOINT_COM_EXPLICIT_ALLOW || "").trim().toLowerCase();
+  const explicitAllow = String(process.env.POWERPOINT_COM_EXPLICIT_ALLOW || "")
+    .trim()
+    .toLowerCase();
   if (!["1", "true", "on", "yes"].includes(explicitAllow)) {
     return false;
   }
 
   // Hard no-popup guard: default ON, disables COM regardless legacy envs.
   // Set POWERPOINT_STRICT_NO_POPUP=false to allow COM checks below.
-  const strictNoPopup = String(process.env.POWERPOINT_STRICT_NO_POPUP || "true").trim().toLowerCase();
+  const strictNoPopup = String(process.env.POWERPOINT_STRICT_NO_POPUP || "true")
+    .trim()
+    .toLowerCase();
   if (!["0", "false", "off", "no"].includes(strictNoPopup)) {
     return false;
   }
 
-  const raw = String(process.env.POWERPOINT_COM_ENABLED || "").trim().toLowerCase();
+  const raw = String(process.env.POWERPOINT_COM_ENABLED || "")
+    .trim()
+    .toLowerCase();
   // Default OFF to avoid intrusive PowerPoint UI popups on desktop.
   if (!raw) return false;
   return ["1", "true", "on", "yes"].includes(raw);
@@ -4299,7 +6768,9 @@ function getPowerPointComTimeoutMs() {
 }
 
 function isPowerPointComProbeEnabled() {
-  const raw = String(process.env.POWERPOINT_COM_PROBE_ENABLED || "").trim().toLowerCase();
+  const raw = String(process.env.POWERPOINT_COM_PROBE_ENABLED || "")
+    .trim()
+    .toLowerCase();
   return ["1", "true", "on", "yes"].includes(raw);
 }
 
@@ -4315,23 +6786,33 @@ function probePowerPointComRuntime() {
     return { ok: false, reason: "powerpoint_com_windows_only" };
   }
 
-  const ps = spawnSync("powershell.exe", [
-    "-NoProfile",
-    "-ExecutionPolicy", "Bypass",
-    "-Command",
-    "$ErrorActionPreference='Stop'; $pp=New-Object -ComObject PowerPoint.Application; $pp.Quit(); 'ok'"
-  ], {
-    encoding: "utf8",
-    windowsHide: true,
-    timeout: 15000,
-    maxBuffer: 1024 * 1024
-  });
+  const ps = spawnSync(
+    "powershell.exe",
+    [
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-Command",
+      "$ErrorActionPreference='Stop'; $pp=New-Object -ComObject PowerPoint.Application; $pp.Quit(); 'ok'",
+    ],
+    {
+      encoding: "utf8",
+      windowsHide: true,
+      timeout: 15000,
+      maxBuffer: 1024 * 1024,
+    },
+  );
 
   if (ps.error) {
-    return { ok: false, reason: `powerpoint_com_probe_error:${sanitizeAuditDetail(ps.error.message || String(ps.error))}` };
+    return {
+      ok: false,
+      reason: `powerpoint_com_probe_error:${sanitizeAuditDetail(ps.error.message || String(ps.error))}`,
+    };
   }
   if (ps.status !== 0) {
-    const detail = sanitizeAuditDetail(String(ps.stderr || ps.stdout || `exit_${ps.status}`));
+    const detail = sanitizeAuditDetail(
+      String(ps.stderr || ps.stdout || `exit_${ps.status}`),
+    );
     return { ok: false, reason: `powerpoint_com_probe_failed:${detail}` };
   }
   return { ok: true, reason: "ok" };
@@ -4340,8 +6821,9 @@ function probePowerPointComRuntime() {
 // 纯 ASCII JSON：把所有非 ASCII 字符转成 \uXXXX，彻底规避 PowerShell 读取 payload
 // 时的中文乱码问题（PS 会用 ConvertFrom-Json 解回真实 Unicode，再交给 COM 写入）。
 function toAsciiJson(obj) {
-  return JSON.stringify(obj).replace(/[\u007f-\uffff]/g, (c) =>
-    "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0")
+  return JSON.stringify(obj).replace(
+    /[\u007f-\uffff]/g,
+    (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"),
   );
 }
 
@@ -4355,62 +6837,122 @@ function clampText(value, max) {
 // 避免 .ps1 non-ASCII 解析失败导致回退低保真引擎。
 function buildPowerPointComContractPayload(contract) {
   const semanticModel = resolveTemplateSemanticModel(contract);
-  const semanticSlides = semanticModel && Array.isArray(semanticModel.slides) ? semanticModel.slides : [];
-  const slidesIn = Array.isArray(contract && contract.slides) ? contract.slides : [];
-  const lockMode = !!(contract && contract.lockToTemplate === true);
-  const sceneText = sanitizeContractText((contract && contract.sceneType) || "", 80);
-  const topicText = sanitizeContractText((contract && contract.topic) || "", 160);
-  const isEduDeck = /(教务|教学|课堂|学生|初中|物理)/i.test(sceneText) || /(牛顿|合力|加速度|受力|实验|例题|练习|作业|定律|公式)/i.test(topicText);
-  const splitTitlePieces = (text) => String(text || "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .split(/\s*[•|｜]+\s*/)
-    .map((x) => x.trim())
-    .filter(Boolean);
-  const stripTriadPrefix = (text) => String(text || "").replace(/^(结论：|证据：|行动：)/, "").trim();
-  const chapterTitleRe = /^(一、|二、|三、|四、|五、|目录|封面|课堂小结|课堂总结|课堂收束|分层作业)/;
-  const repairSlideIndexes = Array.isArray(contract && contract.repairSlideIndexes)
-    ? Array.from(new Set(contract.repairSlideIndexes.map((x) => Number(x)).filter((n) => Number.isInteger(n) && n > 0))).sort((a, b) => a - b)
+  const semanticSlides =
+    semanticModel && Array.isArray(semanticModel.slides)
+      ? semanticModel.slides
+      : [];
+  const slidesIn = Array.isArray(contract && contract.slides)
+    ? contract.slides
     : [];
-  const sceneLower = String(contract && (contract.scenario || contract.sceneType) || "").toLowerCase();
+  const lockMode = !!(contract && contract.lockToTemplate === true);
+  const sceneText = sanitizeContractText(
+    (contract && contract.sceneType) || "",
+    80,
+  );
+  const topicText = sanitizeContractText(
+    (contract && contract.topic) || "",
+    160,
+  );
+  const isEduDeck =
+    /(教务|教学|课堂|学生|初中|物理)/i.test(sceneText) ||
+    /(牛顿|合力|加速度|受力|实验|例题|练习|作业|定律|公式)/i.test(topicText);
+  const splitTitlePieces = (text) =>
+    String(text || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .split(/\s*[•|｜]+\s*/)
+      .map((x) => x.trim())
+      .filter(Boolean);
+  const stripTriadPrefix = (text) =>
+    String(text || "")
+      .replace(/^(结论：|证据：|行动：)/, "")
+      .trim();
+  const chapterTitleRe =
+    /^(一、|二、|三、|四、|五、|目录|封面|课堂小结|课堂总结|课堂收束|分层作业)/;
+  const repairSlideIndexes = Array.isArray(
+    contract && contract.repairSlideIndexes,
+  )
+    ? Array.from(
+        new Set(
+          contract.repairSlideIndexes
+            .map((x) => Number(x))
+            .filter((n) => Number.isInteger(n) && n > 0),
+        ),
+      ).sort((a, b) => a - b)
+    : [];
+  const sceneLower = String(
+    (contract && (contract.scenario || contract.sceneType)) || "",
+  ).toLowerCase();
   const forbiddenByScene = {
     proposal: [/课堂抓手/i, /本课/i, /复习/i, /教学目标/i, /学生/i],
     business_report: [/课堂抓手/i, /本课/i, /复习/i, /教学目标/i, /学生/i],
     teaching: [/ROI\b/i, /降本增效方案/i],
-    training: []
+    training: [],
   };
 
   const slides = slidesIn.map((s, i) => {
     const semanticHint = semanticSlides[i] || null;
-    const slotPayload = (s && s.slotPayload && typeof s.slotPayload === "object") ? s.slotPayload : {};
-    const slideType = normalizeScriptType((s && (s.scriptType || s.slideType)) || "", i + 1);
-    let title = sanitizeContractText(stripVersionSuffix((s && s.title) || `第${i + 1}页`), 30);
-    let subtitle = sanitizeContractText(slotPayload.label || (s && s.subtitle) || "", 24);
+    const slotPayload =
+      s && s.slotPayload && typeof s.slotPayload === "object"
+        ? s.slotPayload
+        : {};
+    const slideType = normalizeScriptType(
+      (s && (s.scriptType || s.slideType)) || "",
+      i + 1,
+    );
+    let title = sanitizeContractText(
+      stripVersionSuffix((s && s.title) || `第${i + 1}页`),
+      30,
+    );
+    let subtitle = sanitizeContractText(
+      slotPayload.label || (s && s.subtitle) || "",
+      24,
+    );
     if (slideType === "cover" && isLikelyTitleGarble(title)) {
-      const coverFallback = sanitizeContractText((s && s.subtitle) || subtitle || topicText || "", 30);
+      const coverFallback = sanitizeContractText(
+        (s && s.subtitle) || subtitle || topicText || "",
+        30,
+      );
       if (coverFallback) {
-        console.warn("cover_title_garble_fallback", JSON.stringify({ index: i + 1, before: title, after: coverFallback }));
+        console.warn(
+          "cover_title_garble_fallback",
+          JSON.stringify({ index: i + 1, before: title, after: coverFallback }),
+        );
         title = coverFallback;
       }
     }
-    const body = sanitizeContractText(slotPayload.body || (s && s.goal) || "", 180);
+    const body = sanitizeContractText(
+      slotPayload.body || (s && s.goal) || "",
+      180,
+    );
     const layoutId = String((s && s.layoutId) || "").toLowerCase();
     const isFourPoints = layoutId === "four_points";
     const fourPointItems = isFourPoints
-      ? normalizeFourPointItems((s && s.items) || [], (s && (s.bullets || s.keyPoints)) || [], subtitle || "管理决策").items
+      ? normalizeFourPointItems(
+          (s && s.items) || [],
+          (s && (s.bullets || s.keyPoints)) || [],
+          subtitle || "管理决策",
+        ).items
       : [];
     const bullets = isFourPoints
-      ? fourPointItems.map((it) => sanitizeContractText(`${it.title}：${it.desc}`, 36))
-      : formatStageBullets((s && (s.bullets || s.keyPoints)) || []).map((x) => sanitizeContractText(x, 34));
+      ? fourPointItems.map((it) =>
+          sanitizeContractText(`${it.title}：${it.desc}`, 36),
+        )
+      : formatStageBullets((s && (s.bullets || s.keyPoints)) || []).map((x) =>
+          sanitizeContractText(x, 34),
+        );
     const visualHint = sanitizeContractText(slotPayload.visualHint || "", 24);
-    const footer = sanitizeContractText(slotPayload.footer || (s && s.footer) || "内容由AI生成", 24) || "内容由AI生成";
-    const pageNo = sanitizeContractText(slotPayload.pageNo || `${i + 1}/${Math.max(1, slidesIn.length)}`, 10);
+    const footer = sanitizeContractText(
+      slotPayload.footer || (s && s.footer) || "",
+      24,
+    );
+    const pageNo = sanitizeContractText(slotPayload.pageNo || "", 10);
     const notes = sanitizeContractText((s && s.speakerNotes) || "", 420);
 
     // renderState: deduplicate same field/text writes and avoid repeated phrase spam.
     const renderState = {
       renderedFields: new Set(),
-      renderedTexts: new Set()
+      renderedTexts: new Set(),
     };
     const pushLine = (field, text, out) => {
       const line = sanitizeContractText(text || "", 220);
@@ -4437,49 +6979,72 @@ function buildPowerPointComContractPayload(contract) {
     } else if (slideType === "content_bullets") {
       // Keep label as an independent block; bullets are always one item per line.
       if (!isFourPoints) pushLine("label", subtitle, visibleLines);
-      const bodyLines = isFourPoints ? bullets.slice(0, 4) : bullets.slice(0, 3);
+      const bodyLines = isFourPoints
+        ? bullets.slice(0, 4)
+        : bullets.slice(0, 3);
       bodyLines.forEach((b, idx) => pushLine(`bullet_${idx}`, b, visibleLines));
       if (!isFourPoints) {
-        pushLine("visualHint", visualHint ? `图示：${visualHint}` : "", visibleLines);
+        pushLine(
+          "visualHint",
+          visualHint ? `图示：${visualHint}` : "",
+          visibleLines,
+        );
         pushLine("footer", footer, visibleLines);
         pushLine("pageNo", pageNo, visibleLines);
       }
     } else if (slideType === "cover" || slideType === "thanks") {
-      pushLine("subtitle", sanitizeContractText((s && s.subtitle) || subtitle || "", 32), visibleLines);
+      pushLine(
+        "subtitle",
+        sanitizeContractText((s && s.subtitle) || subtitle || "", 32),
+        visibleLines,
+      );
       pushLine("footer", footer, visibleLines);
       pushLine("pageNo", pageNo, visibleLines);
     } else {
       pushLine("label", subtitle, visibleLines);
       pushLine("body", body, visibleLines);
-      pushLine("visualHint", visualHint ? `图示：${visualHint}` : "", visibleLines);
+      pushLine(
+        "visualHint",
+        visualHint ? `图示：${visualHint}` : "",
+        visibleLines,
+      );
       pushLine("footer", footer, visibleLines);
       pushLine("pageNo", pageNo, visibleLines);
     }
 
     let blocks = visibleLines.slice(0, 4);
     if (!blocks.length) {
-      const fallback = slideType === "content_bullets"
-        ? (isFourPoints ? "试点范围：明确首批渠道与服务场景" : "第1阶段：明确执行动作与衡量口径")
-        : "补充该页业务说明，确保信息可直接用于汇报。";
+      const fallback =
+        slideType === "content_bullets"
+          ? isFourPoints
+            ? "试点范围：明确首批渠道与服务场景"
+            : "第1阶段：明确执行动作与衡量口径"
+          : "补充该页业务说明，确保信息可直接用于汇报。";
       blocks = [fallback, footer, pageNo].filter(Boolean);
     }
 
     const sceneRules = forbiddenByScene[sceneLower] || [];
-    const blocked = sceneRules.some((re) => re.test([title, ...blocks].join(" ")));
+    const blocked = sceneRules.some((re) =>
+      re.test([title, ...blocks].join(" ")),
+    );
     if (blocked) {
-      blocks = blocks.map((line) => line
-        .replace(/课堂抓手/g, "关键抓手")
-        .replace(/本课/g, "本页")
-        .replace(/复习/g, "回顾")
-        .replace(/教学目标/g, "目标")
-        .replace(/学生/g, "用户"));
+      blocks = blocks.map((line) =>
+        line
+          .replace(/课堂抓手/g, "关键抓手")
+          .replace(/本课/g, "本页")
+          .replace(/复习/g, "回顾")
+          .replace(/教学目标/g, "目标")
+          .replace(/学生/g, "用户"),
+      );
     }
 
     return {
       index: i + 1,
       title,
-      goal: (slideType === "section" || isFourPoints) ? "" : subtitle,
-      pointText: isFourPoints ? bullets.join("\r\n") : bullets.map((x, idx) => `第${idx + 1}阶段：${x}`).join("\r\n"),
+      goal: slideType === "section" || isFourPoints ? "" : subtitle,
+      pointText: isFourPoints
+        ? bullets.join("\r\n")
+        : bullets.map((x, idx) => `第${idx + 1}阶段：${x}`).join("\r\n"),
       notes,
       blocks,
       bodyText: blocks.join("\r\n\r\n"),
@@ -4488,23 +7053,44 @@ function buildPowerPointComContractPayload(contract) {
       pageNo,
       semanticHint: semanticHint
         ? {
-          bodyBand: semanticHint.bodyBand || { minTopRatio: 0.28, maxTopRatio: 0.9 },
-          titleBand: semanticHint.titleBand || { maxTopRatio: 0.36 },
-          anchors: Array.isArray(semanticHint.anchors) ? semanticHint.anchors.slice(0, 4) : [],
-          expectedSlots: semanticHint.expectedSlots || { titleMin: 1, bodyMin: 1 }
-        }
-        : null
+            bodyBand: semanticHint.bodyBand || {
+              minTopRatio: 0.28,
+              maxTopRatio: 0.9,
+            },
+            titleBand: semanticHint.titleBand || { maxTopRatio: 0.36 },
+            anchors: Array.isArray(semanticHint.anchors)
+              ? semanticHint.anchors.slice(0, 4)
+              : [],
+            expectedSlots: semanticHint.expectedSlots || {
+              titleMin: 1,
+              bodyMin: 1,
+            },
+          }
+        : null,
     };
   });
 
   return {
-    topic: sanitizeContractText(stripVersionSuffix((contract && contract.topic) || "Daymori"), 120),
-    sceneType: sanitizeContractText((contract && contract.sceneType) || "通用", 40),
-    layoutPolicy: (contract && contract.layoutPolicy) || { mode: "balanced", minScore: 68, mappingVersion: "semantic-slot-v1" },
-    semanticModelVersion: semanticModel && semanticModel.version ? semanticModel.version : "semantic-slot-v1",
+    topic: sanitizeContractText(
+      stripVersionSuffix((contract && contract.topic) || "Daymori"),
+      120,
+    ),
+    sceneType: sanitizeContractText(
+      (contract && contract.sceneType) || "通用",
+      40,
+    ),
+    layoutPolicy: (contract && contract.layoutPolicy) || {
+      mode: "balanced",
+      minScore: 68,
+      mappingVersion: "semantic-slot-v1",
+    },
+    semanticModelVersion:
+      semanticModel && semanticModel.version
+        ? semanticModel.version
+        : "semantic-slot-v1",
     slideCount: slides.length,
     repairSlideIndexes,
-    slides
+    slides,
   };
 }
 
@@ -4527,7 +7113,7 @@ function buildPowerPointComScript() {
     "    param([string]$text)",
     "    $x = [string]$text",
     "    $x = $x -replace '\\r\\n?', \"`n\"",
-    "    if ($x -notmatch \"`n\") {",
+    '    if ($x -notmatch "`n") {',
     "      $x = $x -replace '[;；]\\s*', \"`n\"",
     "      $x = $x -replace '\\s+\\|\\s+', \"`n\"",
     "    }",
@@ -4578,7 +7164,7 @@ function buildPowerPointComScript() {
     "    if ($lineCap -lt 2) { $lineCap = 2 }",
     "",
     "    $lines = New-Object System.Collections.ArrayList",
-    "    foreach ($ln in ($norm -split \"`n\")) {",
+    '    foreach ($ln in ($norm -split "`n")) {',
     "      $chunks = &$wrapLine ([string]$ln) $charsPerLine",
     "      foreach ($chunk in $chunks) {",
     "        if ([string]::IsNullOrWhiteSpace([string]$chunk)) { continue }",
@@ -4603,7 +7189,7 @@ function buildPowerPointComScript() {
     "      }",
     "    }",
     "",
-    "    return @{ text = ($kept -join \"`r`n\"); overflow = $overflow }",
+    '    return @{ text = ($kept -join "`r`n"); overflow = $overflow }',
     "  }",
     "",
     "  $applyText = {",
@@ -5103,7 +7689,7 @@ function buildPowerPointComScript() {
     "          } else {",
     "            $rest = @()",
     "            for ($j = $i; $j -lt $blocks.Count; $j++) { $rest += [string]$blocks[$j] }",
-    "            $restText = ($rest -join \"`r`n`r`n\")",
+    '            $restText = ($rest -join "`r`n`r`n")',
     "            $ov = [string](&$applyText $orderedBodies[$i] $restText 'body')",
     "            $bodyAppliedCount = $bodyAppliedCount + 1",
     "            if ([string]::IsNullOrWhiteSpace($ov) -eq $false) {",
@@ -5122,7 +7708,7 @@ function buildPowerPointComScript() {
     "        if ($blocks.Count -gt 1) {",
     "          $tmp = New-Object System.Collections.ArrayList",
     "          for ($bi = 0; $bi -lt [Math]::Min(3, $blocks.Count); $bi++) { [void]$tmp.Add([string]$blocks[$bi]) }",
-    "          $fallbackText = ($tmp -join \"`r`n`r`n\")",
+    '          $fallbackText = ($tmp -join "`r`n`r`n")',
     "        }",
     "        $ov = [string](&$applyText $bodyFallback $fallbackText 'body')",
     "        $bodyAppliedCount = $bodyAppliedCount + 1",
@@ -5207,7 +7793,7 @@ function buildPowerPointComScript() {
     "      if ($fallbackBlocks.Count -gt 0) {",
     "        $bodyFallback2 = &$createBodyFallbackBox $slide $slideW $slideH $bodyMinTopRatio $bodyMaxTopRatio",
     "        if ($bodyFallback2 -ne $null) {",
-    "          $fbText = ($fallbackBlocks -join \"`r`n`r`n\")",
+    '          $fbText = ($fallbackBlocks -join "`r`n`r`n")',
     "          [void](&$applyText $bodyFallback2 $fbText 'body')",
     "        }",
     "      }",
@@ -5341,7 +7927,7 @@ function buildPowerPointComScript() {
     "  $err = @{ ok = $false; reason = [string]$_.Exception.Message }",
     "  $err | ConvertTo-Json -Depth 5 -Compress",
     "  exit 1",
-    "}"
+    "}",
   ].join("\r\n");
 }
 
@@ -5350,19 +7936,25 @@ async function buildPowerPointComPptx(contract) {
     return { ok: false, reason: "powerpoint_com_disabled" };
   }
   if (shouldShortCircuitPowerPointCom()) {
-    return { ok: false, reason: `powerpoint_com_circuit_open:${powerPointComCircuitReason}` };
+    return {
+      ok: false,
+      reason: `powerpoint_com_circuit_open:${powerPointComCircuitReason}`,
+    };
   }
   if (process.platform !== "win32") {
     return { ok: false, reason: "powerpoint_com_windows_only" };
   }
 
-  const b64 = String(contract && contract.templateFileBase64 || "").trim();
+  const b64 = String((contract && contract.templateFileBase64) || "").trim();
   const templateBuffer = parseBase64Payload(b64);
   if (!templateBuffer.length) {
     return { ok: false, reason: "powerpoint_com_template_required" };
   }
 
-  const workDir = path.join(os.tmpdir(), `daymori-com-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`);
+  const workDir = path.join(
+    os.tmpdir(),
+    `daymori-com-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`,
+  );
   const templatePath = path.join(workDir, "template.pptx");
   const payloadPath = path.join(workDir, "payload.json");
   const scriptPath = path.join(workDir, "run-com-export.ps1");
@@ -5371,34 +7963,52 @@ async function buildPowerPointComPptx(contract) {
   try {
     fs.mkdirSync(workDir, { recursive: true });
     fs.writeFileSync(templatePath, templateBuffer);
-    fs.writeFileSync(payloadPath, toAsciiJson(buildPowerPointComContractPayload(contract)), "utf8");
+    fs.writeFileSync(
+      payloadPath,
+      toAsciiJson(buildPowerPointComContractPayload(contract)),
+      "utf8",
+    );
     // 关键：.ps1 必须带 UTF-8 BOM，否则 PowerShell 5.1 会按 ANSI 解析脚本，
     // 导致 COM 写入的中文被降级成 "?"（脚本本身保持纯 ASCII，双保险）。
     fs.writeFileSync(scriptPath, "\ufeff" + buildPowerPointComScript(), "utf8");
 
     const timeoutMs = getPowerPointComTimeoutMs();
-    const ps = spawnSync("powershell.exe", [
-      "-NoProfile",
-      "-ExecutionPolicy", "Bypass",
-      "-File", scriptPath,
-      "-TemplatePath", templatePath,
-      "-PayloadPath", payloadPath,
-      "-OutputPath", outputPath
-    ], {
-      encoding: "utf8",
-      windowsHide: true,
-      timeout: timeoutMs,
-      maxBuffer: 8 * 1024 * 1024
-    });
+    const ps = spawnSync(
+      "powershell.exe",
+      [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        scriptPath,
+        "-TemplatePath",
+        templatePath,
+        "-PayloadPath",
+        payloadPath,
+        "-OutputPath",
+        outputPath,
+      ],
+      {
+        encoding: "utf8",
+        windowsHide: true,
+        timeout: timeoutMs,
+        maxBuffer: 8 * 1024 * 1024,
+      },
+    );
 
     if (ps.error) {
-      return { ok: false, reason: `powerpoint_com_exec_error:${sanitizeAuditDetail(ps.error.message || String(ps.error))}` };
+      return {
+        ok: false,
+        reason: `powerpoint_com_exec_error:${sanitizeAuditDetail(ps.error.message || String(ps.error))}`,
+      };
     }
 
     const stdout = String(ps.stdout || "").trim();
     const stderr = String(ps.stderr || "").trim();
     if (ps.status !== 0) {
-      const detail = sanitizeAuditDetail(stderr || stdout || `exit_${ps.status}`);
+      const detail = sanitizeAuditDetail(
+        stderr || stdout || `exit_${ps.status}`,
+      );
       // If Office disallows hidden window mode, avoid repeated COM retries in this process.
       if (/hiding the application window is not allowed/i.test(detail)) {
         markPowerPointComCircuit("hidden_not_allowed");
@@ -5412,12 +8022,10 @@ async function buildPowerPointComPptx(contract) {
 
     try {
       sanitizeTeachingForbiddenTermsInPptx(outputPath, contract);
-    } catch {
-    }
+    } catch {}
     try {
       sanitizeTemplatePlaceholderTermsInPptx(outputPath, contract);
-    } catch {
-    }
+    } catch {}
 
     const outBuffer = fs.readFileSync(outputPath);
     if (!outBuffer.length) {
@@ -5428,11 +8036,14 @@ async function buildPowerPointComPptx(contract) {
       ok: true,
       engine: "local-powerpoint-com",
       fileName: `${sanitizeFileName(contract.topic)}.pptx`,
-      mimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-      buffer: outBuffer
+      mimeType:
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      buffer: outBuffer,
     };
   } catch (error) {
-    const detail = sanitizeAuditDetail(error && error.message ? error.message : String(error));
+    const detail = sanitizeAuditDetail(
+      error && error.message ? error.message : String(error),
+    );
     if (/hiding the application window is not allowed/i.test(detail)) {
       markPowerPointComCircuit("hidden_not_allowed");
     }
@@ -5440,13 +8051,14 @@ async function buildPowerPointComPptx(contract) {
   } finally {
     try {
       fs.rmSync(workDir, { recursive: true, force: true });
-    } catch {
-    }
+    } catch {}
   }
 }
 
 function normalizeHexColor(value) {
-  const raw = String(value || "").replace(/[^0-9a-fA-F]/g, "").toUpperCase();
+  const raw = String(value || "")
+    .replace(/[^0-9a-fA-F]/g, "")
+    .toUpperCase();
   if (raw.length >= 6) return raw.slice(0, 6);
   return "";
 }
@@ -5459,7 +8071,10 @@ function resolveSysColorHex(val) {
 }
 
 function findSchemeColor(xml, tag) {
-  const regex = new RegExp(`<a:${tag}>[\\s\\S]*?<a:(?:srgbClr|sysClr)\\s+([^>]+?)\\/?>(?:[\\s\\S]*?)<\\/a:${tag}>|<a:${tag}>[\\s\\S]*?<a:(?:srgbClr|sysClr)\\s+([^>]+?)\\/>(?:[\\s\\S]*?)<\\/a:${tag}>`, "i");
+  const regex = new RegExp(
+    `<a:${tag}>[\\s\\S]*?<a:(?:srgbClr|sysClr)\\s+([^>]+?)\\/?>(?:[\\s\\S]*?)<\\/a:${tag}>|<a:${tag}>[\\s\\S]*?<a:(?:srgbClr|sysClr)\\s+([^>]+?)\\/>(?:[\\s\\S]*?)<\\/a:${tag}>`,
+    "i",
+  );
   const m = xml.match(regex);
   const attrs = (m && (m[1] || m[2])) || "";
   const srgb = attrs.match(/val=\"([0-9a-fA-F]{6})\"/i);
@@ -5472,11 +8087,15 @@ function findSchemeColor(xml, tag) {
 }
 
 function parseThemeFonts(xml) {
-  const major = xml.match(/<a:majorFont>[\s\S]*?<a:latin[^>]*typeface=\"([^\"]+)\"/i);
-  const minor = xml.match(/<a:minorFont>[\s\S]*?<a:latin[^>]*typeface=\"([^\"]+)\"/i);
+  const major = xml.match(
+    /<a:majorFont>[\s\S]*?<a:latin[^>]*typeface=\"([^\"]+)\"/i,
+  );
+  const minor = xml.match(
+    /<a:minorFont>[\s\S]*?<a:latin[^>]*typeface=\"([^\"]+)\"/i,
+  );
   return {
-    titleFont: (major && major[1]) ? String(major[1]).trim() : "",
-    bodyFont: (minor && minor[1]) ? String(minor[1]).trim() : ""
+    titleFont: major && major[1] ? String(major[1]).trim() : "",
+    bodyFont: minor && minor[1] ? String(minor[1]).trim() : "",
   };
 }
 
@@ -5503,12 +8122,12 @@ function parseTemplateThemeFromPptxBuffer(buffer) {
         text: dk1,
         muted: normalizeHexColor(accent3) || "667A99",
         accent: accent1,
-        accentSoft: normalizeHexColor(accent2) || "DCE8FF"
+        accentSoft: normalizeHexColor(accent2) || "DCE8FF",
       },
       fontPack: {
         title: fonts.titleFont || "Microsoft YaHei",
-        body: fonts.bodyFont || "Microsoft YaHei"
-      }
+        body: fonts.bodyFont || "Microsoft YaHei",
+      },
     };
   } catch {
     return null;
@@ -5530,13 +8149,32 @@ function escapeXmlText(input) {
 
 function sanitizeTeachingForbiddenTermsInPptx(filePath, contract) {
   try {
-    const scene = String(contract && contract.sceneType || "");
-    const topic = String(contract && contract.topic || "");
-    const isEdu = /教务|教学|课堂|学生|初中|物理/i.test(scene) || /牛顿|合力|加速度|受力|实验|例题|练习|作业|定律|公式/i.test(topic);
+    const scene = String((contract && contract.sceneType) || "");
+    const topic = String((contract && contract.topic) || "");
+    const isEdu =
+      /教务|教学|课堂|学生|初中|物理/i.test(scene) ||
+      /牛顿|合力|加速度|受力|实验|例题|练习|作业|定律|公式/i.test(topic);
     if (!isEdu) return false;
 
-    const forbiddenTerms = ["添加标题", "项目成果展示", "未来工作规划", "阶段工作概述", "工作完成进度", "目录", "CONTENT", "LOGO", "感谢聆听", "后续", "待完善", "示例", "占位", "当前需求"];
-    const slidePlans = Array.isArray(contract && contract.slides) ? contract.slides : [];
+    const forbiddenTerms = [
+      "添加标题",
+      "项目成果展示",
+      "未来工作规划",
+      "阶段工作概述",
+      "工作完成进度",
+      "目录",
+      "CONTENT",
+      "LOGO",
+      "感谢聆听",
+      "后续",
+      "待完善",
+      "示例",
+      "占位",
+      "当前需求",
+    ];
+    const slidePlans = Array.isArray(contract && contract.slides)
+      ? contract.slides
+      : [];
     const zip = new AdmZip(filePath);
     let touched = false;
 
@@ -5576,7 +8214,9 @@ function sanitizeTeachingForbiddenTermsInPptx(filePath, contract) {
 function sanitizeTemplatePlaceholderTermsInPptx(filePath, contract = null) {
   try {
     const zip = new AdmZip(filePath);
-    const plans = Array.isArray(contract && contract.slides) ? contract.slides : [];
+    const plans = Array.isArray(contract && contract.slides)
+      ? contract.slides
+      : [];
     const patterns = [
       /OfficePLUS/gi,
       /20XX/gi,
@@ -5589,7 +8229,7 @@ function sanitizeTemplatePlaceholderTermsInPptx(filePath, contract = null) {
       /您的文字内容或者到此处[^<]{0,120}/gi,
       /click\s*to\s*add[^<]{0,80}/gi,
       /placeholder/gi,
-      /template/gi
+      /template/gi,
     ];
 
     let touched = false;
@@ -5599,13 +8239,18 @@ function sanitizeTemplatePlaceholderTermsInPptx(filePath, contract = null) {
       if (!m) continue;
       const slideIndex = Number(m[1] || 0);
       const plan = plans[slideIndex - 1] || {};
-      const planType = normalizeScriptType((plan && plan.scriptType) || (plan && plan.slideType) || "", slideIndex);
+      const planType = normalizeScriptType(
+        (plan && plan.scriptType) || (plan && plan.slideType) || "",
+        slideIndex,
+      );
       const before = entry.getData().toString("utf8");
       const after = before.replace(/<a:t>([\s\S]*?)<\/a:t>/g, (full, inner) => {
         let text = String(inner || "");
         for (const re of patterns) text = text.replace(re, "");
-        if (planType !== "section") text = text.replace(/\bPART\s*0?\d+\b/gi, "");
-        if (planType !== "content_bullets") text = text.replace(/^\s*[1234]\s*$/g, "");
+        if (planType !== "section")
+          text = text.replace(/\bPART\s*0?\d+\b/gi, "");
+        if (planType !== "content_bullets")
+          text = text.replace(/^\s*[1234]\s*$/g, "");
         text = text.replace(/\s{2,}/g, " ").trim();
         return `<a:t>${escapeXmlText(text)}</a:t>`;
       });
@@ -5622,7 +8267,7 @@ function sanitizeTemplatePlaceholderTermsInPptx(filePath, contract = null) {
 }
 
 function resolveTemplateThemeOverride(contract) {
-  const b64 = String(contract && contract.templateFileBase64 || "").trim();
+  const b64 = String((contract && contract.templateFileBase64) || "").trim();
   if (!b64) return null;
   const buffer = parseBase64Payload(b64);
   if (!buffer.length) return null;
@@ -5630,15 +8275,26 @@ function resolveTemplateThemeOverride(contract) {
 }
 
 function getAipptExportConfig() {
-  const provider = String(process.env.AIPPT_PROVIDER || "generic").toLowerCase().trim();
+  const provider = String(process.env.AIPPT_PROVIDER || "generic")
+    .toLowerCase()
+    .trim();
   const endpointRaw = String(process.env.AIPPT_API_ENDPOINT || "").trim();
   const apiKey = String(process.env.AIPPT_API_KEY || "").trim();
   const model = String(process.env.AIPPT_API_MODEL || "").trim();
-  const authMode = String(process.env.AIPPT_API_AUTH_MODE || "bearer").toLowerCase().trim();
-  const keyHeader = String(process.env.AIPPT_API_KEY_HEADER || "x-api-key").trim();
+  const authMode = String(process.env.AIPPT_API_AUTH_MODE || "bearer")
+    .toLowerCase()
+    .trim();
+  const keyHeader = String(
+    process.env.AIPPT_API_KEY_HEADER || "x-api-key",
+  ).trim();
   const lazymanEndpoint = String(process.env.LAZYMAN_API_ENDPOINT || "").trim();
   const extraHeaders = parseJsonSafe(process.env.AIPPT_API_EXTRA_HEADERS || "");
-  const supportedProviders = new Set(["generic", "openai-compatible", "openai", "lazyman"]);
+  const supportedProviders = new Set([
+    "generic",
+    "openai-compatible",
+    "openai",
+    "lazyman",
+  ]);
 
   if (!supportedProviders.has(provider)) {
     throw new Error(`Unsupported AIPPT_PROVIDER: ${provider}`);
@@ -5648,9 +8304,12 @@ function getAipptExportConfig() {
     throw new Error(`Unsupported AIPPT_API_AUTH_MODE: ${authMode}`);
   }
 
-  const endpoint = endpointRaw
-    || (provider === "openai" ? "https://api.openai.com/v1/chat/completions" : "")
-    || (provider === "lazyman" ? lazymanEndpoint : "");
+  const endpoint =
+    endpointRaw ||
+    (provider === "openai"
+      ? "https://api.openai.com/v1/chat/completions"
+      : "") ||
+    (provider === "lazyman" ? lazymanEndpoint : "");
 
   return {
     provider,
@@ -5659,13 +8318,16 @@ function getAipptExportConfig() {
     model,
     authMode,
     keyHeader: keyHeader || "x-api-key",
-    extraHeaders: extraHeaders && typeof extraHeaders === "object" ? extraHeaders : {}
+    extraHeaders:
+      extraHeaders && typeof extraHeaders === "object" ? extraHeaders : {},
   };
 }
 
 function inspectOfficeplusExportConfig() {
   const comEnabled = isPowerPointComEnabled();
-  const comProbe = comEnabled ? probePowerPointComRuntime() : { ok: false, reason: "powerpoint_com_disabled" };
+  const comProbe = comEnabled
+    ? probePowerPointComRuntime()
+    : { ok: false, reason: "powerpoint_com_disabled" };
   const comAvailable = comEnabled && !!comProbe.ok;
   let config = null;
   let configError = "";
@@ -5685,19 +8347,26 @@ function inspectOfficeplusExportConfig() {
       issues: [sanitizeAuditDetail(configError || "aippt_config_invalid")],
       warnings: [],
       config: {
-        provider: String(process.env.AIPPT_PROVIDER || "generic").toLowerCase().trim() || "generic",
+        provider:
+          String(process.env.AIPPT_PROVIDER || "generic")
+            .toLowerCase()
+            .trim() || "generic",
         endpointConfigured: false,
         apiKeyConfigured: false,
         modelConfigured: false,
-        authMode: String(process.env.AIPPT_API_AUTH_MODE || "bearer").toLowerCase().trim() || "bearer"
-      }
+        authMode:
+          String(process.env.AIPPT_API_AUTH_MODE || "bearer")
+            .toLowerCase()
+            .trim() || "bearer",
+      },
     };
   }
 
   const issues = [];
   const warnings = [];
   const endpointConfigured = !!String(config.endpoint || "").trim();
-  const apiKeyConfigured = config.authMode === "none" ? true : !!String(config.apiKey || "").trim();
+  const apiKeyConfigured =
+    config.authMode === "none" ? true : !!String(config.apiKey || "").trim();
   const modelConfigured = !!String(config.model || "").trim();
 
   if (!endpointConfigured) {
@@ -5710,9 +8379,15 @@ function inspectOfficeplusExportConfig() {
     warnings.push("AIPPT_API_MODEL 未配置，将使用默认模型，可能与上游不兼容");
   }
   if (config.provider === "generic") {
-    warnings.push("AIPPT_PROVIDER=generic 需要你的上游直接接受 contract 并返回 fileBase64/downloadUrl");
+    warnings.push(
+      "AIPPT_PROVIDER=generic 需要你的上游直接接受 contract 并返回 fileBase64/downloadUrl",
+    );
   }
-  if (config.provider === "lazyman" && !String(process.env.LAZYMAN_API_ENDPOINT || "").trim() && !String(process.env.AIPPT_API_ENDPOINT || "").trim()) {
+  if (
+    config.provider === "lazyman" &&
+    !String(process.env.LAZYMAN_API_ENDPOINT || "").trim() &&
+    !String(process.env.AIPPT_API_ENDPOINT || "").trim()
+  ) {
     issues.push("AIPPT_PROVIDER=lazyman 但未设置 LAZYMAN_API_ENDPOINT");
   }
 
@@ -5727,18 +8402,20 @@ function inspectOfficeplusExportConfig() {
     config: {
       provider: config.provider,
       endpointConfigured,
-      endpointPreview: endpointConfigured ? String(config.endpoint).slice(0, 120) : "",
+      endpointPreview: endpointConfigured
+        ? String(config.endpoint).slice(0, 120)
+        : "",
       apiKeyConfigured,
       modelConfigured,
       authMode: config.authMode,
-      keyHeader: config.authMode === "header" ? config.keyHeader : ""
-    }
+      keyHeader: config.authMode === "header" ? config.keyHeader : "",
+    },
   };
 }
 
 function buildAipptHeaders(config) {
   const headers = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   };
 
   if (config.authMode === "bearer" && config.apiKey) {
@@ -5758,7 +8435,11 @@ function buildAipptHeaders(config) {
 }
 
 function buildAipptRequestPayload(config, contract) {
-  if (config.provider === "openai-compatible" || config.provider === "openai" || config.provider === "lazyman") {
+  if (
+    config.provider === "openai-compatible" ||
+    config.provider === "openai" ||
+    config.provider === "lazyman"
+  ) {
     return {
       model: config.model || "gpt-4.1-mini",
       messages: [
@@ -5769,32 +8450,36 @@ function buildAipptRequestPayload(config, contract) {
             "Generate a PPTX file from the provided contract.",
             "Return JSON only, without markdown fences.",
             "JSON schema:",
-            "{\"fileBase64\":\"...\",\"fileName\":\"...pptx\",\"mimeType\":\"application/vnd.openxmlformats-officedocument.presentationml.presentation\"}",
-            "You may return downloadUrl instead of fileBase64 if supported."
-          ].join("\\n")
+            '{"fileBase64":"...","fileName":"...pptx","mimeType":"application/vnd.openxmlformats-officedocument.presentationml.presentation"}',
+            "You may return downloadUrl instead of fileBase64 if supported.",
+          ].join("\\n"),
         },
         {
           role: "user",
           content: JSON.stringify({
             task: "export_contract_to_pptx",
             contractVersion: contract.contractVersion,
-            contract
-          })
-        }
+            contract,
+          }),
+        },
       ],
-      temperature: 0.1
+      temperature: 0.1,
     };
   }
 
   return {
     model: config.model || undefined,
     contractVersion: contract.contractVersion,
-    contract
+    contract,
   };
 }
 
 function parseAipptResponsePayload(config, data) {
-  if (config.provider === "openai-compatible" || config.provider === "openai" || config.provider === "lazyman") {
+  if (
+    config.provider === "openai-compatible" ||
+    config.provider === "openai" ||
+    config.provider === "lazyman"
+  ) {
     const content = extractChatText(data);
     const jsonText = extractFirstJsonObject(content || "");
     if (!jsonText) return { ok: false, reason: "aippt_openai_no_json_payload" };
@@ -5823,15 +8508,21 @@ async function callAipptEngine(contract, config) {
     upstream = await fetch(endpoint, {
       method: "POST",
       headers: buildAipptHeaders(config),
-      body: JSON.stringify(requestPayload)
+      body: JSON.stringify(requestPayload),
     });
   } catch (error) {
-    return { ok: false, reason: sanitizeAuditDetail(describeUpstreamError(error)) };
+    return {
+      ok: false,
+      reason: sanitizeAuditDetail(describeUpstreamError(error)),
+    };
   }
 
   const rawText = await upstream.text();
   if (!upstream.ok) {
-    return { ok: false, reason: `aippt_http_${upstream.status}:${sanitizeAuditDetail(rawText)}` };
+    return {
+      ok: false,
+      reason: `aippt_http_${upstream.status}:${sanitizeAuditDetail(rawText)}`,
+    };
   }
 
   let data = {};
@@ -5851,21 +8542,30 @@ async function callAipptEngine(contract, config) {
   if (payload.downloadUrl) {
     try {
       const fileResp = await fetch(String(payload.downloadUrl));
-      if (!fileResp.ok) return { ok: false, reason: `aippt_download_${fileResp.status}` };
+      if (!fileResp.ok)
+        return { ok: false, reason: `aippt_download_${fileResp.status}` };
       const arr = await fileResp.arrayBuffer();
       return {
         ok: true,
         engine: `upstream-aippt-${config.provider}`,
-        fileName: String(payload.fileName || `${sanitizeFileName(contract.topic)}.pptx`),
-        mimeType: String(payload.mimeType || "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+        fileName: String(
+          payload.fileName || `${sanitizeFileName(contract.topic)}.pptx`,
+        ),
+        mimeType: String(
+          payload.mimeType ||
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        ),
         buffer: Buffer.from(arr),
         llmTrace: {
           prompt: JSON.stringify(requestPayload),
-          response: data
-        }
+          response: data,
+        },
       };
     } catch (error) {
-      return { ok: false, reason: sanitizeAuditDetail(describeUpstreamError(error)) };
+      return {
+        ok: false,
+        reason: sanitizeAuditDetail(describeUpstreamError(error)),
+      };
     }
   }
 
@@ -5878,13 +8578,18 @@ async function callAipptEngine(contract, config) {
   return {
     ok: true,
     engine: `upstream-aippt-${config.provider}`,
-    fileName: String(payload.fileName || `${sanitizeFileName(contract.topic)}.pptx`),
-    mimeType: String(payload.mimeType || "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+    fileName: String(
+      payload.fileName || `${sanitizeFileName(contract.topic)}.pptx`,
+    ),
+    mimeType: String(
+      payload.mimeType ||
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ),
     buffer: bin,
     llmTrace: {
       prompt: JSON.stringify(requestPayload),
-      response: data
-    }
+      response: data,
+    },
   };
 }
 
@@ -5897,7 +8602,8 @@ async function buildLocalPptx(contract) {
   pptx.title = `${contract.topic} - ${contract.sceneType}`;
 
   const narrativeMode = String(contract.narrativeMode || "standard");
-  const sceneTopicText = `${String(contract.sceneType || "")} ${String(contract.topic || "")} ${String(contract.visualStyle || "")}`.toLowerCase();
+  const sceneTopicText =
+    `${String(contract.sceneType || "")} ${String(contract.topic || "")} ${String(contract.visualStyle || "")}`.toLowerCase();
 
   const standardPalette = {
     bg: "12100F",
@@ -5908,7 +8614,7 @@ async function buildLocalPptx(contract) {
     text: "EAD8C4",
     muted: "B89E83",
     accent: "8A5B38",
-    accentSoft: "2F241D"
+    accentSoft: "2F241D",
   };
 
   const lazymanPalette = {
@@ -5920,7 +8626,7 @@ async function buildLocalPptx(contract) {
     text: "E9D7C3",
     muted: "B79E83",
     accent: "7A5130",
-    accentSoft: "2E241D"
+    accentSoft: "2E241D",
   };
 
   const eduSciencePalette = {
@@ -5932,7 +8638,7 @@ async function buildLocalPptx(contract) {
     text: "173965",
     muted: "456A96",
     accent: "2D6CDF",
-    accentSoft: "DCE8FF"
+    accentSoft: "DCE8FF",
   };
 
   const warmTeachingPalette = {
@@ -5944,19 +8650,25 @@ async function buildLocalPptx(contract) {
     text: "6B3B1D",
     muted: "8A5B3B",
     accent: "D17A2A",
-    accentSoft: "FFE5CC"
+    accentSoft: "FFE5CC",
   };
-  const isEduScene = /教务|教学|课堂|学生|初中|物理|牛顿|力学|实验/.test(sceneTopicText);
+  const isEduScene = /教务|教学|课堂|学生|初中|物理|牛顿|力学|实验/.test(
+    sceneTopicText,
+  );
   const isWarmTheme = /语文|历史|地理|文科|暖色|橙/.test(sceneTopicText);
   const templateThemeOverride = resolveTemplateThemeOverride(contract);
   let palette = isEduScene
-    ? (isWarmTheme ? warmTeachingPalette : eduSciencePalette)
-    : (narrativeMode === "lazyman" ? lazymanPalette : standardPalette);
+    ? isWarmTheme
+      ? warmTeachingPalette
+      : eduSciencePalette
+    : narrativeMode === "lazyman"
+      ? lazymanPalette
+      : standardPalette;
 
   if (templateThemeOverride && templateThemeOverride.palette) {
     palette = {
       ...palette,
-      ...templateThemeOverride.palette
+      ...templateThemeOverride.palette,
     };
   }
 
@@ -5966,11 +8678,18 @@ async function buildLocalPptx(contract) {
   }
 
   function luminance(hex) {
-    const t = String(hex || "000000").replace(/[^0-9a-fA-F]/g, "").slice(0, 6).padEnd(6, "0");
+    const t = String(hex || "000000")
+      .replace(/[^0-9a-fA-F]/g, "")
+      .slice(0, 6)
+      .padEnd(6, "0");
     const r = parseInt(t.slice(0, 2), 16);
     const g = parseInt(t.slice(2, 4), 16);
     const b = parseInt(t.slice(4, 6), 16);
-    return 0.2126 * srgbToLinear(r) + 0.7152 * srgbToLinear(g) + 0.0722 * srgbToLinear(b);
+    return (
+      0.2126 * srgbToLinear(r) +
+      0.7152 * srgbToLinear(g) +
+      0.0722 * srgbToLinear(b)
+    );
   }
 
   function contrastRatio(hexA, hexB) {
@@ -5982,7 +8701,10 @@ async function buildLocalPptx(contract) {
   }
 
   // Enforce readability floor: body >= 4.5:1, title >= 3:1.
-  if (contrastRatio(palette.text, palette.panel) < 4.5 || contrastRatio(palette.title, palette.panel) < 3) {
+  if (
+    contrastRatio(palette.text, palette.panel) < 4.5 ||
+    contrastRatio(palette.title, palette.panel) < 3
+  ) {
     palette = isEduScene ? eduSciencePalette : standardPalette;
   }
 
@@ -5991,34 +8713,53 @@ async function buildLocalPptx(contract) {
   const fontMap = {
     "business-cn": { title: "Microsoft YaHei", body: "Microsoft YaHei" },
     "serif-cn": { title: "SimSun", body: "SimSun" },
-    "modern-cn": { title: "Microsoft JhengHei", body: "Microsoft YaHei" }
+    "modern-cn": { title: "Microsoft JhengHei", body: "Microsoft YaHei" },
   };
   let fontPack = fontMap[fontTheme] || fontMap["business-cn"];
   if (templateThemeOverride && templateThemeOverride.fontPack) {
     fontPack = {
       title: String(templateThemeOverride.fontPack.title || fontPack.title),
-      body: String(templateThemeOverride.fontPack.body || fontPack.body)
+      body: String(templateThemeOverride.fontPack.body || fontPack.body),
     };
   }
 
   const chartStyleMap = {
     calm: { color: palette.accent, symbol: "circle" },
     contrast: { color: isEduScene ? "2D6CDF" : "A97A52", symbol: "diamond" },
-    growth: { color: isEduScene ? "1B8AA6" : "6E4A2F", symbol: "triangle" }
+    growth: { color: isEduScene ? "1B8AA6" : "6E4A2F", symbol: "triangle" },
   };
   const chartPack = chartStyleMap[chartStyle] || chartStyleMap.calm;
 
-  const storyLabels = narrativeMode === "lazyman"
-    ? ["董事会摘要", "关键目标", "数据证据", "问题归因", "执行动作", "战略补充"]
-    : ["封面总览", "目标对齐", "数据洞察", "问题归因", "行动落地", "补充说明"];
+  const storyLabels =
+    narrativeMode === "lazyman"
+      ? [
+          "董事会摘要",
+          "关键目标",
+          "数据证据",
+          "问题归因",
+          "执行动作",
+          "战略补充",
+        ]
+      : [
+          "封面总览",
+          "目标对齐",
+          "数据洞察",
+          "问题归因",
+          "行动落地",
+          "补充说明",
+        ];
 
   function cleanText(value, fallback = "") {
-    const raw = String(value || fallback).replace(/\s+/g, " ").trim();
+    const raw = String(value || fallback)
+      .replace(/\s+/g, " ")
+      .trim();
     return raw || fallback;
   }
 
   function safeList(items, fallback) {
-    const out = Array.isArray(items) ? items.map((x) => cleanText(x)).filter(Boolean) : [];
+    const out = Array.isArray(items)
+      ? items.map((x) => cleanText(x)).filter(Boolean)
+      : [];
     return out.length ? out : [fallback];
   }
 
@@ -6028,10 +8769,20 @@ async function buildLocalPptx(contract) {
   }
 
   function toPptColor(hex, fallback) {
-    const source = String(hex || "").replace(/[^0-9a-fA-F]/g, "").toUpperCase();
+    const source = String(hex || "")
+      .replace(/[^0-9a-fA-F]/g, "")
+      .toUpperCase();
     if (source.length === 6) return source;
-    if (source.length === 3) return source.split("").map((c) => c + c).join("");
-    return String(fallback || "000000").replace(/[^0-9a-fA-F]/g, "").toUpperCase().slice(0, 6).padEnd(6, "0");
+    if (source.length === 3)
+      return source
+        .split("")
+        .map((c) => c + c)
+        .join("");
+    return String(fallback || "000000")
+      .replace(/[^0-9a-fA-F]/g, "")
+      .toUpperCase()
+      .slice(0, 6)
+      .padEnd(6, "0");
   }
 
   function mixColor(hexA, hexB, ratio = 0.5) {
@@ -6049,7 +8800,8 @@ async function buildLocalPptx(contract) {
 
   function resolveSlideVisual(slideSpec, basePalette) {
     const vt = (slideSpec && slideSpec.visualTokens) || {};
-    const vtPalette = (vt && vt.palette && typeof vt.palette === "object") ? vt.palette : {};
+    const vtPalette =
+      vt && vt.palette && typeof vt.palette === "object" ? vt.palette : {};
     const slidePalette = {
       bg: toPptColor(vtPalette.bg, basePalette.bg),
       panel: toPptColor(vtPalette.surface, basePalette.panel),
@@ -6059,19 +8811,33 @@ async function buildLocalPptx(contract) {
       text: toPptColor(vtPalette.body, basePalette.text),
       muted: toPptColor(vtPalette.body, basePalette.muted),
       accent: toPptColor(vtPalette.accent, basePalette.accent),
-      accentSoft: mixColor(toPptColor(vtPalette.accent, basePalette.accent), toPptColor(vtPalette.surface, basePalette.panelSoft), 0.7)
+      accentSoft: mixColor(
+        toPptColor(vtPalette.accent, basePalette.accent),
+        toPptColor(vtPalette.surface, basePalette.panelSoft),
+        0.7,
+      ),
     };
 
-    const typeScale = (vt && vt.typeScale && typeof vt.typeScale === "object") ? vt.typeScale : {};
-    const layout = (vt && vt.layout && typeof vt.layout === "object") ? vt.layout : {};
-    const shapeStyle = (vt && vt.shapeStyle && typeof vt.shapeStyle === "object") ? vt.shapeStyle : {};
+    const typeScale =
+      vt && vt.typeScale && typeof vt.typeScale === "object"
+        ? vt.typeScale
+        : {};
+    const layout =
+      vt && vt.layout && typeof vt.layout === "object" ? vt.layout : {};
+    const shapeStyle =
+      vt && vt.shapeStyle && typeof vt.shapeStyle === "object"
+        ? vt.shapeStyle
+        : {};
 
     const titleSize = Math.max(20, Math.min(44, Number(typeScale.title) || 25));
     const bodySize = Math.max(9, Math.min(16, Number(typeScale.body) || 11.5));
     const noteSize = Math.max(8, Math.min(14, Number(typeScale.note) || 10.5));
     const columns = Math.max(1, Math.min(2, Number(layout.columns) || 1));
     const gap = Math.max(0.12, Math.min(0.52, (Number(layout.gap) || 8) / 28));
-    const padding = Math.max(0.7, Math.min(1.35, (Number(layout.padding) || 11) / 10));
+    const padding = Math.max(
+      0.7,
+      Math.min(1.35, (Number(layout.padding) || 11) / 10),
+    );
     const accentShape = String(shapeStyle.accent || "bar").toLowerCase();
 
     return {
@@ -6082,15 +8848,25 @@ async function buildLocalPptx(contract) {
       columns,
       gap,
       padding,
-      accentShape
+      accentShape,
     };
   }
 
   function extractNumericHints(slideSpec) {
-    const source = [slideSpec.title, slideSpec.goal, ...(slideSpec.keyPoints || [])].join(" ");
-    const percentMatches = [...source.matchAll(/(-?\d+(?:\.\d+)?)\s*%/g)].map((m) => Number(m[1]));
-    const numberMatches = [...source.matchAll(/(-?\d+(?:\.\d+)?)/g)].map((m) => Number(m[1])).filter((n) => Number.isFinite(n));
-    const values = [...percentMatches, ...numberMatches].filter((n) => n >= 0).slice(0, 6);
+    const source = [
+      slideSpec.title,
+      slideSpec.goal,
+      ...(slideSpec.keyPoints || []),
+    ].join(" ");
+    const percentMatches = [...source.matchAll(/(-?\d+(?:\.\d+)?)\s*%/g)].map(
+      (m) => Number(m[1]),
+    );
+    const numberMatches = [...source.matchAll(/(-?\d+(?:\.\d+)?)/g)]
+      .map((m) => Number(m[1]))
+      .filter((n) => Number.isFinite(n));
+    const values = [...percentMatches, ...numberMatches]
+      .filter((n) => n >= 0)
+      .slice(0, 6);
     return values;
   }
 
@@ -6104,14 +8880,24 @@ async function buildLocalPptx(contract) {
     const lt = String(slideSpec.layoutType || "");
     if (lt === "evidence-chart" || lt === "risk-heatmap") return true;
     if (pageIndex === 3 || pageIndex === 4) return true;
-    const text = [slideSpec.title, slideSpec.goal, ...(slideSpec.keyPoints || [])].join(" ");
-    return /(数据|趋势|同比|环比|增长|收入|成本|转化|问题|风险|指标)/.test(text);
+    const text = [
+      slideSpec.title,
+      slideSpec.goal,
+      ...(slideSpec.keyPoints || []),
+    ].join(" ");
+    return /(数据|趋势|同比|环比|增长|收入|成本|转化|问题|风险|指标)/.test(
+      text,
+    );
   }
 
   function isStrategyLikeSlide(slideSpec) {
     const lt = String(slideSpec.layoutType || "");
     if (lt === "strategy-compare" || lt === "roadmap-timeline") return true;
-    const text = [slideSpec.title, slideSpec.goal, ...(slideSpec.keyPoints || [])].join(" ");
+    const text = [
+      slideSpec.title,
+      slideSpec.goal,
+      ...(slideSpec.keyPoints || []),
+    ].join(" ");
     return /(策略|路径|实施|里程碑|试点|验收|预算|资源)/.test(text);
   }
 
@@ -6119,18 +8905,26 @@ async function buildLocalPptx(contract) {
     const lt = String(slideSpec.layoutType || "");
     if (lt === "decision-board") return true;
     if (pageIndex === totalSlides) return true;
-    const text = [slideSpec.title, slideSpec.goal, ...(slideSpec.keyPoints || [])].join(" ");
+    const text = [
+      slideSpec.title,
+      slideSpec.goal,
+      ...(slideSpec.keyPoints || []),
+    ].join(" ");
     return /(决策|下一步|拍板|行动建议|请求)/.test(text);
   }
 
   function addTeachingDiagram(slide, slideSpec, pageIndex) {
-    const keyPoints = safeList(slideSpec.keyPoints, "补充关键教学要点").slice(0, 3).map((x) => shortText(x, 22));
+    const keyPoints = safeList(slideSpec.keyPoints, "补充关键教学要点")
+      .slice(0, 3)
+      .map((x) => shortText(x, 22));
     const left = 8.95;
     const top = 3.0;
     const boxW = 2.8;
     const boxH = 0.48;
     const gap = 0.2;
-    const title = /实验/.test(`${slideSpec.title} ${slideSpec.goal}`) ? "实验流程图" : "受力示意流程";
+    const title = /实验/.test(`${slideSpec.title} ${slideSpec.goal}`)
+      ? "实验流程图"
+      : "受力示意流程";
 
     slide.addText(title, {
       x: left,
@@ -6140,7 +8934,7 @@ async function buildLocalPptx(contract) {
       fontSize: 10,
       bold: true,
       color: palette.accent,
-      fontFace: fontPack.body
+      fontFace: fontPack.body,
     });
 
     for (let i = 0; i < keyPoints.length; i++) {
@@ -6152,7 +8946,7 @@ async function buildLocalPptx(contract) {
         h: boxH,
         radius: 0.05,
         fill: { color: i % 2 === 0 ? "EAF1FF" : "DDEBFF" },
-        line: { color: "9BB8E6", pt: 1 }
+        line: { color: "9BB8E6", pt: 1 },
       });
       slide.addText(`${i + 1}. ${keyPoints[i]}`, {
         x: left + 0.12,
@@ -6161,7 +8955,7 @@ async function buildLocalPptx(contract) {
         h: 0.25,
         fontSize: 9.5,
         color: "173965",
-        fontFace: fontPack.body
+        fontFace: fontPack.body,
       });
 
       if (i < keyPoints.length - 1) {
@@ -6171,7 +8965,7 @@ async function buildLocalPptx(contract) {
           w: 0.18,
           h: 0.12,
           fill: { color: "2D6CDF" },
-          line: { color: "2D6CDF", pt: 0.5 }
+          line: { color: "2D6CDF", pt: 0.5 },
         });
       }
     }
@@ -6183,12 +8977,14 @@ async function buildLocalPptx(contract) {
       h: 0.34,
       fontSize: 9,
       color: "456A96",
-      fontFace: fontPack.body
+      fontFace: fontPack.body,
     });
   }
 
   function chartSpecForSlide(slideSpec, pageIndex) {
-    const labels = safeList(slideSpec.keyPoints, "关键指标").slice(0, 3).map((x) => shortText(x, 12));
+    const labels = safeList(slideSpec.keyPoints, "关键指标")
+      .slice(0, 3)
+      .map((x) => shortText(x, 12));
     const hinted = extractNumericHints(slideSpec).slice(0, 3);
     let values = hinted;
     if (values.length < labels.length) {
@@ -6207,7 +9003,7 @@ async function buildLocalPptx(contract) {
       type,
       labels,
       values,
-      seriesName: pageIndex === 4 ? "问题影响度" : "核心指标趋势"
+      seriesName: pageIndex === 4 ? "问题影响度" : "核心指标趋势",
     };
   }
 
@@ -6217,7 +9013,7 @@ async function buildLocalPptx(contract) {
       y: 6.92,
       w: 12.1,
       h: 0,
-      line: { color: palette.line, pt: 1 }
+      line: { color: palette.line, pt: 1 },
     });
 
     slide.addText(cleanText(contract.topic, "Daymori 演示文稿"), {
@@ -6227,7 +9023,7 @@ async function buildLocalPptx(contract) {
       h: 0.28,
       fontSize: 9,
       color: palette.muted,
-      fontFace: fontPack.body
+      fontFace: fontPack.body,
     });
 
     slide.addText(`${index}/${total}`, {
@@ -6238,12 +9034,22 @@ async function buildLocalPptx(contract) {
       align: "right",
       fontSize: 9,
       color: palette.muted,
-      fontFace: fontPack.body
+      fontFace: fontPack.body,
     });
   }
 
   function renderCoverSlide(slide, ctx) {
-    const { contentLeft, contentTop, contentW, slidePalette, visual, title, subtitle, footer, pageDate } = ctx;
+    const {
+      contentLeft,
+      contentTop,
+      contentW,
+      slidePalette,
+      visual,
+      title,
+      subtitle,
+      footer,
+      pageDate,
+    } = ctx;
     slide.addShape(pptx.ShapeType.roundRect, {
       x: contentLeft,
       y: contentTop,
@@ -6251,14 +9057,14 @@ async function buildLocalPptx(contract) {
       h: 5.9,
       radius: 0.09,
       fill: { color: slidePalette.panel },
-      line: { color: slidePalette.line, pt: 1.2 }
+      line: { color: slidePalette.line, pt: 1.2 },
     });
     slide.addShape(pptx.ShapeType.rect, {
       x: contentLeft,
       y: contentTop,
       w: contentW,
       h: 0.2,
-      fill: { color: slidePalette.accent }
+      fill: { color: slidePalette.accent },
     });
     slide.addText(title, {
       x: contentLeft + 0.5,
@@ -6269,7 +9075,7 @@ async function buildLocalPptx(contract) {
       bold: true,
       color: slidePalette.title,
       fontFace: fontPack.title,
-      align: "center"
+      align: "center",
     });
     if (subtitle) {
       slide.addText(subtitle, {
@@ -6280,7 +9086,7 @@ async function buildLocalPptx(contract) {
         fontSize: Math.max(14, visual.bodySize + 2),
         color: slidePalette.text,
         fontFace: fontPack.body,
-        align: "center"
+        align: "center",
       });
     }
     const dateText = pageDate || new Date().toISOString().slice(0, 10);
@@ -6292,7 +9098,7 @@ async function buildLocalPptx(contract) {
       fontSize: 11,
       color: slidePalette.muted,
       fontFace: fontPack.body,
-      align: "center"
+      align: "center",
     });
     if (footer) {
       slide.addText(footer, {
@@ -6303,13 +9109,21 @@ async function buildLocalPptx(contract) {
         fontSize: 10,
         color: slidePalette.muted,
         fontFace: fontPack.body,
-        align: "center"
+        align: "center",
       });
     }
   }
 
   function renderAgendaSlide(slide, ctx) {
-    const { contentLeft, contentTop, contentW, contentH, slidePalette, title, keyPoints } = ctx;
+    const {
+      contentLeft,
+      contentTop,
+      contentW,
+      contentH,
+      slidePalette,
+      title,
+      keyPoints,
+    } = ctx;
     slide.addShape(pptx.ShapeType.roundRect, {
       x: contentLeft,
       y: contentTop,
@@ -6317,7 +9131,7 @@ async function buildLocalPptx(contract) {
       h: contentH,
       radius: 0.09,
       fill: { color: slidePalette.panel },
-      line: { color: slidePalette.line, pt: 1.2 }
+      line: { color: slidePalette.line, pt: 1.2 },
     });
     slide.addText(title, {
       x: contentLeft + 0.45,
@@ -6327,7 +9141,7 @@ async function buildLocalPptx(contract) {
       fontSize: 28,
       bold: true,
       color: slidePalette.title,
-      fontFace: fontPack.title
+      fontFace: fontPack.title,
     });
     keyPoints.slice(0, 6).forEach((item, i) => {
       slide.addText(`${i + 1}. ${item}`, {
@@ -6337,13 +9151,22 @@ async function buildLocalPptx(contract) {
         h: 0.45,
         fontSize: 16,
         color: slidePalette.text,
-        fontFace: fontPack.body
+        fontFace: fontPack.body,
       });
     });
   }
 
   function renderSectionSlide(slide, ctx) {
-    const { contentLeft, contentTop, contentW, contentH, slidePalette, title, subtitle, pageIndex } = ctx;
+    const {
+      contentLeft,
+      contentTop,
+      contentW,
+      contentH,
+      slidePalette,
+      title,
+      subtitle,
+      pageIndex,
+    } = ctx;
     slide.addShape(pptx.ShapeType.roundRect, {
       x: contentLeft,
       y: contentTop,
@@ -6351,7 +9174,7 @@ async function buildLocalPptx(contract) {
       h: contentH,
       radius: 0.09,
       fill: { color: slidePalette.panel },
-      line: { color: slidePalette.line, pt: 1.2 }
+      line: { color: slidePalette.line, pt: 1.2 },
     });
     slide.addText(String(pageIndex).padStart(2, "0"), {
       x: contentLeft + 0.5,
@@ -6361,7 +9184,7 @@ async function buildLocalPptx(contract) {
       fontSize: 34,
       bold: true,
       color: slidePalette.accent,
-      fontFace: fontPack.title
+      fontFace: fontPack.title,
     });
     slide.addText(title, {
       x: contentLeft + 1.9,
@@ -6371,7 +9194,7 @@ async function buildLocalPptx(contract) {
       fontSize: 30,
       bold: true,
       color: slidePalette.title,
-      fontFace: fontPack.title
+      fontFace: fontPack.title,
     });
     if (subtitle) {
       slide.addText(subtitle, {
@@ -6381,33 +9204,68 @@ async function buildLocalPptx(contract) {
         h: 0.6,
         fontSize: 15,
         color: slidePalette.text,
-        fontFace: fontPack.body
+        fontFace: fontPack.body,
       });
     }
   }
 
-  function renderContentSlide() { return false; }
-  function renderComparisonSlide() { return false; }
-  function renderProcessSlide() { return false; }
-  function renderExampleSlide() { return false; }
-  function renderExerciseSlide() { return false; }
-  function renderSummarySlide() { return false; }
-  function renderQaSlide() { return false; }
+  function renderContentSlide() {
+    return false;
+  }
+  function renderComparisonSlide() {
+    return false;
+  }
+  function renderProcessSlide() {
+    return false;
+  }
+  function renderExampleSlide() {
+    return false;
+  }
+  function renderExerciseSlide() {
+    return false;
+  }
+  function renderSummarySlide() {
+    return false;
+  }
+  function renderQaSlide() {
+    return false;
+  }
 
   const totalSlides = contract.slides.length;
   for (const slideSpec of contract.slides) {
     const slide = pptx.addSlide();
     const pageIndex = Number(slideSpec.index) || 1;
-    const slideType = normalizeSlideType(slideSpec.slideType || mapLayoutTypeToSlideType(slideSpec.layoutType, pageIndex), pageIndex);
+    const slideType = normalizeSlideType(
+      slideSpec.slideType ||
+        mapLayoutTypeToSlideType(slideSpec.layoutType, pageIndex),
+      pageIndex,
+    );
     const title = cleanText(slideSpec.title, `第${pageIndex}页`);
     const subtitle = cleanText(slideSpec.subtitle || slideSpec.goal, "");
-    const goal = cleanText(slideSpec.goal || slideSpec.subtitle, "明确本页目标并输出可执行内容");
-    const keyPoints = safeList(slideSpec.bullets || slideSpec.keyPoints, "补充关键业务要点")
-      .map((x) => String(x || "").replace(/^(结论：|证据：|行动：)/, "").trim())
+    const goal = cleanText(
+      slideSpec.goal || slideSpec.subtitle,
+      "明确本页目标并输出可执行内容",
+    );
+    const keyPoints = safeList(
+      slideSpec.bullets || slideSpec.keyPoints,
+      "补充关键业务要点",
+    )
+      .map((x) =>
+        String(x || "")
+          .replace(/^(结论：|证据：|行动：)/, "")
+          .trim(),
+      )
       .filter(Boolean)
       .slice(0, 5);
-    const assets = safeList(slideSpec.assetPlaceholders, "补充图表或配图").slice(0, 4);
-    const notes = cleanText(slideSpec.notes || slideSpec.speakerNotes, "先讲核心观点，再给例题和练习。") || "-";
+    const assets = safeList(
+      slideSpec.assetPlaceholders,
+      "补充图表或配图",
+    ).slice(0, 4);
+    const notes =
+      cleanText(
+        slideSpec.notes || slideSpec.speakerNotes,
+        "先讲核心观点，再给例题和练习。",
+      ) || "-";
     const footer = cleanText(slideSpec.footer, "");
     const pageDate = cleanText(slideSpec.date, "");
     const takeaway = buildTakeaway(slideSpec);
@@ -6421,7 +9279,21 @@ async function buildLocalPptx(contract) {
 
     slide.background = { color: slidePalette.bg };
 
-    const renderCtx = { contentLeft, contentTop, contentW, contentH, slidePalette, visual, title, subtitle, goal, keyPoints, footer, pageDate, pageIndex };
+    const renderCtx = {
+      contentLeft,
+      contentTop,
+      contentW,
+      contentH,
+      slidePalette,
+      visual,
+      title,
+      subtitle,
+      goal,
+      keyPoints,
+      footer,
+      pageDate,
+      pageIndex,
+    };
     if (slideType === "cover") {
       renderCoverSlide(slide, renderCtx);
       addFooter(slide, pageIndex, totalSlides);
@@ -6447,7 +9319,7 @@ async function buildLocalPptx(contract) {
         h: 5.9,
         radius: 0.09,
         fill: { color: slidePalette.panel },
-        line: { color: slidePalette.line, pt: 1.2 }
+        line: { color: slidePalette.line, pt: 1.2 },
       });
 
       slide.addShape(pptx.ShapeType.rect, {
@@ -6455,7 +9327,7 @@ async function buildLocalPptx(contract) {
         y: contentTop,
         w: contentW,
         h: 0.2,
-        fill: { color: slidePalette.accent }
+        fill: { color: slidePalette.accent },
       });
 
       slide.addText(cleanText(contract.sceneType, "企业汇报"), {
@@ -6466,19 +9338,23 @@ async function buildLocalPptx(contract) {
         fontSize: 13,
         bold: true,
         color: slidePalette.accent,
-        fontFace: fontPack.body
+        fontFace: fontPack.body,
       });
 
-      slide.addText(storyLabels[Math.min(pageIndex - 1, storyLabels.length - 1)] || "封面总览", {
-        x: contentLeft + contentW - 6.15,
-        y: 1.2,
-        w: 5.95,
-        h: 0.34,
-        align: "right",
-        fontSize: 11,
-        color: slidePalette.muted,
-        fontFace: fontPack.body
-      });
+      slide.addText(
+        storyLabels[Math.min(pageIndex - 1, storyLabels.length - 1)] ||
+          "封面总览",
+        {
+          x: contentLeft + contentW - 6.15,
+          y: 1.2,
+          w: 5.95,
+          h: 0.34,
+          align: "right",
+          fontSize: 11,
+          color: slidePalette.muted,
+          fontFace: fontPack.body,
+        },
+      );
 
       slide.addText(title, {
         x: contentLeft + 0.38,
@@ -6489,7 +9365,7 @@ async function buildLocalPptx(contract) {
         bold: true,
         color: slidePalette.title,
         fontFace: fontPack.title,
-        valign: "top"
+        valign: "top",
       });
 
       slide.addText(goal, {
@@ -6499,7 +9375,7 @@ async function buildLocalPptx(contract) {
         h: 0.9,
         fontSize: Math.max(14, visual.bodySize + 3),
         color: slidePalette.text,
-        fontFace: fontPack.body
+        fontFace: fontPack.body,
       });
 
       slide.addShape(pptx.ShapeType.roundRect, {
@@ -6509,7 +9385,7 @@ async function buildLocalPptx(contract) {
         h: 1.25,
         radius: 0.06,
         fill: { color: slidePalette.accentSoft },
-        line: { color: slidePalette.line, pt: 1 }
+        line: { color: slidePalette.line, pt: 1 },
       });
 
       slide.addText(`关键要点：${keyPoints.join(" ｜ ")}`, {
@@ -6519,7 +9395,7 @@ async function buildLocalPptx(contract) {
         h: 0.5,
         fontSize: Math.max(11, visual.bodySize + 1),
         color: slidePalette.text,
-        fontFace: fontPack.body
+        fontFace: fontPack.body,
       });
 
       slide.addText(takeaway, {
@@ -6529,7 +9405,7 @@ async function buildLocalPptx(contract) {
         h: 0.38,
         fontSize: Math.max(10, visual.noteSize),
         color: slidePalette.muted,
-        fontFace: fontPack.body
+        fontFace: fontPack.body,
       });
     } else {
       slide.addShape(pptx.ShapeType.roundRect, {
@@ -6539,7 +9415,7 @@ async function buildLocalPptx(contract) {
         h: contentH,
         radius: 0.09,
         fill: { color: slidePalette.panel },
-        line: { color: slidePalette.line, pt: 1.2 }
+        line: { color: slidePalette.line, pt: 1.2 },
       });
 
       slide.addText(title, {
@@ -6550,19 +9426,23 @@ async function buildLocalPptx(contract) {
         fontSize: Math.max(20, visual.titleSize + 7),
         bold: true,
         color: slidePalette.title,
-        fontFace: fontPack.title
+        fontFace: fontPack.title,
       });
 
-      slide.addText(storyLabels[Math.min(pageIndex - 1, storyLabels.length - 1)] || "补充说明", {
-        x: contentLeft + contentW - 3.55,
-        y: 1.29,
-        w: 2.9,
-        h: 0.22,
-        align: "right",
-        fontSize: 9,
-        color: slidePalette.muted,
-        fontFace: fontPack.body
-      });
+      slide.addText(
+        storyLabels[Math.min(pageIndex - 1, storyLabels.length - 1)] ||
+          "补充说明",
+        {
+          x: contentLeft + contentW - 3.55,
+          y: 1.29,
+          w: 2.9,
+          h: 0.22,
+          align: "right",
+          fontSize: 9,
+          color: slidePalette.muted,
+          fontFace: fontPack.body,
+        },
+      );
 
       slide.addShape(pptx.ShapeType.roundRect, {
         x: contentLeft + contentW - 3.05,
@@ -6571,7 +9451,7 @@ async function buildLocalPptx(contract) {
         h: 0.48,
         radius: 0.08,
         fill: { color: slidePalette.panelSoft },
-        line: { color: slidePalette.line, pt: 1 }
+        line: { color: slidePalette.line, pt: 1 },
       });
 
       slide.addText(`目标：${goal.slice(0, 36)}`, {
@@ -6582,7 +9462,7 @@ async function buildLocalPptx(contract) {
         align: "center",
         fontSize: Math.max(9, visual.noteSize),
         color: slidePalette.accent,
-        fontFace: fontPack.body
+        fontFace: fontPack.body,
       });
 
       if (visual.accentShape === "orb") {
@@ -6592,7 +9472,7 @@ async function buildLocalPptx(contract) {
           w: 0.62,
           h: 0.62,
           fill: { color: slidePalette.accentSoft, transparency: 5 },
-          line: { color: slidePalette.accent, pt: 0.6 }
+          line: { color: slidePalette.accent, pt: 0.6 },
         });
       } else if (visual.accentShape === "ribbon") {
         slide.addShape(pptx.ShapeType.chevron, {
@@ -6601,7 +9481,7 @@ async function buildLocalPptx(contract) {
           w: 1.35,
           h: 0.46,
           fill: { color: slidePalette.accent },
-          line: { color: slidePalette.accent, pt: 0.5 }
+          line: { color: slidePalette.accent, pt: 0.5 },
         });
       } else if (visual.accentShape === "grid") {
         for (let i = 0; i < 3; i++) {
@@ -6612,7 +9492,7 @@ async function buildLocalPptx(contract) {
             h: 0.3,
             radius: 0.03,
             fill: { color: slidePalette.accentSoft },
-            line: { color: slidePalette.accent, pt: 0.4 }
+            line: { color: slidePalette.accent, pt: 0.4 },
           });
         }
       } else {
@@ -6621,13 +9501,16 @@ async function buildLocalPptx(contract) {
           y: 0.74,
           w: 0.62,
           h: 0.12,
-          fill: { color: slidePalette.accent }
+          fill: { color: slidePalette.accent },
         });
       }
 
       const mainX = contentLeft + 0.33;
       const mainY = 1.52;
-      const mainW = visual.columns === 2 ? Math.max(4.8, contentW - 4.4) : Math.max(6.4, contentW - 4.2);
+      const mainW =
+        visual.columns === 2
+          ? Math.max(4.8, contentW - 4.4)
+          : Math.max(6.4, contentW - 4.2);
       const assetX = mainX + mainW + visual.gap;
       const assetW = Math.max(2.55, contentLeft + contentW - assetX - 0.35);
 
@@ -6637,8 +9520,12 @@ async function buildLocalPptx(contract) {
         w: mainW,
         h: 3.9,
         radius: 0.06,
-        fill: { color: isEduScene ? "FFFFFF" : mixColor(slidePalette.panel, "000000", 0.18) },
-        line: { color: slidePalette.line, pt: 1 }
+        fill: {
+          color: isEduScene
+            ? "FFFFFF"
+            : mixColor(slidePalette.panel, "000000", 0.18),
+        },
+        line: { color: slidePalette.line, pt: 1 },
       });
 
       slide.addText(takeaway, {
@@ -6649,23 +9536,36 @@ async function buildLocalPptx(contract) {
         fontSize: Math.max(9.5, visual.noteSize),
         bold: true,
         color: slidePalette.accent,
-        fontFace: fontPack.body
+        fontFace: fontPack.body,
       });
 
       const strategyLike = isStrategyLikeSlide(slideSpec);
-      const decisionLike = isDecisionLikeSlide(slideSpec, pageIndex, totalSlides);
+      const decisionLike = isDecisionLikeSlide(
+        slideSpec,
+        pageIndex,
+        totalSlides,
+      );
       const layoutType = String(slideSpec.layoutType || "");
 
       keyPoints.forEach((point, i) => {
         const row = visual.columns === 2 ? Math.floor(i / 2) : i;
         const col = visual.columns === 2 ? i % 2 : 0;
         const colGap = visual.columns === 2 ? 0.24 : 0;
-        const blockW = visual.columns === 2 ? (mainW - 0.7 - colGap) / 2 : mainW - 0.57;
+        const blockW =
+          visual.columns === 2 ? (mainW - 0.7 - colGap) / 2 : mainW - 0.57;
         const blockX = mainX + 0.25 + col * (blockW + colGap);
         const y = 2.06 + row * 0.8;
         const blockColor = isEduScene
-          ? (i % 2 === 0 ? mixColor(slidePalette.accentSoft, "FFFFFF", 0.52) : mixColor(slidePalette.accentSoft, "FFFFFF", 0.35))
-          : (decisionLike ? (i % 2 === 0 ? mixColor(slidePalette.accentSoft, "FFFFFF", 0.52) : mixColor(slidePalette.accentSoft, "FFFFFF", 0.4)) : (i % 2 === 0 ? mixColor(slidePalette.panel, "000000", 0.12) : mixColor(slidePalette.panel, "000000", 0.03)));
+          ? i % 2 === 0
+            ? mixColor(slidePalette.accentSoft, "FFFFFF", 0.52)
+            : mixColor(slidePalette.accentSoft, "FFFFFF", 0.35)
+          : decisionLike
+            ? i % 2 === 0
+              ? mixColor(slidePalette.accentSoft, "FFFFFF", 0.52)
+              : mixColor(slidePalette.accentSoft, "FFFFFF", 0.4)
+            : i % 2 === 0
+              ? mixColor(slidePalette.panel, "000000", 0.12)
+              : mixColor(slidePalette.panel, "000000", 0.03);
         slide.addShape(pptx.ShapeType.roundRect, {
           x: blockX,
           y,
@@ -6673,7 +9573,12 @@ async function buildLocalPptx(contract) {
           h: 0.66,
           radius: 0.05,
           fill: { color: blockColor },
-          line: { color: isEduScene ? mixColor(slidePalette.accent, "FFFFFF", 0.62) : mixColor(slidePalette.line, "FFFFFF", 0.18), pt: 0.8 }
+          line: {
+            color: isEduScene
+              ? mixColor(slidePalette.accent, "FFFFFF", 0.62)
+              : mixColor(slidePalette.line, "FFFFFF", 0.18),
+            pt: 0.8,
+          },
         });
 
         slide.addText(`0${i + 1}`, {
@@ -6684,7 +9589,7 @@ async function buildLocalPptx(contract) {
           fontSize: Math.max(8.5, visual.noteSize - 1),
           bold: true,
           color: slidePalette.accent,
-          fontFace: fontPack.body
+          fontFace: fontPack.body,
         });
 
         slide.addText(point.slice(0, 60), {
@@ -6693,8 +9598,10 @@ async function buildLocalPptx(contract) {
           w: blockW - 0.65,
           h: 0.4,
           fontSize: Math.max(11, visual.bodySize + 1.5),
-          color: isEduScene ? toPptColor(slidePalette.text, "173965") : toPptColor(slidePalette.title, "F3E7D9"),
-          fontFace: fontPack.body
+          color: isEduScene
+            ? toPptColor(slidePalette.text, "173965")
+            : toPptColor(slidePalette.title, "F3E7D9"),
+          fontFace: fontPack.body,
         });
       });
 
@@ -6705,7 +9612,7 @@ async function buildLocalPptx(contract) {
         h: 3.9,
         radius: 0.06,
         fill: { color: slidePalette.panelSoft },
-        line: { color: slidePalette.line, pt: 1 }
+        line: { color: slidePalette.line, pt: 1 },
       });
 
       slide.addText("建议素材", {
@@ -6716,7 +9623,7 @@ async function buildLocalPptx(contract) {
         fontSize: Math.max(11, visual.bodySize + 1),
         bold: true,
         color: slidePalette.accent,
-        fontFace: fontPack.body
+        fontFace: fontPack.body,
       });
 
       if (isEduScene) {
@@ -6729,8 +9636,8 @@ async function buildLocalPptx(contract) {
             {
               name: c.seriesName,
               labels: c.labels,
-              values: c.values
-            }
+              values: c.values,
+            },
           ],
           {
             x: 8.95,
@@ -6744,8 +9651,8 @@ async function buildLocalPptx(contract) {
             valAxisMaxVal: Math.max(100, ...c.values) + 10,
             chartColors: [chartPack.color],
             lineSize: 2,
-            lineDataSymbol: chartPack.symbol
-          }
+            lineDataSymbol: chartPack.symbol,
+          },
         );
       }
 
@@ -6755,7 +9662,7 @@ async function buildLocalPptx(contract) {
           y: 4.72,
           w: mainW - 0.5,
           h: 0,
-          line: { color: slidePalette.accent, pt: 1.4 }
+          line: { color: slidePalette.accent, pt: 1.4 },
         });
         slide.addText("执行里程碑：M1 方案确认 -> M2 试点落地 -> M3 规模推广", {
           x: mainX + 0.25,
@@ -6765,7 +9672,7 @@ async function buildLocalPptx(contract) {
           fontSize: Math.max(9.5, visual.noteSize),
           bold: true,
           color: slidePalette.accent,
-          fontFace: fontPack.body
+          fontFace: fontPack.body,
         });
       }
 
@@ -6777,7 +9684,7 @@ async function buildLocalPptx(contract) {
           h: 0.96,
           radius: 0.08,
           fill: { color: slidePalette.accentSoft },
-          line: { color: slidePalette.accent, pt: 1 }
+          line: { color: slidePalette.accent, pt: 1 },
         });
         slide.addText("管理层决策请求\n批准试点预算与跨部门协同机制", {
           x: assetX + 0.26,
@@ -6787,7 +9694,7 @@ async function buildLocalPptx(contract) {
           fontSize: Math.max(9, visual.noteSize),
           bold: true,
           color: slidePalette.accent,
-          fontFace: fontPack.body
+          fontFace: fontPack.body,
         });
       }
 
@@ -6799,11 +9706,16 @@ async function buildLocalPptx(contract) {
           h: 0.25,
           fontSize: Math.max(9.5, visual.bodySize),
           color: slidePalette.text,
-          fontFace: fontPack.body
+          fontFace: fontPack.body,
         });
       });
 
-      const noteFill = layoutType === "decision-board" ? slidePalette.accentSoft : (isEduScene ? mixColor(slidePalette.accentSoft, "FFFFFF", 0.45) : mixColor(slidePalette.panel, "000000", 0.2));
+      const noteFill =
+        layoutType === "decision-board"
+          ? slidePalette.accentSoft
+          : isEduScene
+            ? mixColor(slidePalette.accentSoft, "FFFFFF", 0.45)
+            : mixColor(slidePalette.panel, "000000", 0.2);
       slide.addShape(pptx.ShapeType.roundRect, {
         x: contentLeft + 0.33,
         y: 5.52,
@@ -6811,7 +9723,7 @@ async function buildLocalPptx(contract) {
         h: 0.96,
         radius: 0.05,
         fill: { color: noteFill },
-        line: { color: slidePalette.line, pt: 1 }
+        line: { color: slidePalette.line, pt: 1 },
       });
 
       slide.addText(`演讲备注：${notes.slice(0, 120)}`, {
@@ -6820,8 +9732,10 @@ async function buildLocalPptx(contract) {
         w: contentW - 1.05,
         h: 0.44,
         fontSize: Math.max(9.5, visual.noteSize),
-        color: isEduScene ? toPptColor(slidePalette.muted, "365B88") : toPptColor(slidePalette.text, "E2CFB9"),
-        fontFace: fontPack.body
+        color: isEduScene
+          ? toPptColor(slidePalette.muted, "365B88")
+          : toPptColor(slidePalette.text, "E2CFB9"),
+        fontFace: fontPack.body,
       });
     }
 
@@ -6833,26 +9747,47 @@ async function buildLocalPptx(contract) {
     ok: true,
     engine: "local-pptxgenjs",
     fileName: `${sanitizeFileName(contract.topic)}.pptx`,
-    mimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    buffer: Buffer.from(stream)
+    mimeType:
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    buffer: Buffer.from(stream),
   };
 }
 
 async function buildPptExportResult(contract) {
   const exportConfig = getAipptExportConfig();
   const templateModel = resolveTemplateSemanticModel(contract);
-  const officeplusMode = String(contract && contract.templateSource || "").toLowerCase() === "officeplus";
-  const forceCodegenOnly = String(process.env.PPT_FORCE_CODEGEN_ONLY || "false").toLowerCase() !== "false";
+  const officeplusMode =
+    String((contract && contract.templateSource) || "").toLowerCase() ===
+    "officeplus";
+  const forceCodegenOnly =
+    String(process.env.PPT_FORCE_CODEGEN_ONLY || "false").toLowerCase() !==
+    "false";
   const templateRequired = true;
-  const hasTemplateFile = !!String(contract && contract.templateFileBase64 || "").trim();
+  const hasTemplateFile = !!String(
+    (contract && contract.templateFileBase64) || "",
+  ).trim();
   let result = null;
 
   const annotateQuality = (candidate, usedContract) => {
     if (!candidate || !candidate.ok || !candidate.buffer) return candidate;
-    candidate.layoutQuality = evaluateLayoutQualityAgainstModel(templateModel, candidate.buffer, usedContract);
-    candidate.contentQuality = evaluateContentQualityFromOutputBuffer(candidate.buffer, usedContract);
-    candidate.teachingQuality = evaluateTeachingQualityFromOutputBuffer(candidate.buffer, usedContract);
-    candidate.diagnostics = buildPageDiagnostics(candidate.layoutQuality, candidate.contentQuality, usedContract);
+    candidate.layoutQuality = evaluateLayoutQualityAgainstModel(
+      templateModel,
+      candidate.buffer,
+      usedContract,
+    );
+    candidate.contentQuality = evaluateContentQualityFromOutputBuffer(
+      candidate.buffer,
+      usedContract,
+    );
+    candidate.teachingQuality = evaluateTeachingQualityFromOutputBuffer(
+      candidate.buffer,
+      usedContract,
+    );
+    candidate.diagnostics = buildPageDiagnostics(
+      candidate.layoutQuality,
+      candidate.contentQuality,
+      usedContract,
+    );
     return candidate;
   };
 
@@ -6864,8 +9799,16 @@ async function buildPptExportResult(contract) {
     const failedSlides = Number(diag.failedSlideCount || 0);
     const layoutPenalty = Math.max(0, 100 - Number(lq.score || 0));
     const expectedMiss = Number(lq.expectedMissCount || 0);
-    const coveragePenalty = Math.max(0, Math.round((1 - Number(cq.contentCoverage || 0)) * 100));
-    return failedSlides * 1000 + expectedMiss * 50 + coveragePenalty * 8 + layoutPenalty;
+    const coveragePenalty = Math.max(
+      0,
+      Math.round((1 - Number(cq.contentCoverage || 0)) * 100),
+    );
+    return (
+      failedSlides * 1000 +
+      expectedMiss * 50 +
+      coveragePenalty * 8 +
+      layoutPenalty
+    );
   };
 
   const pickBetterCandidate = (current, challenger) => {
@@ -6876,7 +9819,10 @@ async function buildPptExportResult(contract) {
     return b < a ? challenger : current;
   };
 
-  if (!templateRequired && (forceCodegenOnly || contract.codegenOnly === true)) {
+  if (
+    !templateRequired &&
+    (forceCodegenOnly || contract.codegenOnly === true)
+  ) {
     result = await buildLocalPptx(contract);
     if (result && result.ok && result.buffer) {
       annotateQuality(result, contract);
@@ -6884,22 +9830,22 @@ async function buildPptExportResult(contract) {
     }
     return {
       result,
-      exportConfig
+      exportConfig,
     };
   }
 
   if (templateRequired && !hasTemplateFile) {
     return {
       result: { ok: false, reason: "template_required_real_pptx" },
-      exportConfig
+      exportConfig,
     };
   }
 
   if (officeplusMode || hasTemplateFile) {
-    if (!String(contract && contract.templateFileBase64 || "").trim()) {
+    if (!String((contract && contract.templateFileBase64) || "").trim()) {
       return {
         result: { ok: false, reason: "officeplus_template_file_required" },
-        exportConfig
+        exportConfig,
       };
     }
     const comResult = await buildPowerPointComPptx(contract);
@@ -6909,8 +9855,11 @@ async function buildPptExportResult(contract) {
     } else {
       if (templateRequired) {
         return {
-          result: { ok: false, reason: `template_render_failed:${(comResult && comResult.reason) || "unknown"}` },
-          exportConfig
+          result: {
+            ok: false,
+            reason: `template_render_failed:${(comResult && comResult.reason) || "unknown"}`,
+          },
+          exportConfig,
         };
       }
       const upstreamResult = await callAipptEngine(contract, exportConfig);
@@ -6924,10 +9873,14 @@ async function buildPptExportResult(contract) {
     }
     if (result && result.ok && result.buffer) {
       annotateQuality(result, contract);
-      const mode = String(contract && contract.layoutPolicy && contract.layoutPolicy.mode || "balanced");
-      const needsRemediation = mode === "balanced"
-        && result.diagnostics
-        && Number(result.diagnostics.failedSlideCount || 0) > 0;
+      const mode = String(
+        (contract && contract.layoutPolicy && contract.layoutPolicy.mode) ||
+          "balanced",
+      );
+      const needsRemediation =
+        mode === "balanced" &&
+        result.diagnostics &&
+        Number(result.diagnostics.failedSlideCount || 0) > 0;
 
       if (needsRemediation) {
         const retryContracts = [
@@ -6936,36 +9889,49 @@ async function buildPptExportResult(contract) {
             layoutPolicy: {
               ...(contract.layoutPolicy || {}),
               mode: "strict-layout",
-              minScore: Math.max(84, Number(contract && contract.layoutPolicy && contract.layoutPolicy.minScore) || 84)
-            }
+              minScore: Math.max(
+                84,
+                Number(
+                  contract &&
+                    contract.layoutPolicy &&
+                    contract.layoutPolicy.minScore,
+                ) || 84,
+              ),
+            },
           },
           {
             ...contract,
             layoutPolicy: {
               ...(contract.layoutPolicy || {}),
               mode: "strict-content",
-              minScore: Math.max(72, Number(contract && contract.layoutPolicy && contract.layoutPolicy.minScore) || 72)
-            }
-          }
+              minScore: Math.max(
+                72,
+                Number(
+                  contract &&
+                    contract.layoutPolicy &&
+                    contract.layoutPolicy.minScore,
+                ) || 72,
+              ),
+            },
+          },
         ];
 
         for (const rc of retryContracts) {
           const retry = await buildPowerPointComPptx(rc);
           if (!retry || !retry.ok || !retry.buffer) continue;
           annotateQuality(retry, rc);
-          retry.fallbackReason = `${result.fallbackReason || "officeplus_retry"}:retry_${String(rc.layoutPolicy && rc.layoutPolicy.mode || "balanced")}`;
+          retry.fallbackReason = `${result.fallbackReason || "officeplus_retry"}:retry_${String((rc.layoutPolicy && rc.layoutPolicy.mode) || "balanced")}`;
           result = pickBetterCandidate(result, retry);
         }
       }
-
     }
     return {
       result,
-      exportConfig
+      exportConfig,
     };
   }
 
-  if (String(contract && contract.templateFileBase64 || "").trim()) {
+  if (String((contract && contract.templateFileBase64) || "").trim()) {
     const comResult = await buildPowerPointComPptx(contract);
     if (comResult && comResult.ok) {
       result = comResult;
@@ -6984,13 +9950,22 @@ async function buildPptExportResult(contract) {
   if (result && result.ok && result.buffer) annotateQuality(result, contract);
   return {
     result,
-    exportConfig
+    exportConfig,
   };
 }
 
 function saveExportedPptToWorkspace(contract, result, options = {}) {
-  const reqId = sanitizeFileName((contract && contract.requestId) || crypto.randomUUID());
-  const dir = path.join(__dirname, "docs", "benchmarks", "results", "exports", reqId);
+  const reqId = sanitizeFileName(
+    (contract && contract.requestId) || crypto.randomUUID(),
+  );
+  const dir = path.join(
+    __dirname,
+    "docs",
+    "benchmarks",
+    "results",
+    "exports",
+    reqId,
+  );
   fs.mkdirSync(dir, { recursive: true });
   const invalidTag = options && options.invalid ? "-invalid" : "";
   const fileName = `deck${invalidTag}.pptx`;
@@ -7000,24 +9975,38 @@ function saveExportedPptToWorkspace(contract, result, options = {}) {
 
   let diagnosticsRelPath = "";
   let diagnosticsAbsPath = "";
-  if (result && (result.layoutQuality || result.contentQuality || result.teachingQuality || result.diagnostics)) {
+  if (
+    result &&
+    (result.layoutQuality ||
+      result.contentQuality ||
+      result.teachingQuality ||
+      result.diagnostics)
+  ) {
     const diagName = "quality.json";
     diagnosticsAbsPath = path.join(dir, diagName);
     const diagnosticsPayload = {
       generatedAt: new Date().toISOString(),
-      topic: String(contract && contract.topic || ""),
-      templateSource: String(contract && contract.templateSource || "internal"),
-      templateFileName: String(contract && contract.templateFileName || ""),
-      engine: String(result && result.engine || ""),
-      fallbackReason: String(result && result.fallbackReason || ""),
+      topic: String((contract && contract.topic) || ""),
+      templateSource: String(
+        (contract && contract.templateSource) || "internal",
+      ),
+      templateFileName: String((contract && contract.templateFileName) || ""),
+      engine: String((result && result.engine) || ""),
+      fallbackReason: String((result && result.fallbackReason) || ""),
       layoutPolicy: (contract && contract.layoutPolicy) || null,
       layoutQuality: result.layoutQuality || null,
       contentQuality: result.contentQuality || null,
       teachingQuality: result.teachingQuality || null,
-      diagnostics: result.diagnostics || null
+      diagnostics: result.diagnostics || null,
     };
-    fs.writeFileSync(diagnosticsAbsPath, JSON.stringify(diagnosticsPayload, null, 2), "utf8");
-    diagnosticsRelPath = path.relative(__dirname, diagnosticsAbsPath).replace(/\\/g, "/");
+    fs.writeFileSync(
+      diagnosticsAbsPath,
+      JSON.stringify(diagnosticsPayload, null, 2),
+      "utf8",
+    );
+    diagnosticsRelPath = path
+      .relative(__dirname, diagnosticsAbsPath)
+      .replace(/\\/g, "/");
   }
 
   let dumpRelPath = "";
@@ -7028,44 +10017,81 @@ function saveExportedPptToWorkspace(contract, result, options = {}) {
     const dumpPayload = {
       requestId: reqId,
       generatedAt: new Date().toISOString(),
-      topic: String(contract && contract.topic || ""),
+      topic: String((contract && contract.topic) || ""),
       deckPlan: contract && contract.deckPlan ? contract.deckPlan : null,
       inputSlideCount: Number(result.textDump.inputSlideCount || 0),
       outputSlideCount: Number(result.textDump.outputSlideCount || 0),
       slideCount: Number(result.textDump.outputSlideCount || 0),
-      slides: Array.isArray(result.textDump.slides) ? result.textDump.slides : [],
+      slides: Array.isArray(result.textDump.slides)
+        ? result.textDump.slides
+        : [],
       validation: {
         ok: !!(result.deckValidation && result.deckValidation.ok),
-        errors: Array.isArray(result.deckValidation && result.deckValidation.errors) ? result.deckValidation.errors : []
+        errors: Array.isArray(
+          result.deckValidation && result.deckValidation.errors,
+        )
+          ? result.deckValidation.errors
+          : [],
       },
-      qualityScore: result.qualityScore || null
+      qualityScore: result.qualityScore || null,
     };
     fs.writeFileSync(dumpAbsPath, JSON.stringify(dumpPayload, null, 2), "utf8");
     dumpRelPath = path.relative(__dirname, dumpAbsPath).replace(/\\/g, "/");
   }
 
   const validationAbsPath = path.join(dir, "validation.json");
-  const validationRelPath = path.relative(__dirname, validationAbsPath).replace(/\\/g, "/");
-  fs.writeFileSync(validationAbsPath, JSON.stringify({
-    requestId: reqId,
-    ok: !!(result && result.deckValidation && result.deckValidation.ok),
-    errors: Array.isArray(result && result.deckValidation && result.deckValidation.errors) ? result.deckValidation.errors : [],
-    qualityScore: result && result.qualityScore ? result.qualityScore : null
-  }, null, 2), "utf8");
+  const validationRelPath = path
+    .relative(__dirname, validationAbsPath)
+    .replace(/\\/g, "/");
+  fs.writeFileSync(
+    validationAbsPath,
+    JSON.stringify(
+      {
+        requestId: reqId,
+        ok: !!(result && result.deckValidation && result.deckValidation.ok),
+        errors: Array.isArray(
+          result && result.deckValidation && result.deckValidation.errors,
+        )
+          ? result.deckValidation.errors
+          : [],
+        qualityScore:
+          result && result.qualityScore ? result.qualityScore : null,
+      },
+      null,
+      2,
+    ),
+    "utf8",
+  );
 
   const renderLogAbsPath = path.join(dir, "renderLog.json");
-  const renderLogRelPath = path.relative(__dirname, renderLogAbsPath).replace(/\\/g, "/");
-  fs.writeFileSync(renderLogAbsPath, JSON.stringify({
-    requestId: reqId,
-    inputSlideCount: Array.isArray(contract && contract.slides) ? contract.slides.length : 0,
-    outputSlideCount: Number(result && result.textDump && result.textDump.outputSlideCount || 0),
-    records: Array.isArray(contract && contract.slides) ? contract.slides.map((s, i) => ({
-      sourceTemplateIndex: Number(s && s.templateIndex) || 0,
-      outputSlideIndex: i + 1,
-      slideType: String(s && (s.scriptType || s.slideType) || ""),
-      slideTitle: String(s && s.title || "")
-    })) : []
-  }, null, 2), "utf8");
+  const renderLogRelPath = path
+    .relative(__dirname, renderLogAbsPath)
+    .replace(/\\/g, "/");
+  fs.writeFileSync(
+    renderLogAbsPath,
+    JSON.stringify(
+      {
+        requestId: reqId,
+        inputSlideCount: Array.isArray(contract && contract.slides)
+          ? contract.slides.length
+          : 0,
+        outputSlideCount: Number(
+          (result && result.textDump && result.textDump.outputSlideCount) || 0,
+        ),
+        records: Array.isArray(contract && contract.slides)
+          ? contract.slides.map((s, i) => ({
+              sourceTemplateIndex: Number(s && s.templateIndex) || 0,
+              outputSlideIndex: i + 1,
+              slideType: String((s && (s.scriptType || s.slideType)) || ""),
+              slideTitle: String((s && s.title) || ""),
+            }))
+          : [],
+      },
+      null,
+      2,
+    ),
+    "utf8",
+  );
 
   return {
     fileName,
@@ -7078,11 +10104,15 @@ function saveExportedPptToWorkspace(contract, result, options = {}) {
     validationRelPath,
     validationAbsPath,
     renderLogRelPath,
-    renderLogAbsPath
+    renderLogAbsPath,
   };
 }
 
-async function repairFailedSlidesFromQualitySidecar(contract, saved, currentResult) {
+async function repairFailedSlidesFromQualitySidecar(
+  contract,
+  saved,
+  currentResult,
+) {
   if (!saved || !saved.absPath || !saved.diagnosticsAbsPath) {
     return { ok: false, reason: "repair_missing_saved_files" };
   }
@@ -7090,7 +10120,9 @@ async function repairFailedSlidesFromQualitySidecar(contract, saved, currentResu
     return { ok: false, reason: "repair_requires_powerpoint_com" };
   }
 
-  const failedIndexes = parseFailedSlideIndexesFromDiagnosticsFile(saved.diagnosticsAbsPath);
+  const failedIndexes = parseFailedSlideIndexesFromDiagnosticsFile(
+    saved.diagnosticsAbsPath,
+  );
   if (!failedIndexes.length) {
     return { ok: false, reason: "repair_no_failed_slides" };
   }
@@ -7100,38 +10132,69 @@ async function repairFailedSlidesFromQualitySidecar(contract, saved, currentResu
     return { ok: false, reason: "repair_base_export_empty" };
   }
 
-  const strictMin = Math.max(88, Number(contract && contract.layoutPolicy && contract.layoutPolicy.minScore) || 88);
+  const strictMin = Math.max(
+    88,
+    Number(
+      contract && contract.layoutPolicy && contract.layoutPolicy.minScore,
+    ) || 88,
+  );
   const repairContract = {
     ...contract,
     templateSource: "officeplus",
-    templateId: String(contract && contract.templateId || "template-default"),
+    templateId: String((contract && contract.templateId) || "template-default"),
     templateFileName: path.basename(saved.absPath),
     templateFileBase64: baseBuffer.toString("base64"),
     repairSlideIndexes: failedIndexes,
     layoutPolicy: {
       ...(contract && contract.layoutPolicy ? contract.layoutPolicy : {}),
       mode: "strict-layout",
-      minScore: strictMin
-    }
+      minScore: strictMin,
+    },
   };
 
   const repaired = await buildPowerPointComPptx(repairContract);
   if (!repaired || !repaired.ok || !repaired.buffer) {
-    return { ok: false, reason: `repair_export_failed:${(repaired && repaired.reason) || "unknown"}` };
+    return {
+      ok: false,
+      reason: `repair_export_failed:${(repaired && repaired.reason) || "unknown"}`,
+    };
   }
 
   const templateModel = resolveTemplateSemanticModel(contract);
-  repaired.layoutQuality = evaluateLayoutQualityAgainstModel(templateModel, repaired.buffer, repairContract);
-  repaired.contentQuality = evaluateContentQualityFromOutputBuffer(repaired.buffer, repairContract);
-  repaired.teachingQuality = evaluateTeachingQualityFromOutputBuffer(repaired.buffer, repairContract);
-  repaired.diagnostics = buildPageDiagnostics(repaired.layoutQuality, repaired.contentQuality, repairContract);
-  repaired.fallbackReason = `${String(currentResult && currentResult.fallbackReason || "")}::targeted_repair`;
+  repaired.layoutQuality = evaluateLayoutQualityAgainstModel(
+    templateModel,
+    repaired.buffer,
+    repairContract,
+  );
+  repaired.contentQuality = evaluateContentQualityFromOutputBuffer(
+    repaired.buffer,
+    repairContract,
+  );
+  repaired.teachingQuality = evaluateTeachingQualityFromOutputBuffer(
+    repaired.buffer,
+    repairContract,
+  );
+  repaired.diagnostics = buildPageDiagnostics(
+    repaired.layoutQuality,
+    repaired.contentQuality,
+    repairContract,
+  );
+  repaired.fallbackReason = `${String((currentResult && currentResult.fallbackReason) || "")}::targeted_repair`;
   repaired.repairSlideIndexes = failedIndexes;
 
-  return { ok: true, repairedResult: repaired, repairSlideIndexes: failedIndexes };
+  return {
+    ok: true,
+    repairedResult: repaired,
+    repairSlideIndexes: failedIndexes,
+  };
 }
 
-async function callProviderText({ providerConfig, systemPrompt, userPrompt, maxTokens = 520 }) {
+async function callProviderText({
+  providerConfig,
+  systemPrompt,
+  userPrompt,
+  maxTokens = 520,
+}) {
   if (providerConfig.type === "responses") {
     let upstream;
     try {
@@ -7139,26 +10202,35 @@ async function callProviderText({ providerConfig, systemPrompt, userPrompt, maxT
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${providerConfig.apiKey}`
+          Authorization: `Bearer ${providerConfig.apiKey}`,
         },
         body: JSON.stringify({
           model: providerConfig.model,
           input: `${systemPrompt}\n\n${userPrompt}`,
-          max_output_tokens: maxTokens
-        })
+          max_output_tokens: maxTokens,
+        }),
       });
     } catch (error) {
       return { ok: false, status: 502, detail: describeUpstreamError(error) };
     }
 
     const rawText = await upstream.text();
-    if (!upstream.ok) return { ok: false, status: upstream.status, detail: rawText.slice(0, 1200) };
+    if (!upstream.ok)
+      return {
+        ok: false,
+        status: upstream.status,
+        detail: rawText.slice(0, 1200),
+      };
 
     let data = {};
     try {
       data = JSON.parse(rawText);
     } catch (error) {
-      return { ok: false, status: 502, detail: `上游返回非JSON: ${rawText.slice(0, 300)}` };
+      return {
+        ok: false,
+        status: 502,
+        detail: `上游返回非JSON: ${rawText.slice(0, 300)}`,
+      };
     }
 
     return { ok: true, text: data.output_text || "", raw: data };
@@ -7170,31 +10242,40 @@ async function callProviderText({ providerConfig, systemPrompt, userPrompt, maxT
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${providerConfig.apiKey}`
+        Authorization: `Bearer ${providerConfig.apiKey}`,
       },
       body: JSON.stringify({
         model: providerConfig.model,
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt }
+          { role: "user", content: userPrompt },
         ],
         temperature: 0.2,
         max_tokens: maxTokens,
-        ...buildThinkingExtras(providerConfig.model)
-      })
+        ...buildThinkingExtras(providerConfig.model),
+      }),
     });
   } catch (error) {
     return { ok: false, status: 502, detail: describeUpstreamError(error) };
   }
 
   const rawText = await upstream.text();
-  if (!upstream.ok) return { ok: false, status: upstream.status, detail: rawText.slice(0, 1200) };
+  if (!upstream.ok)
+    return {
+      ok: false,
+      status: upstream.status,
+      detail: rawText.slice(0, 1200),
+    };
 
   let data = {};
   try {
     data = JSON.parse(rawText);
   } catch (error) {
-    return { ok: false, status: 502, detail: `上游返回非JSON: ${rawText.slice(0, 300)}` };
+    return {
+      ok: false,
+      status: 502,
+      detail: `上游返回非JSON: ${rawText.slice(0, 300)}`,
+    };
   }
 
   return { ok: true, text: extractChatText(data), raw: data };
@@ -7205,9 +10286,8 @@ async function compilePromptWithRetry({ providerConfig, ingestorPack }) {
     "你是语义编译器（Semantic Compiler），不是聊天助手。",
     "任务：将用户意图+文件骨架编译为高质量可直接执行的提示词。",
     "只允许输出严格 JSON，不要输出解释、markdown、代码块、前后缀。",
-    "禁止输出推理过程。"
+    "禁止输出推理过程。",
   ].join("\n");
-
 
   // Last-resort fallback: keep first meaningful lines instead of returning empty.
   if (!out.trim()) {
@@ -7229,7 +10309,7 @@ async function compilePromptWithRetry({ providerConfig, ingestorPack }) {
     "successCriteria: string[] (3-6条)",
     "contextSummary: string (120-240字)",
     "finalPrompt: string (可直接复制使用)",
-    "checklist: string[] (4-8条)"
+    "checklist: string[] (4-8条)",
   ].join("\n");
 
   const baseUserPrompt = [
@@ -7251,17 +10331,20 @@ async function compilePromptWithRetry({ providerConfig, ingestorPack }) {
     "[CONTEXT_BODY]",
     ingestorPack.contextBody,
     "",
-    schemaSpec
+    schemaSpec,
   ].join("\n");
 
   let lastReason = "unknown";
   for (let attempt = 0; attempt < 2; attempt += 1) {
-    const retryHint = attempt === 0 ? "" : `\n\n上一次输出不合规，原因: ${lastReason}。请只输出合规 JSON。`;
+    const retryHint =
+      attempt === 0
+        ? ""
+        : `\n\n上一次输出不合规，原因: ${lastReason}。请只输出合规 JSON。`;
     const result = await callProviderText({
       providerConfig,
       systemPrompt,
       userPrompt: `${baseUserPrompt}${retryHint}`,
-      maxTokens: 800
+      maxTokens: 800,
     });
 
     if (!result.ok) {
@@ -7288,46 +10371,75 @@ async function compilePromptWithRetry({ providerConfig, ingestorPack }) {
       continue;
     }
 
-    return { ok: true, compiled: parsed, raw: result.raw, compileRetries: attempt };
+    return {
+      ok: true,
+      compiled: parsed,
+      raw: result.raw,
+      compileRetries: attempt,
+    };
   }
 
   return { ok: false, status: 422, detail: `结构化编译失败: ${lastReason}` };
 }
 
-async function callChatCompletions({ endpoint, apiKey, model, system, input, maxTokens }) {
+async function callChatCompletions({
+  endpoint,
+  apiKey,
+  model,
+  system,
+  input,
+  maxTokens,
+}) {
   let upstream;
   try {
-    upstream = await fetchWithRetry(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`
+    upstream = await fetchWithRetry(
+      endpoint,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: "system",
+              content: String(
+                system || "你是高信息密度助手，回答要清晰、可执行、低废话。",
+              ),
+            },
+            { role: "user", content: input },
+          ],
+          temperature: 0.2,
+          max_tokens: Number.isFinite(maxTokens) ? maxTokens : 850,
+          ...buildThinkingExtras(model),
+        }),
       },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: "system", content: String(system || "你是高信息密度助手，回答要清晰、可执行、低废话。") },
-          { role: "user", content: input }
-        ],
-        temperature: 0.2,
-        max_tokens: Number.isFinite(maxTokens) ? maxTokens : 850,
-        ...buildThinkingExtras(model)
-      })
-    }, LLM_FETCH_RETRY);
+      LLM_FETCH_RETRY,
+    );
   } catch (error) {
     return { ok: false, status: 502, detail: describeUpstreamError(error) };
   }
 
   const rawText = await upstream.text();
   if (!upstream.ok) {
-    return { ok: false, status: upstream.status, detail: rawText.slice(0, 1200) };
+    return {
+      ok: false,
+      status: upstream.status,
+      detail: rawText.slice(0, 1200),
+    };
   }
 
   let data = {};
   try {
     data = JSON.parse(rawText);
   } catch (error) {
-    return { ok: false, status: 502, detail: `上游返回非JSON: ${rawText.slice(0, 300)}` };
+    return {
+      ok: false,
+      status: 502,
+      detail: `上游返回非JSON: ${rawText.slice(0, 300)}`,
+    };
   }
 
   return { ok: true, data, text: extractChatText(data) };
@@ -7336,32 +10448,44 @@ async function callChatCompletions({ endpoint, apiKey, model, system, input, max
 async function callResponses({ endpoint, apiKey, model, input, maxTokens }) {
   let upstream;
   try {
-    upstream = await fetchWithRetry(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`
+    upstream = await fetchWithRetry(
+      endpoint,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          input,
+          max_output_tokens: Number.isFinite(maxTokens) ? maxTokens : 850,
+        }),
       },
-      body: JSON.stringify({
-        model,
-        input,
-        max_output_tokens: Number.isFinite(maxTokens) ? maxTokens : 850
-      })
-    }, LLM_FETCH_RETRY);
+      LLM_FETCH_RETRY,
+    );
   } catch (error) {
     return { ok: false, status: 502, detail: describeUpstreamError(error) };
   }
 
   const rawText = await upstream.text();
   if (!upstream.ok) {
-    return { ok: false, status: upstream.status, detail: rawText.slice(0, 1200) };
+    return {
+      ok: false,
+      status: upstream.status,
+      detail: rawText.slice(0, 1200),
+    };
   }
 
   let data = {};
   try {
     data = JSON.parse(rawText);
   } catch (error) {
-    return { ok: false, status: 502, detail: `上游返回非JSON: ${rawText.slice(0, 300)}` };
+    return {
+      ok: false,
+      status: 502,
+      detail: `上游返回非JSON: ${rawText.slice(0, 300)}`,
+    };
   }
 
   return { ok: true, data, text: data.output_text || "" };
@@ -7370,13 +10494,19 @@ async function callResponses({ endpoint, apiKey, model, input, maxTokens }) {
 function parseHotwordsInput(raw) {
   if (!raw) return [];
   if (Array.isArray(raw)) {
-    return raw.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 100);
+    return raw
+      .map((x) => String(x || "").trim())
+      .filter(Boolean)
+      .slice(0, 100);
   }
   if (typeof raw === "string") {
     try {
       const arr = JSON.parse(raw);
       if (Array.isArray(arr)) {
-        return arr.map((x) => String(x || "").trim()).filter(Boolean).slice(0, 100);
+        return arr
+          .map((x) => String(x || "").trim())
+          .filter(Boolean)
+          .slice(0, 100);
       }
     } catch {
       const split = raw
@@ -7415,11 +10545,11 @@ async function callZhipuAsr({ apiKey, file, model, prompt, hotwords }) {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${apiKey}`
+          Authorization: `Bearer ${apiKey}`,
         },
-        body: form
+        body: form,
       },
-      LLM_FETCH_RETRY
+      LLM_FETCH_RETRY,
     );
   } catch (error) {
     return { ok: false, status: 502, detail: describeUpstreamError(error) };
@@ -7427,17 +10557,29 @@ async function callZhipuAsr({ apiKey, file, model, prompt, hotwords }) {
 
   const rawText = await upstream.text();
   if (!upstream.ok) {
-    return { ok: false, status: upstream.status, detail: rawText.slice(0, 1200) };
+    return {
+      ok: false,
+      status: upstream.status,
+      detail: rawText.slice(0, 1200),
+    };
   }
 
   let data = {};
   try {
     data = JSON.parse(rawText);
   } catch (error) {
-    return { ok: false, status: 502, detail: `上游返回非JSON: ${rawText.slice(0, 300)}` };
+    return {
+      ok: false,
+      status: 502,
+      detail: `上游返回非JSON: ${rawText.slice(0, 300)}`,
+    };
   }
 
-  return { ok: true, data, text: normalizeText(data && data.text ? data.text : "") };
+  return {
+    ok: true,
+    data,
+    text: normalizeText(data && data.text ? data.text : ""),
+  };
 }
 
 app.get("/api/audit/status", (req, res) => {
@@ -7445,7 +10587,7 @@ app.get("/api/audit/status", (req, res) => {
     ok: true,
     auditEnabled: AUDIT_LOG_ENABLED,
     auditLogFile: AUDIT_LOG_FILE,
-    allowedOriginsCount: ALLOWED_ORIGINS.length
+    allowedOriginsCount: ALLOWED_ORIGINS.length,
   });
 });
 
@@ -7457,13 +10599,13 @@ app.get("/api/llm/runtime", (req, res) => {
       provider: cfg.provider,
       model: cfg.model,
       endpoint: cfg.endpoint,
-      apiKeyConfigured: !!cfg.apiKey
+      apiKeyConfigured: !!cfg.apiKey,
     });
   } catch (error) {
     return res.status(500).json({
       ok: false,
       error: "llm_runtime_read_failed",
-      detail: error && error.message ? error.message : String(error)
+      detail: error && error.message ? error.message : String(error),
     });
   }
 });
@@ -7480,12 +10622,12 @@ app.post("/api/asr-zhipu", uploadAsr.single("file"), async (req, res) => {
         outcome: "error",
         status: 500,
         latencyMs: Date.now() - startedAt,
-        reason: "missing_ZHIPU_API_KEY"
+        reason: "missing_ZHIPU_API_KEY",
       });
       return res.status(500).json({
         ok: false,
         error: "missing_api_key",
-        detail: "服务端未配置 ZHIPU_API_KEY"
+        detail: "服务端未配置 ZHIPU_API_KEY",
       });
     }
 
@@ -7496,14 +10638,20 @@ app.post("/api/asr-zhipu", uploadAsr.single("file"), async (req, res) => {
         outcome: "error",
         status: 400,
         latencyMs: Date.now() - startedAt,
-        reason: "asr_file_missing"
+        reason: "asr_file_missing",
       });
       return res.status(400).json({ ok: false, error: "file is required" });
     }
 
-    const asrModelRaw = req.body && typeof req.body.model === "string" ? req.body.model : "";
-    const asrModel = sanitizeContractText(asrModelRaw || process.env.ZHIPU_ASR_MODEL || "glm-asr-2512", 64) || "glm-asr-2512";
-    const prompt = req.body && typeof req.body.prompt === "string" ? req.body.prompt : "";
+    const asrModelRaw =
+      req.body && typeof req.body.model === "string" ? req.body.model : "";
+    const asrModel =
+      sanitizeContractText(
+        asrModelRaw || process.env.ZHIPU_ASR_MODEL || "glm-asr-2512",
+        64,
+      ) || "glm-asr-2512";
+    const prompt =
+      req.body && typeof req.body.prompt === "string" ? req.body.prompt : "";
     const hotwords = req.body ? req.body.hotwords : [];
 
     const result = await callZhipuAsr({
@@ -7511,7 +10659,7 @@ app.post("/api/asr-zhipu", uploadAsr.single("file"), async (req, res) => {
       file,
       model: asrModel,
       prompt,
-      hotwords
+      hotwords,
     });
 
     if (!result.ok) {
@@ -7522,12 +10670,12 @@ app.post("/api/asr-zhipu", uploadAsr.single("file"), async (req, res) => {
         model: asrModel,
         latencyMs: Date.now() - startedAt,
         promptChars: String(prompt || "").length,
-        reason: sanitizeAuditDetail(result.detail)
+        reason: sanitizeAuditDetail(result.detail),
       });
       return res.status(result.status).json({
         ok: false,
         error: "zhipu_asr_error",
-        detail: result.detail
+        detail: result.detail,
       });
     }
 
@@ -7539,7 +10687,7 @@ app.post("/api/asr-zhipu", uploadAsr.single("file"), async (req, res) => {
       model: asrModel,
       latencyMs: Date.now() - startedAt,
       inputBytes: Number(file.size || file.buffer.length || 0),
-      outputChars: text.length
+      outputChars: text.length,
     });
 
     return res.json({
@@ -7547,7 +10695,8 @@ app.post("/api/asr-zhipu", uploadAsr.single("file"), async (req, res) => {
       provider: "zhipu",
       model: asrModel,
       text,
-      requestId: result.data && result.data.request_id ? result.data.request_id : ""
+      requestId:
+        result.data && result.data.request_id ? result.data.request_id : "",
     });
   } catch (error) {
     writeAuditLog({
@@ -7555,12 +10704,14 @@ app.post("/api/asr-zhipu", uploadAsr.single("file"), async (req, res) => {
       outcome: "error",
       status: 500,
       latencyMs: Date.now() - startedAt,
-      reason: sanitizeAuditDetail(error && error.message ? error.message : String(error))
+      reason: sanitizeAuditDetail(
+        error && error.message ? error.message : String(error),
+      ),
     });
     return res.status(500).json({
       ok: false,
       error: "asr_server_error",
-      detail: error && error.message ? error.message : String(error)
+      detail: error && error.message ? error.message : String(error),
     });
   }
 });
@@ -7572,7 +10723,7 @@ app.get("/api/ppt/officeplus-status", (req, res) => {
     officeplusReady: inspection.ready,
     officeplusLocalFallbackReady: !!inspection.officeplusLocalFallbackReady,
     requiresTemplateFile: true,
-    ...inspection
+    ...inspection,
   });
 });
 
@@ -7585,7 +10736,7 @@ app.post("/api/ppt/open-local-template-workflow", (req, res) => {
     return res.status(500).json({
       ok: false,
       error: "open_local_template_workflow_failed",
-      detail: launched.reason || "unknown"
+      detail: launched.reason || "unknown",
     });
   }
   return res.json({
@@ -7596,11 +10747,15 @@ app.post("/api/ppt/open-local-template-workflow", (req, res) => {
     launchStatus: launched.launchStatus || null,
     steps: [
       "PowerPoint 已打开。",
-      openOfficeplus ? "OfficePLUS 页面已打开；请你手动挑选模板。" : "如需挑选模板，请手动打开 OfficePLUS 页面。",
-      openInbox ? "模板收件箱已打开。" : "如需查看模板收件箱，请手动打开该目录。",
+      openOfficeplus
+        ? "OfficePLUS 页面已打开；请你手动挑选模板。"
+        : "如需挑选模板，请手动打开 OfficePLUS 页面。",
+      openInbox
+        ? "模板收件箱已打开。"
+        : "如需查看模板收件箱，请手动打开该目录。",
       `模板收件箱路径: ${launched.inboxDir}`,
-      "返回 Daymori 后执行 /ppt pp-sync 同步最新模板。"
-    ]
+      "返回 Daymori 后执行 /ppt pp-sync 同步最新模板。",
+    ],
   });
 });
 
@@ -7612,7 +10767,9 @@ app.get("/api/ppt/template-inbox/latest", (req, res) => {
         ok: false,
         error: "template_inbox_empty",
         detail: "模板收件箱为空，请先在 PowerPoint 中另存为一个 .pptx 模板。",
-        inboxRelativePath: path.relative(__dirname, ensureOfficeplusTemplateInboxDir()).replace(/\\/g, "/")
+        inboxRelativePath: path
+          .relative(__dirname, ensureOfficeplusTemplateInboxDir())
+          .replace(/\\/g, "/"),
       });
     }
 
@@ -7622,13 +10779,15 @@ app.get("/api/ppt/template-inbox/latest", (req, res) => {
       fileName: latest.name,
       fileBase64: bin.toString("base64"),
       mtimeMs: Number(latest.stat.mtimeMs || 0),
-      relativePath: path.relative(__dirname, latest.absPath).replace(/\\/g, "/")
+      relativePath: path
+        .relative(__dirname, latest.absPath)
+        .replace(/\\/g, "/"),
     });
   } catch (error) {
     return res.status(500).json({
       ok: false,
       error: "template_inbox_read_failed",
-      detail: error && error.message ? error.message : String(error)
+      detail: error && error.message ? error.message : String(error),
     });
   }
 });
@@ -7638,11 +10797,17 @@ app.post("/api/llm-proxy", async (req, res) => {
   const audit = baseAuditEvent(req);
   try {
     const providerConfig = getProviderConfig();
-    const requestedModel = req.body && typeof req.body.model === "string" ? req.body.model.trim() : "";
+    const requestedModel =
+      req.body && typeof req.body.model === "string"
+        ? req.body.model.trim()
+        : "";
     if (requestedModel) {
       if (providerConfig.provider === "deepseek") {
         providerConfig.model = requestedModel;
-      } else if (providerConfig.provider === "qwen" && /^qwen/i.test(requestedModel)) {
+      } else if (
+        providerConfig.provider === "qwen" &&
+        /^qwen/i.test(requestedModel)
+      ) {
         providerConfig.model = requestedModel;
       }
     }
@@ -7652,18 +10817,27 @@ app.post("/api/llm-proxy", async (req, res) => {
         outcome: "error",
         status: 500,
         latencyMs: Date.now() - startedAt,
-        reason: `missing_${providerConfig.keyEnv}`
+        reason: `missing_${providerConfig.keyEnv}`,
       });
       return res.status(500).json({
         error: "Missing API key",
-        detail: `服务端未配置 ${providerConfig.keyEnv}，请在 .env 中设置后重启服务`
+        detail: `服务端未配置 ${providerConfig.keyEnv}，请在 .env 中设置后重启服务`,
       });
     }
 
-    const system = req.body && typeof req.body.system === "string" ? req.body.system : "你是高信息密度助手，回答要清晰、可执行、低废话。";
-    const userText = req.body && typeof req.body.userText === "string" ? req.body.userText : "";
-    const maxTokensRaw = req.body && req.body.maxTokens ? Number(req.body.maxTokens) : 850;
-    const maxTokens = Number.isFinite(maxTokensRaw) ? Math.min(Math.max(maxTokensRaw, 120), 8000) : 850;
+    const system =
+      req.body && typeof req.body.system === "string"
+        ? req.body.system
+        : "你是高信息密度助手，回答要清晰、可执行、低废话。";
+    const userText =
+      req.body && typeof req.body.userText === "string"
+        ? req.body.userText
+        : "";
+    const maxTokensRaw =
+      req.body && req.body.maxTokens ? Number(req.body.maxTokens) : 850;
+    const maxTokens = Number.isFinite(maxTokensRaw)
+      ? Math.min(Math.max(maxTokensRaw, 120), 8000)
+      : 850;
 
     if (!userText.trim()) {
       writeAuditLog({
@@ -7671,7 +10845,7 @@ app.post("/api/llm-proxy", async (req, res) => {
         outcome: "error",
         status: 400,
         latencyMs: Date.now() - startedAt,
-        reason: "empty_user_text"
+        reason: "empty_user_text",
       });
       return res.status(400).json({ error: "userText is required" });
     }
@@ -7683,7 +10857,7 @@ app.post("/api/llm-proxy", async (req, res) => {
         apiKey: providerConfig.apiKey,
         model: providerConfig.model,
         input: `${system}\n\n${userText}`,
-        maxTokens
+        maxTokens,
       });
     } else {
       result = await callChatCompletions({
@@ -7692,7 +10866,7 @@ app.post("/api/llm-proxy", async (req, res) => {
         model: providerConfig.model,
         system,
         input: userText,
-        maxTokens
+        maxTokens,
       });
     }
 
@@ -7704,11 +10878,11 @@ app.post("/api/llm-proxy", async (req, res) => {
         model: providerConfig.model,
         latencyMs: Date.now() - startedAt,
         promptChars: userText.length,
-        reason: sanitizeAuditDetail(result.detail)
+        reason: sanitizeAuditDetail(result.detail),
       });
       return res.status(result.status).json({
         error: `${providerConfig.provider} API error`,
-        detail: result.detail
+        detail: result.detail,
       });
     }
 
@@ -7720,7 +10894,7 @@ app.post("/api/llm-proxy", async (req, res) => {
       model: providerConfig.model,
       latencyMs: Date.now() - startedAt,
       promptChars: userText.length,
-      outputChars: text.length
+      outputChars: text.length,
     });
 
     const usage = (result && result.data && result.data.usage) || null;
@@ -7728,7 +10902,7 @@ app.post("/api/llm-proxy", async (req, res) => {
       text,
       provider: providerConfig.provider,
       model: providerConfig.model,
-      usage
+      usage,
     });
   } catch (error) {
     writeAuditLog({
@@ -7736,11 +10910,13 @@ app.post("/api/llm-proxy", async (req, res) => {
       outcome: "error",
       status: 500,
       latencyMs: Date.now() - startedAt,
-      reason: sanitizeAuditDetail(error && error.message ? error.message : String(error))
+      reason: sanitizeAuditDetail(
+        error && error.message ? error.message : String(error),
+      ),
     });
     return res.status(500).json({
       error: "Server error",
-      detail: error && error.message ? error.message : String(error)
+      detail: error && error.message ? error.message : String(error),
     });
   }
 });
@@ -7756,15 +10932,17 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
         outcome: "error",
         status: 500,
         latencyMs: Date.now() - startedAt,
-        reason: `missing_${providerConfig.keyEnv}`
+        reason: `missing_${providerConfig.keyEnv}`,
       });
       return res.status(500).json({
         error: "Missing API key",
-        detail: `服务端未配置 ${providerConfig.keyEnv}，请在 .env 中设置后重启服务`
+        detail: `服务端未配置 ${providerConfig.keyEnv}，请在 .env 中设置后重启服务`,
       });
     }
 
-    const userInput = (req.body && req.body.message ? String(req.body.message) : "").trim();
+    const userInput = (
+      req.body && req.body.message ? String(req.body.message) : ""
+    ).trim();
     const files = Array.isArray(req.files) ? req.files : [];
 
     if (!userInput && files.length === 0) {
@@ -7773,7 +10951,7 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
         outcome: "error",
         status: 400,
         latencyMs: Date.now() - startedAt,
-        reason: "empty_input_and_files"
+        reason: "empty_input_and_files",
       });
       return res.status(400).json({ error: "message or files is required" });
     }
@@ -7781,14 +10959,23 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
     const fileContexts = await Promise.all(
       files.map(async (file, i) => {
         const content = await parseUploadedFile(file);
-        const clipped = content.length > 12000 ? `${content.slice(0, 12000)}\n...[已截断]` : content;
-        const name = file && file.originalname ? String(file.originalname) : `file-${i + 1}`;
+        const clipped =
+          content.length > 12000
+            ? `${content.slice(0, 12000)}\n...[已截断]`
+            : content;
+        const name =
+          file && file.originalname
+            ? String(file.originalname)
+            : `file-${i + 1}`;
         return `文件${i + 1}: ${name}\n${clipped}`;
-      })
+      }),
     );
 
     const ingestorPack = buildIngestorPack({ userInput, fileContexts });
-    const result = await compilePromptWithRetry({ providerConfig, ingestorPack });
+    const result = await compilePromptWithRetry({
+      providerConfig,
+      ingestorPack,
+    });
 
     if (!result.ok) {
       writeAuditLog({
@@ -7799,11 +10986,11 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
         latencyMs: Date.now() - startedAt,
         promptChars: userInput.length,
         fileCount: files.length,
-        reason: sanitizeAuditDetail(result.detail)
+        reason: sanitizeAuditDetail(result.detail),
       });
       return res.status(result.status).json({
         error: `${providerConfig.provider} API error`,
-        detail: result.detail
+        detail: result.detail,
       });
     }
 
@@ -7814,7 +11001,7 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
       `风格: ${compiled.style}`,
       "",
       "最终提示词:",
-      compiled.finalPrompt
+      compiled.finalPrompt,
     ].join("\n");
 
     writeAuditLog({
@@ -7826,7 +11013,7 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
       promptChars: userInput.length,
       fileCount: files.length,
       outputChars: compiled.finalPrompt.length,
-      compileRetries: result.compileRetries
+      compileRetries: result.compileRetries,
     });
 
     return res.json({
@@ -7835,7 +11022,7 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
       compileRetries: result.compileRetries,
       provider: providerConfig.provider,
       model: providerConfig.model,
-      raw: result.raw
+      raw: result.raw,
     });
   } catch (error) {
     writeAuditLog({
@@ -7843,11 +11030,13 @@ app.post("/api/chat", upload.array("files", 2), async (req, res) => {
       outcome: "error",
       status: 500,
       latencyMs: Date.now() - startedAt,
-      reason: sanitizeAuditDetail(error && error.message ? error.message : String(error))
+      reason: sanitizeAuditDetail(
+        error && error.message ? error.message : String(error),
+      ),
     });
     return res.status(500).json({
       error: "Server error",
-      detail: error && error.message ? error.message : String(error)
+      detail: error && error.message ? error.message : String(error),
     });
   }
 });
@@ -7856,29 +11045,60 @@ app.post("/api/ppt/export", async (req, res) => {
   const startedAt = Date.now();
   const audit = baseAuditEvent(req);
   try {
-    const requestContext = createRequestContext(req, req.body && req.body.contract ? req.body.contract : {});
-    const normalized = normalizeContract(req.body && req.body.contract, requestContext);
+    const requestContext = createRequestContext(
+      req,
+      req.body && req.body.contract ? req.body.contract : {},
+    );
+    const normalized = normalizeContract(
+      req.body && req.body.contract,
+      requestContext,
+    );
     if (!normalized.ok) {
       writeAuditLog({
         ...audit,
         outcome: "error",
         status: 422,
         latencyMs: Date.now() - startedAt,
-        reason: normalized.reason
+        reason: normalized.reason,
       });
-      writeDebugJson(requestContext, "validation.json", normalized.validation || { ok: false, errors: [{ slideIndex: 0, type: "invalid_contract", text: normalized.reason, message: "请求合同不合法" }] });
-      return res.status(422).json({ error: "ppt_export_validation_failed", detail: normalized.reason, requestId: requestContext.requestId, validation: normalized.validation || null });
+      writeDebugJson(
+        requestContext,
+        "validation.json",
+        normalized.validation || {
+          ok: false,
+          errors: [
+            {
+              slideIndex: 0,
+              type: "invalid_contract",
+              text: normalized.reason,
+              message: "请求合同不合法",
+            },
+          ],
+        },
+      );
+      return res.status(422).json({
+        error: "ppt_export_validation_failed",
+        detail: normalized.reason,
+        requestId: requestContext.requestId,
+        validation: normalized.validation || null,
+      });
     }
 
     const contract = normalized.contract;
     const { result, exportConfig } = await buildPptExportResult(contract);
 
     if (!result || !result.ok) {
-      const detail = sanitizeAuditDetail(result && result.reason ? result.reason : "ppt_export_unavailable");
-      const layoutQuality = result && result.layoutQuality ? result.layoutQuality : null;
-      const contentQuality = result && result.contentQuality ? result.contentQuality : null;
-      const teachingQuality = result && result.teachingQuality ? result.teachingQuality : null;
-      const diagnostics = result && result.diagnostics ? result.diagnostics : null;
+      const detail = sanitizeAuditDetail(
+        result && result.reason ? result.reason : "ppt_export_unavailable",
+      );
+      const layoutQuality =
+        result && result.layoutQuality ? result.layoutQuality : null;
+      const contentQuality =
+        result && result.contentQuality ? result.contentQuality : null;
+      const teachingQuality =
+        result && result.teachingQuality ? result.teachingQuality : null;
+      const diagnostics =
+        result && result.diagnostics ? result.diagnostics : null;
       writeAuditLog({
         ...audit,
         outcome: "error",
@@ -7887,17 +11107,33 @@ app.post("/api/ppt/export", async (req, res) => {
         model: exportConfig.model || "local-pptxgenjs",
         reason: detail,
         templateId: contract.templateId,
-        aipptProvider: exportConfig.provider
+        aipptProvider: exportConfig.provider,
       });
-      return res.status(409).json({ error: "ppt_export_unavailable", detail, layoutQuality, contentQuality, teachingQuality, diagnostics });
+      return res.status(409).json({
+        error: "ppt_export_unavailable",
+        detail,
+        layoutQuality,
+        contentQuality,
+        teachingQuality,
+        diagnostics,
+      });
     }
 
-    const postCheck = runPostExportDeckValidation(contract, result, requestContext);
-    const qualityScore = postCheck.qualityScore || result.qualityScore || null;
-    const badSampleEntries = (Array.isArray(postCheck && postCheck.deckValidation && postCheck.deckValidation.errors)
-      ? postCheck.deckValidation.errors
-      : [])
-      .map((e) => mapErrorToBadSample(contract, e));
+    let postCheck = runPostExportDeckValidation(
+      contract,
+      result,
+      requestContext,
+    );
+    let qualityScore = postCheck.qualityScore || result.qualityScore || null;
+    const badSampleEntries = (
+      Array.isArray(
+        postCheck &&
+          postCheck.deckValidation &&
+          postCheck.deckValidation.errors,
+      )
+        ? postCheck.deckValidation.errors
+        : []
+    ).map((e) => mapErrorToBadSample(contract, e));
     const appendedBadSamples = appendBadSamples(badSampleEntries);
     const tracePayload = buildGenerationTracePayload({
       contract,
@@ -7905,18 +11141,23 @@ app.post("/api/ppt/export", async (req, res) => {
       result,
       postCheck,
       elapsedMs: Date.now() - startedAt,
-      exportConfig
+      exportConfig,
     });
-    const traceRelativePath = writeGenerationTraceFile(requestContext, tracePayload);
-    const qualityHardFail = qualityScore && (
-      Number(qualityScore.templateUsage || 0) < 80
-      || Number(qualityScore.visualCleanliness || 0) < 85
-      || Number(qualityScore.contentSpecificity || 0) < 85
-      || Number(qualityScore.exportIntegrity || 0) < 100
-      || Number(qualityScore.overall || 0) < 85
+    const traceRelativePath = writeGenerationTraceFile(
+      requestContext,
+      tracePayload,
     );
+    const qualityHardFail =
+      qualityScore &&
+      (Number(qualityScore.templateUsage || 0) < 80 ||
+        Number(qualityScore.visualCleanliness || 0) < 85 ||
+        Number(qualityScore.contentSpecificity || 0) < 85 ||
+        Number(qualityScore.exportIntegrity || 0) < 100 ||
+        Number(qualityScore.overall || 0) < 85);
     if (!postCheck.deckValidation.pass) {
-      const detail = sanitizeAuditDetail(`deck_validation_failed:${postCheck.deckValidation.issues.join(",")}`);
+      const detail = sanitizeAuditDetail(
+        `deck_validation_failed:${postCheck.deckValidation.issues.join(",")}`,
+      );
       writeAuditLog({
         ...audit,
         outcome: "error",
@@ -7925,7 +11166,7 @@ app.post("/api/ppt/export", async (req, res) => {
         model: exportConfig.model || "local-pptxgenjs",
         reason: detail,
         templateId: contract.templateId,
-        aipptProvider: exportConfig.provider
+        aipptProvider: exportConfig.provider,
       });
       return res.status(422).json({
         error: "ppt_export_validation_failed",
@@ -7938,12 +11179,14 @@ app.post("/api/ppt/export", async (req, res) => {
         badSamplesAppended: appendedBadSamples,
         layoutQuality: result.layoutQuality || null,
         contentQuality: result.contentQuality || null,
-        diagnostics: result.diagnostics || null
+        diagnostics: result.diagnostics || null,
       });
     }
 
     if (qualityHardFail) {
-      const detail = sanitizeAuditDetail(`quality_score_failed:overall=${qualityScore.overall},templateUsage=${qualityScore.templateUsage},visualCleanliness=${qualityScore.visualCleanliness},contentSpecificity=${qualityScore.contentSpecificity},exportIntegrity=${qualityScore.exportIntegrity}`);
+      const detail = sanitizeAuditDetail(
+        `quality_score_failed:overall=${qualityScore.overall},templateUsage=${qualityScore.templateUsage},visualCleanliness=${qualityScore.visualCleanliness},contentSpecificity=${qualityScore.contentSpecificity},exportIntegrity=${qualityScore.exportIntegrity}`,
+      );
       writeAuditLog({
         ...audit,
         outcome: "error",
@@ -7952,7 +11195,7 @@ app.post("/api/ppt/export", async (req, res) => {
         model: exportConfig.model || "local-pptxgenjs",
         reason: detail,
         templateId: contract.templateId,
-        aipptProvider: exportConfig.provider
+        aipptProvider: exportConfig.provider,
       });
       return res.status(422).json({
         error: "ppt_export_validation_failed",
@@ -7960,11 +11203,18 @@ app.post("/api/ppt/export", async (req, res) => {
         requestId: requestContext.requestId,
         validation: {
           ok: false,
-          errors: [{ slideIndex: 0, type: "qualityScore", text: JSON.stringify(qualityScore), message: "质量分未达标" }]
+          errors: [
+            {
+              slideIndex: 0,
+              type: "qualityScore",
+              text: JSON.stringify(qualityScore),
+              message: "质量分未达标",
+            },
+          ],
         },
         qualityScore,
         generationTracePath: traceRelativePath,
-        badSamplesAppended: appendedBadSamples
+        badSamplesAppended: appendedBadSamples,
       });
     }
 
@@ -7978,7 +11228,7 @@ app.post("/api/ppt/export", async (req, res) => {
         model: exportConfig.model || "local-pptxgenjs",
         reason: detail,
         templateId: contract.templateId,
-        aipptProvider: exportConfig.provider
+        aipptProvider: exportConfig.provider,
       });
       return res.status(409).json({
         error: "ppt_export_quality_gate_failed",
@@ -7988,7 +11238,7 @@ app.post("/api/ppt/export", async (req, res) => {
         teachingQuality: result.teachingQuality || null,
         diagnostics: result.diagnostics || null,
         generationTracePath: traceRelativePath,
-        badSamplesAppended: appendedBadSamples
+        badSamplesAppended: appendedBadSamples,
       });
     }
 
@@ -8002,13 +11252,19 @@ app.post("/api/ppt/export", async (req, res) => {
       outputChars: result.buffer.length,
       pptEngine: result.engine,
       aipptProvider: exportConfig.provider,
-      templateId: contract.templateId
+      templateId: contract.templateId,
     });
 
     res.setHeader("Content-Type", result.mimeType);
-    res.setHeader("Content-Disposition", `attachment; filename="${sanitizeFileName(result.fileName)}"`);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${sanitizeFileName(result.fileName)}"`,
+    );
     res.setHeader("x-ppt-engine", result.engine);
-    res.setHeader("x-template-source", String(contract.templateSource || "internal"));
+    res.setHeader(
+      "x-template-source",
+      String(contract.templateSource || "internal"),
+    );
     res.setHeader("x-export-ms", String(Date.now() - startedAt));
     res.setHeader("x-generation-trace", traceRelativePath || "");
     res.setHeader("x-bad-samples-appended", String(appendedBadSamples));
@@ -8016,26 +11272,72 @@ app.post("/api/ppt/export", async (req, res) => {
       res.setHeader("x-layout-score", String(result.layoutQuality.score));
       res.setHeader("x-layout-min", String(result.layoutQuality.minScore));
       res.setHeader("x-layout-pass", result.layoutQuality.pass ? "1" : "0");
-      res.setHeader("x-layout-leak-safe", result.layoutQuality.strictLeakSafe ? "1" : "0");
+      res.setHeader(
+        "x-layout-leak-safe",
+        result.layoutQuality.strictLeakSafe ? "1" : "0",
+      );
     }
     if (result.contentQuality) {
       res.setHeader("x-content-gate", result.contentQuality.pass ? "1" : "0");
-      res.setHeader("x-content-coverage", String(Number(result.contentQuality.contentCoverage || 0).toFixed(3)));
-      res.setHeader("x-content-blank", String(Array.isArray(result.contentQuality.emptySlides) ? result.contentQuality.emptySlides.length : 0));
-      res.setHeader("x-content-placeholder-only", String(Array.isArray(result.contentQuality.placeholderOnlySlides) ? result.contentQuality.placeholderOnlySlides.length : 0));
+      res.setHeader(
+        "x-content-coverage",
+        String(Number(result.contentQuality.contentCoverage || 0).toFixed(3)),
+      );
+      res.setHeader(
+        "x-content-blank",
+        String(
+          Array.isArray(result.contentQuality.emptySlides)
+            ? result.contentQuality.emptySlides.length
+            : 0,
+        ),
+      );
+      res.setHeader(
+        "x-content-placeholder-only",
+        String(
+          Array.isArray(result.contentQuality.placeholderOnlySlides)
+            ? result.contentQuality.placeholderOnlySlides.length
+            : 0,
+        ),
+      );
     }
     if (result.teachingQuality && result.teachingQuality.enabled) {
       res.setHeader("x-teaching-gate", result.teachingQuality.pass ? "1" : "0");
-      res.setHeader("x-teaching-generic", String(Number(result.teachingQuality.genericSlideRatio || 0).toFixed(3)));
-      res.setHeader("x-teaching-formula", String(Number(result.teachingQuality.formulaSlideRatio || 0).toFixed(3)));
-      res.setHeader("x-teaching-avg-chars", String(Number(result.teachingQuality.avgCharsPerSlide || 0).toFixed(1)));
-      res.setHeader("x-teaching-action", String(Number(result.teachingQuality.actionTimeCoverage || 0).toFixed(3)));
+      res.setHeader(
+        "x-teaching-generic",
+        String(
+          Number(result.teachingQuality.genericSlideRatio || 0).toFixed(3),
+        ),
+      );
+      res.setHeader(
+        "x-teaching-formula",
+        String(
+          Number(result.teachingQuality.formulaSlideRatio || 0).toFixed(3),
+        ),
+      );
+      res.setHeader(
+        "x-teaching-avg-chars",
+        String(Number(result.teachingQuality.avgCharsPerSlide || 0).toFixed(1)),
+      );
+      res.setHeader(
+        "x-teaching-action",
+        String(
+          Number(result.teachingQuality.actionTimeCoverage || 0).toFixed(3),
+        ),
+      );
     }
     if (String(contract.templateFileName || "").trim()) {
-      res.setHeader("x-template-file", encodeURIComponent(String(contract.templateFileName || "")).slice(0, 240));
+      res.setHeader(
+        "x-template-file",
+        encodeURIComponent(String(contract.templateFileName || "")).slice(
+          0,
+          240,
+        ),
+      );
     }
     if (result.fallbackReason) {
-      const safeFallback = encodeURIComponent(String(result.fallbackReason || "")).slice(0, 400);
+      const safeFallback = encodeURIComponent(
+        String(result.fallbackReason || ""),
+      ).slice(0, 400);
       res.setHeader("x-ppt-fallback", safeFallback);
     }
     return res.status(200).send(result.buffer);
@@ -8045,9 +11347,14 @@ app.post("/api/ppt/export", async (req, res) => {
       outcome: "error",
       status: 500,
       latencyMs: Date.now() - startedAt,
-      reason: sanitizeAuditDetail(error && error.message ? error.message : String(error))
+      reason: sanitizeAuditDetail(
+        error && error.message ? error.message : String(error),
+      ),
     });
-    return res.status(500).json({ error: "ppt_export_error", detail: error && error.message ? error.message : String(error) });
+    return res.status(500).json({
+      error: "ppt_export_error",
+      detail: error && error.message ? error.message : String(error),
+    });
   }
 });
 
@@ -8055,29 +11362,106 @@ app.post("/api/ppt/export-save", async (req, res) => {
   const startedAt = Date.now();
   const audit = baseAuditEvent(req);
   try {
-    const requestContext = createRequestContext(req, req.body && req.body.contract ? req.body.contract : {});
-    const normalized = normalizeContract(req.body && req.body.contract, requestContext);
+    const requestContext = createRequestContext(
+      req,
+      req.body && req.body.contract ? req.body.contract : {},
+    );
+    const retryTrace = [];
+    let normalized = normalizeContract(
+      req.body && req.body.contract,
+      requestContext,
+    );
+
+    if (!normalized.ok) {
+      const requestedMode = String(
+        (req.body &&
+          req.body.contract &&
+          req.body.contract.layoutPolicy &&
+          req.body.contract.layoutPolicy.mode) ||
+          "",
+      ).toLowerCase();
+      const canFallbackToBalanced =
+        requestedMode === "strict-layout" || requestedMode === "strict-content";
+      const isDeckValidationFail = /deck_validation_failed/i.test(
+        String(normalized.reason || ""),
+      );
+
+      if (canFallbackToBalanced && isDeckValidationFail) {
+        const balancedRawContract = {
+          ...(req.body && req.body.contract ? req.body.contract : {}),
+          layoutPolicy: {
+            ...((req.body &&
+              req.body.contract &&
+              req.body.contract.layoutPolicy) ||
+              {}),
+            mode: "balanced",
+            minScore: 68,
+          },
+        };
+        const fallbackNormalized = normalizeContract(
+          balancedRawContract,
+          requestContext,
+        );
+        retryTrace.push({
+          stage: "precheck",
+          from: requestedMode || "unknown",
+          to: "balanced",
+          success: !!fallbackNormalized.ok,
+          reason: String(normalized.reason || ""),
+        });
+        if (fallbackNormalized.ok) {
+          normalized = fallbackNormalized;
+        }
+      }
+    }
+
     if (!normalized.ok) {
       writeAuditLog({
         ...audit,
         outcome: "error",
         status: 422,
         latencyMs: Date.now() - startedAt,
-        reason: normalized.reason
+        reason: normalized.reason,
       });
-      writeDebugJson(requestContext, "validation.json", normalized.validation || { ok: false, errors: [{ slideIndex: 0, type: "invalid_contract", text: normalized.reason, message: "请求合同不合法" }] });
-      return res.status(422).json({ error: "ppt_export_validation_failed", detail: normalized.reason, requestId: requestContext.requestId, validation: normalized.validation || null });
+      writeDebugJson(
+        requestContext,
+        "validation.json",
+        normalized.validation || {
+          ok: false,
+          errors: [
+            {
+              slideIndex: 0,
+              type: "invalid_contract",
+              text: normalized.reason,
+              message: "请求合同不合法",
+            },
+          ],
+        },
+      );
+      return res.status(422).json({
+        error: "ppt_export_validation_failed",
+        detail: normalized.reason,
+        requestId: requestContext.requestId,
+        validation: normalized.validation || null,
+        retryTrace,
+      });
     }
 
     const contract = normalized.contract;
-    const { result, exportConfig } = await buildPptExportResult(contract);
+    let { result, exportConfig } = await buildPptExportResult(contract);
 
     if (!result || !result.ok) {
-      const detail = sanitizeAuditDetail(result && result.reason ? result.reason : "ppt_export_unavailable");
-      const layoutQuality = result && result.layoutQuality ? result.layoutQuality : null;
-      const contentQuality = result && result.contentQuality ? result.contentQuality : null;
-      const teachingQuality = result && result.teachingQuality ? result.teachingQuality : null;
-      const diagnostics = result && result.diagnostics ? result.diagnostics : null;
+      const detail = sanitizeAuditDetail(
+        result && result.reason ? result.reason : "ppt_export_unavailable",
+      );
+      const layoutQuality =
+        result && result.layoutQuality ? result.layoutQuality : null;
+      const contentQuality =
+        result && result.contentQuality ? result.contentQuality : null;
+      const teachingQuality =
+        result && result.teachingQuality ? result.teachingQuality : null;
+      const diagnostics =
+        result && result.diagnostics ? result.diagnostics : null;
       writeAuditLog({
         ...audit,
         outcome: "error",
@@ -8086,17 +11470,33 @@ app.post("/api/ppt/export-save", async (req, res) => {
         model: exportConfig.model || "local-pptxgenjs",
         reason: detail,
         templateId: contract.templateId,
-        aipptProvider: exportConfig.provider
+        aipptProvider: exportConfig.provider,
       });
-      return res.status(409).json({ error: "ppt_export_unavailable", detail, layoutQuality, contentQuality, teachingQuality, diagnostics });
+      return res.status(409).json({
+        error: "ppt_export_unavailable",
+        detail,
+        layoutQuality,
+        contentQuality,
+        teachingQuality,
+        diagnostics,
+      });
     }
 
-    const postCheck = runPostExportDeckValidation(contract, result, requestContext);
-    const qualityScore = postCheck.qualityScore || result.qualityScore || null;
-    const badSampleEntries = (Array.isArray(postCheck && postCheck.deckValidation && postCheck.deckValidation.errors)
-      ? postCheck.deckValidation.errors
-      : [])
-      .map((e) => mapErrorToBadSample(contract, e));
+    let postCheck = runPostExportDeckValidation(
+      contract,
+      result,
+      requestContext,
+    );
+    let qualityScore = postCheck.qualityScore || result.qualityScore || null;
+    const badSampleEntries = (
+      Array.isArray(
+        postCheck &&
+          postCheck.deckValidation &&
+          postCheck.deckValidation.errors,
+      )
+        ? postCheck.deckValidation.errors
+        : []
+    ).map((e) => mapErrorToBadSample(contract, e));
     const appendedBadSamples = appendBadSamples(badSampleEntries);
     const tracePayload = buildGenerationTracePayload({
       contract,
@@ -8104,23 +11504,83 @@ app.post("/api/ppt/export-save", async (req, res) => {
       result,
       postCheck,
       elapsedMs: Date.now() - startedAt,
-      exportConfig
+      exportConfig,
     });
-    const traceRelativePath = writeGenerationTraceFile(requestContext, tracePayload);
-    const qualityHardFail = qualityScore && (
-      Number(qualityScore.templateUsage || 0) < 80
-      || Number(qualityScore.visualCleanliness || 0) < 85
-      || Number(qualityScore.contentSpecificity || 0) < 85
-      || Number(qualityScore.exportIntegrity || 0) < 100
-      || Number(qualityScore.overall || 0) < 85
+    const traceRelativePath = writeGenerationTraceFile(
+      requestContext,
+      tracePayload,
     );
-    const debugInvalid = String(req.query && req.query.debug || "").toLowerCase() === "1";
+    const debugInvalid =
+      String((req.query && req.query.debug) || "").toLowerCase() === "1";
+    if (!postCheck.deckValidation.pass) {
+      const repairSeedSaved = saveExportedPptToWorkspace(contract, result, {
+        invalid: true,
+      });
+      const repairAttempt = await repairFailedSlidesFromQualitySidecar(
+        contract,
+        repairSeedSaved,
+        result,
+      );
+      if (
+        repairAttempt &&
+        repairAttempt.ok &&
+        repairAttempt.repairedResult &&
+        repairAttempt.repairedResult.ok
+      ) {
+        const repairedResult = repairAttempt.repairedResult;
+        const repairedPostCheck = runPostExportDeckValidation(
+          contract,
+          repairedResult,
+          requestContext,
+        );
+        if (repairedPostCheck && repairedPostCheck.deckValidation.pass) {
+          result = repairedResult;
+          postCheck = repairedPostCheck;
+          qualityScore =
+            repairedPostCheck.qualityScore ||
+            repairedResult.qualityScore ||
+            null;
+          retryTrace.push({
+            stage: "post_export_repair",
+            mode: "targeted_failed_slides",
+            repairedSlides: Array.isArray(repairAttempt.repairSlideIndexes)
+              ? repairAttempt.repairSlideIndexes
+              : [],
+            success: true,
+          });
+        } else {
+          retryTrace.push({
+            stage: "post_export_repair",
+            mode: "targeted_failed_slides",
+            repairedSlides: Array.isArray(repairAttempt.repairSlideIndexes)
+              ? repairAttempt.repairSlideIndexes
+              : [],
+            success: false,
+            reason: "repair_postcheck_failed",
+          });
+        }
+      } else {
+        retryTrace.push({
+          stage: "post_export_repair",
+          mode: "targeted_failed_slides",
+          success: false,
+          reason: String(
+            (repairAttempt && repairAttempt.reason) || "repair_unavailable",
+          ),
+        });
+      }
+    }
+
     if (!postCheck.deckValidation.pass) {
       let invalidSaved = null;
       if (debugInvalid) {
-        invalidSaved = saveExportedPptToWorkspace(contract, result, { invalid: true });
+        invalidSaved = saveExportedPptToWorkspace(contract, result, {
+          invalid: true,
+        });
       }
-      const detail = sanitizeAuditDetail(`deck_validation_failed:${postCheck.deckValidation.issues.join(",")}`);
+      const detail = sanitizeAuditDetail(
+        `deck_validation_failed:${postCheck.deckValidation.issues.join(",")}`,
+      );
       writeAuditLog({
         ...audit,
         outcome: "error",
@@ -8130,7 +11590,7 @@ app.post("/api/ppt/export-save", async (req, res) => {
         reason: detail,
         templateId: contract.templateId,
         aipptProvider: exportConfig.provider,
-        detail: invalidSaved ? `saved:${invalidSaved.relPath}` : ""
+        detail: invalidSaved ? `saved:${invalidSaved.relPath}` : "",
       });
       return res.status(422).json({
         error: "ppt_export_validation_failed",
@@ -8140,16 +11600,29 @@ app.post("/api/ppt/export-save", async (req, res) => {
         validation: postCheck.deckValidation,
         dump: postCheck.textDump,
         qualityScore,
+        retryTrace,
         generationTracePath: traceRelativePath,
         badSamplesAppended: appendedBadSamples,
         relativePath: invalidSaved ? invalidSaved.relPath : "",
-        diagnosticsRelativePath: invalidSaved ? (invalidSaved.diagnosticsRelPath || "") : "",
-        dumpRelativePath: invalidSaved ? (invalidSaved.dumpRelPath || "") : ""
+        diagnosticsRelativePath: invalidSaved
+          ? invalidSaved.diagnosticsRelPath || ""
+          : "",
+        dumpRelativePath: invalidSaved ? invalidSaved.dumpRelPath || "" : "",
       });
     }
 
+    const qualityHardFail =
+      qualityScore &&
+      (Number(qualityScore.templateUsage || 0) < 80 ||
+        Number(qualityScore.visualCleanliness || 0) < 85 ||
+        Number(qualityScore.contentSpecificity || 0) < 85 ||
+        Number(qualityScore.exportIntegrity || 0) < 100 ||
+        Number(qualityScore.overall || 0) < 85);
+
     if (qualityHardFail) {
-      const detail = sanitizeAuditDetail(`quality_score_failed:overall=${qualityScore.overall},templateUsage=${qualityScore.templateUsage},visualCleanliness=${qualityScore.visualCleanliness},contentSpecificity=${qualityScore.contentSpecificity},exportIntegrity=${qualityScore.exportIntegrity}`);
+      const detail = sanitizeAuditDetail(
+        `quality_score_failed:overall=${qualityScore.overall},templateUsage=${qualityScore.templateUsage},visualCleanliness=${qualityScore.visualCleanliness},contentSpecificity=${qualityScore.contentSpecificity},exportIntegrity=${qualityScore.exportIntegrity}`,
+      );
       writeAuditLog({
         ...audit,
         outcome: "error",
@@ -8159,7 +11632,7 @@ app.post("/api/ppt/export-save", async (req, res) => {
         reason: detail,
         templateId: contract.templateId,
         aipptProvider: exportConfig.provider,
-        detail: ""
+        detail: "",
       });
       return res.status(422).json({
         error: "ppt_export_validation_failed",
@@ -8168,11 +11641,19 @@ app.post("/api/ppt/export-save", async (req, res) => {
         message: "PPT质量检查失败",
         validation: {
           ok: false,
-          errors: [{ slideIndex: 0, type: "qualityScore", text: JSON.stringify(qualityScore), message: "质量分未达标" }]
+          errors: [
+            {
+              slideIndex: 0,
+              type: "qualityScore",
+              text: JSON.stringify(qualityScore),
+              message: "质量分未达标",
+            },
+          ],
         },
         qualityScore,
+        retryTrace,
         generationTracePath: traceRelativePath,
-        badSamplesAppended: appendedBadSamples
+        badSamplesAppended: appendedBadSamples,
       });
     }
 
@@ -8187,7 +11668,7 @@ app.post("/api/ppt/export-save", async (req, res) => {
         reason: detail,
         templateId: contract.templateId,
         aipptProvider: exportConfig.provider,
-        detail: ""
+        detail: "",
       });
       return res.status(409).json({
         error: "ppt_export_quality_gate_failed",
@@ -8197,8 +11678,9 @@ app.post("/api/ppt/export-save", async (req, res) => {
         teachingQuality: result.teachingQuality || null,
         diagnostics: result.diagnostics || null,
         requestId: requestContext.requestId,
+        retryTrace,
         generationTracePath: traceRelativePath,
-        badSamplesAppended: appendedBadSamples
+        badSamplesAppended: appendedBadSamples,
       });
     }
 
@@ -8210,15 +11692,24 @@ app.post("/api/ppt/export-save", async (req, res) => {
       result,
       postCheck,
       elapsedMs: Date.now() - startedAt,
-      exportConfig
+      exportConfig,
     });
     const traceFileName = "generation_trace.json";
-    const exportTraceAbsPath = path.join(path.dirname(saved.absPath), traceFileName);
+    const exportTraceAbsPath = path.join(
+      path.dirname(saved.absPath),
+      traceFileName,
+    );
     let exportTraceRelPath = "";
     try {
-      fs.writeFileSync(exportTraceAbsPath, JSON.stringify(tracePayloadFinal, null, 2), "utf8");
-      exportTraceRelPath = path.relative(__dirname, exportTraceAbsPath).replace(/\\/g, "/");
-    } catch { }
+      fs.writeFileSync(
+        exportTraceAbsPath,
+        JSON.stringify(tracePayloadFinal, null, 2),
+        "utf8",
+      );
+      exportTraceRelPath = path
+        .relative(__dirname, exportTraceAbsPath)
+        .replace(/\\/g, "/");
+    } catch {}
 
     const elapsedMs = Date.now() - startedAt;
 
@@ -8233,7 +11724,7 @@ app.post("/api/ppt/export-save", async (req, res) => {
       pptEngine: result.engine,
       aipptProvider: exportConfig.provider,
       templateId: contract.templateId,
-      detail: `saved:${saved.relPath}`
+      detail: `saved:${saved.relPath}`,
     });
 
     return res.json({
@@ -8241,6 +11732,7 @@ app.post("/api/ppt/export-save", async (req, res) => {
       requestId: requestContext.requestId,
       engine: result.engine,
       fallbackReason: result.fallbackReason || "",
+      retryTrace,
       layoutQuality: result.layoutQuality || null,
       contentQuality: result.contentQuality || null,
       diagnostics: result.diagnostics || null,
@@ -8248,11 +11740,26 @@ app.post("/api/ppt/export-save", async (req, res) => {
       elapsedMs,
       sla: {
         under60s: elapsedMs <= 60000,
-        strictLeakSafe: !!(result.layoutQuality && result.layoutQuality.strictLeakSafe),
-        manualAdjustmentsLe1: !!(result.layoutQuality && Number(result.layoutQuality.estimatedManualFixes || 0) <= 1),
-        contentGatePass: !!(result.contentQuality && result.contentQuality.pass),
-        blankSlidesZero: !!(result.contentQuality && Array.isArray(result.contentQuality.emptySlides) && result.contentQuality.emptySlides.length === 0),
-        placeholderOnlyZero: !!(result.contentQuality && Array.isArray(result.contentQuality.placeholderOnlySlides) && result.contentQuality.placeholderOnlySlides.length === 0)
+        strictLeakSafe: !!(
+          result.layoutQuality && result.layoutQuality.strictLeakSafe
+        ),
+        manualAdjustmentsLe1: !!(
+          result.layoutQuality &&
+          Number(result.layoutQuality.estimatedManualFixes || 0) <= 1
+        ),
+        contentGatePass: !!(
+          result.contentQuality && result.contentQuality.pass
+        ),
+        blankSlidesZero: !!(
+          result.contentQuality &&
+          Array.isArray(result.contentQuality.emptySlides) &&
+          result.contentQuality.emptySlides.length === 0
+        ),
+        placeholderOnlyZero: !!(
+          result.contentQuality &&
+          Array.isArray(result.contentQuality.placeholderOnlySlides) &&
+          result.contentQuality.placeholderOnlySlides.length === 0
+        ),
       },
       fileName: saved.fileName,
       relativePath: saved.relPath,
@@ -8265,7 +11772,7 @@ app.post("/api/ppt/export-save", async (req, res) => {
       renderLogRelativePath: saved.renderLogRelPath || "",
       generationTracePath: exportTraceRelPath || traceRelativePath,
       badSamplesAppended: appendedBadSamples,
-      bytes: result.buffer.length
+      bytes: result.buffer.length,
     });
   } catch (error) {
     writeAuditLog({
@@ -8273,9 +11780,14 @@ app.post("/api/ppt/export-save", async (req, res) => {
       outcome: "error",
       status: 500,
       latencyMs: Date.now() - startedAt,
-      reason: sanitizeAuditDetail(error && error.message ? error.message : String(error))
+      reason: sanitizeAuditDetail(
+        error && error.message ? error.message : String(error),
+      ),
     });
-    return res.status(500).json({ error: "ppt_export_save_error", detail: error && error.message ? error.message : String(error) });
+    return res.status(500).json({
+      error: "ppt_export_save_error",
+      detail: error && error.message ? error.message : String(error),
+    });
   }
 });
 
@@ -8284,19 +11796,19 @@ app.use((err, req, res, next) => {
     if (err.code === "LIMIT_FILE_SIZE") {
       return res.status(413).json({
         error: "upload too large",
-        detail: "单个文件超过 15MB，请压缩后重试"
+        detail: "单个文件超过 15MB，请压缩后重试",
       });
     }
     return res.status(400).json({
       error: "upload failed",
-      detail: err.message
+      detail: err.message,
     });
   }
 
   if (err) {
     return res.status(500).json({
       error: "upload server error",
-      detail: err.message || String(err)
+      detail: err.message || String(err),
     });
   }
 

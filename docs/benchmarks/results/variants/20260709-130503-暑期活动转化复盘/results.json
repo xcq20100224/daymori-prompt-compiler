@@ -1,0 +1,287 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:missingRequiredSlots_slide_4,missingRequiredSlots_slide_6,missingRequiredSlots_slide_8,missingRequiredSlots_slide_9",
+    "requestId": "7f913523-cfec-4b37-9b50-a070c3aa3ab7",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 4,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 6,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 8,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 9,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        }
+      ],
+      "issues": [
+        "missingRequiredSlots_slide_4",
+        "missingRequiredSlots_slide_6",
+        "missingRequiredSlots_slide_8",
+        "missingRequiredSlots_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:missingRequiredSlots_slide_4,missingRequiredSlots_slide_6,missingRequiredSlots_slide_8,missingRequiredSlots_slide_9",
+    "requestId": "0e9849af-185c-4c24-9781-2e12950628b8",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 4,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 6,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 8,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 9,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        }
+      ],
+      "issues": [
+        "missingRequiredSlots_slide_4",
+        "missingRequiredSlots_slide_6",
+        "missingRequiredSlots_slide_8",
+        "missingRequiredSlots_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 2,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:missingRequiredSlots_slide_4,missingRequiredSlots_slide_6,missingRequiredSlots_slide_8,missingRequiredSlots_slide_9",
+    "requestId": "1c20ea78-b22a-49cf-a668-50eb6b9069cb",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 4,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 6,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 8,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 9,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        }
+      ],
+      "issues": [
+        "missingRequiredSlots_slide_4",
+        "missingRequiredSlots_slide_6",
+        "missingRequiredSlots_slide_8",
+        "missingRequiredSlots_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 3,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:missingRequiredSlots_slide_4,missingRequiredSlots_slide_6,missingRequiredSlots_slide_8,missingRequiredSlots_slide_9",
+    "requestId": "be03a4f4-9548-4bfb-b3e9-39e80fc79e24",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 4,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 6,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 8,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 9,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        }
+      ],
+      "issues": [
+        "missingRequiredSlots_slide_4",
+        "missingRequiredSlots_slide_6",
+        "missingRequiredSlots_slide_8",
+        "missingRequiredSlots_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 4,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:missingRequiredSlots_slide_4,missingRequiredSlots_slide_6,missingRequiredSlots_slide_8,missingRequiredSlots_slide_9",
+    "requestId": "aff229e6-1d44-444c-b320-b64bb596d0e8",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 4,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 6,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 8,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        },
+        {
+          "slideIndex": 9,
+          "type": "missingRequiredSlots",
+          "text": "bullets"
+        }
+      ],
+      "issues": [
+        "missingRequiredSlots_slide_4",
+        "missingRequiredSlots_slide_6",
+        "missingRequiredSlots_slide_8",
+        "missingRequiredSlots_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]

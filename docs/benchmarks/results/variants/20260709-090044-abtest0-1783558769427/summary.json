@@ -1,0 +1,13 @@
+{
+  "topic": "ABTest0_1783558769427",
+  "scenario": "proposal",
+  "sceneType": "企业",
+  "total": 5,
+  "success": 0,
+  "failed": 5,
+  "templateFileName": "blank-clean.pptx",
+  "topCount": 0,
+  "uncertainCount": 0,
+  "best": null,
+  "timestamp": "2026-07-09T01:00:44.811Z"
+}

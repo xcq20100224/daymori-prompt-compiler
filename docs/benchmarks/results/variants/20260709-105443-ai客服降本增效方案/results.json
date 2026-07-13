@@ -1,0 +1,412 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:minimumEffectiveSlide_slide_6",
+    "requestId": "874fd9bb-5eae-48d3-a8b4-28f2a4a4bc48",
+    "generationTracePath": "docs/benchmarks/results/debug/874fd9bb-5eae-48d3-a8b4-28f2a4a4bc48/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "minimumEffectiveSlide_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:minimumEffectiveSlide_slide_6",
+    "requestId": "6516d17d-21b3-4786-b983-5be7c76876bd",
+    "generationTracePath": "docs/benchmarks/results/debug/6516d17d-21b3-4786-b983-5be7c76876bd/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "minimumEffectiveSlide_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 2,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:minimumEffectiveSlide_slide_6",
+    "requestId": "c70bc6cd-c8cb-431a-bdf7-24f772599e86",
+    "generationTracePath": "docs/benchmarks/results/debug/c70bc6cd-c8cb-431a-bdf7-24f772599e86/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "minimumEffectiveSlide_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 3,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:minimumEffectiveSlide_slide_6",
+    "requestId": "785d1439-ce83-4b45-809f-9d3e3402a101",
+    "generationTracePath": "docs/benchmarks/results/debug/785d1439-ce83-4b45-809f-9d3e3402a101/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "minimumEffectiveSlide_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 4,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:minimumEffectiveSlide_slide_6",
+    "requestId": "d6f9363a-d281-4a94-a974-bab6bfe3ca22",
+    "generationTracePath": "docs/benchmarks/results/debug/d6f9363a-d281-4a94-a974-bab6bfe3ca22/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "minimumEffectiveSlide_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 5,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:minimumEffectiveSlide_slide_6",
+    "requestId": "1b0e1733-532e-4d97-acc0-f0f3a9afe1b9",
+    "generationTracePath": "docs/benchmarks/results/debug/1b0e1733-532e-4d97-acc0-f0f3a9afe1b9/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "minimumEffectiveSlide_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 6,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:minimumEffectiveSlide_slide_6",
+    "requestId": "1c646c7d-8719-447d-9a1a-8a3a0dff1698",
+    "generationTracePath": "docs/benchmarks/results/debug/1c646c7d-8719-447d-9a1a-8a3a0dff1698/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "minimumEffectiveSlide_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 7,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:minimumEffectiveSlide_slide_6",
+    "requestId": "7b10aab7-eb46-45ef-b477-f090a948ae02",
+    "generationTracePath": "docs/benchmarks/results/debug/7b10aab7-eb46-45ef-b477-f090a948ae02/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "minimumEffectiveSlide_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 8,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:minimumEffectiveSlide_slide_6",
+    "requestId": "34d9f391-6a82-43cd-821a-ad4410f31f0a",
+    "generationTracePath": "docs/benchmarks/results/debug/34d9f391-6a82-43cd-821a-ad4410f31f0a/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "minimumEffectiveSlide_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 9,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:minimumEffectiveSlide_slide_6",
+    "requestId": "a65ee7ac-06c5-436e-a278-f539003b8b9a",
+    "generationTracePath": "docs/benchmarks/results/debug/a65ee7ac-06c5-436e-a278-f539003b8b9a/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "minimumEffectiveSlide",
+          "text": "content_text_body_chars_54"
+        }
+      ],
+      "issues": [
+        "minimumEffectiveSlide_slide_6"
+      ],
+      "warnings": []
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]

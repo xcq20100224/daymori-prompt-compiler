@@ -1,0 +1,64 @@
+{
+  "contractVersion": "aippt.v1",
+  "engineType": "generic-aippt",
+  "sceneType": "企业",
+  "scenario": "proposal",
+  "templateId": "default-business-template",
+  "diversityAngle": "roi",
+  "templateSource": "officeplus",
+  "templateFileName": "clean-lazyman.pptx",
+  "templateFileBase64": "",
+  "pageCount": 10,
+  "visualStyle": "结构清晰",
+  "tone": "清晰可执行",
+  "fontTheme": "business-cn",
+  "chartStyle": "dynamic",
+  "narrativeMode": "standard",
+  "topic": "AI客服降本增效方案",
+  "lockToTemplate": false,
+  "promptVersion": "v4_concise",
+  "promptVariant": "v4_concise",
+  "promptHints": "【核心主题】AI客服降本增效方案\n\n请严格围绕\"AI客服降本增效方案\"输出proposal风格的PPT内容。\n\n要求：\n1. 所有页面标题和内容必须与\"AI客服降本增效方案\"直接相关\n2. 不要复用模板示例主题词或固定业务案例\n3. 封面标题必须包含主题名称\"AI客服降本增效方案\"\n4. 内容简洁、完整、无元数据污染\n5. 每页内容填充完整，避免空白或半填充\n6. 本次生成聚焦【cost】视角：强调成本结构、人力优化、峰值调度。避免通用套话，给出该视角下的具体判断和行动。\n\n【禁止事项】\n1. 禁止添加\"内容由AI生成\"等水印\n2. 禁止添加\"X/Y\"格式页码\n3. 禁止在标题中重复主题名称超过3次\n4. 禁止只有标题没有内容的空页\n\n【内容密度标准】\n对于content类型页面：\n- 每页至少3条完整要点\n- 每条要点包含主标题(5-8字) + 详细说明(15-30字)\n- 至少2页包含结构化布局（步骤、对比、列表）\n\n请开始生成关于\"AI客服降本增效方案\"的高质量PPT契约。\n\n\n【LazyMan级质量标准 - 必须遵守】\n\n1. 内容密度要求：\n   - 每页必须有3-5条完整要点\n    - 每条要点15-80字，包含结论+证据+行动三段逻辑\n    - 最终输出文本中不要出现\"结论：\"\"证据：\"\"行动：\"前缀标签\n   - 禁止出现\"待补充\"\"具体内容\"\"详见附件\"等占位符\n\n2. 标题多样性要求：\n   - 禁止在每页标题重复主题名称\n   - 用动词开头（如：分析、构建、实施、评估）\n   - 每个标题必须传达独特信息\n\n3. 绝对禁止的内容（一旦出现直接不合格）：\n   - \"内容由AI生成\"\n   - \"由AI生成\"\n   - \"AI生成\"\n   - \"OfficePLUS\"\n   - \"LOGO\"\n   - \"CONTENT\"\n   - \"请在此输入\"\n   - \"输入标题\"\n   - \"placeholder\"\n   - \"添加标题\"\n   - \"单击此处\"\n   - \"20XX\"\n   - \"202X\"\n\n4. 数据验证：\n   - 所有数据必须具体（不能写\"显著提升\"，要写\"提升30%\"）\n   - 所有案例必须真实或合理虚构（避免\"某公司\"\"XX企业\"）\n\n【违反任一条款将导致生成失败，必须重新生成】\n\n\n【内容要求】\n- 每页3-5条要点\n- 每条要点必须体现结论+证据+行动逻辑，但禁止输出\"结论：\"\"证据：\"\"行动：\"字样\n- 每条要点格式：\n  核心观点（15-30字）\n  数据或案例支撑（20-40字）\n  可执行建议（15-30字）\n- 每条要点15-80字\n\n【示例（必须参考此格式）】\n第3页标题：降本增效的3大支柱\n要点1：人工成本降低40%是本轮优化的核心目标，优先替代重复咨询场景。\n要点2：对比12家企业运营数据，人力成本平均占客服总成本的65%，自动化空间明确。\n要点3：分三阶段上线AI客服，先覆盖60%高频问题，再扩展到复杂工单流转。\n\n现在请严格按上述要求输出JSON契约。\n\n【从历史样本中学到的重要规则】\n- 标题区域不应出现页码（如2/10、5/10）（已观察到section页和部分content页出现页码污染）\n- 避免页面内文本高频重复（如Q&A重复3次）（已观察到多个样本存在此问题）\n- 封面与章节页避免复写同一句文本（可降低模板位重复填充导致的观感噪音）\n- 正文优先使用场景化动作句，避免空泛陈述（可提升contentSpecificity并减少半填充风险）\n- 不应有空内容页或半填充页（好样本空页率0.0683，坏样本0.0777）\n\n请严格遵守以上规则。",
+  "customInstructions": "必须严格围绕主题\"AI客服降本增效方案\"生成内容，不要使用模板示例内容；禁止水印与页码；content页保持至少3条完整要点。本次生成聚焦【cost】视角：强调成本结构、人力优化、峰值调度。避免通用套话，给出该视角下的具体判断和行动。。PROMPT_ENHANCED_LEVEL=1",
+  "learnedRules": [
+    {
+      "rule": "不应有空内容页或半填充页",
+      "evidence": "好样本空页率0.0683，坏样本0.0777",
+      "strength": 0.0094
+    },
+    {
+      "rule": "避免页面内文本高频重复（如Q&A重复3次）",
+      "evidence": "已观察到多个样本存在此问题",
+      "strength": 0.5
+    },
+    {
+      "rule": "标题区域不应出现页码（如2/10、5/10）",
+      "evidence": "已观察到section页和部分content页出现页码污染",
+      "strength": 0.8
+    },
+    {
+      "rule": "封面与章节页避免复写同一句文本",
+      "evidence": "可降低模板位重复填充导致的观感噪音",
+      "strength": 0.4
+    },
+    {
+      "rule": "正文优先使用场景化动作句，避免空泛陈述",
+      "evidence": "可提升contentSpecificity并减少半填充风险",
+      "strength": 0.4
+    }
+  ],
+  "temperature": 0.8999999999999999,
+  "seed": 5,
+  "runIndex": 5,
+  "diversityHint": {
+    "angle": "cost",
+    "instruction": "本次生成聚焦【cost】视角：强调成本结构、人力优化、峰值调度。避免通用套话，给出该视角下的具体判断和行动。"
+  },
+  "layoutPolicy": {
+    "mode": "strict-layout",
+    "minScore": 84,
+    "mappingVersion": "semantic-slot-v1"
+  },
+  "repairSlideIndexes": [],
+  "slides": []
+}

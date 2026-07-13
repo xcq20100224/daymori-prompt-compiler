@@ -1,0 +1,209 @@
+[
+  {
+    "id": "s1",
+    "type": "cover",
+    "title": "暑期活动转化复盘",
+    "footer": "",
+    "subtitle": "summary 场景汇报",
+    "speaker": "汇报人",
+    "date": "2026-07-09",
+    "content": {
+      "title": "暑期活动转化复盘",
+      "subtitle": "summary 场景汇报",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s2",
+    "type": "agenda",
+    "title": "目录",
+    "footer": "",
+    "bullets": [
+      "背景",
+      "分析",
+      "行动"
+    ],
+    "visualHint": "目录结构图",
+    "content": {
+      "title": "目录",
+      "subtitle": "",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s3",
+    "type": "content_text",
+    "title": "暑期活动转化复盘第3页",
+    "footer": "",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "暑期活动转化复盘第3页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s4",
+    "type": "summary",
+    "title": "总结",
+    "footer": "",
+    "keyPoints": [
+      "核心问题已被结构化识别",
+      "方案具备分阶段落地路径",
+      "收益指标可持续跟踪验证"
+    ],
+    "conclusion": "形成统一结论",
+    "visualHint": "总结图",
+    "content": {
+      "title": "总结",
+      "subtitle": "",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s5",
+    "type": "content_text",
+    "title": "暑期活动转化复盘第5页",
+    "footer": "",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、核心判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "暑期活动转化复盘第5页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、核心判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s6",
+    "type": "summary",
+    "title": "总结-6",
+    "footer": "",
+    "keyPoints": [
+      "核心问题已被结构化识别",
+      "方案具备分阶段落地路径",
+      "收益指标可持续跟踪验证"
+    ],
+    "conclusion": "形成统一结论",
+    "visualHint": "总结图",
+    "content": {
+      "title": "总结-6",
+      "subtitle": "",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s7",
+    "type": "content_text",
+    "title": "暑期活动转化复盘第7页",
+    "footer": "",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "暑期活动转化复盘第7页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s8",
+    "type": "summary",
+    "title": "总结-8",
+    "footer": "",
+    "keyPoints": [
+      "核心问题已被结构化识别",
+      "方案具备分阶段落地路径",
+      "收益指标可持续跟踪验证"
+    ],
+    "conclusion": "形成统一结论",
+    "visualHint": "总结图",
+    "content": {
+      "title": "总结-8",
+      "subtitle": "",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s9",
+    "type": "next_steps",
+    "title": "下一步行动",
+    "footer": "",
+    "actions": [
+      "明确里程碑与负责人",
+      "完成试点并跟踪指标",
+      "复盘优化后规模化推广"
+    ],
+    "ownerHint": "责任人",
+    "visualHint": "行动清单",
+    "content": {
+      "title": "下一步行动",
+      "subtitle": "",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s10",
+    "type": "thanks",
+    "title": "感谢",
+    "footer": "",
+    "subtitle": "Q&A",
+    "content": {
+      "title": "感谢",
+      "subtitle": "Q&A",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  }
+]

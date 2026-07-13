@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-08T14:12:51.514Z",
+  "timestamp": "2026-07-09T01:03:25.821Z",
   "benchApiBase": "http://127.0.0.1:3402",
   "best": {
     "config": "ConfigA-空白模板",
@@ -7,10 +7,10 @@
     "enhancedLevel": 1,
     "relaxedGate": false,
     "lazymanRate": 0,
-    "avgScore": 64,
+    "avgScore": 0,
     "watermarkIssues": 0,
-    "pageNumberIssues": 5,
-    "sampleCount": 5
+    "pageNumberIssues": 0,
+    "sampleCount": 0
   },
   "results": [
     {
@@ -19,10 +19,10 @@
       "enhancedLevel": 1,
       "relaxedGate": false,
       "lazymanRate": 0,
-      "avgScore": 64,
+      "avgScore": 0,
       "watermarkIssues": 0,
-      "pageNumberIssues": 5,
-      "sampleCount": 5
+      "pageNumberIssues": 0,
+      "sampleCount": 0
     },
     {
       "config": "ConfigB-超强prompt",
@@ -30,10 +30,10 @@
       "enhancedLevel": 3,
       "relaxedGate": false,
       "lazymanRate": 0,
-      "avgScore": 60,
+      "avgScore": 0,
       "watermarkIssues": 0,
-      "pageNumberIssues": 5,
-      "sampleCount": 5
+      "pageNumberIssues": 0,
+      "sampleCount": 0
     },
     {
       "config": "ConfigC-核心检查",
@@ -41,10 +41,10 @@
       "enhancedLevel": 1,
       "relaxedGate": true,
       "lazymanRate": 0,
-      "avgScore": 56,
+      "avgScore": 0,
       "watermarkIssues": 0,
-      "pageNumberIssues": 5,
-      "sampleCount": 5
+      "pageNumberIssues": 0,
+      "sampleCount": 0
     }
   ]
 }

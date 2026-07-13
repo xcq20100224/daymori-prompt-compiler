@@ -1,0 +1,35 @@
+{
+  "requestId": "532ab9a1-4df3-4813-a71e-31b556b22765",
+  "ok": false,
+  "errors": [
+    {
+      "slideIndex": 2,
+      "type": "mixedLayout",
+      "text": "section_body_too_long"
+    },
+    {
+      "slideIndex": 5,
+      "type": "mixedLayout",
+      "text": "section_body_too_long"
+    },
+    {
+      "slideIndex": 9,
+      "type": "slotOrder",
+      "text": "title_after_body"
+    }
+  ],
+  "qualityScore": {
+    "templateUsage": 92,
+    "visualCleanliness": 92,
+    "contentSpecificity": 95,
+    "narrativeFlow": 92,
+    "scenarioFit": 96,
+    "exportIntegrity": 100,
+    "overall": 94,
+    "cleanliness": 92,
+    "structure": 92,
+    "contentDepth": 95,
+    "layoutConsistency": 92,
+    "topicRelevance": 96
+  }
+}

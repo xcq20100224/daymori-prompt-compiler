@@ -1,0 +1,16 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 0,
+    "error": "request_failed",
+    "detail": "fetch failed",
+    "requestId": "",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": ""
+  }
+]

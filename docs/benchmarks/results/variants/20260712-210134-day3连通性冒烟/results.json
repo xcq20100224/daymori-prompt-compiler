@@ -1,0 +1,21 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "layoutMode": "strict-layout",
+    "status": 0,
+    "error": "request_failed",
+    "detail": "fetch failed",
+    "requestId": "",
+    "generationTracePath": "",
+    "qualityScore": null,
+    "validation": null,
+    "dump": null,
+    "relativePath": "",
+    "retryStrategy": {
+      "usedBalancedFallback": false,
+      "usedTargetedRepair": false
+    }
+  }
+]

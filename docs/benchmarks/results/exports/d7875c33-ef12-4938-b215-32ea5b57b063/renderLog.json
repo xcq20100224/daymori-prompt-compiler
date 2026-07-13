@@ -1,0 +1,67 @@
+{
+  "requestId": "d7875c33-ef12-4938-b215-32ea5b57b063",
+  "inputSlideCount": 10,
+  "outputSlideCount": 10,
+  "records": [
+    {
+      "sourceTemplateIndex": 0,
+      "outputSlideIndex": 1,
+      "slideType": "cover",
+      "slideTitle": "用户画像洞察"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 2,
+      "slideType": "section",
+      "slideTitle": "章节02"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 3,
+      "slideType": "content_text",
+      "slideTitle": "用户画像洞察第3页"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 4,
+      "slideType": "content_text",
+      "slideTitle": "用户画像洞察第4页"
+    },
+    {
+      "sourceTemplateIndex": 1,
+      "outputSlideIndex": 5,
+      "slideType": "section",
+      "slideTitle": "章节05"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 6,
+      "slideType": "content_text",
+      "slideTitle": "用户画像洞察第6页"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 7,
+      "slideType": "content_bullets",
+      "slideTitle": "用户画像洞察第7页"
+    },
+    {
+      "sourceTemplateIndex": 2,
+      "outputSlideIndex": 8,
+      "slideType": "content_text",
+      "slideTitle": "用户画像洞察第8页"
+    },
+    {
+      "sourceTemplateIndex": 3,
+      "outputSlideIndex": 9,
+      "slideType": "content_bullets",
+      "slideTitle": "用户画像洞察第9页"
+    },
+    {
+      "sourceTemplateIndex": 4,
+      "outputSlideIndex": 10,
+      "slideType": "thanks",
+      "slideTitle": "感谢"
+    }
+  ]
+}

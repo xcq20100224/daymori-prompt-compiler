@@ -1,0 +1,226 @@
+[
+  {
+    "id": "s1",
+    "type": "cover",
+    "title": "AI客服降本增效方案",
+    "footer": "",
+    "subtitle": "AI客服降本增效方案提案汇报：成本结构优化",
+    "speaker": "项目负责人",
+    "date": "2026-07-09",
+    "content": {
+      "title": "AI客服降本增效方案",
+      "subtitle": "AI客服降本增效方案提案汇报：成本结构优化",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s2",
+    "type": "section",
+    "title": "现状与问题",
+    "footer": "",
+    "sectionNo": "01",
+    "subtitle": "AI客服降本增效方案的核心约束与机会",
+    "content": {
+      "title": "现状与问题",
+      "subtitle": "AI客服降本增效方案的核心约束与机会",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s3",
+    "type": "content_text",
+    "title": "现状评估",
+    "footer": "",
+    "label": "现状背景",
+    "body": "AI客服降本增效方案当前问题并非单点故障，而是流程协同与质量兜底不足。若直接大规模上线，可能引发体验波动，应先通过小范围试点验证风险边界。",
+    "visualHint": "AI客服降本增效方案现状结构图",
+    "content": {
+      "title": "现状评估",
+      "subtitle": "现状背景",
+      "body": "AI客服降本增效方案当前问题并非单点故障，而是流程协同与质量兜底不足。若直接大规模上线，可能引发体验波动，应先通过小范围试点验证风险边界。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s4",
+    "type": "content_text",
+    "title": "关键问题拆解",
+    "footer": "",
+    "label": "问题拆解",
+    "body": "围绕AI客服降本增效方案应拆解“数据层、模型层、编排层、运营层”能力缺口，先打通知识与工单系统，再优化策略引擎与反馈学习流程。",
+    "visualHint": "AI客服降本增效方案问题分层卡片",
+    "content": {
+      "title": "关键问题拆解",
+      "subtitle": "问题拆解",
+      "body": "围绕AI客服降本增效方案应拆解“数据层、模型层、编排层、运营层”能力缺口，先打通知识与工单系统，再优化策略引擎与反馈学习流程。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s5",
+    "type": "section",
+    "title": "方案设计",
+    "footer": "",
+    "sectionNo": "02",
+    "subtitle": "AI客服降本增效方案的分阶段落地方案",
+    "content": {
+      "title": "方案设计",
+      "subtitle": "AI客服降本增效方案的分阶段落地方案",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s6",
+    "type": "content_text",
+    "title": "方案架构",
+    "footer": "",
+    "label": "方案设计",
+    "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。",
+    "visualHint": "AI客服降本增效方案方案架构图",
+    "content": {
+      "title": "方案架构",
+      "subtitle": "方案设计",
+      "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s7",
+    "type": "content_bullets",
+    "title": "三阶段推进试点落地",
+    "footer": "",
+    "label": "实施路径",
+    "bullets": [
+      "第1阶段：建立AI客服降本增效方案成本基线与分层",
+      "第2阶段：提升AI客服降本增效方案自动化覆盖并压",
+      "第3阶段：按成本收益曲线持续优化投放"
+    ],
+    "visualHint": "阶段里程碑流程图",
+    "content": {
+      "title": "三阶段推进试点落地",
+      "subtitle": "实施路径",
+      "body": [
+        "第1阶段：建立AI客服降本增效方案成本基线与分层",
+        "第2阶段：提升AI客服降本增效方案自动化覆盖并压",
+        "第3阶段：按成本收益曲线持续优化投放"
+      ]
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s8",
+    "type": "content_text",
+    "title": "用关键指标验证收益",
+    "footer": "",
+    "label": "价值评估",
+    "body": "建议围绕AI客服降本增效方案建立收益看板，至少覆盖单次服务成本、一次解决率、平均响应时长与满意度，按周复盘并动态调整资源投入。",
+    "visualHint": "试点指标仪表盘",
+    "content": {
+      "title": "用关键指标验证收益",
+      "subtitle": "价值评估",
+      "body": "建议围绕AI客服降本增效方案建立收益看板，至少覆盖单次服务成本、一次解决率、平均响应时长与满意度，按周复盘并动态调整资源投入。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s9",
+    "type": "content_bullets",
+    "title": "下一步决策事项",
+    "footer": "",
+    "layoutId": "four_points",
+    "generationPrompt": "请从范围、预算、系统接入、责任人这4个不同维度，各生成一条决策事项。每条由4-6字短标题+12-20字说明组成，互不重复，不要合并。",
+    "label": "管理决策",
+    "items": [
+      {
+        "title": "试点范围",
+        "desc": "明确首批渠道与服务场景边界"
+      },
+      {
+        "title": "预算边界",
+        "desc": "锁定试点投入上限与审批口径"
+      },
+      {
+        "title": "系统接入",
+        "desc": "确认客服系统接口与联调计划"
+      },
+      {
+        "title": "责任人",
+        "desc": "指定业务与技术双负责人机制"
+      }
+    ],
+    "bullets": [
+      "明确首批渠道与服务场景边界",
+      "锁定试点投入上限与审批口径",
+      "确认客服系统接口与联调计划",
+      "指定业务与技术双负责人机制"
+    ],
+    "visualHint": "决策事项清单",
+    "content": {
+      "title": "下一步决策事项",
+      "subtitle": "管理决策",
+      "body": [
+        "试点范围：明确首批渠道与服务场景边界",
+        "预算边界：锁定试点投入上限与审批口径",
+        "系统接入：确认客服系统接口与联调计划",
+        "责任人：指定业务与技术双负责人机制"
+      ]
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s10",
+    "type": "thanks",
+    "title": "谢谢观看",
+    "footer": "",
+    "subtitle": "Q&A",
+    "content": {
+      "title": "谢谢观看",
+      "subtitle": "Q&A",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  }
+]

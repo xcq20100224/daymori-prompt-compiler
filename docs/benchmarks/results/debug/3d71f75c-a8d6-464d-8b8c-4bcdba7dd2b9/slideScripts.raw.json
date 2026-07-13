@@ -1,0 +1,204 @@
+[
+  {
+    "id": "s1",
+    "type": "cover",
+    "title": "光合作用",
+    "footer": "",
+    "subtitle": "teaching 场景汇报",
+    "speaker": "汇报人",
+    "date": "2026-07-09",
+    "content": {
+      "title": "光合作用",
+      "subtitle": "teaching 场景汇报",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s2",
+    "type": "section",
+    "title": "章节02",
+    "footer": "",
+    "sectionNo": "02",
+    "subtitle": "章节说明",
+    "content": {
+      "title": "章节02",
+      "subtitle": "章节说明",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s3",
+    "type": "content_text",
+    "title": "光合作用第3页",
+    "footer": "",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "光合作用第3页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s4",
+    "type": "content_text",
+    "title": "光合作用第4页",
+    "footer": "",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "光合作用第4页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s5",
+    "type": "section",
+    "title": "章节05",
+    "footer": "",
+    "sectionNo": "05",
+    "subtitle": "章节说明",
+    "content": {
+      "title": "章节05",
+      "subtitle": "章节说明",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s6",
+    "type": "content_text",
+    "title": "光合作用第6页",
+    "footer": "",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "光合作用第6页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、关键判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s7",
+    "type": "content_bullets",
+    "title": "光合作用第7页",
+    "footer": "",
+    "label": "核心要点",
+    "bullets": [
+      "先定义问题边界与目标",
+      "再明确关键动作与责任",
+      "最后确认指标与复盘机制"
+    ],
+    "visualHint": "执行要点图",
+    "content": {
+      "title": "光合作用第7页",
+      "subtitle": "核心要点",
+      "body": [
+        "先定义问题边界与目标",
+        "再明确关键动作与责任",
+        "最后确认指标与复盘机制"
+      ]
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s8",
+    "type": "content_text",
+    "title": "光合作用第8页",
+    "footer": "",
+    "label": "核心观点",
+    "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、核心判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。",
+    "visualHint": "结构示意图",
+    "content": {
+      "title": "光合作用第8页",
+      "subtitle": "核心观点",
+      "body": "本页提供可直接用于汇报的业务说明，系统覆盖场景现状、核心判断、执行动作与里程碑安排，帮助读者快速理解问题背景、方案价值与下一步推进优先级。"
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s9",
+    "type": "content_bullets",
+    "title": "光合作用第9页",
+    "footer": "",
+    "label": "核心要点",
+    "bullets": [
+      "先定义问题边界与目标",
+      "再明确关键动作与责任",
+      "最后确认指标与复盘机制"
+    ],
+    "visualHint": "执行要点图",
+    "content": {
+      "title": "光合作用第9页",
+      "subtitle": "核心要点",
+      "body": [
+        "先定义问题边界与目标",
+        "再明确关键动作与责任",
+        "最后确认指标与复盘机制"
+      ]
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  },
+  {
+    "id": "s10",
+    "type": "thanks",
+    "title": "感谢",
+    "footer": "",
+    "subtitle": "Q&A",
+    "content": {
+      "title": "感谢",
+      "subtitle": "Q&A",
+      "body": ""
+    },
+    "metadata": {
+      "version": "",
+      "source": "",
+      "pageNumber": ""
+    }
+  }
+]

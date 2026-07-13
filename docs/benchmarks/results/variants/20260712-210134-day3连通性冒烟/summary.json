@@ -1,0 +1,15 @@
+{
+  "topic": "Day3连通性冒烟",
+  "scenario": "proposal",
+  "sceneType": "企业",
+  "total": 1,
+  "success": 0,
+  "failed": 1,
+  "templateFileName": "模板.pptx",
+  "topCount": 0,
+  "passCount": 0,
+  "passRate": 0,
+  "uncertainCount": 0,
+  "best": null,
+  "timestamp": "2026-07-12T13:01:34.977Z"
+}

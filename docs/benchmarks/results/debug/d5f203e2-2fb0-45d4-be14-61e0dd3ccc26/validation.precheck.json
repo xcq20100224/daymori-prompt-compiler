@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "pass": true,
+  "errors": [],
+  "issues": [],
+  "warnings": [
+    "missing_footer_slide_1",
+    "missing_footer_slide_2",
+    "missing_footer_slide_3",
+    "missing_footer_slide_4",
+    "missing_footer_slide_5",
+    "missing_footer_slide_6",
+    "missing_footer_slide_7",
+    "missing_footer_slide_8",
+    "missing_footer_slide_9",
+    "missing_footer_slide_10"
+  ]
+}

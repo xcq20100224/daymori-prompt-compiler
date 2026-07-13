@@ -1,0 +1,352 @@
+[
+  {
+    "ok": false,
+    "seed": 0,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,slotOrder_slide_9",
+    "requestId": "bd71f3d9-b7de-4938-8980-85309e029093",
+    "generationTracePath": "docs/benchmarks/results/debug/bd71f3d9-b7de-4938-8980-85309e029093/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "slotOrder_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 1,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,slotOrder_slide_9",
+    "requestId": "ed899257-3dfb-475f-9bce-dbf88c6043c4",
+    "generationTracePath": "docs/benchmarks/results/debug/ed899257-3dfb-475f-9bce-dbf88c6043c4/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "slotOrder_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 2,
+    "variant": "v4_concise",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,slotOrder_slide_9",
+    "requestId": "a93dac28-14d3-49f9-b99a-a58fbfd34f1c",
+    "generationTracePath": "docs/benchmarks/results/debug/a93dac28-14d3-49f9-b99a-a58fbfd34f1c/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "slotOrder_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 3,
+    "variant": "v4_strict",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,slotOrder_slide_9",
+    "requestId": "e00530e5-2cef-467f-bb44-0e8b01d679c8",
+    "generationTracePath": "docs/benchmarks/results/debug/e00530e5-2cef-467f-bb44-0e8b01d679c8/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "slotOrder_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  },
+  {
+    "ok": false,
+    "seed": 4,
+    "variant": "v4_creative",
+    "status": 422,
+    "error": "ppt_export_validation_failed",
+    "detail": "deck_validation_failed:slotOrder_slide_6,slotOrder_slide_7,slotOrder_slide_8,slotOrder_slide_9",
+    "requestId": "bc4a6151-7519-4518-bb23-10da8c9289d1",
+    "generationTracePath": "docs/benchmarks/results/debug/bc4a6151-7519-4518-bb23-10da8c9289d1/generation_trace.json",
+    "qualityScore": {
+      "templateUsage": 92,
+      "visualCleanliness": 92,
+      "contentSpecificity": 95,
+      "narrativeFlow": 92,
+      "scenarioFit": 96,
+      "exportIntegrity": 100,
+      "overall": 94,
+      "cleanliness": 92,
+      "structure": 92,
+      "contentDepth": 95,
+      "layoutConsistency": 92,
+      "topicRelevance": 96
+    },
+    "validation": {
+      "ok": false,
+      "pass": false,
+      "errors": [
+        {
+          "slideIndex": 6,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 7,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 8,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        },
+        {
+          "slideIndex": 9,
+          "type": "slotOrder",
+          "text": "title_written_to_body"
+        }
+      ],
+      "issues": [
+        "slotOrder_slide_6",
+        "slotOrder_slide_7",
+        "slotOrder_slide_8",
+        "slotOrder_slide_9"
+      ],
+      "warnings": [
+        "missing_footer_slide_1",
+        "missing_footer_slide_2",
+        "missing_footer_slide_3",
+        "missing_footer_slide_4",
+        "missing_footer_slide_5",
+        "missing_footer_slide_6",
+        "missing_footer_slide_7",
+        "missing_footer_slide_8",
+        "missing_footer_slide_9",
+        "missing_footer_slide_10"
+      ]
+    },
+    "dump": null,
+    "relativePath": ""
+  }
+]
