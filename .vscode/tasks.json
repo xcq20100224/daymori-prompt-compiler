@@ -3813,6 +3813,43 @@
 				"set BENCH_API_BASE=http://127.0.0.1:3406&& node tools/run-variant-batch.mjs --topic=Day3连通性冒烟 --count=10 --concurrency=2 --enhanced --fetchTimeoutMs=240000 --maxRetries=1"
 			],
 			"isBackground": false
+		},
+		{
+			"label": "tmp git hash compare now",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && for /f %i in ('git rev-parse HEAD') do @set L=%i && for /f %j in ('git ls-remote origin refs/heads/main ^| awk \"{print $1}\"') do @set R=%j && echo LOCAL=%L% && echo REMOTE=%R% && if /I \"%L%\"==\"%R%\" (echo PUSH_SYNC=YES) else (echo PUSH_SYNC=NO)"
+			]
+		},
+		{
+			"label": "tmp git hash compare ps",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Set-Location 'c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori'; $l=git rev-parse HEAD; $r=(git ls-remote origin refs/heads/main | ForEach-Object { ($_ -split \"`t\")[0] }); Write-Output \"LOCAL=$l\"; Write-Output \"REMOTE=$r\"; if($l -eq $r){Write-Output \"PUSH_SYNC=YES\"}else{Write-Output \"PUSH_SYNC=NO\"}"
+			]
+		},
+		{
+			"label": "tmp git hash compare cmd clean",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && for /f %i in ('git rev-parse HEAD') do @set L=%i && for /f \"tokens=1\" %j in ('git ls-remote origin refs/heads/main') do @set R=%j && echo LOCAL=%L% && echo REMOTE=%R% && if /I \"%L%\"==\"%R%\" (echo PUSH_SYNC=YES) else (echo PUSH_SYNC=NO)"
+			]
+		},
+		{
+			"label": "tmp git hash raw print",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"cd /d c:\\Users\\J1896\\Downloads\\xuchenqiDaymori-main\\xuchenqiDaymori-main\\Daymori && echo LOCAL: && git rev-parse HEAD && echo REMOTE: && git ls-remote origin refs/heads/main"
+			]
 		}
 	],
 	"inputs": [
